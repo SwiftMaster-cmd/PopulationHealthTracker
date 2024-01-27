@@ -1,4 +1,5 @@
 <!-- history.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +21,27 @@
         <ul id="salesList">
             <!-- Sales history items will be dynamically added here -->
         </ul>
+    </div>
+
+    <!-- Edit Form (you can customize this based on your needs) -->
+    <div id="editFormContainer" style="display: none;">
+        <h2>Edit Sale</h2>
+        <form id="editSalesForm">
+            <label for="editLeadId">Lead ID:</label>
+            <input type="text" id="editLeadId" name="editLeadId" required>
+
+            <label for="editEsiStatus">ESI Status:</label>
+            <select id="editEsiStatus" name="editEsiStatus" required>
+                <!-- Options for ESI Status -->
+            </select>
+
+            <!-- Additional form fields for editing -->
+
+            <label for="editSelectedSaleTypes">Selected Sale Types:</label>
+            <input type="text" id="editSelectedSaleTypes" name="editSelectedSaleTypes" required>
+
+            <button type="button" onclick="updateSale()">Update Sale</button>
+        </form>
     </div>
 
     <script src="app.js"></script>
