@@ -20,49 +20,36 @@ const database = getDatabase(app);
 
 // Function to add sales data to Firebase Realtime Database
 function addSalesData(leadId, esiConsent, saleType) {
-  const salesRef = ref(database, 'sales'); // 'sales' is assumed to be the path in your database
+  // Use the specified parent path '/sales'
+  const salesRef = ref(database, 'sales');
 
-  // Generate a unique key for the new sale
-  const newSalesKey = push(salesRef).key;
-
-  // Create a data object for the new sale
-  const newSalesData = {
+  // Use the specified document ID 'KhwuizoVuTXnQVhAkeuh'
+  const newSalesKey = set(ref(salesRef, 'KhwuizoVuTXnQVhAkeuh'), {
     leadId: leadId,
     esiConsent: esiConsent,
     saleType: saleType,
-    timestamp: ServerValue.TIMESTAMP, // Add a timestamp
-    date: new Date().toLocaleDateString(), // Add date
-    time: new Date().toLocaleTimeString() // Add time
-  };
+    timestamp: ServerValue.TIMESTAMP,
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString()
+  });
 
-  // Set the data in the 'sales' path with the unique key
-  set(ref(salesRef, newSalesKey), newSalesData);
-
-  console.log('Sale added to Firebase:', newSalesData);
+  console.log('Sale added to Firebase:', newSalesKey);
 }
-
-// Your existing code...
 
 // Function to handle form submission
 function submitForm() {
-    const leadId = document.getElementById('leadId').value;
-    const esiConsent = document.getElementById('esiConsent').value;
-    const saleType = document.getElementById('saleType').value;
+  const leadId = document.getElementById('leadId').value;
+  const esiConsent = document.getElementById('esiConsent').value;
+  const saleType = document.getElementById('saleType').value;
 
-    // Call the function to add sales data to Firebase
-    addSalesData(leadId, esiConsent, saleType);
+  // Call the function to add sales data to Firebase
+  addSalesData(leadId, esiConsent, saleType);
 
-    // Clear form inputs after submission
-    document.getElementById('leadId').value = '';
-    document.getElementById('esiConsent').value = '';
-    document.getElementById('saleType').value = '';
+  // Clear form inputs after submission
+  document.getElementById('leadId').value = '';
+  document.getElementById('esiConsent').value = '';
+  document.getElementById('saleType').value = '';
 
-    // Provide feedback to the user (customize as needed)
-    alert('Sale submitted successfully!');
-}
-
-// Function to show history page
-function showHistory() {
-    // Redirect the user to the history.html page
-    window.location.href = 'history.html';
+  // Provide feedback to the user (customize as needed)
+  alert('Sale submitted successfully!');
 }
