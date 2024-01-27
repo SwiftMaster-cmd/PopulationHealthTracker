@@ -4,58 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker App - History</title>
+    <title>Sales History</title>
+    <!-- Include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-database.js"></script>
+    <!-- Firebase Configuration -->
+    <script src="history.js"></script>
+    <!-- Optional: Add your CSS styles here -->
 </head>
 
 <body>
     <header>
-        <h1>Tracker App - History</h1>
+        <h1>Sales History</h1>
     </header>
 
-    <section id="historySection">
-        <h2>Submitted History</h2>
-        <!-- Display the history of submitted data here -->
-        <!-- You can fetch and display the data dynamically using JavaScript or server-side logic -->
+    <section id="salesContainer">
+        <!-- Sales data will be rendered here -->
     </section>
 
     <footer>
-        <button onclick="goToIndex()">Go back to Index</button>
-        <p>&copy; 2024 Tracker App. All rights reserved.</p>
+        <p>&copy; 2024 Sales Tracker. All rights reserved.</p>
     </footer>
-
-    <script src="app.js"></script>
-    <script>
-        // Load history data on page load
-        window.onload = function () {
-            loadHistory();
-        };
-
-        // Function to load and display history data
-        function loadHistory() {
-            var historySection = document.getElementById("historySection");
-            var history = JSON.parse(localStorage.getItem('history')) || [];
-
-            // Check if history is already populated
-            if (historySection.innerHTML.trim() !== "") {
-                return;
-            }
-
-            if (history.length === 0) {
-                historySection.innerHTML = "<p>No history available.</p>";
-            } else {
-                historySection.innerHTML = "<ul>";
-                for (var i = 0; i < history.length; i++) {
-                    historySection.innerHTML += "<li>Lead ID: " + history[i].leadId + ", ESI Consent: " + history[i].esiConsent + ", Sale Type: " + history[i].saleType + "</li>";
-                }
-                historySection.innerHTML += "</ul>";
-            }
-        }
-
-        // Function to navigate back to the index page
-        function goToIndex() {
-            window.location.href = "index.html";
-        }
-    </script>
 </body>
 
 </html>
