@@ -1,107 +1,33 @@
-// app.js
+function submitForm() {
+    // Capture and save the information
+    var leadId = document.getElementById("leadId").value;
+    var esiConsent = document.getElementById("esiConsent").value;
+    var saleType = document.getElementById("saleType").value;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const salesForm = document.getElementById('salesForm');
+    // Create an object to represent the submission
+    var submission = {
+        leadId: leadId,
+        esiConsent: esiConsent,
+        saleType: saleType
+    };
 
-    salesForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
+    // Retrieve existing history from local storage or initialize an empty array
+    var history = JSON.parse(localStorage.getItem('history')) || [];
 
-        const leadId = document.getElementById('leadId').value;
-        const esiStatus = document.getElementById('esiStatus').value;
-        const selectedSaleTypes = document.getElementById('selectedSaleTypes').value;
+    // Add the new submission to the history array
+    history.push(submission);
 
-        // Send data to the server for saving
-        try {
-            const response = await fetch('/.netlify/functions/saveSale', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ leadId, esiStatus, selectedSaleTypes }),
-            });
+    // Save the updated history array back to local storage
+    localStorage.setItem('history', JSON.stringify(history));
 
-            const data = await response.json();
-            console.log(data);
+    // Log for verification (you can remove this line in production)
+    console.log("Data submitted and saved:", submission);
+}
 
-            // Assuming you have a displaySalesHistory function to display data
-            displaySalesHistory();
-        } catch (error) {
-            console.error('Error saving sale:', error);
-        }
+function showHistory() {
+    window.location.href = "history.html";
+}
 
-        // Clear input fields and selected options
-        document.getElementById('leadId').value = '';
-        document.getElementById('esiStatus').value = 'complete';
-        document.querySelectorAll('.custom-multiselect .option.selected').forEach(option => {
-            option.classList.remove('selected');
-        });
-    });
-
-    // Fetch sales data from the server when the page loads
-    fetch('/.netlify/functions/getSales')
-        .then(response => response.json())
-        .then(data => {
-            // Assuming you have a displaySalesHistory function to display data
-            displaySalesHistory(data);
-        })
-        .catch(error => console.error('Error fetching sales data:', error));
-
-    // Update the displaySalesHistory function to include an Edit button
-    function displaySalesHistory() {
-        const salesList = document.getElementById('salesList');
-        salesList.innerHTML = ''; // Clear existing content
-
-        salesHistory.forEach((sale, index) => {
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `
-                <span>Lead ID: ${sale.leadId}, ESI Status: ${sale.esiStatus}, Sale Types: ${sale.selectedSaleTypes}, Timestamp: ${sale.timestamp}</span>
-                <button onclick="editSale(${index})">Edit</button>
-            `;
-            salesList.appendChild(listItem);
-        });
-    }
-
-    // Function to populate the edit form with sale data
-    function editSale(index) {
-        const saleToEdit = salesHistory[index];
-
-        // Assuming you have input elements in the edit form with IDs like 'editLeadId', 'editEsiStatus', etc.
-        document.getElementById('editLeadId').value = saleToEdit.leadId;
-        document.getElementById('editEsiStatus').value = saleToEdit.esiStatus;
-        document.getElementById('editSelectedSaleTypes').value = saleToEdit.selectedSaleTypes;
-
-        // Show the edit form or navigate to a new page for editing
-        // Example: document.getElementById('editFormContainer').style.display = 'block';
-    }
-
-    // Add a function to handle updating sales data
-    function updateSale() {
-        const leadId = document.getElementById('editLeadId').value;
-        const esiStatus = document.getElementById('editEsiStatus').value;
-        const selectedSaleTypes = document.getElementById('editSelectedSaleTypes').value;
-
-        // Assuming you have a function to find the index of the sale to be edited
-        const index = findSaleIndexToUpdate(leadId);
-
-        if (index !== -1) {
-            // Update the sale in the salesHistory array
-            salesHistory[index].esiStatus = esiStatus;
-            salesHistory[index].selectedSaleTypes = selectedSaleTypes;
-
-            // Display the updated sales history
-            displaySalesHistory();
-
-            // Optionally, hide the edit form or navigate to a different page
-            // Example: document.getElementById('editFormContainer').style.display = 'none';
-        } else {
-            console.error('Sale not found for editing.');
-        }
-    }
-
-    // Function to find the index of the sale to be updated
-    function findSaleIndexToUpdate(leadId) {
-        return salesHistory.findIndex(sale => sale.leadId === leadId);
-    }
-
-    // Other code for handling multiselect, form submission, etc.
-});
+function goToIndex() {
+    window.location.href = "index.html";
+}

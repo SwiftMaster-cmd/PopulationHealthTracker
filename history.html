@@ -1,49 +1,61 @@
-<!-- history.html -->
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales History</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Tracker App - History</title>
 </head>
+
 <body>
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <button id="goBackBtn" onclick="goBack()">Go Back</button>
-    </div>
+    <header>
+        <h1>Tracker App - History</h1>
+    </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <h1>Sales History</h1>
+    <section id="historySection">
+        <h2>Submitted History</h2>
+        <!-- Display the history of submitted data here -->
+        <!-- You can fetch and display the data dynamically using JavaScript or server-side logic -->
+    </section>
 
-        <ul id="salesList">
-            <!-- Sales history items will be dynamically added here -->
-        </ul>
-    </div>
-
-    <!-- Edit Form (you can customize this based on your needs) -->
-    <div id="editFormContainer" style="display: none;">
-        <h2>Edit Sale</h2>
-        <form id="editSalesForm">
-            <label for="editLeadId">Lead ID:</label>
-            <input type="text" id="editLeadId" name="editLeadId" required>
-
-            <label for="editEsiStatus">ESI Status:</label>
-            <select id="editEsiStatus" name="editEsiStatus" required>
-                <!-- Options for ESI Status -->
-            </select>
-
-            <!-- Additional form fields for editing -->
-
-            <label for="editSelectedSaleTypes">Selected Sale Types:</label>
-            <input type="text" id="editSelectedSaleTypes" name="editSelectedSaleTypes" required>
-
-            <button type="button" onclick="updateSale()">Update Sale</button>
-        </form>
-    </div>
+    <footer>
+        <button onclick="goToIndex()">Go back to Index</button>
+        <p>&copy; 2024 Tracker App. All rights reserved.</p>
+    </footer>
 
     <script src="app.js"></script>
+    <script>
+        // Load history data on page load
+        window.onload = function () {
+            loadHistory();
+        };
+
+        // Function to load and display history data
+        function loadHistory() {
+            var historySection = document.getElementById("historySection");
+            var history = JSON.parse(localStorage.getItem('history')) || [];
+
+            // Check if history is already populated
+            if (historySection.innerHTML.trim() !== "") {
+                return;
+            }
+
+            if (history.length === 0) {
+                historySection.innerHTML = "<p>No history available.</p>";
+            } else {
+                historySection.innerHTML = "<ul>";
+                for (var i = 0; i < history.length; i++) {
+                    historySection.innerHTML += "<li>Lead ID: " + history[i].leadId + ", ESI Consent: " + history[i].esiConsent + ", Sale Type: " + history[i].saleType + "</li>";
+                }
+                historySection.innerHTML += "</ul>";
+            }
+        }
+
+        // Function to navigate back to the index page
+        function goToIndex() {
+            window.location.href = "index.html";
+        }
+    </script>
 </body>
+
 </html>

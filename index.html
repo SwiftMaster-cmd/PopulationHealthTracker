@@ -1,51 +1,73 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Tracker App</title>
 </head>
+
 <body>
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <button onclick="goToViewSales()">View Sales</button>
-    </div>
+    <header>
+        <h1>Tracker App</h1>
+        <p>Track your progress and achieve your goals!</p>
+    </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <h1>Sales Tracker</h1>
+    <section>
+        <h2>Welcome to Tracker App</h2>
+        <p>Start tracking your activities and make progress towards your goals. Whether it's fitness, productivity, or any other aspect of your life, our app is here to help you stay on track.</p>
 
-        <form id="salesForm">
-            <div class="form-group">
-                <label for="leadId">Lead ID:</label>
-                <input type="text" id="leadId" placeholder="Enter lead ID" required>
-            </div>
+        <h2>Enter Information</h2>
 
-            <div class="form-group">
-                <label for="esiStatus">ESI Status:</label>
-                <select id="esiStatus" required>
-                    <option value="complete">Complete</option>
-                    <option value="incomplete">Incomplete</option>
-                </select>
-            </div>
+        <!-- Box 1: Lead ID -->
+        <label for="leadId">Lead ID (Numbers only):</label>
+        <input type="number" id="leadId" name="leadId" placeholder="Enter Lead ID" required>
 
-            <div class="form-group">
-                <label for="saleType">Sale Type:</label>
-                <div class="custom-multiselect" id="saleType">
-                    <div class="option" data-value="Billable HRA">Billable HRA</div>
-                    <div class="option" data-value="Flex HRA">Flex HRA</div>
-                    <div class="option" data-value="Select RX">Select RX</div>
-                    <div class="option" data-value="Schedule/Transfer">Schedule/Transfer</div>
-                </div>
-                <input type="hidden" id="selectedSaleTypes">
-            </div>
+        <!-- Box 2: ESI Consent -->
+        <label for="esiConsent">ESI Consent:</label>
+        <select id="esiConsent" name="esiConsent" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="didNotConsent">Did not consent</option>
+        </select>
 
-            <button type="button" id="submitBtn" onclick="submitSale()">Submit Sale</button>
-        </form>
-    </div>
+        <!-- Box 3: Sale Type -->
+        <label for="saleType">Sale Type:</label>
+        <select id="saleType" name="saleType" required>
+            <option value="billableHRA">Billable HRA</option>
+            <option value="flexHRA">Flex HRA</option>
+            <option value="selectRX">Select RX</option>
+            <option value="transferSchedule">Transfer/Schedule</option>
+        </select>
 
-    <script src="app.js"></script>
+        <!-- Submit Button -->
+        <button type="button" onclick="submitForm()">Submit</button>
+
+        <!-- History Button -->
+        <button type="button" onclick="showHistory()">View History</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Tracker App. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function submitForm() {
+            // Capture and save the information
+            var leadId = document.getElementById("leadId").value;
+            var esiConsent = document.getElementById("esiConsent").value;
+            var saleType = document.getElementById("saleType").value;
+
+            // You can now send this data to your server-side logic for processing
+            console.log("Lead ID: " + leadId);
+            console.log("ESI Consent: " + esiConsent);
+            console.log("Sale Type: " + saleType);
+        }
+
+        function showHistory() {
+            window.location.href = "history.html";
+        }
+    </script>
 </body>
+
 </html>
