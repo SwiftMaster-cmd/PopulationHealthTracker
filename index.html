@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tracker App</title>
+    <!-- Google Search Console Verification Meta Tag -->
+    <meta name="google-site-verification" content="5hUrVlaPFHPWfQRui7xnAJWdpoe-6ZJxB8Wg8AYezA4">
+    <!-- End of Google Search Console Verification Meta Tag -->
 </head>
 
 <body>
@@ -51,23 +54,7 @@
         <p>&copy; 2024 Tracker App. All rights reserved.</p>
     </footer>
 
-    <script>
-        function submitForm() {
-            // Capture and save the information
-            var leadId = document.getElementById("leadId").value;
-            var esiConsent = document.getElementById("esiConsent").value;
-            var saleType = document.getElementById("saleType").value;
-
-            // You can now send this data to your server-side logic for processing
-            console.log("Lead ID: " + leadId);
-            console.log("ESI Consent: " + esiConsent);
-            console.log("Sale Type: " + saleType);
-        }
-
-        function showHistory() {
-            window.location.href = "history.html";
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 
 </html>
