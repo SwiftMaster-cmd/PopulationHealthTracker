@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Sales</title>
+    <!-- Include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-database.js"></script>
+    <!-- Firebase Configuration -->
+    <script src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Add Sales</h1>
+    </header>
+
+    <section>
+        <h2>Enter Sales Information</h2>
+
+        <!-- Box 1: Lead ID -->
+        <label for="leadId">Lead ID (Numbers only):</label>
+        <input type="number" id="leadId" name="leadId" placeholder="Enter Lead ID" required>
+
+        <!-- Box 2: ESI Consent -->
+        <label for="esiConsent">ESI Consent:</label>
+        <select id="esiConsent" name="esiConsent" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="didNotConsent">Did not consent</option>
+        </select>
+
+        <!-- Box 3: Sale Type -->
+        <label for="saleType">Sale Type:</label>
+        <select id="saleType" name="saleType" required>
+            <option value="billableHRA">Billable HRA</option>
+            <option value="flexHRA">Flex HRA</option>
+            <option value="selectRX">Select RX</option>
+            <option value="transferSchedule">Transfer/Schedule</option>
+        </select>
+
+        <!-- Submit Button -->
+        <button type="button" onclick="submitForm()">Submit</button>
+
+        <!-- View History Button -->
+        <button type="button" onclick="viewHistory()">View History</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Tracker App. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
