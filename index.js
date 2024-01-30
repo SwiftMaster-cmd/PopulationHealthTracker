@@ -24,8 +24,10 @@ const database = getDatabase(app);
 
 // Function to handle user registration
 function register() {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+    
+    const email = document.getElementById('signup_email').value.trim();
+    const password = document.getElementById('signup_password').value.trim();
+    // ... rest of the function
     const full_name = document.getElementById('full_name').value.trim();
     const favourite_song = document.getElementById('favourite_song').value.trim();
     const milk_before_cereal = document.getElementById('milk_before_cereal').value.trim();

@@ -38,6 +38,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
 
+
     <!-- Firebase Configuration -->
     <script>
         const firebaseConfig = {
@@ -51,6 +52,7 @@
             measurementId: "G-6S10R2SD81"
         };
         firebase.initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
     </script>
 
     <!-- User Registration Script -->
