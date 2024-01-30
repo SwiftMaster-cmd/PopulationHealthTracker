@@ -27,7 +27,7 @@
         <label for="milk_before_cereal">Milk Before Cereal:</label>
         <input type="text" id="milk_before_cereal" required>
 
-        <button type="button" onclick="signUp()">Register</button>
+        <button type="button" id="registerBtn">Register</button>
     </form>
 
     <!-- Login Link -->
@@ -37,7 +37,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
-
 
     <!-- Firebase Configuration -->
     <script>
@@ -55,15 +54,19 @@
         const analytics = getAnalytics(app);
     </script>
 
-    <!-- User Registration Script -->
-    <script>
-        // Function to handle user registration
-        function signUp() {
-            const email = document.getElementById('signup_email').value.trim();
-            const password = document.getElementById('signup_password').value.trim();
-            const fullName = document.getElementById('full_name').value.trim();
-            const favouriteSong = document.getElementById('favourite_song').value.trim();
-            const milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
+   <!-- User Registration Script -->
+   <script>
+    // Event listener for the register button
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('registerBtn').addEventListener('click', signUp);
+    });
+
+    function signUp() {
+        const email = document.getElementById('signup_email').value.trim();
+        const password = document.getElementById('signup_password').value.trim();
+        const fullName = document.getElementById('full_name').value.trim();
+        const favouriteSong = document.getElementById('favourite_song').value.trim();
+        const milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
 
             if (!validate_email(email) || !validate_password(password)) {
                 alert('Invalid email or password. Make sure your email is correct and password is at least 6 characters long.');
