@@ -38,32 +38,33 @@ function register() {
     }
 
     if (!validate_field(full_name) || !validate_field(favourite_song) || !validate_field(milk_before_cereal)) {
-        alert('All fields are required. Please fill in all the information.');
+        alert('All fields are required.');
         return;
     }
 
     createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-            const user = auth.currentUser;
-            const database_ref = ref(database);
-
-            const user_data = {
-                email: email,
+        .then((userCredential) => {
+            // User registered
+            // Save additional user data to the database
+            const user = userCredential.user;
+            const userDataRef = ref(database, 'users/' + user.uid);
+            set(userDataRef, {
                 full_name: full_name,
                 favourite_song: favourite_song,
                 milk_before_cereal: milk_before_cereal,
                 last_login: Date.now()
-            };
+            });
 
-            push(ref(database, `users/${user.uid}`), user_data);
-
-            alert('User Created!!');
+            alert('User registered successfully!');
+            // Redirect to login.html or other page
+            window.location.href = 'login.html';
         })
         .catch((error) => {
-            const error_message = error.message;
-            alert(`Registration failed: ${error_message}`);
+            const errorMessage = error.message;
+            alert(`Registration failed: ${errorMessage}`);
         });
 }
+
 
 // Function to add sale data to Firebase Realtime Database
 function addSaleData() {

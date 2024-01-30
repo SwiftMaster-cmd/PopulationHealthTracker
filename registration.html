@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  
     <h2>User Registration</h2>
 
     <!-- Registration Form -->
@@ -31,7 +30,6 @@
         <button type="button" id="registerBtn" onclick="register()">Register</button>
     </form>
 
-
     <!-- Login Link -->
     <p>Already have an account? <a href="login.html">Login here</a></p>
 
@@ -53,22 +51,21 @@
             measurementId: "G-6S10R2SD81"
         };
         firebase.initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
     </script>
 
-   <!-- User Registration Script -->
-   <script>
-    // Event listener for the register button
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('registerBtn').addEventListener('click', signUp);
-    });
+    <!-- User Registration Script -->
+    <script>
+        // Event listener for the register button
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('registerBtn').addEventListener('click', signUp);
+        });
 
-    function signUp() {
-        const email = document.getElementById('signup_email').value.trim();
-        const password = document.getElementById('signup_password').value.trim();
-        const fullName = document.getElementById('full_name').value.trim();
-        const favouriteSong = document.getElementById('favourite_song').value.trim();
-        const milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
+        function signUp() {
+            const email = document.getElementById('signup_email').value.trim();
+            const password = document.getElementById('signup_password').value.trim();
+            const fullName = document.getElementById('full_name').value.trim();
+            const favouriteSong = document.getElementById('favourite_song').value.trim();
+            const milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
 
             if (!validate_email(email) || !validate_password(password)) {
                 alert('Invalid email or password. Make sure your email is correct and password is at least 6 characters long.');
