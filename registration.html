@@ -33,25 +33,27 @@
     <!-- Login Link -->
     <p>Already have an account? <a href="login.html">Login here</a></p>
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
-    <script src="index.js"></script>
 
+    <!-- Firebase Configuration -->
     <script>
         const firebaseConfig = {
-  apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
-  authDomain: "pophealthtracker.firebaseapp.com",
-  databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com",
-  projectId: "pophealthtracker",
-  storageBucket: "pophealthtracker.appspot.com",
-  messagingSenderId: "934873881816",
-  appId: "1:934873881816:web:fde6a268c880b9139f0bad",
-  measurementId: "G-6S10R2SD81"
-};
+            apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
+            authDomain: "pophealthtracker.firebaseapp.com",
+            databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com",
+            projectId: "pophealthtracker",
+            storageBucket: "pophealthtracker.appspot.com",
+            messagingSenderId: "934873881816",
+            appId: "1:934873881816:web:fde6a268c880b9139f0bad",
+            measurementId: "G-6S10R2SD81"
+        };
         firebase.initializeApp(firebaseConfig);
     </script>
 
+    <!-- User Registration Script -->
     <script>
         // Function to handle user registration
         function signUp() {
@@ -66,11 +68,10 @@
                 return;
             }
 
-            auth.createUserWithEmailAndPassword(email, password)
+            firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then(() => {
-                    // Additional user data
-                    const user = auth.currentUser;
-                    const databaseRef = database.ref();
+                    const user = firebase.auth().currentUser;
+                    const databaseRef = firebase.database().ref();
 
                     const userData = {
                         email: email,
@@ -90,8 +91,16 @@
                     alert(`Registration failed: ${errorMessage}`);
                 });
         }
+
+        function validate_email(email) {
+            const expression = /^[^@]+@\w+(\.\w+)+\w$/;
+            return expression.test(email);
+        }
+
+        function validate_password(password) {
+            return password.length >= 6;
+        }
     </script>
- <!-- Include your index.js -->
- <script src="index.js"></script>
+
 </body>
 </html>

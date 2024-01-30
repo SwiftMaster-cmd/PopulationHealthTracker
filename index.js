@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -14,12 +14,13 @@ const firebaseConfig = {
     messagingSenderId: "934873881816",
     appId: "1:934873881816:web:fde6a268c880b9139f0bad",
     measurementId: "G-6S10R2SD81"
-  };
+};
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
+// Function to handle user registration
 function register() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -60,6 +61,7 @@ function register() {
         });
 }
 
+// Function to add sale data to Firebase Realtime Database
 function addSaleData() {
     const leadId = document.getElementById('lead_id').value.trim();
     const esiConsent = document.getElementById('esi_consent').value.trim();
@@ -87,15 +89,62 @@ function addSaleData() {
         });
 }
 
+// Function to handle user login
+function loginUser() {
+    const email = document.getElementById('login_email').value.trim();
+    const password = document.getElementById('login_password').value.trim();
+
+    if (!validate_email(email) || !validate_password(password)) {
+        alert('Invalid email or password. Make sure your email is correct and password is at least 6 characters long.');
+        return;
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // User signed in
+            alert('Login successful!');
+            // Redirect to add-sales.html
+            window.location.href = 'add-sales.html';
+        })
+        .catch((error) => {
+            const errorMessage = error.message;
+            alert(`Login failed: ${errorMessage}`);
+        });
+}
+
+
+
+// Function to validate email
 function validate_email(email) {
     const expression = /^[^@]+@\w+(\.\w+)+\w$/;
     return expression.test(email);
 }
 
+// Function to validate password
 function validate_password(password) {
     return password.length >= 6;
 }
 
+// Function to validate field
 function validate_field(field) {
     return field && field.trim().length > 0;
 }
+
+// Real-time listener setup for a specific path in your database
+function setupRealtimeListener() {
+    const salesRef = ref(database, 'sales');
+    onValue(salesRef, (snapshot) => {
+        const salesData = snapshot.val();
+        updateSalesUI(salesData);
+    }, (error) => {
+        console.error('Failed to read data:', error);
+    });
+}
+
+// Example function to update sales UI with real-time data
+function updateSalesUI(salesData) {
+    // Implement how you want to update your UI with salesData here
+}
+
+// Call the function to set up the real-time listener
+setupRealtimeListener();
