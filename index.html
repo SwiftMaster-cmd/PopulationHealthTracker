@@ -1,42 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker App</title>
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js"></script>
-    <!-- Firebase Configuration -->
-    <script src="app.js"></script>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Integration</title>
 </head>
-
 <body>
-    <header>
-        <h1>Tracker App</h1>
-        <p>Track your progress and achieve your goals!</p>
-    </header>
 
-    <section>
-        <h2>Welcome to Tracker App</h2>
-        <p>Start tracking your activities and make progress towards your goals. Whether it's fitness, productivity, or any other aspect of your life, our app is here to help you stay on track.</p>
+  <!-- Sales Form -->
+  <h2>Sales Form</h2>
+  <form id="salesForm">
+    <label for="leadId">Lead ID:</label>
+    <input type="text" id="leadId" required><br>
 
-        <!-- Login Form -->
-        <div id="loginForm">
-            <label for="email">Email:</label>
-            <input type="email" id="email" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
-            <button type="button" onclick="login()">Login</button>
-        </div>
-    </section>
+    <label for="esiConsent">ESI Consent:</label>
+    <input type="text" id="esiConsent" required><br>
 
-    <footer>
-        <p>&copy; 2024 Tracker App. All rights reserved.</p>
-    </footer>
+    <label for="saleType">Sale Type:</label>
+    <input type="text" id="saleType" required><br>
+
+    <label for="customerName">Customer Name:</label>
+    <input type="text" id="customerName" required><br>
+
+    <button type="button" onclick="submitForm()">Submit Sale</button>
+  </form>
+
+  <hr>
+
+  <!-- Sales Operations -->
+  <h2>Sales Operations</h2>
+  <label for="saleId">Sale ID:</label>
+  <input type="text" id="saleId" required>
+  <button type="button" onclick="removeSale()">Remove Sale</button>
+  <button type="button" onclick="updateSale()">Update Sale</button>
+
+  <hr>
+
+  <!-- Authentication -->
+  <h2>Authentication</h2>
+  <form id="authForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" required><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" required><br>
+
+    <button type="button" onclick="signUp()">Sign Up</button>
+    <button type="button" onclick="signIn()">Sign In</button>
+  </form>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-database.js"></script>
+
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
+      authDomain: "pophealthtracker.firebaseapp.com",
+      databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com", // Use Realtime Database URL
+      projectId: "pophealthtracker",
+      storageBucket: "pophealthtracker.appspot.com",
+      messagingSenderId: "934873881816",
+      appId: "1:934873881816:web:fde6a268c880b9139f0bad",
+      measurementId: "G-6S10R2SD81"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
+
+    // Replace with your actual user ID obtained during authentication
+    const userId = "did";
+
+    // Your existing functions for sales operations and authentication
+
+    function submitForm() {
+      // Your existing submitForm function
+    }
+
+    function removeSale() {
+      // Your existing removeSale function
+    }
+
+    function updateSale() {
+      // Your existing updateSale function
+    }
+
+    function signUp() {
+      // Your existing signUp function
+    }
+
+    function signIn() {
+      // Your existing signIn function
+    }
+  </script>
 </body>
-
 </html>

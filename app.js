@@ -16,10 +16,8 @@ const database = getDatabase(app);
 const auth = getAuth(app);
 
 // Function to add sales data to Firebase Realtime Database
-function addSalesData(leadId, esiConsent, saleType) {
+function addSalesData(leadId, esiConsent, saleType, customerName) {
   const salesRef = ref(database, 'sales');
-
-  const newSalesKey = push(salesRef);
 
   const newSalesData = {
     leadId: leadId,
@@ -27,26 +25,49 @@ function addSalesData(leadId, esiConsent, saleType) {
     saleType: saleType,
     timestamp: ServerValue.TIMESTAMP,
     date: new Date().toLocaleDateString(),
-    time: new Date().toLocaleTimeString()
+    time: new Date().toLocaleTimeString(),
+    customerName: customerName
   };
 
-  set(newSalesKey, newSalesData);
-
-  console.log('Sale added to Firebase:', newSalesData);
+  push(salesRef, newSalesData)
+    .then(() => {
+      console.log('Sale added to Firebase:', newSalesData);
+      alert('Sale submitted successfully!');
+    })
+    .catch((error) => {
+      console.error('Error adding sale:', error);
+      alert('Sale submission failed. Check the console for details.');
+    });
 }
 
 // Function to remove sales data from Firebase Realtime Database
 function removeSalesData(saleId) {
-  const salesRef = ref(database, `sales/${saleId}`);
-  remove(salesRef);
-  console.log('Sale removed from Firebase:', saleId);
+  const salesRef = ref(database, 'sales/' + saleId);
+
+  remove(salesRef)
+    .then(() => {
+      console.log('Sale removed from Firebase:', saleId);
+      alert('Sale removed successfully!');
+    })
+    .catch((error) => {
+      console.error('Error removing sale:', error);
+      alert('Sale removal failed. Check the console for details.');
+    });
 }
 
 // Function to update sales data in Firebase Realtime Database
 function updateSalesData(saleId, updatedData) {
-  const salesRef = ref(database, `sales/${saleId}`);
-  update(salesRef, updatedData);
-  console.log('Sale updated in Firebase:', saleId, updatedData);
+  const salesRef = ref(database, 'sales/' + saleId);
+
+  update(salesRef, updatedData)
+    .then(() => {
+      console.log('Sale updated in Firebase:', saleId, updatedData);
+      alert('Sale updated successfully!');
+    })
+    .catch((error) => {
+      console.error('Error updating sale:', error);
+      alert('Sale update failed. Check the console for details.');
+    });
 }
 
 // Function to handle form submission
@@ -54,32 +75,32 @@ function submitForm() {
   const leadId = document.getElementById('leadId').value;
   const esiConsent = document.getElementById('esiConsent').value;
   const saleType = document.getElementById('saleType').value;
+  const customerName = document.getElementById('customerName').value;
 
   // Call the function to add sales data to Firebase
-  addSalesData(leadId, esiConsent, saleType);
+  addSalesData(leadId, esiConsent, saleType, customerName);
 
   // Clear form inputs after submission
   document.getElementById('leadId').value = '';
   document.getElementById('esiConsent').value = '';
   document.getElementById('saleType').value = '';
-
-  // Provide feedback to the user (customize as needed)
-  alert('Sale submitted successfully!');
+  document.getElementById('customerName').value = '';
 }
 
 // Function to handle sale removal
-function removeSale(saleId) {
+function removeSale() {
+  const saleId = document.getElementById('saleId').value;
   // Call the function to remove sales data from Firebase
   removeSalesData(saleId);
-  // Provide feedback to the user (customize as needed)
-  alert('Sale removed successfully!');
 }
 
 // Function to handle sale update
-function updateSale(saleId) {
+function updateSale() {
+  const saleId = document.getElementById('saleId').value;
   const updatedLeadId = prompt('Enter updated Lead ID:');
   const updatedEsiConsent = prompt('Enter updated ESI Consent:');
   const updatedSaleType = prompt('Enter updated Sale Type:');
+  const updatedCustomerName = prompt('Enter updated Customer Name:');
 
   const updatedData = {
     leadId: updatedLeadId,
@@ -87,56 +108,10 @@ function updateSale(saleId) {
     saleType: updatedSaleType,
     timestamp: ServerValue.TIMESTAMP,
     date: new Date().toLocaleDateString(),
-    time: new Date().toLocaleTimeString()
+    time: new Date().toLocaleTimeString(),
+    customerName: updatedCustomerName
   };
 
   // Call the function to update sales data in Firebase
   updateSalesData(saleId, updatedData);
-
-  // Provide feedback to the user (customize as needed)
-  alert('Sale updated successfully!');
-}
-
-// Firebase Authentication - Sign Up
-function signUp() {
-  const email = prompt('Enter your email:');
-  const password = prompt('Enter your password:');
-
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log('User signed up:', user);
-      // Provide feedback to the user (customize as needed)
-      alert('Sign up successful!');
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error('Sign up error:', errorCode, errorMessage);
-      // Provide feedback to the user (customize as needed)
-      alert('Sign up failed. Check the console for details.');
-    });
-}
-
-// Firebase Authentication - Sign In
-function signIn() {
-  const email = prompt('Enter your email:');
-  const password = prompt('Enter your password:');
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log('User signed in:', user);
-      // Provide feedback to the user (customize as needed)
-      alert('Sign in successful!');
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error('Sign in error:', errorCode, errorMessage);
-      // Provide feedback to the user (customize as needed)
-      alert('Sign in failed. Check the console for details.');
-    });
 }
