@@ -8,7 +8,7 @@ import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebas
 const firebaseConfig = {
     apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
     authDomain: "pophealthtracker.firebaseapp.com",
-    databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com",
+    databaseURL: "https://pophealthtracker.firebaseio.com",
     projectId: "pophealthtracker",
     storageBucket: "pophealthtracker.appspot.com",
     messagingSenderId: "934873881816",
