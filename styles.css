@@ -4,99 +4,54 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    text-align: center;
 }
 
 h2 {
-    text-align: center;
+    font-size: 3rem; /* Larger font size */
     color: #333;
     font-weight: bold;
-    margin-bottom: 20px;
-}
-
-form {
-    max-width: 400px;
-    margin: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s;
-}
-
-form:hover {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-}
-
-label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #555;
-}
-
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
-}
-
-input:focus, select:focus {
-    border-color: #4CAF50;
-}
-
-button {
-    display: inline-block;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 25px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #45a049;
+    margin-bottom: 30px;
 }
 
 .navigation {
-    text-align: center;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .navigation a {
-    margin: 0 10px;
+    display: inline-block;
+    margin: 0 20px;
+    padding: 15px 30px; /* Larger, more clickable area */
     color: #333;
     text-decoration: none;
+    font-size: 1.5rem; /* Larger font size */
     font-weight: bold;
-    transition: color 0.3s;
+    background-color: #4CAF50;
+    color: #fff;
+    border-radius: 25px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
 }
 
 .navigation a:hover {
-    color: #4CAF50;
+    background-color: #45a049;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px); /* Subtle lift effect on hover */
 }
 
-/* Animation for subtle hover effect on links */
-.navigation a:before {
-    content: '';
-    display: block;
-    height: 3px;
-    width: 0;
-    background: #4CAF50;
-    transition: width 0.3s;
-}
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    h2 {
+        font-size: 2.5rem;
+    }
 
-.navigation a:hover:before {
-    width: 100%;
+    .navigation a {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        margin: 0 10px;
+    }
 }

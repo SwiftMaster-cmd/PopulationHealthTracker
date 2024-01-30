@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Sales</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="add-sales.css">
 </head>
 <body>
 
@@ -15,11 +15,15 @@
         <label for="lead_id">Lead ID:</label>
         <input type="text" id="lead_id" required>
 
-        <label for="esi_consent">ESI Consent:</label>
-        <select id="esi_consent" required>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
+       <!-- ESI Consent as buttons -->
+<label>ESI Consent:</label>
+<div id="esi_consent_buttons">
+    <button type="button" onclick="setEsiConsent('yes')">Yes</button>
+    <button type="button" onclick="setEsiConsent('no')">No</button>
+</div>
+
+<!-- Hidden input to store ESI Consent value -->
+<input type="hidden" id="esi_consent" value="">
 
         <label for="sale_type">Sale Type:</label>
         <input type="text" id="sale_type" required>

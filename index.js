@@ -15,6 +15,8 @@ const firebaseConfig = {
     appId: "1:934873881816:web:fde6a268c880b9139f0bad",
     measurementId: "G-6S10R2SD81"
 };
+
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
@@ -64,7 +66,7 @@ function register() {
 // Function to add sale data to Firebase Realtime Database
 function addSaleData() {
     const leadId = document.getElementById('lead_id').value.trim();
-    const esiConsent = document.getElementById('esi_consent').value.trim();
+    const esiConsent = document.querySelector('input[name="esi_consent"]:checked').value;
     const saleType = document.getElementById('sale_type').value.trim();
     const timestamp = Date.now();
 
@@ -111,8 +113,6 @@ function loginUser() {
             alert(`Login failed: ${errorMessage}`);
         });
 }
-
-
 
 // Function to validate email
 function validate_email(email) {
