@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h2>User Authentication</h2>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+        <label for="login_email">Email:</label>
+        <input type="email" id="login_email" required>
+
+        <label for="login_password">Password:</label>
+        <input type="password" id="login_password" required>
+
+        <button type="button" onclick="login()">Login</button>
+    </form>
+
+    <!-- Registration Link -->
+    <p>Don't have an account? <a href="registration.html">Register here</a></p>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
+    <script src="index.js"></script>
+
+    <script>
+        const firebaseConfig = {
+  apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
+  authDomain: "pophealthtracker.firebaseapp.com",
+  databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com",
+  projectId: "pophealthtracker",
+  storageBucket: "pophealthtracker.appspot.com",
+  messagingSenderId: "934873881816",
+  appId: "1:934873881816:web:fde6a268c880b9139f0bad",
+  measurementId: "G-6S10R2SD81"
+};
+
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script>
+        // Function to handle user login
+        function login() {
+            const email = document.getElementById('login_email').value.trim();
+            const password = document.getElementById('login_password').value.trim();
+
+            // ... (rest of your login code)
+        }
+    </script>
+
+
+</body>
+</html>

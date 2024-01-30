@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Sales</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h2>Add Sales</h2>
+
+    <form>
+        <label for="lead_id">Lead ID:</label>
+        <input type="text" id="lead_id" required>
+
+        <label for="esi_consent">ESI Consent:</label>
+        <select id="esi_consent" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="sale_type">Sale Type:</label>
+        <input type="text" id="sale_type" required>
+
+        <!-- You can set the timestamp automatically in JavaScript -->
+        <input type="hidden" id="timestamp" value="" disabled>
+
+        <button onclick="addSales()">Add Sales</button>
+    </form>
+
+    <div class="navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+    </div>
+
+    <!-- Include Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
+
+    <!-- Your Firebase configuration -->
+    <script>
+      const firebaseConfig = {
+  apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
+  authDomain: "pophealthtracker.firebaseapp.com",
+  databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com",
+  projectId: "pophealthtracker",
+  storageBucket: "pophealthtracker.appspot.com",
+  messagingSenderId: "934873881816",
+  appId: "1:934873881816:web:fde6a268c880b9139f0bad",
+  measurementId: "G-6S10R2SD81"
+};
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+        const database = firebase.database();
+    </script>
+
+    <!-- Include your index.js -->
+    <script src="index.js"></script>
+
+    <script>
+        // Set current timestamp when the page loads
+        document.getElementById('timestamp').value = new Date().toISOString();
+    </script>
+
+</body>
+</html>
