@@ -3,50 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Authentication Example</title>
+    <title>User Registration</title>
 </head>
 <body>
 
-    <h1>Firebase Authentication Example</h1>
+    <h2>User Registration</h2>
 
-    <div id="login-form">
-        <label for="email">Email:</label>
-        <input type="email" id="email" placeholder="Enter your email">
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter your password">
-        <br>
-        <button onclick="login()">Login</button>
-    </div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+    <br>
 
-    <div id="user-info" style="display:none;">
-        <h2>Welcome, <span id="user-name"></span>!</h2>
-        <button onclick="logout()">Logout</button>
-    </div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required>
+    <br>
 
-    <div id="register-form">
-        <label for="register-email">Email:</label>
-        <input type="email" id="register-email" placeholder="Enter your email">
-        <br>
-        <label for="register-password">Password:</label>
-        <input type="password" id="register-password" placeholder="Enter your password">
-        <br>
-        <label for="register-name">Name:</label>
-        <input type="text" id="register-name" placeholder="Enter your name">
-        <br>
-        <button onclick="register()">Register</button>
-    </div>
+    <label for="full_name">Full Name:</label>
+    <input type="text" id="full_name" required>
+    <br>
 
-    <!-- Include Firebase SDK for Authentication and Realtime Database -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <label for="favourite_song">Favorite Song:</label>
+    <input type="text" id="favourite_song" required>
+    <br>
 
-    <!-- Include your Firebase configuration -->
-    <script src="firebase-config.js"></script>
+    <label for="milk_before_cereal">Milk Before Cereal:</label>
+    <input type="text" id="milk_before_cereal" required>
+    <br>
 
-    <!-- Include your main script -->
-    <script src="main.js"></script>
+    <button onclick="register()">Register</button>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js"></script>
+    <script>
+        // Your JavaScript code goes here (the code you provided)
+
+        // Note: Ensure that the Firebase SDK is loaded before this script
+    </script>
 
 </body>
 </html>
