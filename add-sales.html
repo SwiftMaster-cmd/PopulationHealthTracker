@@ -3,47 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Sales</title>
-    <link rel="stylesheet" href="add-sales.css">
+    <title>User Authentication</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
 
-    <h2>Add Sales</h2>
+    <!-- Title at the top -->
+    <h2>User Authentication</h2>
 
-    <!-- Sales Form -->
-    <form>
-        <label for="lead_id">Lead ID:</label>
-        <input type="text" id="lead_id" required>
+    <!-- Login Form -->
+    <form id="loginForm">
+        <label for="login_email">Email:</label>
+        <input type="email" id="login_email" required>
 
-       <!-- ESI Consent as buttons -->
-        <label>ESI Consent:</label>
-        <div id="esi_consent_buttons">
-            <button type="button" onclick="setEsiConsent('yes')">Yes</button>
-            <button type="button" onclick="setEsiConsent('no')">No</button>
-        </div>
+        <label for="login_password">Password:</label>
+        <input type="password" id="login_password" required>
 
-        <!-- Hidden input to store ESI Consent value -->
-        <input type="hidden" id="esi_consent" value="">
-
-        <label for="sale_type">Sale Type:</label>
-        <input type="text" id="sale_type" required>
-
-        <!-- Timestamp is set automatically in JavaScript -->
-        <input type="hidden" id="timestamp" value="" disabled>
-
-        <button type="button" onclick="addSaleData()">Add Sales</button>
+        <button type="button" onclick="loginUser()">Login</button>
     </form>
 
-    <div class="navigation">
-        <a href="index.html">Home</a>
-        <a href="login.html">Login</a>
-    </div>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
+    <!-- Registration Link below the form -->
+    <p>Don't have an account? <a href="registration.html">Register here</a></p>
 
     <!-- Firebase Configuration -->
     <script>
@@ -60,16 +40,27 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const analytics = firebase.analytics();
-        const database = firebase.database();
     </script>
 
-    <!-- index.js script inclusion -->
-    <script src="index.js"></script>
-
+    <!-- User Login Script -->
     <script>
-        // Set current timestamp when the page loads
-        document.getElementById('timestamp').value = new Date().toISOString();
+        // Function to handle user login
+        function loginUser() {
+            const email = document.getElementById('login_email').value.trim();
+            const password = document.getElementById('login_password').value.trim();
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // User signed in
+                    alert('Login successful!');
+                    // Redirect to add-sales.html
+                    window.location.href = 'add-sales.html';
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    alert(`Login failed: ${errorMessage}`);
+                });
+        }
     </script>
 
 </body>
