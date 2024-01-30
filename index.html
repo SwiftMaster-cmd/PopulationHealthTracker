@@ -1,101 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Integration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Authentication Example</title>
 </head>
 <body>
 
-  <!-- Sales Form -->
-  <h2>Sales Form</h2>
-  <form id="salesForm">
-    <label for="leadId">Lead ID:</label>
-    <input type="text" id="leadId" required><br>
+    <h1>Firebase Authentication Example</h1>
 
-    <label for="esiConsent">ESI Consent:</label>
-    <input type="text" id="esiConsent" required><br>
+    <div id="login-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter your email">
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter your password">
+        <br>
+        <button onclick="login()">Login</button>
+    </div>
 
-    <label for="saleType">Sale Type:</label>
-    <input type="text" id="saleType" required><br>
+    <div id="user-info" style="display:none;">
+        <h2>Welcome, <span id="user-name"></span>!</h2>
+        <button onclick="logout()">Logout</button>
+    </div>
 
-    <label for="customerName">Customer Name:</label>
-    <input type="text" id="customerName" required><br>
+    <div id="register-form">
+        <label for="register-email">Email:</label>
+        <input type="email" id="register-email" placeholder="Enter your email">
+        <br>
+        <label for="register-password">Password:</label>
+        <input type="password" id="register-password" placeholder="Enter your password">
+        <br>
+        <label for="register-name">Name:</label>
+        <input type="text" id="register-name" placeholder="Enter your name">
+        <br>
+        <button onclick="register()">Register</button>
+    </div>
 
-    <button type="button" onclick="submitForm()">Submit Sale</button>
-  </form>
+    <!-- Include Firebase SDK for Authentication and Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 
-  <hr>
+    <!-- Include your Firebase configuration -->
+    <script src="firebase-config.js"></script>
 
-  <!-- Sales Operations -->
-  <h2>Sales Operations</h2>
-  <label for="saleId">Sale ID:</label>
-  <input type="text" id="saleId" required>
-  <button type="button" onclick="removeSale()">Remove Sale</button>
-  <button type="button" onclick="updateSale()">Update Sale</button>
+    <!-- Include your main script -->
+    <script src="main.js"></script>
 
-  <hr>
-
-  <!-- Authentication -->
-  <h2>Authentication</h2>
-  <form id="authForm">
-    <label for="email">Email:</label>
-    <input type="email" id="email" required><br>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" required><br>
-
-    <button type="button" onclick="signUp()">Sign Up</button>
-    <button type="button" onclick="signIn()">Sign In</button>
-  </form>
-
-  <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-database.js"></script>
-
-  <script>
-    // Your Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
-      authDomain: "pophealthtracker.firebaseapp.com",
-      databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com", // Use Realtime Database URL
-      projectId: "pophealthtracker",
-      storageBucket: "pophealthtracker.appspot.com",
-      messagingSenderId: "934873881816",
-      appId: "1:934873881816:web:fde6a268c880b9139f0bad",
-      measurementId: "G-6S10R2SD81"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const auth = firebase.auth();
-
-    // Replace with your actual user ID obtained during authentication
-    const userId = "did";
-
-    // Your existing functions for sales operations and authentication
-
-    function submitForm() {
-      // Your existing submitForm function
-    }
-
-    function removeSale() {
-      // Your existing removeSale function
-    }
-
-    function updateSale() {
-      // Your existing updateSale function
-    }
-
-    function signUp() {
-      // Your existing signUp function
-    }
-
-    function signIn() {
-      // Your existing signIn function
-    }
-  </script>
 </body>
 </html>

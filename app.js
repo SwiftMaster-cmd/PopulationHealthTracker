@@ -2,7 +2,7 @@
 const firebaseConfig = {
   apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
   authDomain: "pophealthtracker.firebaseapp.com",
-  databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com",
+  databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com", // Verify this URL
   projectId: "pophealthtracker",
   storageBucket: "pophealthtracker.appspot.com",
   messagingSenderId: "934873881816",
@@ -29,6 +29,7 @@ function addSalesData(leadId, esiConsent, saleType, customerName) {
     customerName: customerName
   };
 
+  // Use promises to handle the asynchronous operation
   push(salesRef, newSalesData)
     .then(() => {
       console.log('Sale added to Firebase:', newSalesData);
@@ -44,6 +45,7 @@ function addSalesData(leadId, esiConsent, saleType, customerName) {
 function removeSalesData(saleId) {
   const salesRef = ref(database, 'sales/' + saleId);
 
+  // Use promises to handle the asynchronous operation
   remove(salesRef)
     .then(() => {
       console.log('Sale removed from Firebase:', saleId);
@@ -59,6 +61,7 @@ function removeSalesData(saleId) {
 function updateSalesData(saleId, updatedData) {
   const salesRef = ref(database, 'sales/' + saleId);
 
+  // Use promises to handle the asynchronous operation
   update(salesRef, updatedData)
     .then(() => {
       console.log('Sale updated in Firebase:', saleId, updatedData);
@@ -114,4 +117,50 @@ function updateSale() {
 
   // Call the function to update sales data in Firebase
   updateSalesData(saleId, updatedData);
+}
+
+// Firebase Authentication - Sign Up
+function signUp() {
+  const email = prompt('Enter your email:');
+  const password = prompt('Enter your password:');
+
+  // Use promises to handle the asynchronous operation
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      console.log('User signed up:', user);
+      // Provide feedback to the user (customize as needed)
+      alert('Sign up successful!');
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error('Sign up error:', errorCode, errorMessage);
+      // Provide feedback to the user (customize as needed)
+      alert('Sign up failed. Check the console for details.');
+    });
+}
+
+// Firebase Authentication - Sign In
+function signIn() {
+  const email = prompt('Enter your email:');
+  const password = prompt('Enter your password:');
+
+  // Use promises to handle the asynchronous operation
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      console.log('User signed in:', user);
+      // Provide feedback to the user (customize as needed)
+      alert('Sign in successful!');
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error('Sign in error:', errorCode, errorMessage);
+      // Provide feedback to the user (customize as needed)
+      alert('Sign in failed. Check the console for details.');
+    });
 }
