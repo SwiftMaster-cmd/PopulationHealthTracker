@@ -68,10 +68,10 @@ function register() {
 
 // Function to add sale data to Firebase Realtime Database
 function addSaleData() {
-    const leadId = document.getElementById('lead_id').value.trim();
-    const esiConsent = document.querySelector('input[name="esi_consent"]:checked').value;
-    const saleType = document.getElementById('sale_type').value.trim();
-    const timestamp = Date.now();
+    let leadId = document.getElementById('lead_id').value.trim();
+    let esiConsent = document.querySelector('input[name="esi_consent"]:checked').value;
+    let saleType = document.getElementById('sale_type').value.trim();
+    let timestamp = Date.now();
 
     if (!validate_field(leadId) || !validate_field(esiConsent) || !validate_field(saleType)) {
         alert('All fields are required. Please fill in all the information.');
