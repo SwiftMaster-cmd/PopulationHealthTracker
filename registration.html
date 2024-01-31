@@ -61,11 +61,11 @@
         });
 
         function signUp() {
-            let email = document.getElementById('signup_email').value.trim();
-            let password = document.getElementById('signup_password').value.trim();
-            let fullName = document.getElementById('full_name').value.trim();
-            let favouriteSong = document.getElementById('favourite_song').value.trim();
-            let milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
+             email = document.getElementById('signup_email').value.trim();
+             password = document.getElementById('signup_password').value.trim();
+             fullName = document.getElementById('full_name').value.trim();
+             favouriteSong = document.getElementById('favourite_song').value.trim();
+             milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
 
             if (!validate_email(email) || !validate_password(password)) {
                 alert('Invalid email or password. Make sure your email is correct and password is at least 6 characters long.');
