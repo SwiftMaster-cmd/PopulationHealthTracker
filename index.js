@@ -4,8 +4,15 @@ import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/fir
 
 // Firebase configuration
 const firebaseConfig = {
-    // your firebase config here
-};
+    apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
+    authDomain: "pophealthtracker.firebaseapp.com",
+    databaseURL: "https://pophealthtracker-default-rtdb.firebaseio.com",
+    projectId: "pophealthtracker",
+    storageBucket: "pophealthtracker.appspot.com",
+    messagingSenderId: "934873881816",
+    appId: "1:934873881816:web:fde6a268c880b9139f0bad",
+    measurementId: "G-6S10R2SD81"
+  };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
