@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales History</title>
     <link rel="stylesheet" href="history-style.css">
-    <script src="sales-charts.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
@@ -41,60 +40,73 @@
         });
 
         function fetchSalesHistory(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    const salesQuery = query(salesRef, orderByChild('timestamp'));
+            const salesRef = ref(database, 'sales/' + userId);
+            const salesQuery = query(salesRef, orderByChild('timestamp'));
 
-    onValue(salesQuery, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            displaySalesHistory(data);
-        } else {
-            console.log('No sales data found for this user.');
-            displayNoDataMessage();
+            onValue(salesQuery, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    displaySalesHistory(data);
+                } else {
+                    console.log('No sales data found for this user.');
+                    displayNoDataMessage();
+                }
+            }, (error) => {
+                console.error('Error fetching sales data:', error);
+            });
         }
-    }, (error) => {
-        console.error('Error fetching sales data:', error);
-    });
-}
 
-function displaySalesHistory(salesData) {
-    const historyElement = document.getElementById('salesHistory');
-    historyElement.innerHTML = ''; // Clear existing content
+        function displaySalesHistory(salesData) {
+            const historyElement = document.getElementById('salesHistory');
+            historyElement.innerHTML = ''; // Clear existing content
 
-    for (const [key, sale] of Object.entries(salesData)) {
-        const saleDiv = document.createElement('div');
-        saleDiv.classList.add('sale-item');
+            for (const [key, sale] of Object.entries(salesData)) {
+                const saleDiv = document.createElement('div');
+                saleDiv.classList.add('sale-item');
 
-        saleDiv.innerHTML = `
-            <p><strong>Lead ID:</strong> ${sale.lead_id}</p>
-            <p><strong>ESI Content:</strong> ${sale.esi_content}</p>
-            <p><strong>Sale Type:</strong> ${formatSaleTypes(sale.sale_types)}</p>
-            <p><strong>Notes:</strong> ${sale.notes}</p>
-        `;
+                const formattedTimestamp = formatTimestamp(sale.timestamp);
 
-        historyElement.appendChild(saleDiv);
-    }
-}
+                saleDiv.innerHTML = `
+                    <p><strong>Lead ID:</strong> ${sale.lead_id}</p>
+                    <p><strong>ESI Content:</strong> ${sale.esi_content}</p>
+                    <p><strong>Sale Type:</strong> ${formatSaleTypes(sale.sale_types)}</p>
+                    <p><strong>Notes:</strong> ${sale.notes}</p>
+                    <p><strong>Timestamp:</strong> ${formattedTimestamp}</p>
+                `;
 
-function formatSaleTypes(saleTypes) {
-    let formattedSaleTypes = [];
-    for (const [type, value] of Object.entries(saleTypes)) {
-        if (value) {
-            formattedSaleTypes.push(type.replace(/_/g, ' ').toUpperCase());
+                historyElement.appendChild(saleDiv);
+            }
         }
-    }
-    return formattedSaleTypes.join(', ');
-}
 
-function displayNoDataMessage() {
-    const historyElement = document.getElementById('salesHistory');
-    historyElement.innerHTML = '<p>No sales history found.</p>';
-}
+        function formatSaleTypes(saleTypes) {
+            if (!saleTypes) {
+                return 'N/A'; // Return a placeholder or empty string
+            }
 
+            let formattedSaleTypes = [];
+            for (const [type, value] of Object.entries(saleTypes)) {
+                if (value) {
+                    formattedSaleTypes.push(type.replace(/_/g, ' ').toUpperCase());
+                }
+            }
+            return formattedSaleTypes.join(', ');
+        }
+
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'N/A';
+            const date = new Date(timestamp);
+            const formattedDate = date.toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' });
+            const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            return `${formattedDate} ${formattedTime}`;
+        }
+
+        function displayNoDataMessage() {
+            const historyElement = document.getElementById('salesHistory');
+            historyElement.innerHTML = '<p>No sales history found.</p>';
+        }
     </script>
 </head>
 <body>
-
     <div class="sales-container">
         <h2>Sales History</h2>
         <div id="salesHistory">
@@ -102,16 +114,13 @@ function displayNoDataMessage() {
         </div>
     </div>
 
-        <!-- New orange box for sales charts and graphs -->
-        <div class="charts-container">
-            <!-- Add your charts and graphs here using HTML/CSS/JavaScript -->
-            <canvas id="salesChart"></canvas>
-        </div>
+    <!-- New orange box for sales charts and graphs -->
+    <div class="charts-container">
+        <!-- Add your charts and graphs here using HTML/CSS/JavaScript -->
+        <canvas id="salesChart"></canvas>
     </div>
-    <script type="module" src="sales-charts.js"></script>
-    <script type="module" src="charts.js"></script>
-    
-    <script type="module" src="history.js"></script>
 
+    <script src="charts.js"></script>
+    <script type="module" src="history.js"></script>
 </body>
 </html>
