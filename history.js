@@ -26,7 +26,6 @@ onAuthStateChanged(auth, user => {
     if (user) {
         fetchSalesHistory(user.uid);
     } else {
-        // User is not logged in
         console.log("User is not logged in. Redirecting to login page.");
         window.location.href = 'login.html'; // Redirect to login
     }
@@ -34,8 +33,6 @@ onAuthStateChanged(auth, user => {
 
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
-
-    // Use a query if you need to order or filter the results
     const salesQuery = query(salesRef, orderByChild('timestamp'));
 
     onValue(salesQuery, (snapshot) => {
@@ -43,7 +40,6 @@ function fetchSalesHistory(userId) {
         if (data) {
             displaySalesHistory(data);
         } else {
-            // No sales data found
             console.log('No sales data found for this user.');
             displayNoDataMessage();
         }
@@ -53,22 +49,34 @@ function fetchSalesHistory(userId) {
 }
 
 function displaySalesHistory(salesData) {
-    // Logic to display sales history on the page
     const historyElement = document.getElementById('salesHistory');
-    let html = '';
+    let html = '<table>';
+    html += '<tr><th>Lead ID</th><th>ESI Content</th><th>Sale Type</th><th>Notes</th></tr>';
+
     for (const [key, sale] of Object.entries(salesData)) {
-        html += `<div class="sale-record">
-            <p>Lead ID: ${sale.lead_id}</p>
-            <p>ESI Content: ${sale.esi_content}</p>
-            <p>Sale Type: ${sale.sale_type}</p>
-            <p>Notes: ${sale.notes}</p>
-        </div>`;
+        html += '<tr>';
+        html += `<td>${sale.lead_id}</td>`;
+        html += `<td>${sale.esi_content}</td>`;
+        html += `<td>${formatSaleTypes(sale.sale_types)}</td>`;
+        html += `<td>${sale.notes}</td>`;
+        html += '</tr>';
     }
+
+    html += '</table>';
     historyElement.innerHTML = html;
 }
 
+function formatSaleTypes(saleTypes) {
+    let formattedSaleTypes = [];
+    for (const [type, value] of Object.entries(saleTypes)) {
+        if (value) {
+            formattedSaleTypes.push(type.replace(/_/g, ' '));
+        }
+    }
+    return formattedSaleTypes.join(', ');
+}
+
 function displayNoDataMessage() {
-    // Display a message if no data is found
     const historyElement = document.getElementById('salesHistory');
     historyElement.innerHTML = '<p>No sales history found.</p>';
 }
