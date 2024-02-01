@@ -1,6 +1,6 @@
 // Import Firebase modules
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 // Initialize Firebase Auth and Realtime Database
 const auth = getAuth();
@@ -25,18 +25,19 @@ document.getElementById('addSalesForm').addEventListener('submit', async (event)
         esi_content: esiContent,
         sale_type: saleType,
         notes: notes,
-        user_id: currentUser.uid // Associate sale with the user's UID
+        user_id: currentUser.uid
     };
 
     try {
-        // Use push() if you want to generate a unique key for each sale
         const newSaleRef = push(ref(database, 'sales'));
         await set(newSaleRef, saleData);
 
-        console.log('Sale added successfully. ID:', newSaleRef.key);
-        alert('Sale added successfully!');
-        // Optionally, display a confirmation message
-        // Optionally, reset the form
+        // Reset the form
+        event.target.reset();
+
+        // Display confirmation message
+        const confirmationMessage = document.getElementById('confirmationMessage');
+        confirmationMessage.textContent = `Sale with Lead ID ${leadId} added successfully.`;
     } catch (error) {
         console.error('Error adding sale:', error);
         alert('Failed to add sale.');

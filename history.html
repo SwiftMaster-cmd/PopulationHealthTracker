@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales History</title>
+    <!-- Add link to your CSS file if needed -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+            authDomain: "track-dac15.firebaseapp.com",
+            projectId: "track-dac15",
+            storageBucket: "track-dac15.appspot.com",
+            messagingSenderId: "495156821305",
+            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+            measurementId: "G-RVBYB0RR06"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                fetchSalesHistory(user.uid);
+            } else {
+                // User is not logged in. Redirect to login page or show message
+                window.location.href = 'login.html'; // Redirect to login
+            }
+        });
+
+        function fetchSalesHistory(userId) {
+            const salesRef = ref(database, 'sales/' + userId);
+            onValue(salesRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    displaySalesHistory(data);
+                } else {
+                    // Handle case where there are no sales
+                    console.log('No sales data found');
+                }
+            });
+        }
+
+        function displaySalesHistory(salesData) {
+            // Implement logic to display sales data on the page
+            // For example, updating the innerHTML of a div with id 'salesHistory'
+            const historyElement = document.getElementById('salesHistory');
+            historyElement.innerHTML = '<pre>' + JSON.stringify(salesData, null, 2) + '</pre>';
+        }
+    </script>
+</head>
+<body>
+
+    <h2>Sales History</h2>
+
+    <div id="salesHistory">
+        <!-- Sales history will be displayed here -->
+    </div>
+
+</body>
+</html>
