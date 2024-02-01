@@ -54,12 +54,14 @@ function displaySalesHistory(salesData) {
     html += '<tr><th>Lead ID</th><th>ESI Content</th><th>Sale Type</th><th>Notes</th></tr>';
 
     for (const [key, sale] of Object.entries(salesData)) {
-        html += '<tr>';
-        html += `<td>${sale.lead_id}</td>`;
-        html += `<td>${sale.esi_content}</td>`;
-        html += `<td>${formatSaleTypes(sale.sale_types)}</td>`;
-        html += `<td>${sale.notes}</td>`;
-        html += '</tr>';
+        if (sale.lead_id && sale.esi_content && sale.sale_type === 'billable_hra' && sale.notes) {
+            html += '<tr>';
+            html += `<td>${sale.lead_id}</td>`;
+            html += `<td>${sale.esi_content}</td>`;
+            html += `<td>${sale.sale_type}</td>`;
+            html += `<td>${sale.notes}</td>`;
+            html += '</tr>';
+        }
     }
 
     html += '</table>';
