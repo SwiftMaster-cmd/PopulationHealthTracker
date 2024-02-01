@@ -19,7 +19,7 @@ initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-const OWNER_UID = 'your-owner-uid'; // Replace with the actual owner's UID
+const OWNER_UID = 'wNpqlW2HCWR1awF1x95hUUp3ryw1'; // Replace with the actual owner's UID
 
 // Function to load and display manager access requests
 function loadRequests() {
