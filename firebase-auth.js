@@ -19,6 +19,43 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 
+
+
+// Get the signup form
+const signupForm = document.getElementById('signup-form');
+
+signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = signupForm['signup-email'].value;
+    const password = signupForm['signup-password'].value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed up 
+            const user = userCredential.user;
+            console.log('User created:', user.email);
+            displayMessage('User created successfully.', 'signup-message');
+            // Optional: Redirect or clear form
+            signupForm.reset();
+        })
+        .catch((error) => {
+            console.error('Error during signup:', error.message);
+            displayMessage(`Error during signup: ${error.message}`, 'signup-message');
+        });
+});
+
+// Reuse the displayMessage function or create a new one for sign up
+function displayMessage(message, elementId) {
+    const messageElement = document.getElementById(elementId);
+    if (messageElement) {
+        messageElement.textContent = message;
+    }
+}
+
+
+
+
 // Get the login form
 const loginForm = document.getElementById('login-form');
 
