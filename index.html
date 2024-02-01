@@ -1,22 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-    <link rel="stylesheet" href="welcome.css"> 
+    <title>Welcome to work!</title>
+    <link rel="stylesheet" href="login-style.css">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+            authDomain: "track-dac15.firebaseapp.com",
+            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+            projectId: "track-dac15",
+            storageBucket: "track-dac15.appspot.com",
+            messagingSenderId: "495156821305",
+            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+            measurementId: "G-RVBYB0RR06"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Login Function
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log('Logged in user:', userCredential.user);
+                window.location.href = 'add-sales.html';
+            } catch (error) {
+                console.error('Error logging in:', error);
+            }
+        }
+
+        // Google Sign-In Function
+        async function googleSignIn() {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                console.log('Google sign-in user:', user);
+                window.location.href = 'add-sales.html';
+            } catch (error) {
+                console.error('Error during Google sign-in:', error);
+            }
+        }
+
+        // Add event listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('loginButton').addEventListener('click', login);
+            document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
+        });
+    </script>
 </head>
 <body>
+    <div class="login-container">
+        <h2>Please Sign In</h2>
+        <div class="form-group">
+       <!-- Commented out email and password fields -->
+            <!-- <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <button id="loginButton">Sign In</button> -->
 
-    <div class="welcome-container"> <!-- Container for the welcome elements -->
-        <h1>Welcome To Work!</h1>
-
-        <!-- Buttons for Login and Sign Up -->
-        <div class="button-group">
-            <button onclick="window.location.href='login.html'">Login</button>
-            <button onclick="window.location.href='registration.html'">Sign Up</button>
+            <!-- Google Sign-In Button -->
+            <button id="googleSignInButton">Sign in with Google</button>
         </div>
     </div>
-
 </body>
 </html>
