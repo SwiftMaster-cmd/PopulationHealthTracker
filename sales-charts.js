@@ -1,5 +1,6 @@
-// Import the Chart.js library
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js';
+// sales-charts.js
+import { Chart } from 'https://cdn.jsdelivr.net/npm/chart.js';
+
 
 // Dummy data for demonstration purposes
 const dailySalesData = {
