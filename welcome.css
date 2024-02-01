@@ -1,18 +1,35 @@
 /* Basic page styling */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
+    background-color: #e0e8f9; /* Soft blue background */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Main container styling */
+.main-container {
+    background-color: #ffffff; /* White background for the container */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
-    padding: 50px;
+    width: 90%;
+    max-width: 600px; /* Adjust width as needed */
+    animation: popIn 0.6s ease-out;
 }
 
 h1 {
-    color: #333;
+    color: #4a4e69; /* Dark blue for the title */
+    margin-bottom: 30px;
 }
 
 /* Styling for buttons */
 button {
-    background-color: #4CAF50;
+    background-color: #9a8c98; /* Muted purple */
     color: white;
     padding: 15px 25px;
     margin: 10px;
@@ -20,27 +37,28 @@ button {
     border-radius: 25px;
     cursor: pointer;
     font-size: 18px;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px #666;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px #6b6d76; /* Dark shadow for depth */
     outline: none;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #c9ada7; /* Lighter shade of purple */
+    box-shadow: 0 6px #6b6d76;
 }
 
 button:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666;
-    transform: translateY(4px);
+    transform: translateY(2px);
+    box-shadow: 0 2px #6b6d76;
 }
 
-/* Animation */
+/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-body {
-    animation: fadeIn 1s;
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
