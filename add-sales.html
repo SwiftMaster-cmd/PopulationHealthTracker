@@ -21,27 +21,25 @@
             measurementId: "G-RVBYB0RR06"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        window.db = db;
-        window.auth = auth;
+        initializeApp(firebaseConfig);
+        const db = getFirestore();
+        const auth = getAuth();
     </script>
 </head>
 <body>
 
-    <div class="main-container">
+    <div class="sales-container">
         <h2>Add Sales</h2>
 
         <form id="addSalesForm" class="form-container">
-            <div class="form-group">
+            <div class="input-group">
                 <label for="lead_id">Lead ID:</label>
                 <input type="text" id="lead_id" name="lead_id" required>
             </div>
 
-            <div class="form-group">
+            <div class="input-group">
                 <label>ESI Content:</label>
-                <div class="radio-buttons">
+                <div class="options">
                     <input type="radio" id="esi_yes" name="esi_content" value="Yes">
                     <label for="esi_yes">Yes</label>
                     <input type="radio" id="esi_no" name="esi_content" value="No">
@@ -49,7 +47,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="input-group">
                 <label>Sale Type:</label>
                 <div class="sale-type-buttons">
                     <button type="button" class="sale-type-btn" data-value="billable_hra">Billable HRA</button>
@@ -63,19 +61,18 @@
                 <input type="hidden" id="transfer" name="sale_type[transfer]" value="0">
             </div>
 
-            <div class="form-group">
+            <div class="input-group">
                 <label for="notes">Notes:</label>
                 <textarea id="notes" name="notes" rows="4" cols="50" required></textarea>
             </div>
 
-            <button type="submit">Add Sale</button>
+            <button type="submit" class="submit-btn">Add Sale</button>
         </form>
 
         <div id="confirmationMessage" style="margin-top: 10px;"></div>
-        <a href="history.html" class="btn">View Sales History</a>
+        <a href="history.html" class="view-history">View Sales History</a>
     </div>
 
-    <!-- JavaScript for toggling sale type buttons -->
     <script>
         document.querySelectorAll('.sale-type-btn').forEach(btn => {
             btn.addEventListener('click', function() {
