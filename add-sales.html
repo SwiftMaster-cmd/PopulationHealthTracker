@@ -5,13 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Authentication</title>
     <link rel="stylesheet" href="login.css">
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+            authDomain: "track-dac15.firebaseapp.com",
+            projectId: "track-dac15",
+            storageBucket: "track-dac15.appspot.com",
+            messagingSenderId: "495156821305",
+            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+            measurementId: "G-RVBYB0RR06"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // Export the auth module for use in the login function
+        window.auth = auth;
+    </script>
 </head>
 <body>
 
-    <!-- Title at the top -->
     <h2>User Authentication</h2>
 
-    <!-- Login Form -->
     <form id="loginForm">
         <label for="login_email">Email:</label>
         <input type="email" id="login_email" required>
@@ -22,43 +46,20 @@
         <button type="button" onclick="loginUser()">Login</button>
     </form>
 
-    <!-- Registration Link below the form -->
     <p>Don't have an account? <a href="registration.html">Register here</a></p>
 
-    <!-- Firebase Configuration -->
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
-            authDomain: "pophealthtracker.firebaseapp.com",
-            databaseURL: "https://pophealthtracker.firebaseio.com",
-            projectId: "pophealthtracker",
-            storageBucket: "pophealthtracker.appspot.com",
-            messagingSenderId: "934873881816",
-            appId: "1:934873881816:web:fde6a268c880b9139f0bad",
-            measurementId: "G-6S10R2SD81"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-    </script>
-
-    <!-- User Login Script -->
-    <script>
-        // Function to handle user login
         function loginUser() {
             const email = document.getElementById('login_email').value.trim();
             const password = document.getElementById('login_password').value.trim();
 
-            firebase.auth().signInWithEmailAndPassword(email, password)
+            signInWithEmailAndPassword(window.auth, email, password)
                 .then((userCredential) => {
-                    // User signed in
                     alert('Login successful!');
-                    // Redirect to add-sales.html
                     window.location.href = 'add-sales.html';
                 })
                 .catch((error) => {
-                    const errorMessage = error.message;
-                    alert(`Login failed: ${errorMessage}`);
+                    alert(`Login failed: ${error.message}`);
                 });
         }
     </script>

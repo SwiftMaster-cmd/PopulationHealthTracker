@@ -27,84 +27,43 @@
         <label for="milk_before_cereal">Milk Before Cereal:</label>
         <input type="text" id="milk_before_cereal" required>
 
-        <button type="button" id="registerBtn" onclick="register()">Register</button>
+        <button type="button" id="registerBtn">Register</button>
     </form>
 
-    <!-- Login Link -->
     <p>Already have an account? <a href="login.html">Login here</a></p>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
+    <!-- Firebase SDKs as Module -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
-    <!-- Firebase Configuration -->
-    <script>
+        // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
-            authDomain: "pophealthtracker.firebaseapp.com",
-            databaseURL: "https://pophealthtracker.firebaseio.com",
-            projectId: "pophealthtracker",
-            storageBucket: "pophealthtracker.appspot.com",
-            messagingSenderId: "934873881816",
-            appId: "1:934873881816:web:fde6a268c880b9139f0bad",
-            measurementId: "G-6S10R2SD81"
+            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+            authDomain: "track-dac15.firebaseapp.com",
+            projectId: "track-dac15",
+            storageBucket: "track-dac15.appspot.com",
+            messagingSenderId: "495156821305",
+            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+            measurementId: "G-RVBYB0RR06"
         };
-        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // Export the modules for use in the registration function
+        window.auth = auth;
+        window.database = database;
     </script>
 
-    <!-- User Registration Script -->
-    <script>
-        // Event listener for the register button
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('registerBtn').addEventListener('click', signUp);
-        });
-
-        function signUp() {
-             email = document.getElementById('signup_email').value.trim();
-             password = document.getElementById('signup_password').value.trim();
-             fullName = document.getElementById('full_name').value.trim();
-             favouriteSong = document.getElementById('favourite_song').value.trim();
-             milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
-
-            if (!validate_email(email) || !validate_password(password)) {
-                alert('Invalid email or password. Make sure your email is correct and password is at least 6 characters long.');
-                return;
-            }
-
-            firebase.auth().createUserWithEmailAndPassword(email, password)
-                .then(() => {
-                    const user = firebase.auth().currentUser;
-                    const databaseRef = firebase.database().ref();
-
-                    const userData = {
-                        email: email,
-                        full_name: fullName,
-                        favourite_song: favouriteSong,
-                        milk_before_cereal: milkBeforeCereal,
-                        last_login: Date.now()
-                    };
-
-                    databaseRef.child(`users/${user.uid}`).set(userData);
-
-                    alert('User Created!');
-                    // Redirect to the desired page or perform other actions after successful registration
-                })
-                .catch((error) => {
-                    const errorMessage = error.message;
-                    alert(`Registration failed: ${errorMessage}`);
-                });
-        }
-
-        function validate_email(email) {
-            const expression = /^[^@]+@\w+(\.\w+)+\w$/;
-            return expression.test(email);
-        }
-
-        function validate_password(password) {
-            return password.length >= 6;
-        }
-    </script>
+    <!-- Link to External JavaScript File -->
+    <script src="registration.js"></script>
 
 </body>
 </html>
