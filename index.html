@@ -55,11 +55,13 @@
             }
         }
 
-        // Add event listeners
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('loginButton').addEventListener('click', login);
-            document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
-        });
+       
+    // Add event listeners
+    window.addEventListener('DOMContentLoaded', () => {
+        // Commented out the line adding event listener to the now non-existent login button
+        // document.getElementById('loginButton').addEventListener('click', login);
+        document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
+    });
     </script>
 </head>
 <body>
