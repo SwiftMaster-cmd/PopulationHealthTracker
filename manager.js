@@ -20,7 +20,7 @@ const auth = getAuth();
 const database = getDatabase();
 
 // Your unique identifier for manager access
-const MY_UNIQUE_IDENTIFIER = 'your-unique-id-or-identifier'; // Replace with your actual identifier
+const MY_UNIQUE_IDENTIFIER = 'wNpqlW2HCWR1awF1x95hUUp3ryw1'; // Replace with your actual identifier
 
 // Check for user authentication
 onAuthStateChanged(auth, (user) => {
