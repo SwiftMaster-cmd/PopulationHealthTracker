@@ -9,6 +9,14 @@ body {
     margin: 0;
 }
 
+/* Add this CSS to your existing styles */
+/* Styling for the sales history container */
+#salesHistory {
+    max-height: 300px; /* Set a maximum height for the container */
+    overflow-y: auto; /* Add vertical scrollbar when content overflows */
+}
+
+
 /* Main container styling */
 .sales-container {
     background-color: #FB8501; /* Updated orange background */
