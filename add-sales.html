@@ -22,12 +22,11 @@
             measurementId: "G-RVBYB0RR06"
         };
 
-        // Initialize Firebase
         initializeApp(firebaseConfig);
         const db = getFirestore();
         const auth = getAuth();
 
-        const OWNER_UID = 'cooXQ5qXiSheRGi9zSnbuZ96x9g2'; // Replace with the actual owner's UID
+        const OWNER_UID = 'wNpqlW2HCWR1awF1x95hUUp3ryw1'; // Replace with the actual owner's UID
         onAuthStateChanged(auth, (user) => {
             if (user && user.uid === OWNER_UID) {
                 // If the user is logged in and is the owner, show the button
@@ -38,7 +37,42 @@
 </head>
 <body>
     <div class="sales-container">
-        <!-- ... Your form and other elements ... -->
+        <h2>Add Sales</h2>
+        <form id="addSalesForm" class="form-container">
+            <div class="input-group">
+                <label for="lead_id">Lead ID:</label>
+                <input type="text" id="lead_id" name="lead_id" required>
+            </div>
+            <div class="input-group">
+                <label>ESI Content:</label>
+                <div class="options">
+                    <input type="radio" id="esi_yes" name="esi_content" value="Yes">
+                    <label for="esi_yes">Yes</label>
+                    <input type="radio" id="esi_no" name="esi_content" value="No">
+                    <label for="esi_no">No</label>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Sale Type:</label>
+                <div class="sale-type-buttons">
+                    <button type="button" class="sale-type-btn" data-value="billable_hra">Billable HRA</button>
+                    <button type="button" class="sale-type-btn" data-value="flex_hra">Flex HRA</button>
+                    <button type="button" class="sale-type-btn" data-value="select_rx">Select RX</button>
+                    <button type="button" class="sale-type-btn" data-value="transfer">Transfer</button>
+                </div>
+                <input type="hidden" id="billable_hra" name="sale_type[billable_hra]" value="0">
+                <input type="hidden" id="flex_hra" name="sale_type[flex_hra]" value="0">
+                <input type="hidden" id="select_rx" name="sale_type[select_rx]" value="0">
+                <input type="hidden" id="transfer" name="sale_type[transfer]" value="0">
+            </div>
+            <div class="input-group">
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes" rows="4" cols="50" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Add Sale</button>
+        </form>
+        <div id="confirmationMessage" style="margin-top: 10px;"></div>
+        <a href="history.html" class="view-history">View Sales History</a>
     </div>
 
     <button id="ownerPortalButton" style="display: none;" onclick="location.href='owner-portal.html';">Go to Owner Portal</button>
