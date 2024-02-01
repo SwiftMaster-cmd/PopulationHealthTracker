@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login Page</title>
-    <!-- Include Firebase SDKs -->
+    <title>Login and Sign Up Page</title>
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js"></script>
 </head>
 <body>
-    
     <h2>Login Form</h2>
     <form id="login-form">
         <label for="email">Email:</label>
@@ -17,8 +16,7 @@
         <input type="password" id="password" required><br><br>
         <button type="submit">Login</button>
     </form>
-
-
+    <p id="login-message"></p> <!-- Message for login status -->
 
     <h2>Sign Up Form</h2>
     <form id="signup-form">
@@ -28,13 +26,10 @@
         <input type="password" id="signup-password" required><br><br>
         <button type="submit">Sign Up</button>
     </form>
-    
     <p id="signup-message"></p> <!-- Message for signup status -->
-    
 
-    <p id="message"></p> <!-- Added this line -->
-
-    <!-- Initialize Firebase and handle authentication -->
-    <script src="firebase-auth.js"></script>
+    <!-- Firebase Config and Custom Scripts -->
+    <script src="firebase-config.js"></script> <!-- Your Firebase configuration script -->
+    <script src="firebase-auth.js"></script>    <!-- Your Firebase Auth handling script -->
 </body>
 </html>
