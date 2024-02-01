@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales History</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h2>Sales History</h2>
+
+    <div id="salesList"></div>
+
+    <div class="navigation">
+        <a href="index.html">Home</a>
+        <a href="login.html">Logout</a>
+    </div>
+
+    <!-- Include Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
+
+    <!-- Your Firebase configuration -->
+    <script>
+       const firebaseConfig = {
+            apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
+            authDomain: "pophealthtracker.firebaseapp.com",
+            databaseURL: "https://pophealthtracker.firebaseio.com",
+            projectId: "pophealthtracker",
+            storageBucket: "pophealthtracker.appspot.com",
+            messagingSenderId: "934873881816",
+            appId: "1:934873881816:web:fde6a268c880b9139f0bad",
+            measurementId: "G-6S10R2SD81"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+        const database = firebase.database();
+        
+        // Your authentication state change listener (similar to index.js)
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, you can fetch and display sales history for this user
+                displaySalesHistory(user.uid);
+            } else {
+                // User is not signed in, redirect to the login page
+                window.location.href = "login.html";
+            }
+        });
+
+        // Function to display sales history for the user
+        function displaySalesHistory(userId) {
+            const salesListContainer = document.getElementById('salesList');
+
+            // Reference to the sales node in the database
+            const salesRef = database.ref('sales');
+
+            // Query sales for the specific user
+            salesRef.orderByChild('userId').equalTo(userId).on('value', (snapshot) => {
+                const salesData = snapshot.val();
+
+                if (salesData) {
+                    let salesListHTML = '<ul>';
+
+                    // Iterate through each sale and create a list item
+                    Object.keys(salesData).forEach((saleId) => {
+                        const sale = salesData[saleId];
+                        salesListHTML += `<li>${sale.leadId} - ${sale.esiConsent} - ${sale.saleType}</li>`;
+                    });
+
+                    salesListHTML += '</ul>';
+
+                    // Update the salesListContainer with the generated HTML
+                    salesListContainer.innerHTML = salesListHTML;
+                } else {
+                    // No sales data for the user
+                    salesListContainer.innerHTML = '<p>No sales history available.</p>';
+                }
+            });
+        }
+    </script>
+
+    <!-- Include your index.js -->
+    <script src="index.js"></script>
+
+</body>
+</html>

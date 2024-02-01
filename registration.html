@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="registration.css">
+</head>
+<body>
+
+    <h2>User Registration</h2>
+
+    <!-- Registration Form -->
+    <form id="registrationForm">
+        <label for="signup_email">Email:</label>
+        <input type="email" id="signup_email" required>
+
+        <label for="signup_password">Password:</label>
+        <input type="password" id="signup_password" required>
+
+        <label for="full_name">Full Name:</label>
+        <input type="text" id="full_name" required>
+
+        <label for="favourite_song">Favorite Song:</label>
+        <input type="text" id="favourite_song" required>
+
+        <label for="milk_before_cereal">Milk Before Cereal:</label>
+        <input type="text" id="milk_before_cereal" required>
+
+        <button type="button" id="registerBtn" onclick="register()">Register</button>
+    </form>
+
+    <!-- Login Link -->
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAj5ac2MoocLPRcKNZg1ya2SMcksbaIfWY",
+            authDomain: "pophealthtracker.firebaseapp.com",
+            databaseURL: "https://pophealthtracker.firebaseio.com",
+            projectId: "pophealthtracker",
+            storageBucket: "pophealthtracker.appspot.com",
+            messagingSenderId: "934873881816",
+            appId: "1:934873881816:web:fde6a268c880b9139f0bad",
+            measurementId: "G-6S10R2SD81"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <!-- User Registration Script -->
+    <script>
+        // Event listener for the register button
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('registerBtn').addEventListener('click', signUp);
+        });
+
+        function signUp() {
+             email = document.getElementById('signup_email').value.trim();
+             password = document.getElementById('signup_password').value.trim();
+             fullName = document.getElementById('full_name').value.trim();
+             favouriteSong = document.getElementById('favourite_song').value.trim();
+             milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
+
+            if (!validate_email(email) || !validate_password(password)) {
+                alert('Invalid email or password. Make sure your email is correct and password is at least 6 characters long.');
+                return;
+            }
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(() => {
+                    const user = firebase.auth().currentUser;
+                    const databaseRef = firebase.database().ref();
+
+                    const userData = {
+                        email: email,
+                        full_name: fullName,
+                        favourite_song: favouriteSong,
+                        milk_before_cereal: milkBeforeCereal,
+                        last_login: Date.now()
+                    };
+
+                    databaseRef.child(`users/${user.uid}`).set(userData);
+
+                    alert('User Created!');
+                    // Redirect to the desired page or perform other actions after successful registration
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    alert(`Registration failed: ${errorMessage}`);
+                });
+        }
+
+        function validate_email(email) {
+            const expression = /^[^@]+@\w+(\.\w+)+\w$/;
+            return expression.test(email);
+        }
+
+        function validate_password(password) {
+            return password.length >= 6;
+        }
+    </script>
+
+</body>
+</html>
