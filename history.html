@@ -5,95 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales History</title>
     <link rel="stylesheet" href="history-style.css">
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-        import { getDatabase, ref, query, orderByChild, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
-            authDomain: "track-dac15.firebaseapp.com",
-            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
-            projectId: "track-dac15",
-            storageBucket: "track-dac15.appspot.com",
-            messagingSenderId: "495156821305",
-            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
-            measurementId: "G-RVBYB0RR06"
-        };
-
-        // Initialize Firebase
-        initializeApp(firebaseConfig);
-
-        // Get references to Firebase services
-        const auth = getAuth();
-        const database = getDatabase();
-
-        // Check for user authentication
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                fetchSalesHistory(user.uid);
-            } else {
-                console.log("User is not logged in. Redirecting to login page.");
-                window.location.href = 'login.html'; // Redirect to login
-            }
-        });
-
-        function fetchSalesHistory(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    const salesQuery = query(salesRef, orderByChild('timestamp'));
-
-    onValue(salesQuery, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            displaySalesHistory(data);
-        } else {
-            console.log('No sales data found for this user.');
-            displayNoDataMessage();
-        }
-    }, (error) => {
-        console.error('Error fetching sales data:', error);
-    });
-}
-
-function displaySalesHistory(salesData) {
-    const historyElement = document.getElementById('salesHistory');
-    historyElement.innerHTML = ''; // Clear existing content
-
-    for (const [key, sale] of Object.entries(salesData)) {
-        const saleDiv = document.createElement('div');
-        saleDiv.classList.add('sale-item');
-
-        saleDiv.innerHTML = `
-            <p><strong>Lead ID:</strong> ${sale.lead_id}</p>
-            <p><strong>ESI Content:</strong> ${sale.esi_content}</p>
-            <p><strong>Sale Type:</strong> ${formatSaleTypes(sale.sale_types)}</p>
-            <p><strong>Notes:</strong> ${sale.notes}</p>
-        `;
-
-        historyElement.appendChild(saleDiv);
-    }
-}
-
-function formatSaleTypes(saleTypes) {
-    let formattedSaleTypes = [];
-    for (const [type, value] of Object.entries(saleTypes)) {
-        if (value) {
-            formattedSaleTypes.push(type.replace(/_/g, ' ').toUpperCase());
-        }
-    }
-    return formattedSaleTypes.join(', ');
-}
-
-function displayNoDataMessage() {
-    const historyElement = document.getElementById('salesHistory');
-    historyElement.innerHTML = '<p>No sales history found.</p>';
-}
-
-    </script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
+    <script type="module" src="history.js"></script>
+    <script type="module" src="manager.js"></script>
 </head>
 <body>
-
     <div class="sales-container">
         <h2>Sales History</h2>
         <div id="salesHistory">
@@ -101,15 +19,8 @@ function displayNoDataMessage() {
         </div>
     </div>
     <button id="managerAccessButton">Loading...</button>
-        <!-- New orange box for sales charts and graphs -->
-        <div class="charts-container">
-            <!-- Add your charts and graphs here using HTML/CSS/JavaScript -->
-            <canvas id="salesChart"></canvas>
-        </div>
+    <div class="charts-container">
+        <canvas id="salesChart"></canvas>
     </div>
-
-
-    <script type="module" src="history.js"></script>
-    <script type="module" src="manager.js"></script>
 </body>
 </html>

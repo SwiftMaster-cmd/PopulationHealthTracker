@@ -13,7 +13,6 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-// Initialize Firebase
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
@@ -35,6 +34,8 @@ onAuthStateChanged(auth, (user) => {
                 managerAccessButton.onclick = () => requestManagerAccess(user.uid);
             }
         });
+    } else {
+        window.location.href = 'login.html';
     }
 });
 
