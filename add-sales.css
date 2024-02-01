@@ -54,6 +54,24 @@ button {
     outline: none;
 }
 
+.sale-type-btn {
+    /* Basic button styling */
+    margin: 5px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    cursor: pointer;
+    /* ... */
+}
+
+.sale-type-btn.selected {
+    background-color: #9a8c98; /* Or any color to indicate selection */
+    color: white;
+}
+
+
+
 button:hover {
     background-color: #c9ada7; /* Lighter shade of purple */
     box-shadow: 0 6px #6b6d76;

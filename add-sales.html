@@ -50,13 +50,17 @@
             </div>
 
             <div class="form-group">
-                <label for="sale_type">Sale Type:</label>
-                <select id="sale_type" name="sale_type" required>
-                    <option value="billable_hra">Billable HRA</option>
-                    <option value="flex_hra">Flex HRA</option>
-                    <option value="select_rx">Select RX</option>
-                    <option value="transfer">Transfer</option>
-                </select>
+                <label>Sale Type:</label>
+                <div class="sale-type-buttons">
+                    <button type="button" class="sale-type-btn" data-value="billable_hra">Billable HRA</button>
+                    <button type="button" class="sale-type-btn" data-value="flex_hra">Flex HRA</button>
+                    <button type="button" class="sale-type-btn" data-value="select_rx">Select RX</button>
+                    <button type="button" class="sale-type-btn" data-value="transfer">Transfer</button>
+                </div>
+                <input type="hidden" id="billable_hra" name="sale_type[billable_hra]" value="0">
+                <input type="hidden" id="flex_hra" name="sale_type[flex_hra]" value="0">
+                <input type="hidden" id="select_rx" name="sale_type[select_rx]" value="0">
+                <input type="hidden" id="transfer" name="sale_type[transfer]" value="0">
             </div>
 
             <div class="form-group">
@@ -70,6 +74,18 @@
         <div id="confirmationMessage" style="margin-top: 10px;"></div>
         <a href="history.html" class="btn">View Sales History</a>
     </div>
+
+    <!-- JavaScript for toggling sale type buttons -->
+    <script>
+        document.querySelectorAll('.sale-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                const value = this.getAttribute('data-value');
+                const input = document.getElementById(value);
+                input.value = input.value === '0' ? '1' : '0';
+            });
+        });
+    </script>
 
     <script type="module" src="add-sales.js"></script>
 
