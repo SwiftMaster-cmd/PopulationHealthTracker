@@ -19,6 +19,7 @@ body {
     text-align: center;
     width: 90%;
     max-width: 500px; /* Adjust width as needed */
+    margin: auto; /* Center the box */
     animation: popIn 0.6s ease-out;
 }
 
@@ -35,6 +36,7 @@ input[type="text"], input[type="email"], select, textarea {
     border-radius: 20px;
     border: 1px solid #ddd;
     box-sizing: border-box;
+    font-size: 16px;
 }
 
 /* Styling for buttons */
