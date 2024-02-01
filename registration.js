@@ -12,7 +12,6 @@ function signUp() {
         return;
     }
 
-    // Using Firebase Auth and Database
     createUserWithEmailAndPassword(window.auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
@@ -40,6 +39,5 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-    // Example: Validate the password length
     return password.length >= 6;
 }
