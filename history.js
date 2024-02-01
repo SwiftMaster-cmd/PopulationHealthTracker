@@ -70,16 +70,9 @@ function displaySalesHistory(salesData) {
     }
 }
 
-function formatTimestamp(timestamp) {
-    if (!timestamp) return 'N/A';
-    const date = new Date(timestamp);
-    const formattedDate = date.toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' });
-    const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-    return `${formattedDate} ${formattedTime}`;
-}
 function formatSaleTypes(saleTypes) {
     if (!saleTypes) {
-        return ''; // Return an empty string if saleTypes is undefined or null
+        return 'N/A'; // Return a placeholder or empty string
     }
 
     let formattedSaleTypes = [];
@@ -89,6 +82,14 @@ function formatSaleTypes(saleTypes) {
         }
     }
     return formattedSaleTypes.join(', ');
+}
+
+function formatTimestamp(timestamp) {
+    if (!timestamp) return 'N/A';
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' });
+    const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    return `${formattedDate} ${formattedTime}`;
 }
 
 function displayNoDataMessage() {
