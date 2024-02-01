@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keep Track</title>
-    <h1>Keep Track of your</h1>
-    <link rel="stylesheet" href="styles.css">
+    <title>Login Page</title>
+    <!-- Include Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js"></script>
 </head>
 <body>
+    <h2>Login Form</h2>
+    <form id="login-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
 
-    <h2>Paycheck</h2>
-
-    <!-- Navigation Links -->
-    <div class="navigation">
-        <a href="login.html">Login</a>
-        
-    </div>
-
+    <!-- Initialize Firebase and handle authentication -->
+    <script src="firebase-auth.js"></script>
 </body>
 </html>
