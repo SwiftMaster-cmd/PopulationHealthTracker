@@ -72,7 +72,7 @@
         <div id="confirmationMessage" style="margin-top: 10px;"></div>
         <a href="history.html" class="view-history">View Sales History</a>
     </div>
-
+    <button id="ownerPortalButton" style="display: none;">Go to Owner Portal</button>
     <script>
         document.querySelectorAll('.sale-type-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -83,7 +83,7 @@
             });
         });
     </script>
-<button id="ownerPortalButton" style="display: none;">Go to Owner Portal</button>
+
     <script type="module" src="add-sales.js"></script>
     <script src="validateowner.js"></script> 
 </body>
