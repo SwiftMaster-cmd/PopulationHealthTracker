@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
-
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -17,10 +16,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
-
-// Get references to Firebase services
 const auth = getAuth();
 const database = getDatabase();
+
+const OWNER_UID = 'your-owner-uid'; // Replace with the actual owner's UID
 
 // Function to load and display manager access requests
 function loadRequests() {
@@ -49,16 +48,23 @@ function loadRequests() {
 function approveManagerAccess(userId) {
     const userRef = ref(database, `users/${userId}`);
     update(userRef, { role: 'manager', requestedRole: null })
-        .then(() => alert('Manager access granted.'))
-        .catch((error) => alert('Error: ' + error.message));
+        .then(() => {
+            alert('Manager access granted.');
+            // Optionally, remove the user's request from the UI here
+        })
+        .catch((error) => {
+            alert('Error: ' + error.message);
+            // Handle errors here
+        });
 }
 
 // Ensure the owner is authenticated
 onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // Check if the user is the owner, if needed
+    if (user && user.uid === OWNER_UID) {
         loadRequests();
     } else {
-        // Redirect to login page or show an error
+        // Redirect to login page or show an error if not the owner
+        console.error('Access denied. User is not the owner.');
+        // Implement redirection or error display
     }
 });
