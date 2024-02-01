@@ -15,27 +15,26 @@ const firebaseConfig = {
   const analytics = getAnalytics(app);
   const auth = getAuth(app);
   
-  // Login form
-  const loginForm = document.getElementById('login-form');
-  
-  loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-  
-      const email = loginForm['email'].value;
-      const password = loginForm['password'].value;
-  
-      signInWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-              // Signed in 
-              const user = userCredential.user;
-              console.log('Logged in as:', user.email);
-              // Redirect to another page or update UI
-          })
-          .catch((error) => {
-              console.error('Error during login:', error.message);
-          });
-  });
-  
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = loginForm['email'].value;
+    const password = loginForm['password'].value;
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log('Logged in as:', user.email);
+
+            // Redirect to another page
+            window.location.href = 'homepage.html'; // Replace 'homepage.html' with your desired page
+        })
+        .catch((error) => {
+            console.error('Error during login:', error.message);
+            // Optionally, handle login failure (e.g., show an error message)
+        });
+});
   // Check for authentication state changes
   onAuthStateChanged(auth, (user) => {
       if (user) {
