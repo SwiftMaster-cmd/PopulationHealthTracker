@@ -17,9 +17,18 @@ document.getElementById('addSalesForm').addEventListener('submit', async (event)
         });
         console.log("Document written with ID: ", docRef.id);
         alert("Sale added successfully!");
-        // Clear form or redirect as needed
+        // Optionally, display a confirmation message
+        showConfirmationMessage(leadId);
+        // Optionally, reset the form
+        event.target.reset();
     } catch (e) {
         console.error("Error adding document: ", e);
         alert("Failed to add sale.");
     }
 });
+
+function showConfirmationMessage(leadId) {
+    const confirmationMessage = `Lead ID ${leadId} added successfully.`;
+    const messageElement = document.getElementById('confirmationMessage');
+    messageElement.textContent = confirmationMessage;
+}
