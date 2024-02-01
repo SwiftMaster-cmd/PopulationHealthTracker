@@ -1,0 +1,39 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+    authDomain: "track-dac15.firebaseapp.com",
+    projectId: "track-dac15",
+    storageBucket: "track-dac15.appspot.com",
+    messagingSenderId: "495156821305",
+    appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+    measurementId: "G-RVBYB0RR06"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+
+// Login Function
+async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log('Logged in user:', userCredential.user);
+        // Redirect to another page or update UI
+    } catch (error) {
+        console.error('Error logging in:', error);
+    }
+}
+
+// Add login event listener
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loginButton').addEventListener('click', login);
+});
