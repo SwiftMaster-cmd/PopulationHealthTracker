@@ -1,7 +1,7 @@
 /* Basic page styling */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
+    background-color: #8ECAE6; /* Light blue background */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,7 +11,8 @@ body {
 
 /* Container for the login elements */
 .login-container {
-    background-color: #fff;
+    background-color: #FB8501; /* Orange background */
+    color: #023047; /* Dark blue text */
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -19,7 +20,7 @@ body {
 }
 
 h2 {
-    color: #333;
+    color: #023047; /* Dark blue text */
     margin-bottom: 20px;
 }
 
@@ -28,16 +29,23 @@ input[type="email"], input[type="password"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ddd;
+    border: 1px solid #219EBC; /* Medium blue border */
     border-radius: 20px;
     box-sizing: border-box;
     font-size: 16px;
+    background-color: #FFB703; /* Light blue background */
+    color: #023047; /* Dark blue text */
+    transition: border-color 0.3s ease;
+}
+
+input[type="email"]:focus, input[type="password"]:focus {
+    border-color: #FB8501; /* Orange border on focus */
 }
 
 /* Styling for buttons */
 button {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #023047; /* Dark blue background */
+    color: #FFB703; /* Yellow text */
     padding: 15px 25px;
     margin: 10px 0;
     border: none;
@@ -49,7 +57,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #219EBC; /* Medium blue on hover */
 }
 
 /* Animation for the login container */
@@ -61,5 +69,21 @@ button:hover {
     to {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+/* Additional animations */
+input[type="email"], input[type="password"], button {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
