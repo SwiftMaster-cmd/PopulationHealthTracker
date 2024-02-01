@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Sales</title>
-    <!-- Add link to your CSS file if needed -->
-    <!-- <link rel="stylesheet" href="path-to-your-css-file.css"> -->
+    <!-- Link to your CSS file, if you have one -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -25,10 +24,6 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-
-        // Export Firestore to be used in add-sales.js
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
         const db = getFirestore(app);
         window.db = db;
     </script>
@@ -37,8 +32,6 @@
 
     <h2>Add Sales</h2>
 
-    <!-- Add Sales Form -->
-    
     <!-- Add Sales Form -->
     <form id="addSalesForm">
         <!-- Lead ID -->
@@ -69,10 +62,8 @@
         <button type="submit">Add Sale</button>
     </form>
 
-    <!-- Link to Firebas
-
-        <button type="submit">Add Sale</button>
-    </form>
+    <!-- Placeholder for the confirmation message -->
+    <div id="confirmationMessage"></div>
 
     <!-- Link to your add-sales.js file -->
     <script type="module" src="add-sales.js"></script>
