@@ -68,6 +68,10 @@ function displaySalesHistory(salesData) {
 }
 
 function formatSaleTypes(saleTypes) {
+    if (!saleTypes) {
+        return ''; // Return an empty string if saleTypes is undefined or null
+    }
+
     let formattedSaleTypes = [];
     for (const [type, value] of Object.entries(saleTypes)) {
         if (value) {
