@@ -93,7 +93,6 @@ function displayNoDataMessage() {
     </script>
 </head>
 <body>
-
     <div class="sales-container">
         <h2>Sales History</h2>
         <div id="salesHistory">
@@ -101,15 +100,13 @@ function displayNoDataMessage() {
         </div>
     </div>
 
-        <!-- New orange box for sales charts and graphs -->
-        <div class="charts-container">
-            <!-- Add your charts and graphs here using HTML/CSS/JavaScript -->
-            <canvas id="salesChart"></canvas>
-        </div>
+    <!-- New orange box for sales charts and graphs -->
+    <div class="charts-container">
+        <!-- Add your charts and graphs here using HTML/CSS/JavaScript -->
+        <canvas id="salesChart"></canvas>
     </div>
 
-    <script src="charts.js"></script>
-    <script type="module" src="history.js"></script>
-
+    <script src="charts.js"></script> <!-- Include your charts.js file -->
+    <script type="module" src="history.js"></script> <!-- Include your existing history.js file -->
 </body>
 </html>
