@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales History</title>
     <link rel="stylesheet" href="history-style.css">
+    <script src="sales-charts.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
@@ -93,6 +94,7 @@ function displayNoDataMessage() {
     </script>
 </head>
 <body>
+
     <div class="sales-container">
         <h2>Sales History</h2>
         <div id="salesHistory">
@@ -100,13 +102,15 @@ function displayNoDataMessage() {
         </div>
     </div>
 
-    <!-- New orange box for sales charts and graphs -->
-    <div class="charts-container">
-        <!-- Add your charts and graphs here using HTML/CSS/JavaScript -->
-        <canvas id="salesChart"></canvas>
+        <!-- New orange box for sales charts and graphs -->
+        <div class="charts-container">
+            <!-- Add your charts and graphs here using HTML/CSS/JavaScript -->
+            <canvas id="salesChart"></canvas>
+        </div>
     </div>
 
-    <script src="charts.js"></script> <!-- Include your charts.js file -->
-    <script type="module" src="history.js"></script> <!-- Include your existing history.js file -->
+<script src="charts.js"></script>
+    <script type="module" src="history.js"></script>
+
 </body>
 </html>
