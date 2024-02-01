@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 // Firebase configuration
@@ -17,6 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
+const provider = new GoogleAuthProvider();
 
 // User Registration Function
 async function registerUser(email, password, additionalData) {
@@ -42,6 +43,21 @@ async function loginUser(email, password) {
     }
 }
 
+// Google Sign-In Function
+async function googleSignIn() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        console.log('Google sign-in user:', user);
+
+        // Save or update user data in Realtime Database
+        const userDataRef = ref(database, 'users/' + user.uid);
+        await set(userDataRef, { email: user.email, displayName: user.displayName });
+    } catch (error) {
+        console.error('Error during Google sign-in:', error);
+    }
+}
+
 // Add Sale Function
 async function addSale(saleData) {
     try {
@@ -59,4 +75,4 @@ async function addSale(saleData) {
 }
 
 // Export the functions for use in other modules
-export { registerUser, loginUser, addSale };
+export { registerUser, loginUser, addSale, googleSignIn };

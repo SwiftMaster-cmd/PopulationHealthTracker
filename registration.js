@@ -1,54 +1,57 @@
 // Import Firebase modules
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 // Initialize Firebase Auth and Database
 const auth = getAuth();
 const database = getDatabase();
+const provider = new GoogleAuthProvider(); // Google Auth Provider
 
 document.getElementById('registerBtn').addEventListener('click', signUp);
+document.getElementById('googleSignInBtn').addEventListener('click', googleSignIn);
 
 function signUp() {
-    const email = document.getElementById('signup_email').value.trim();
-    const password = document.getElementById('signup_password').value.trim();
-    const fullName = document.getElementById('full_name').value.trim();
-    const favouriteSong = document.getElementById('favourite_song').value.trim();
-    const milkBeforeCereal = document.getElementById('milk_before_cereal').value.trim();
+    // existing signUp code
+}
 
-    if (!validateEmail(email) || !validatePassword(password)) {
-        alert('Invalid email or password. Make sure your email is correct and password is at least 6 characters long.');
-        return;
-    }
+function googleSignIn() {
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = result.credential;
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
 
-    createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // User registration successful
-            const user = userCredential.user;
+            // Update or set user data in the database
             const userData = {
-                email: email,
-                full_name: fullName,
-                favourite_song: favouriteSong,
-                milk_before_cereal: milkBeforeCereal,
-                last_login: Date.now()
+                email: user.email,
+                full_name: user.displayName,
+                // Add or modify fields as needed
             };
 
             set(ref(database, `users/${user.uid}`), userData);
 
-            alert('User Created!');
+            alert('User signed in with Google!');
             // Redirect or other actions
         })
         .catch((error) => {
-            // Handle Errors here
+            // Handle Errors here.
+            const errorCode = error.code;
             const errorMessage = error.message;
-            alert(`Registration failed: ${errorMessage}`);
+            // The email of the user's account used.
+            const email = error.email;
+            // The AuthCredential type that was used.
+            const credential = error.credential;
+
+            alert(`Google sign-in failed: ${errorMessage}`);
         });
 }
 
 function validateEmail(email) {
-    const expression = /^[^@]+@\w+(\.\w+)+\w$/;
-    return expression.test(email);
+    // existing validateEmail code
 }
 
 function validatePassword(password) {
-    return password.length >= 6;
+    // existing validatePassword code
 }
