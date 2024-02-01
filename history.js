@@ -56,17 +56,27 @@ function displaySalesHistory(salesData) {
         const saleDiv = document.createElement('div');
         saleDiv.classList.add('sale-item');
 
+        const formattedTimestamp = formatTimestamp(sale.timestamp);
+
         saleDiv.innerHTML = `
             <p><strong>Lead ID:</strong> ${sale.lead_id}</p>
             <p><strong>ESI Content:</strong> ${sale.esi_content}</p>
             <p><strong>Sale Type:</strong> ${formatSaleTypes(sale.sale_types)}</p>
             <p><strong>Notes:</strong> ${sale.notes}</p>
+            <p><strong>Timestamp:</strong> ${formattedTimestamp}</p>
         `;
 
         historyElement.appendChild(saleDiv);
     }
 }
 
+function formatTimestamp(timestamp) {
+    if (!timestamp) return 'N/A';
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' });
+    const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    return `${formattedDate} ${formattedTime}`;
+}
 function formatSaleTypes(saleTypes) {
     if (!saleTypes) {
         return ''; // Return an empty string if saleTypes is undefined or null

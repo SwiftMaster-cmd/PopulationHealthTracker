@@ -15,7 +15,7 @@ document.getElementById('addSalesForm').addEventListener('submit', async (event)
 
     const leadId = document.getElementById('lead_id').value.trim();
     const esiContent = document.querySelector('input[name="esi_content"]:checked').value;
-    
+
     // Collecting selected sale types
     const saleTypes = {};
     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
@@ -30,7 +30,8 @@ document.getElementById('addSalesForm').addEventListener('submit', async (event)
         esi_content: esiContent,
         sale_types: saleTypes, // Storing selected sale types
         notes: notes,
-        user_id: currentUser.uid
+        user_id: currentUser.uid,
+        timestamp: new Date().toISOString() // Adding a timestamp
     };
 
     try {
