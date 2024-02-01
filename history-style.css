@@ -1,7 +1,7 @@
 /* Basic page styling */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
+    background-color: #8ECAE6; /* Updated light blue background */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,7 +11,7 @@ body {
 
 /* Main container styling */
 .sales-container {
-    background-color: #ffffff;
+    background-color: #FB8501; /* Updated orange background */
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
@@ -23,84 +23,27 @@ body {
 
 /* Title styling */
 h2 {
-    color: #333;
+    color: #023047; /* Updated dark blue text */
     margin-bottom: 30px;
 }
 
-/* Styling for individual sales input groups */
-.input-group {
-    background-color: #f8f8f8; /* Light background for input group */
-    padding: 20px;
+/* Styling for individual sales items */
+.sale-item {
+    background-color: #FFB703; /* Light yellow background */
+    color: #023047; /* Dark blue text */
+    padding: 15px;
     margin-bottom: 15px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
 }
 
-/* Label styling */
-.input-group label {
-    display: block;
-    margin-bottom: 10px;
+.sale-item p {
+    margin: 5px 0;
+}
+
+.sale-item strong {
     font-weight: bold;
-    color: #4a4e69;
 }
 
-/* Input field styling */
-.input-group input[type="text"],
-.input-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-}
-
-/* Radio buttons and sale type buttons container */
-.options, .sale-type-buttons {
-    display: flex;
-    justify-content: start;
-    gap: 10px;
-}
-
-/* Sale type buttons styling */
-.sale-type-buttons button {
-    background-color: #9a8c98;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-    outline: none;
-}
-
-.sale-type-buttons button.selected {
-    background-color: #c9ada7;
-}
-
-/* Submit button styling */
-.submit-btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover {
-    background-color: #45a049;
-}
-
-/* Link to view history */
-.view-history {
-    display: block;
-    margin-top: 20px;
-    color: #4CAF50;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-/* Additional styling as needed */
+/* Add any additional styling as needed */

@@ -50,29 +50,28 @@ function fetchSalesHistory(userId) {
 
 function displaySalesHistory(salesData) {
     const historyElement = document.getElementById('salesHistory');
-    let html = '<table>';
-    html += '<tr><th>Lead ID</th><th>ESI Content</th><th>Sale Type</th><th>Notes</th></tr>';
+    historyElement.innerHTML = ''; // Clear existing content
 
     for (const [key, sale] of Object.entries(salesData)) {
-        if (sale.lead_id && sale.esi_content && sale.sale_type === 'billable_hra' && sale.notes) {
-            html += '<tr>';
-            html += `<td>${sale.lead_id}</td>`;
-            html += `<td>${sale.esi_content}</td>`;
-            html += `<td>${sale.sale_type}</td>`;
-            html += `<td>${sale.notes}</td>`;
-            html += '</tr>';
-        }
-    }
+        const saleDiv = document.createElement('div');
+        saleDiv.classList.add('sale-item');
 
-    html += '</table>';
-    historyElement.innerHTML = html;
+        saleDiv.innerHTML = `
+            <p><strong>Lead ID:</strong> ${sale.lead_id}</p>
+            <p><strong>ESI Content:</strong> ${sale.esi_content}</p>
+            <p><strong>Sale Type:</strong> ${formatSaleTypes(sale.sale_types)}</p>
+            <p><strong>Notes:</strong> ${sale.notes}</p>
+        `;
+
+        historyElement.appendChild(saleDiv);
+    }
 }
 
 function formatSaleTypes(saleTypes) {
     let formattedSaleTypes = [];
     for (const [type, value] of Object.entries(saleTypes)) {
         if (value) {
-            formattedSaleTypes.push(type.replace(/_/g, ' '));
+            formattedSaleTypes.push(type.replace(/_/g, ' ').toUpperCase());
         }
     }
     return formattedSaleTypes.join(', ');

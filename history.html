@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales History</title>
-    <!-- Add link to your CSS file if needed -->
-   <link rel="stylesheet" href="history-style.css">
+    <link rel="stylesheet" href="history-style.css">
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getDatabase, ref, query, orderByChild, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
             authDomain: "track-dac15.firebaseapp.com",
+            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
             projectId: "track-dac15",
             storageBucket: "track-dac15.appspot.com",
             messagingSenderId: "495156821305",
@@ -21,47 +22,85 @@
             measurementId: "G-RVBYB0RR06"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+        // Initialize Firebase
+        initializeApp(firebaseConfig);
 
+        // Get references to Firebase services
+        const auth = getAuth();
+        const database = getDatabase();
+
+        // Check for user authentication
         onAuthStateChanged(auth, user => {
             if (user) {
                 fetchSalesHistory(user.uid);
             } else {
-                // User is not logged in. Redirect to login page or show message
+                console.log("User is not logged in. Redirecting to login page.");
                 window.location.href = 'login.html'; // Redirect to login
             }
         });
 
         function fetchSalesHistory(userId) {
-            const salesRef = ref(database, 'sales/' + userId);
-            onValue(salesRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    displaySalesHistory(data);
-                } else {
-                    // Handle case where there are no sales
-                    console.log('No sales data found');
-                }
-            });
-        }
+    const salesRef = ref(database, 'sales/' + userId);
+    const salesQuery = query(salesRef, orderByChild('timestamp'));
 
-        function displaySalesHistory(salesData) {
-            // Implement logic to display sales data on the page
-            // For example, updating the innerHTML of a div with id 'salesHistory'
-            const historyElement = document.getElementById('salesHistory');
-            historyElement.innerHTML = '<pre>' + JSON.stringify(salesData, null, 2) + '</pre>';
+    onValue(salesQuery, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            displaySalesHistory(data);
+        } else {
+            console.log('No sales data found for this user.');
+            displayNoDataMessage();
         }
+    }, (error) => {
+        console.error('Error fetching sales data:', error);
+    });
+}
+
+function displaySalesHistory(salesData) {
+    const historyElement = document.getElementById('salesHistory');
+    historyElement.innerHTML = ''; // Clear existing content
+
+    for (const [key, sale] of Object.entries(salesData)) {
+        const saleDiv = document.createElement('div');
+        saleDiv.classList.add('sale-item');
+
+        saleDiv.innerHTML = `
+            <p><strong>Lead ID:</strong> ${sale.lead_id}</p>
+            <p><strong>ESI Content:</strong> ${sale.esi_content}</p>
+            <p><strong>Sale Type:</strong> ${formatSaleTypes(sale.sale_types)}</p>
+            <p><strong>Notes:</strong> ${sale.notes}</p>
+        `;
+
+        historyElement.appendChild(saleDiv);
+    }
+}
+
+function formatSaleTypes(saleTypes) {
+    let formattedSaleTypes = [];
+    for (const [type, value] of Object.entries(saleTypes)) {
+        if (value) {
+            formattedSaleTypes.push(type.replace(/_/g, ' ').toUpperCase());
+        }
+    }
+    return formattedSaleTypes.join(', ');
+}
+
+function displayNoDataMessage() {
+    const historyElement = document.getElementById('salesHistory');
+    historyElement.innerHTML = '<p>No sales history found.</p>';
+}
+
     </script>
 </head>
 <body>
 
-    <h2>Sales History</h2>
-
-    <div id="salesHistory">
-        <!-- Sales history will be displayed here -->
+    <div class="sales-container">
+        <h2>Sales History</h2>
+        <div id="salesHistory">
+            <!-- Sales history will be displayed here by the JavaScript -->
+        </div>
     </div>
+
     <script type="module" src="history.js"></script>
 
 </body>
