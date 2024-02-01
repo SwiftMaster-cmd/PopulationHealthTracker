@@ -1,3 +1,11 @@
+// Import Firebase modules
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
+// Initialize Firebase Auth and Database
+const auth = getAuth();
+const database = getDatabase();
+
 document.getElementById('registerBtn').addEventListener('click', signUp);
 
 function signUp() {
@@ -12,8 +20,9 @@ function signUp() {
         return;
     }
 
-    createUserWithEmailAndPassword(window.auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
+            // User registration successful
             const user = userCredential.user;
             const userData = {
                 email: email,
@@ -23,13 +32,15 @@ function signUp() {
                 last_login: Date.now()
             };
 
-            set(ref(window.database, `users/${user.uid}`), userData);
+            set(ref(database, `users/${user.uid}`), userData);
 
             alert('User Created!');
             // Redirect or other actions
         })
         .catch((error) => {
-            alert(`Registration failed: ${error.message}`);
+            // Handle Errors here
+            const errorMessage = error.message;
+            alert(`Registration failed: ${errorMessage}`);
         });
 }
 
