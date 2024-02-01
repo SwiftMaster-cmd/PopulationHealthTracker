@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Authentication</title>
-    <link rel="stylesheet" href="login.css">
-    <!-- Firebase SDKs -->
+    <title>Add Sales</title>
+    <!-- Add link to your CSS file if needed -->
+    <!-- <link rel="stylesheet" href="path-to-your-css-file.css"> -->
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
             authDomain: "track-dac15.firebaseapp.com",
+            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
             projectId: "track-dac15",
             storageBucket: "track-dac15.appspot.com",
             messagingSenderId: "495156821305",
@@ -26,43 +26,56 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        const auth = getAuth(app);
 
-        // Export the auth module for use in the login function
-        window.auth = auth;
+        // Export Firestore to be used in add-sales.js
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+        const db = getFirestore(app);
+        window.db = db;
     </script>
 </head>
 <body>
 
-    <h2>User Authentication</h2>
+    <h2>Add Sales</h2>
 
-    <form id="loginForm">
-        <label for="login_email">Email:</label>
-        <input type="email" id="login_email" required>
+    <!-- Add Sales Form -->
+    
+    <!-- Add Sales Form -->
+    <form id="addSalesForm">
+        <!-- Lead ID -->
+        <label for="lead_id">Lead ID:</label>
+        <input type="text" id="lead_id" name="lead_id" required><br><br>
 
-        <label for="login_password">Password:</label>
-        <input type="password" id="login_password" required>
+        <!-- ESI Content - Yes/No Buttons -->
+        <label>ESI Content:</label>
+        <input type="radio" id="esi_yes" name="esi_content" value="Yes">
+        <label for="esi_yes">Yes</label>
+        <input type="radio" id="esi_no" name="esi_content" value="No">
+        <label for="esi_no">No</label><br><br>
 
-        <button type="button" onclick="loginUser()">Login</button>
+        <!-- Sale Type - Dropdown Selection -->
+        <label for="sale_type">Sale Type:</label>
+        <select id="sale_type" name="sale_type" required>
+            <option value="billable_hra">Billable HRA</option>
+            <option value="flex_hra">Flex HRA</option>
+            <option value="select_rx">Select RX</option>
+            <option value="transfer">Transfer</option>
+        </select><br><br>
+
+        <!-- Notes -->
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" rows="4" cols="50" required></textarea><br><br>
+
+        <!-- Submit Button -->
+        <button type="submit">Add Sale</button>
     </form>
 
-    <p>Don't have an account? <a href="registration.html">Register here</a></p>
+    <!-- Link to Firebas
 
-    <script>
-        function loginUser() {
-            const email = document.getElementById('login_email').value.trim();
-            const password = document.getElementById('login_password').value.trim();
+        <button type="submit">Add Sale</button>
+    </form>
 
-            signInWithEmailAndPassword(window.auth, email, password)
-                .then((userCredential) => {
-                    alert('Login successful!');
-                    window.location.href = 'add-sales.html';
-                })
-                .catch((error) => {
-                    alert(`Login failed: ${error.message}`);
-                });
-        }
-    </script>
+    <!-- Link to your add-sales.js file -->
+    <script type="module" src="add-sales.js"></script>
 
 </body>
 </html>
