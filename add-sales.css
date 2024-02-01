@@ -1,94 +1,76 @@
+/* Basic page styling */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
+    background-color: #e0e8f9; /* Soft blue background */
     margin: 0;
-    padding: 0;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Main container styling */
+.sales-container {
+    background-color: #ffffff; /* White background for the container */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
+    width: 90%;
+    max-width: 500px; /* Adjust width as needed */
+    animation: popIn 0.6s ease-out;
 }
-
-#esi_consent_buttons button {
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid rgb(25, 10, 15);
-    background-color: rgb(46, 220, 139);
-}x
-
-#esi_consent_buttons button.selected {
-    background-color: #0d2c0e;
-    color: rgb(98, 17, 17);
-}
-
 
 h2 {
-    font-size: 2.5rem;
-    color: #333;
-    font-weight: bold;
-    margin-bottom: 20px;
+    color: #4a4e69; /* Dark blue for the title */
+    margin-bottom: 30px;
 }
 
-form {
-    max-width: 400px;
-    margin: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #555;
-}
-
-input[type="text"], select {
+/* Styling for form fields */
+input[type="text"], input[type="email"], select, textarea {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 20px;
+    border: 1px solid #ddd;
     box-sizing: border-box;
 }
 
-input[type="text"]:focus, select:focus {
-    border-color: #4CAF50;
-}
-
+/* Styling for buttons */
 button {
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #4CAF50;
+    background-color: #9a8c98; /* Muted purple */
+    color: white;
+    padding: 15px 25px;
+    margin: 10px;
     border: none;
     border-radius: 25px;
     cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
+    font-size: 18px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px #6b6d76; /* Dark shadow for depth */
+    outline: none;
 }
 
 button:hover {
-    background-color: #45a049;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #c9ada7; /* Lighter shade of purple */
+    box-shadow: 0 6px #6b6d76;
 }
 
-.navigation {
-    margin-top: 20px;
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px #6b6d76;
 }
 
-.navigation a {
-    color: #333;
-    text-decoration: none;
-    font-weight: bold;
-    margin: 0 10px;
-    transition: color 0.3s;
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-.navigation a:hover {
-    color: #4CAF50;
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
+
+/* Additional styling as needed */
