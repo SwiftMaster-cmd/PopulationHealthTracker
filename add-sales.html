@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Sales</title>
-    <!-- Link to your CSS file, if you have one -->
     <link rel="stylesheet" href="add-sales.css">
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
             authDomain: "track-dac15.firebaseapp.com",
@@ -23,7 +21,6 @@
             measurementId: "G-RVBYB0RR06"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
@@ -33,44 +30,47 @@
 </head>
 <body>
 
-    <h2>Add Sales</h2>
+    <div class="main-container">
+        <h2>Add Sales</h2>
 
-    <!-- Add Sales Form -->
-    <form id="addSalesForm">
-        <!-- Lead ID -->
-        <label for="lead_id">Lead ID:</label>
-        <input type="text" id="lead_id" name="lead_id" required><br><br>
+        <form id="addSalesForm" class="form-container">
+            <div class="form-group">
+                <label for="lead_id">Lead ID:</label>
+                <input type="text" id="lead_id" name="lead_id" required>
+            </div>
 
-        <!-- ESI Content - Yes/No Buttons -->
-        <label>ESI Content:</label>
-        <input type="radio" id="esi_yes" name="esi_content" value="Yes">
-        <label for="esi_yes">Yes</label>
-        <input type="radio" id="esi_no" name="esi_content" value="No">
-        <label for="esi_no">No</label><br><br>
+            <div class="form-group">
+                <label>ESI Content:</label>
+                <div class="radio-buttons">
+                    <input type="radio" id="esi_yes" name="esi_content" value="Yes">
+                    <label for="esi_yes">Yes</label>
+                    <input type="radio" id="esi_no" name="esi_content" value="No">
+                    <label for="esi_no">No</label>
+                </div>
+            </div>
 
-        <!-- Sale Type - Dropdown Selection -->
-        <label for="sale_type">Sale Type:</label>
-        <select id="sale_type" name="sale_type" required>
-            <option value="billable_hra">Billable HRA</option>
-            <option value="flex_hra">Flex HRA</option>
-            <option value="select_rx">Select RX</option>
-            <option value="transfer">Transfer</option>
-        </select><br><br>
+            <div class="form-group">
+                <label for="sale_type">Sale Type:</label>
+                <select id="sale_type" name="sale_type" required>
+                    <option value="billable_hra">Billable HRA</option>
+                    <option value="flex_hra">Flex HRA</option>
+                    <option value="select_rx">Select RX</option>
+                    <option value="transfer">Transfer</option>
+                </select>
+            </div>
 
-        <!-- Notes -->
-        <label for="notes">Notes:</label>
-        <textarea id="notes" name="notes" rows="4" cols="50" required></textarea><br><br>
+            <div class="form-group">
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes" rows="4" cols="50" required></textarea>
+            </div>
 
-        <!-- Submit Button -->
-        <button type="submit">Add Sale</button>
-    </form>
-    <a href="history.html" class="btn">View Sales History</a>
+            <button type="submit">Add Sale</button>
+        </form>
 
-    <!-- Placeholder for the confirmation message -->
-    <div id="confirmationMessage" style="margin-top: 10px;"></div>
+        <div id="confirmationMessage" style="margin-top: 10px;"></div>
+        <a href="history.html" class="btn">View Sales History</a>
+    </div>
 
-
-    <!-- Link to your add-sales.js file -->
     <script type="module" src="add-sales.js"></script>
 
 </body>
