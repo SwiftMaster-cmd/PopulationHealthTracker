@@ -1,5 +1,7 @@
 // Import the Chart.js library
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js';
+// charts.js (After)
+import { someFunction } from './sales-charts.js'; // Adjust the path as needed
+
 
 // Dummy data for demonstration purposes
 const salesData = {
