@@ -1,7 +1,18 @@
-import { addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+// Initialize Firebase Auth and Firestore
+const auth = getAuth();
+const db = getFirestore();
 
 document.getElementById('addSalesForm').addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+        alert("Please log in to add sales.");
+        return;
+    }
 
     const leadId = document.getElementById('lead_id').value.trim();
     const esiContent = document.querySelector('input[name="esi_content"]:checked').value;
@@ -9,20 +20,22 @@ document.getElementById('addSalesForm').addEventListener('submit', async (event)
     const notes = document.getElementById('notes').value.trim();
 
     try {
-        const docRef = await addDoc(collection(window.db, "sales"), {
+        // Structure your sale data here
+        const saleData = {
             lead_id: leadId,
             esi_content: esiContent,
             sale_type: saleType,
             notes: notes
-        });
-        console.log("Document written with ID: ", docRef.id);
-        alert("Sale added successfully!");
-        // Optionally, display a confirmation message
+        };
+
+        // Save the data in Firestore under the current user's ID
+        await setDoc(doc(db, "sales", currentUser.uid), saleData);
+
+        console.log("Sale added successfully.");
         showConfirmationMessage(leadId);
-        // Optionally, reset the form
         event.target.reset();
-    } catch (e) {
-        console.error("Error adding document: ", e);
+    } catch (error) {
+        console.error("Error adding sale: ", error);
         alert("Failed to add sale.");
     }
 });

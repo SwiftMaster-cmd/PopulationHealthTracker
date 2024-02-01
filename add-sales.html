@@ -9,6 +9,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -25,7 +26,9 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
         window.db = db;
+        window.auth = auth;
     </script>
 </head>
 <body>
