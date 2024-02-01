@@ -1,10 +1,8 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
     authDomain: "track-dac15.firebaseapp.com",
@@ -17,20 +15,24 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const database = getDatabase(app);
 
-// Authentication Functions
-async function registerUser(email, password) {
+// User Registration Function
+async function registerUser(email, password, additionalData) {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         console.log('User registered:', userCredential.user);
+
+        // Save additional user data in Realtime Database
+        const userDataRef = ref(database, 'users/' + userCredential.user.uid);
+        await set(userDataRef, additionalData);
     } catch (error) {
         console.error('Registration error:', error);
     }
 }
 
+// User Login Function
 async function loginUser(email, password) {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -40,25 +42,21 @@ async function loginUser(email, password) {
     }
 }
 
-// Firestore Functions
+// Add Sale Function
 async function addSale(saleData) {
     try {
-        const docRef = await addDoc(collection(db, "sales"), saleData);
-        console.log('Sale added with ID:', docRef.id);
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            throw new Error('User not authenticated');
+        }
+
+        const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
+        await set(newSaleRef, saleData);
+        console.log('Sale added successfully:', newSaleRef.key);
     } catch (error) {
         console.error('Error adding sale:', error);
     }
 }
 
-async function fetchSalesHistory() {
-    try {
-        const querySnapshot = await getDocs(collection(db, "sales"));
-        querySnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-        });
-    } catch (error) {
-        console.error('Error fetching sales history:', error);
-    }
-}
-
-export { registerUser, loginUser, addSale, fetchSalesHistory };
+// Export the functions for use in other modules
+export { registerUser, loginUser, addSale };

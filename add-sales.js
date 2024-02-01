@@ -1,4 +1,3 @@
-// Import Firebase modules
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
@@ -25,11 +24,11 @@ document.getElementById('addSalesForm').addEventListener('submit', async (event)
         esi_content: esiContent,
         sale_type: saleType,
         notes: notes,
-        user_id: currentUser.uid
+        user_id: currentUser.uid // Associate sale with the user's UID
     };
 
     try {
-        const newSaleRef = push(ref(database, 'sales'));
+        const newSaleRef = push(ref(database, `sales/${currentUser.uid}`)); // Save under user's node
         await set(newSaleRef, saleData);
 
         // Reset the form
