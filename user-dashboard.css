@@ -4,38 +4,38 @@ body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
     padding: 0;
 }
 
-/* Set a background color for the entire page */
+/* Set a gradient background for the entire page */
 body {
-    background-color: #E3F2FD; /* Lighter shade of baby blue for the page background */
+    background: linear-gradient(to bottom, #E3F2FD, #BBDEFB); /* Smooth transition from light to darker baby blue */
     font-family: 'Arial', sans-serif;
-    font-size: 16px; /* Improved readability */
+    font-size: 16px;
 }
 
-/* Style the header */
+/* Style the header with a gradient */
 header {
-    background-color: #001F3F; /* Navy blue for header background */
-    color: #FF851B; /* Orange for header text */
+    background: linear-gradient(to bottom, #001F3F, #003366); /* Gradient from navy blue to a slightly lighter shade */
+    color: #FF851B; /* Maintain orange text for contrast */
     text-align: center;
     padding: 20px 0;
 }
 
 header h2 {
     font-size: 24px;
-    font-weight: bold; /* Make header text bold */
-    color: #001F3F; /* Navy blue color for the header text */
+    font-weight: bold;
+    color: #FFFFFF; /* Change to white for better readability against the gradient background */
 }
 
-/* Style the main container */
+/* Style the main container with gradient */
 .dashboard-container {
     max-width: 700px;
     margin: 20px auto;
-    background-color: #fff;
+    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 15px; /* More rounded corners for the container */
-    padding: 40px; /* Increased padding */
+    border-radius: 15px;
+    padding: 40px;
 }
 
-/* Style the Add Sales section */
+/* Style the Add Sales section with gradient */
 .sales-container {
     display: flex;
     flex-direction: column;
@@ -43,13 +43,13 @@ header h2 {
     justify-content: center;
     width: 500px;
     margin: 20px auto;
-    background-color: #FFA500; /* Orange background for Add Sales section */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gradient from gold to orange */
     padding: 20px;
-    border-radius: 25px; /* More rounded corners for the Add Sales section */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow for depth */
+    border-radius: 25px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Style for the input fields and labels to align with the new flex layout */
+/* Style inputs and labels */
 .input-group {
     width: 100%;
     display: flex;
@@ -58,75 +58,92 @@ header h2 {
     margin-bottom: 15px;
 }
 
-/* Specific styles for Lead ID input and Notes textarea */
 #lead_id,
 #notes {
     width: 300px;
-    max-width: 300px;
-    margin: 0;
-    padding: 10px; /* Padding for better text spacing */
-    border-radius: 15px; /* Rounded corners for input fields */
-    border: 1px solid #001F3F; /* Navy blue border for input fields */
-    font-weight: bold; /* Bold text for input fields */
-    color: #001F3F; /* Navy blue text for input fields */
-    background-color: #FFF; /* White background for better readability */
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #007BFF; /* Adjusted for consistency */
+    font-weight: bold;
+    color: #001F3F;
+    background-color: #FFFFFF;
 }
 
-/* Optional: If you want to prevent users from resizing the textarea */
 #notes {
     resize: none;
 }
 
-/* Style for the buttons */
+/* Style buttons with gradients */
 .esi-btn,
 .sale-type-btn,
 .submit-btn {
-    background-color: #007BFF; /* Baby blue for buttons */
-    color: white; /* White text for buttons */
-    font-weight: bold; /* Bold text for buttons */
-    padding: 12px 20px; /* Padding for larger, more clickable buttons */
-    margin: 5px; /* Margin for spacing between buttons */
-    border-radius: 15px; /* Rounded corners for buttons */
-    border: none; /* Remove default borders */
-    cursor: pointer; /* Cursor pointer to indicate clickable buttons */
-    transition: background-color 0.3s, transform 0.3s; /* Transition for interactive effects */
+    background: linear-gradient(to bottom, #007BFF, #0056b3); /* Gradient from baby blue to a deeper shade */
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .esi-btn:hover,
 .sale-type-btn:hover,
 .submit-btn:hover {
-    background-color: #FF851B; /* Orange for hover state */
-    transform: scale(1.05); /* Slightly increase size on hover for effect */
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Gradient hover effect from lighter to darker orange */
+    transform: scale(1.05);
 }
 
-.submit-btn {
-    background-color: #001F3F; /* Navy blue for submit button */
-    color: white;
-    width: 100%; /* Full width of the parent container */
-    margin-top: 15px; /* Margin on top for spacing */
-}
-
-/* Style for the selected state of the buttons */
 .esi-btn.selected,
 .sale-type-btn.selected {
-    background-color: #FF851B; /* Orange for selected state */
-    transform: scale(1.1); /* Slightly increase size for selected state */
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Gradient for selected state */
+    transform: scale(1.1);
 }
-/* Style the Sales History container */
+
+/* Style the Sales History container with gradient */
 .sales-history-container {
     width: 500px;
-    height: 500px; /* Set a fixed height for the sales history container */
+    height: auto;
     margin: 20px auto;
-    background-color: #FFA500; /* Orange background for Sales History section */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gradient from gold to orange */
     padding: 20px;
-    border-radius: 25px; /* Rounded corners for the Sales History section */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-    overflow: auto; /* Make the container scrollable */
+    border-radius: 25px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Style for the sales history list */
+.sales-history {
+    width: 100%;
+    overflow-y: auto;
+}
+
+/* Style for individual sale history entries */
+.sales-history-entry {
+    background-color: #FFB74D; /* Consider applying a gradient here as well if desired */
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Style for the sale info and actions */
+.sale-info, .sale-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sale-actions {
+    justify-content: flex-end;
+    gap: 10px;
+}
 
 
 
@@ -159,14 +176,15 @@ header h2 {
 
 /* Updated style for individual sale history entries */
 .sales-history-entry {
-    background-color: #FFB74D;
+    background: linear-gradient(to bottom, #FFB74D, #FFA726); /* Smooth gradient for each entry */
     border-radius: 15px;
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Adjust spacing between elements */
+    gap: 10px;
 }
+
 
 /* Updated style for the sale info */
 .sale-info {
