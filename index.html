@@ -49,7 +49,7 @@
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
                 console.log('Google sign-in user:', user);
-                window.location.href = 'add-sales.html';
+                window.location.href = 'user-dashboard.html';
             } catch (error) {
                 console.error('Error during Google sign-in:', error);
             }
