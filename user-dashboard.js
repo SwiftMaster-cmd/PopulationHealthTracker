@@ -91,6 +91,66 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const salesHistoryElement = document.getElementById('salesHistory');
+    salesHistoryElement.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('edit-btn')) {
+            const saleContainer = event.target.closest('.sale-container');
+            const saleId = saleContainer.getAttribute('data-sale-id');
+            const editableFields = saleContainer.querySelectorAll('.editable');
+            editableFields.forEach(field => field.contentEditable = true);
+
+            // Show Save and Cancel buttons, hide Edit button
+            saleContainer.querySelector('.edit-btn').style.display = 'none';
+            saleContainer.querySelector('.delete-btn').style.display = 'none';
+            saleContainer.querySelector('.save-btn').style.display = 'inline-block';
+            saleContainer.querySelector('.cancel-btn').style.display = 'inline-block';
+        } else if (event.target.classList.contains('delete-btn')) {
+            const saleContainer = event.target.closest('.sale-container');
+            const saleId = saleContainer.getAttribute('data-sale-id');
+            if (confirm('Are you sure you want to delete this sale?')) {
+                try {
+                    await remove(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId));
+                } catch (error) {
+                    console.error('Error deleting sale:', error);
+                    alert('Failed to delete sale.');
+                }
+            }
+        } else if (event.target.classList.contains('save-btn')) {
+            const saleContainer = event.target.closest('.sale-container');
+            const saleId = saleContainer.getAttribute('data-sale-id');
+            const editableFields = saleContainer.querySelectorAll('.editable');
+            const updatedSaleData = {};
+
+            editableFields.forEach(field => {
+                const fieldName = field.getAttribute('data-name');
+                updatedSaleData[fieldName] = field.textContent.trim();
+                field.contentEditable = false;
+            });
+
+            try {
+                await set(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId), updatedSaleData);
+                event.target.style.display = 'none'; // Hide Save button
+                saleContainer.querySelector('.cancel-btn').style.display = 'none'; // Hide Cancel button
+                saleContainer.querySelector('.edit-btn').style.display = 'inline-block'; // Show Edit button
+                saleContainer.querySelector('.delete-btn').style.display = 'inline-block'; // Show Delete button
+            } catch (error) {
+                console.error('Error updating sale:', error);
+                alert('Failed to update sale.');
+            }
+        } else if (event.target.classList.contains('cancel-btn')) {
+            const saleContainer = event.target.closest('.sale-container');
+            const editableFields = saleContainer.querySelectorAll('.editable');
+            editableFields.forEach(field => field.contentEditable = false);
+
+            // Hide Save and Cancel buttons, show Edit and Delete buttons
+            event.target.style.display = 'none';
+            saleContainer.querySelector('.save-btn').style.display = 'none';
+            saleContainer.querySelector('.edit-btn').style.display = 'inline-block';
+            saleContainer.querySelector('.delete-btn').style.display = 'inline-block';
+        }
+    });
+
+
     // Auth state change event listener
     onAuthStateChanged(auth, user => {
         if (user) {
