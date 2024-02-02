@@ -225,6 +225,34 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
         // Optionally, refresh the entry to revert unsaved changes
     }
 });
+document.getElementById('salesHistory').addEventListener('click', (event) => {
+    const saleContainer = event.target.closest('.sales-history-entry');
+    if (!saleContainer) return;
+
+    const saleId = saleContainer.getAttribute('data-sale-id');
+
+    if (event.target.classList.contains('edit-btn')) {
+        // Fetch the sale details from Firebase or from the element's data
+        const saleDetails = {/* Fetch sale details based on saleId */};
+
+        // Populate the edit form fields
+        document.getElementById('editLeadId').value = saleDetails.lead_id;
+        document.getElementById('editEsiContent').value = saleDetails.esi_content;
+        document.getElementById('editNotes').value = saleDetails.notes;
+
+        // Store the current saleId in the form for reference
+        document.getElementById('editSaleForm').setAttribute('data-current-sale-id', saleId);
+
+        // Show the edit modal/form
+        document.getElementById('editSaleModal').style.display = 'block';
+    }
+});
+
+// Function to close the modal
+function closeEditModal() {
+    document.getElementById('editSaleModal').style.display = 'none';
+}
+
 
 function toggleButtons(saleContainer, editing) {
     const editBtn = saleContainer.querySelector('.edit-btn');
