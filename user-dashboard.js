@@ -1,9 +1,10 @@
+// Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getDatabase, ref, push, set, query, orderByChild, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
+// TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
-    // Your Firebase configuration
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
     authDomain: "track-dac15.firebaseapp.com",
     databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
@@ -14,17 +15,11 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
+// Initialize Firebase
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-// Function to get selected ESI content
-function getSelectedESIContent() {
-    const selectedButton = document.querySelector('.esi-btn.selected');
-    return selectedButton ? selectedButton.getAttribute('data-value') : null;
-}
-
-// Toggle ESI content selection
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.esi-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -81,6 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+function getSelectedESIContent() {
+    const selectedButton = document.querySelector('.esi-btn.selected');
+    return selectedButton ? selectedButton.getAttribute('data-value') : null;
+}
+
 function getSaleTypes() {
     const saleTypes = {};
     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
@@ -89,6 +89,7 @@ function getSaleTypes() {
     });
     return saleTypes;
 }
+
 
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
