@@ -233,35 +233,33 @@ function fetchSalesHistory(userId) {
                 id: key
             }));
 
-            // Sort with a fallback for missing timestamps
-            salesArray.sort((a, b) => {
-                const timestampA = a.timestamp || '0000-00-00T00:00:00Z';
-                const timestampB = b.timestamp || '0000-00-00T00:00:00Z';
-                return timestampB.localeCompare(timestampA);
-            });
-
             salesArray.forEach(sale => {
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
 
-                // Build the HTML for sale details
-                const saleTypesHtml = Object.keys(sale.sale_types || {}).map(type => 
-                    `<span class="sale-type-span">${type.replace(/_/g, ' ')}</span>` // Replace underscores with spaces for display
-                ).join('');
+                let saleTypesHtml = '';
+                if (sale.sale_types) {
+                    saleTypesHtml = Object.keys(sale.sale_types).map(type => 
+                        `<span class="sale-type-span">${type.replace(/_/g, ' ').toUpperCase()}</span>` // Replace underscores with spaces and make uppercase for display
+                    ).join('');
+                }
 
-                const formHtml = `
+                const saleInfoHtml = `
                     <div class="sale-info">
                         <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
                         <div class="sale-data sale-type">${saleTypesHtml}</div>
                         <div class="sale-data notes">${sale.notes}</div>
                     </div>
+                `;
+
+                const saleActionsHtml = `
                     <div class="sale-actions">
-                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                        <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
                         <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
                     </div>
                 `;
-                saleContainer.innerHTML = formHtml;
 
+                saleContainer.innerHTML = saleInfoHtml + saleActionsHtml;
                 salesHistoryElement.appendChild(saleContainer);
             });
         } else {
