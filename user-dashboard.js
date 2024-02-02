@@ -14,70 +14,77 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
+
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-document.getElementById('addSalesForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+    const addSalesForm = document.getElementById('addSalesForm');
+    if (addSalesForm) {
+        addSalesForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-        alert('Please log in to add sales.');
-        return;
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                alert('Please log in to add sales.');
+                return;
+            }
+
+            const leadId = document.getElementById('lead_id').value.trim();
+            const esiContent = document.querySelector('input[name="esi_content"]:checked').value;
+            const saleTypes = getSaleTypes();
+
+            const notes = document.getElementById('notes').value.trim();
+            const saleData = {
+                lead_id: leadId,
+                esi_content: esiContent,
+                sale_types: saleTypes,
+                notes: notes,
+                user_id: currentUser.uid,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
+                await set(newSaleRef, saleData);
+
+                // Reset form and UI
+                event.target.reset();
+                document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
+                document.getElementById('confirmationMessage').textContent = `Sale with Lead ID ${leadId} added successfully.`;
+            } catch (error) {
+                console.error('Error adding sale:', error);
+                alert('Failed to add sale.');
+            }
+        });
     }
 
-    const leadId = document.getElementById('lead_id').value.trim();
-    const esiContent = document.querySelector('input[name="esi_content"]:checked').value;
+    // Toggle sale type selection
+    document.querySelectorAll('.sale-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+    });
+
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            fetchSalesHistory(user.uid);
+        } else {
+            console.log("User is not logged in. Redirecting to login page.");
+            window.location.href = 'login.html'; // Redirect to login
+        }
+    });
+});
+
+function getSaleTypes() {
     const saleTypes = {};
     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
         const value = btn.getAttribute('data-value');
         saleTypes[value] = true;
-        document.getElementById(`sale_type_${value}`).value = '1';
     });
-
-    const notes = document.getElementById('notes').value.trim();
-    const saleData = {
-        lead_id: leadId,
-        esi_content: esiContent,
-        sale_types: saleTypes,
-        notes: notes,
-        user_id: currentUser.uid,
-        timestamp: new Date().toISOString()
-    };
-
-    try {
-        const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
-        await set(newSaleRef, saleData);
-
-        // Reset form and UI
-        event.target.reset();
-        document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
-        document.getElementById('confirmationMessage').textContent = `Sale with Lead ID ${leadId} added successfully.`;
-    } catch (error) {
-        console.error('Error adding sale:', error);
-        alert('Failed to add sale.');
-    }
-});
-
-// Functionality to toggle sale type selection
-document.querySelectorAll('.sale-type-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        this.classList.toggle('selected');
-        const value = this.getAttribute('data-value');
-        const hiddenInput = document.getElementById(`sale_type_${value}`);
-        hiddenInput.value = hiddenInput.value === '0' ? '1' : '0';
-    });
-});
-
-onAuthStateChanged(auth, user => {
-    if (user) {
-        fetchSalesHistory(user.uid);
-    } else {
-        console.log("User is not logged in. Redirecting to login page.");
-        window.location.href = 'login.html'; // Redirect to login
-    }
-});
+    return saleTypes;
+}
 
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
@@ -89,13 +96,9 @@ function fetchSalesHistory(userId) {
             const sale = sales[saleId];
             const saleElement = document.createElement('div');
             saleElement.textContent = `Lead ID: ${sale.lead_id}, ESI Content: ${sale.esi_content}, Notes: ${sale.notes}`;
-            // Add more details as needed
             salesHistoryElement.appendChild(saleElement);
         }
     }, {
         onlyOnce: true
     });
 }
-
-// Implement additional functions needed for sales history display
-// ...
