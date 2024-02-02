@@ -207,22 +207,24 @@ function fetchSalesHistory(userId) {
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sale-container';
                 saleContainer.setAttribute('data-sale-id', sale.id);
-
-                // HTML template for sale details
+            
+                // Updated HTML template for sale details to include timestamp
                 const formHtml = `
                     <div class="sale-detail"><strong>Lead ID:</strong> <span class="editable" data-name="lead_id">${sale.lead_id}</span></div>
                     <div class="sale-detail"><strong>ESI Content:</strong> <span class="editable" data-name="esi_content">${sale.esi_content}</span></div>
                     <div class="sale-detail"><strong>Notes:</strong> <span class="editable" data-name="notes">${sale.notes}</span></div>
                     <div class="sale-detail"><strong>Sale Types:</strong> <span class="editable" data-name="sale_types">${Object.keys(sale.sale_types || {}).join(', ')}</span></div>
+                    <div class="sale-detail"><strong>Timestamp:</strong> <span>${sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'N/A'}</span></div>
                     <button class="edit-btn">Edit</button>
                     <button class="delete-btn">Delete</button>
                     <button class="save-btn" style="display:none;">Save</button>
                     <button class="cancel-btn" style="display:none;">Cancel</button>
                 `;
                 saleContainer.innerHTML = formHtml;
-
+            
                 salesHistoryElement.appendChild(saleContainer);
             });
+            
         } else {
             salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
         }
