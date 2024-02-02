@@ -14,12 +14,25 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
+// Function to get selected ESI content
+function getSelectedESIContent() {
+    const selectedButton = document.querySelector('.esi-btn.selected');
+    return selectedButton ? selectedButton.getAttribute('data-value') : null;
+}
+
+// Toggle ESI content selection
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.esi-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.esi-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+
     const addSalesForm = document.getElementById('addSalesForm');
     if (addSalesForm) {
         addSalesForm.addEventListener('submit', async (event) => {
@@ -32,23 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const leadId = document.getElementById('lead_id').value.trim();
-            document.querySelectorAll('.esi-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Deselect all buttons
-                    document.querySelectorAll('.esi-btn').forEach(b => {
-                        b.classList.remove('selected');
-                        // Deselect the radio button
-                        document.getElementById(`esi_${b.getAttribute('data-value').toLowerCase()}`).checked = false;
-                    });
-            
-                    // Select the clicked button
-                    this.classList.add('selected');
-                    // Check the corresponding radio button
-                    document.getElementById(`esi_${this.getAttribute('data-value').toLowerCase()}`).checked = true;
-                });
-            });
+            const esiContent = getSelectedESIContent();
             const saleTypes = getSaleTypes();
-
             const notes = document.getElementById('notes').value.trim();
             const saleData = {
                 lead_id: leadId,
@@ -62,10 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
                 await set(newSaleRef, saleData);
-
-                // Reset form and UI
                 event.target.reset();
                 document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
+                document.querySelectorAll('.esi-btn').forEach(btn => btn.classList.remove('selected'));
                 document.getElementById('confirmationMessage').textContent = `Sale with Lead ID ${leadId} added successfully.`;
             } catch (error) {
                 console.error('Error adding sale:', error);
@@ -73,13 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // Toggle sale type selection
-    document.querySelectorAll('.sale-type-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.classList.toggle('selected');
-        });
-    });
 
     onAuthStateChanged(auth, user => {
         if (user) {
@@ -99,6 +89,7 @@ function getSaleTypes() {
     });
     return saleTypes;
 }
+
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
