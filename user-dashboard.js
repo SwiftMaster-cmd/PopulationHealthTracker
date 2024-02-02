@@ -92,11 +92,57 @@ function fetchSalesHistory(userId) {
         const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
+
         for (let saleId in sales) {
             const sale = sales[saleId];
-            const saleElement = document.createElement('div');
-            saleElement.textContent = `Lead ID: ${sale.lead_id}, ESI Content: ${sale.esi_content}, Notes: ${sale.notes}`;
-            salesHistoryElement.appendChild(saleElement);
+            // Create a Bootstrap card for each sale
+            const card = document.createElement('div');
+            card.className = 'card mb-3'; // Add Bootstrap card classes
+
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body';
+
+            // Add a card title
+            const cardTitle = document.createElement('h5');
+            cardTitle.className = 'card-title';
+            cardTitle.textContent = `Sale ID: ${saleId}`;
+            cardBody.appendChild(cardTitle);
+
+            // Create a list group for sale details
+            const listGroup = document.createElement('ul');
+            listGroup.className = 'list-group list-group-flush';
+
+            // Function to add each detail to the list group
+            const addSaleDetail = (title, value) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.innerHTML = `<strong>${title}:</strong> ${value}`;
+                listGroup.appendChild(listItem);
+            };
+
+            // Add sale details
+            addSaleDetail('Lead ID', sale.lead_id);
+            addSaleDetail('ESI Content', sale.esi_content);
+            addSaleDetail('Notes', sale.notes);
+            addSaleDetail('User ID', sale.user_id);
+            addSaleDetail('Timestamp', sale.timestamp);
+
+            // Append list of sale types
+            const saleTypesList = document.createElement('li');
+            saleTypesList.className = 'list-group-item';
+            saleTypesList.innerHTML = '<strong>Sale Types:</strong>';
+            const saleTypes = sale.sale_types;
+            const saleTypesContent = document.createElement('p');
+            saleTypesContent.textContent = Object.keys(saleTypes).join(', ');
+            saleTypesList.appendChild(saleTypesContent);
+            listGroup.appendChild(saleTypesList);
+
+            // Append everything to the card
+            card.appendChild(cardBody);
+            card.appendChild(listGroup);
+
+            // Append the card to the sales history container
+            salesHistoryElement.appendChild(card);
         }
     }, {
         onlyOnce: true
