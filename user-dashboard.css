@@ -36,7 +36,7 @@ h2, h3 {
 /* Form Styles */
 .sales-container, .sales-history-container {
     margin-bottom: 30px;
-    background-color: #ffffff;
+    background-color: #FB8501; /* Orange background */
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -49,15 +49,15 @@ h2, h3 {
 .label {
     display: block;
     margin-bottom: 5px;
-    color: #607d8b;
+    color: #023047;
 }
 
 .input-field, textarea, .options input[type="radio"] {
     width: 100%;
     padding: 10px;
     border-radius: 4px;
-    border: 1px solid #b0bec5;
-    background-color: #e3f2fd;
+    border: 1px solid #219EBC; /* Medium blue border */
+    background-color: #FFB703; /* Light orange background for contrast */
     margin-bottom: 10px;
     font-size: 16px;
 }
@@ -73,18 +73,18 @@ h2, h3 {
 
 .submit-btn {
     width: 100%;
-    background-color: #FB8501;
+    background-color: #023047; /* Dark blue background */
     color: white;
 }
 
 .sale-type-btn {
     margin-right: 10px;
-    background-color: #FFB703;
+    background-color: #219EBC; /* Medium blue */
     color: white;
 }
 
 .sale-type-btn.selected {
-    background-color: #023047;
+    background-color: #FFB703; /* Light orange when selected */
 }
 
 .sale-type-btn:hover, .submit-btn:hover {
@@ -99,7 +99,7 @@ h2, h3 {
 }
 
 input[type="text"]:focus, textarea:focus {
-    border-color: #FFB703;
+    border-color: #219EBC; /* Medium blue border on focus */
     outline: none;
 }
 
@@ -109,12 +109,12 @@ input[type="text"]:focus, textarea:focus {
     overflow-y: auto;
     border-radius: 8px;
     padding: 10px;
-    background-color: #8ECAE6;
+    background-color: #8ECAE6; /* Consistent light blue background */
 }
 
 .sale-item {
-    background-color: #FB8501;
-    color: #023047;
+    background-color: #FB8501; /* Orange background */
+    color: #023047; /* Dark blue text */
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 8px;
@@ -142,11 +142,11 @@ input[type="text"]:focus, textarea:focus {
 
 /* Specific background colors based on your color palette */
 .sale-item:nth-child(odd) {
-    background-color: #FB8501;
+    background-color: #FB8501; /* Orange background */
 }
 
 .sale-item:nth-child(even) {
-    background-color: #219EBC;
+    background-color: #219EBC; /* Medium blue background */
 }
 
 /* Media Queries for Responsive Design */
