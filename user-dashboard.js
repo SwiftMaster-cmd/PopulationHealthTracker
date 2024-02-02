@@ -52,6 +52,31 @@ document.querySelectorAll('.sale-type-btn').forEach(btn => {
     });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('start');
+            } else {
+                entry.target.classList.remove('start');
+            }
+        });
+    }, {
+        threshold: 0.5 // Adjust if necessary to control when the animation starts
+    });
+
+    // Select all elements that require animation on scroll
+    const animateOnScrollElements = document.querySelectorAll('.scroll-animate-left, .scroll-animate-right');
+
+    // Add each element to the observer
+    animateOnScrollElements.forEach(element => {
+        observer.observe(element);
+    });
+});
+
+
+
+
 // Existing JavaScript code...
 
 document.getElementById('lead_id').addEventListener('paste', function(e) {

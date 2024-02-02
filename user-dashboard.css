@@ -29,22 +29,22 @@ header {
 }
 
 /* Style the main container with gradient */
-.dashboard-container {
-    max-width: 300px; /* Set max width for the User Dashboard container */
+.dashboard-container, .sales-container, .sales-history-container {
+    max-width: 750px; /* Set max width for the containers holding the forms and history */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for dashboard */
+    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for dashboard, gold to orange for sales */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    animation: fadeIn 1s ease-out;
 }
 
 .sales-container, .sales-history-container {
-    max-width: 500px; /* Set max width for the sales and sales history containers */
     background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gold to orange gradient */
-    width: 100%; /* Make sales and sales history containers fluid */
+    max-width: 500px; /* Set max width for the sales and sales history containers */
 }
 
 /* Style inputs and labels */
@@ -73,7 +73,12 @@ header {
     color: #001F3F;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     outline: none;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); /* Add shadow to input fields */
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.input-group input:focus, .input-group textarea:focus, .glow-on-focus:focus {
+    box-shadow: 0 0 10px #81e6d9;
+    outline: none;
 }
 
 .input-gradient-container:focus-within {
@@ -94,13 +99,18 @@ header {
     border-radius: 15px;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); /* Add shadow to buttons */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 .esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
     background: linear-gradient(to bottom, #FF851B, #FF6314);
-    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.esi-btn:focus, .sale-type-btn:focus, .submit-btn:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
 }
 
 .esi-btn.selected, .sale-type-btn.selected {
@@ -135,110 +145,48 @@ header {
     gap: 10px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Style the Sales History container with gradient */
-.sales-history-container {
-    width: 500px;
-    height: auto;
-    margin: 20px auto;
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gradient from gold to orange */
-    padding: 20px;
-    border-radius: 25px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Style for the sales history list */
-.sales-history {
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.scroll-animate-left {
+  animation: slideInFromLeft 1s ease-out;
+}
+
+.scroll-animate-right {
+  animation: slideInFromRight 1s ease-out;
+}
+
+a {
+    position: relative;
+    color: #007bff;
+    text-decoration: none;
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #007bff;
+    transition: all 0.3s;
+}
+
+a:hover::after {
     width: 100%;
-    overflow-y: auto;
+    left: 0;
 }
-
-/* Style for individual sale history entries */
-.sales-history-entry {
-    background-color: #FFB74D; /* Consider applying a gradient here as well if desired */
-    border-radius: 15px;
-    padding: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* Style for the sale info and actions */
-.sale-info, .sale-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.sale-actions {
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-/* Style the Sales History container */
-.sales-history-container {
-    width: 500px;
-    height: auto; /* Adjust height to be dynamic based on content */
-    margin: 20px auto;
-    background-color: #FFA500;
-    padding: 20px;
-    border-radius: 25px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Style for the sales history list */
-.sales-history {
-    width: 100%;
-    overflow-y: auto;
-}
-
-/* Updated style for individual sale history entries */
-.sales-history-entry {
-    background: linear-gradient(to bottom, #FFB74D, #FFA726); /* Smooth gradient for each entry */
-    border-radius: 15px;
-    padding: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-
-/* Updated style for the sale info */
-.sale-info {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-/* Updated style for the sale actions */
-.sale-actions {
-    display: flex;
-    justify-content: flex-end; /* Align buttons to the right */
-    gap: 10px; /* Ensure buttons don't touch */
-}
-
-/* Additional styles remain mostly unchanged */
