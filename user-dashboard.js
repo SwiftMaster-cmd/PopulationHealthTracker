@@ -132,6 +132,17 @@ onAuthStateChanged(auth, user => {
 
 
 
+let userId; // Define userId at a higher scope
+
+// Assuming you have a Firebase Authentication setup
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    userId = user.uid; // Set the userId when the user is logged in
+    fetchSalesHistory(userId); // Now you can use userId
+  } else {
+    // Handle user not logged in
+  }
+});
 
 
 
@@ -198,12 +209,14 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
         }
     }
 });
-
 // Function to open the edit modal and populate it with sale data
 async function openEditModal(saleId) {
+    const user = firebase.auth().currentUser; // Dynamically get the current user
+    if (!user) return; // Exit if no user is logged in
+  
+    const userId = user.uid; // Get the userId from the current user
     const saleRef = ref(database, `sales/${userId}/${saleId}`);
-    const snapshot = await get(saleRef);
-    const sale = snapshot.val();
+    
 
     if (sale) {
         document.getElementById('editSaleId').value = saleId;
