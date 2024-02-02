@@ -68,6 +68,7 @@ header h2 {
     gap: 10px;
     margin-top: 5px;
 }
+
 /* Style the ESI content buttons */
 .esi-btn,
 .sale-type-btn {
@@ -84,7 +85,6 @@ header h2 {
     background-color: #555;
     color: #fff;
 }
-
 
 .esi-btn:hover,
 .sale-type-btn:hover {
@@ -156,3 +156,62 @@ header h2 {
 
 /* Add more custom styles for your charts or other elements as needed */
 
+/* Additional styles for eye-appealing design */
+
+/* Increase font size for better readability */
+body {
+    font-size: 16px;
+}
+
+/* Add some padding to the main container */
+.dashboard-container {
+    padding: 40px;
+}
+
+/* Add a subtle box shadow to the sales container */
+.sales-container {
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Increase font size and add margin to the input labels */
+.label {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Add a border and box shadow to the input fields */
+.input-field {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some spacing between the options */
+.options {
+    margin-top: 10px;
+}
+
+/* Add a subtle box shadow to the sales history container */
+.sales-history-container {
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Add a border and box shadow to the sale container */
+.sale-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some spacing between the buttons */
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn {
+    margin-right: 10px;
+}
+
+/* Add a subtle box shadow to the editable text */
+.editable {
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+}
