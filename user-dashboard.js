@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
-// TODO: Replace the following with your app's Firebase project configuration
+// Your app's Firebase project configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
     authDomain: "track-dac15.firebaseapp.com",
@@ -20,7 +20,24 @@ initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
+// Function to get the value of the selected ESI content button
+function getSelectedESIContent() {
+    const selectedButton = document.querySelector('.esi-btn.selected');
+    return selectedButton ? selectedButton.getAttribute('data-value') : null;
+}
+
+// Function to get the selected sale types
+function getSaleTypes() {
+    const saleTypes = {};
+    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        saleTypes[value] = true;
+    });
+    return saleTypes;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Toggle ESI content buttons
     document.querySelectorAll('.esi-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.esi-btn').forEach(b => b.classList.remove('selected'));
@@ -28,6 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Toggle sale type buttons
+    document.querySelectorAll('.sale-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+    });
+
+    // Form submission event listener
     const addSalesForm = document.getElementById('addSalesForm');
     if (addSalesForm) {
         addSalesForm.addEventListener('submit', async (event) => {
@@ -58,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 event.target.reset();
                 document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
                 document.querySelectorAll('.esi-btn').forEach(btn => btn.classList.remove('selected'));
-                document.getElementById('confirmationMessage').textContent = `Sale with Lead ID ${leadId} added successfully.`;
+                document.getElementById('confirmationMessage').textContent = "Sale with Lead ID " + leadId + " added successfully.";
             } catch (error) {
                 console.error('Error adding sale:', error);
                 alert('Failed to add sale.');
@@ -66,29 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Auth state change event listener
     onAuthStateChanged(auth, user => {
         if (user) {
             fetchSalesHistory(user.uid);
         } else {
             console.log("User is not logged in. Redirecting to login page.");
-            window.location.href = 'login.html'; // Redirect to login
+            window.location.href = 'login.html';
         }
     });
 });
 
-function getSelectedESIContent() {
-    const selectedButton = document.querySelector('.esi-btn.selected');
-    return selectedButton ? selectedButton.getAttribute('data-value') : null;
-}
-
-function getSaleTypes() {
-    const saleTypes = {};
-    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
-        const value = btn.getAttribute('data-value');
-        saleTypes[value] = true;
-    });
-    return saleTypes;
-}
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
