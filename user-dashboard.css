@@ -136,15 +136,10 @@ header h2 {
 
 
 
-
-
-
-
-
 /* Style the Sales History container */
 .sales-history-container {
     width: 500px;
-    height: 500px;
+    height: auto; /* Adjust height to be dynamic based on content */
     margin: 20px auto;
     background-color: #FFA500;
     padding: 20px;
@@ -159,77 +154,32 @@ header h2 {
 /* Style for the sales history list */
 .sales-history {
     width: 100%;
-    max-height: 460px; /* Adjusted height to account for the title */
     overflow-y: auto;
 }
 
-/* Style for individual sale history entries */
+/* Updated style for individual sale history entries */
 .sales-history-entry {
     background-color: #FFB74D;
     border-radius: 15px;
     padding: 10px;
     margin-bottom: 10px;
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    grid-gap: 10px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust spacing between elements */
 }
 
-/* Style for the sale info and actions */
+/* Updated style for the sale info */
 .sale-info {
-    display: grid;
-    grid-template-rows: auto auto auto;
-    grid-gap: 5px;
-}
-
-.sale-actions {
     display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Style for each piece of sale data */
-.sale-data {
-    background-color: #FFA500;
-    border-radius: 10px;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     gap: 5px;
 }
 
-/* Sale type could have multiple items, so let's allow wrapping */
-.sale-type {
-    flex-wrap: wrap;
+/* Updated style for the sale actions */
+.sale-actions {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Ensure buttons don't touch */
 }
 
-/* Style for sale type spans (individually) */
-.sale-type span {
-    background-color: #FFD180;
-    border-radius: 10px;
-    padding: 2px 5px;
-}
-
-/* Style for the notes section */
-.notes {
-    grid-column: span 2; /* Let the notes span across both columns */
-}
-
-/* Style for the delete button */
-.delete-btn {
-    background-color: #FF7043;
-    border: none;
-    border-radius: 10px;
-    padding: 5px 10px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.delete-btn:hover {
-    background-color: #E64A19;
-}
-
-/* Add any additional styling as needed */
+/* Additional styles remain mostly unchanged */
