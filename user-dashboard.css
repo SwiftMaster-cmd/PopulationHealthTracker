@@ -151,7 +151,11 @@ header {
 }
 
 
+.sales-history-container {
 
+    max-height: 500px;
+    overflow: auto; /
+}
 
 .sales-history-entry {
     max-width: 750px; /* Match the Add Sales section */
