@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <link rel="stylesheet" href="user-dashboard.css"> <!-- Adjust if you have a separate CSS for sales history -->
-   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
@@ -59,6 +60,11 @@
                 <!-- Sales history will be dynamically populated here -->
             </div>
         </div>
+
+        <canvas id="dayPerformanceChart" width="400" height="200"></canvas>
+        <canvas id="monthPerformanceChart" width="400" height="200"></canvas>
+        <canvas id="yearPerformanceChart" width="400" height="200"></canvas>
+
     </div>
 
     <script type="module" src="user-dashboard.js"></script>
