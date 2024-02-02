@@ -182,6 +182,89 @@ onAuthStateChanged(auth, user => {
     }
 });
 
+
+document.getElementById('salesHistory').addEventListener('click', function(event) {
+    if (event.target.classList.contains('edit-btn')) {
+        const saleId = event.target.getAttribute('data-sale-id');
+        const saleContainer = event.target.closest('.sales-history-entry');
+        editSale(saleId, saleContainer);
+    }
+});
+
+async function editSale(saleId, saleContainer) {
+    const saleRef = ref(database, `sales/${auth.currentUser.uid}/${saleId}`);
+    const snapshot = await get(saleRef);
+    if (snapshot.exists()) {
+        const saleData = snapshot.val();
+        const editFormHtml = generateEditFormHtml(saleData, saleId);
+        saleContainer.innerHTML = editFormHtml;
+        attachSaleTypeButtonListeners(saleContainer);
+        attachSaveButtonListener(saleContainer, saleId);
+    }
+}
+
+function generateEditFormHtml(saleData, saleId) {
+    // Assuming allSaleTypes is an array of all possible sale types
+    const saleTypesHtml = allSaleTypes.map(type => {
+        const isSelected = saleData.sale_types[type] ? 'selected' : '';
+        return `<button type="button" class="sale-type-btn ${isSelected}" data-value="${type}">${type}</button>`;
+    }).join('');
+
+    return `
+        <div class="edit-sale-info">
+            <input class="edit-lead-id" value="${saleData.lead_id}">
+            <div class="edit-sale-types">${saleTypesHtml}</div>
+            <textarea class="edit-notes">${saleData.notes}</textarea>
+        </div>
+        <div class="edit-sale-actions">
+            <button class="save-btn" data-sale-id="${saleId}">Save</button>
+        </div>
+    `;
+}
+
+function attachSaleTypeButtonListeners(container) {
+    container.querySelectorAll('.sale-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+    });
+}
+function attachSaveButtonListener(container, saleId) {
+    const saveBtn = container.querySelector('.save-btn');
+    saveBtn.addEventListener('click', async function() {
+        const updatedSaleData = {
+            lead_id: container.querySelector('.edit-lead-id').value,
+            sale_types: extractSelectedSaleTypes(container),
+            notes: container.querySelector('.edit-notes').value,
+            // Preserve other fields as needed
+        };
+
+        try {
+            await set(ref(database, `sales/${auth.currentUser.uid}/${saleId}`), updatedSaleData);
+            alert('Sale updated successfully.');
+            // Optionally, refresh the sales history list or update the UI to reflect the changes
+        } catch (error) {
+            console.error('Error updating sale:', error);
+            alert('Failed to update sale.');
+        }
+    });
+}
+
+function extractSelectedSaleTypes(container) {
+    const selectedSaleTypes = {};
+    container.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        selectedSaleTypes[value] = true;
+    });
+    return selectedSaleTypes;
+}
+
+
+
+
+
+
+
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
