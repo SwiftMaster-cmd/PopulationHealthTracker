@@ -4,18 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="user-dashboard.css">
 </head>
 <body>
     <div class="dashboard-container">
         <header>
             <h2>User Dashboard</h2>
-              <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="user-dashboard.css">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
         </header>
 
         <!-- Add Sales Section -->
@@ -26,19 +21,17 @@
                     <label for="lead_id" class="label">Lead ID:</label>
                     <input type="text" id="lead_id" name="lead_id" class="input-field" required>
                 </div>
-                    <div class="input-group">
-                        <label class="label">ESI Content:</label>
-                        <div class="options">
-                            <!-- Hidden radio buttons -->
-                            <input type="radio" id="esi_yes" name="esi_content" value="Yes" style="display:none;">
-                            <input type="radio" id="esi_no" name="esi_content" value="No" style="display:none;">
-                            
-                            <!-- Visible buttons -->
-                            <button type="button" class="esi-btn" data-value="Yes">Yes</button>
-                            <button type="button" class="esi-btn" data-value="No">No</button>
-                        </div>
+                <div class="input-group">
+                    <label class="label">ESI Consent:</label>
+                    <div class="options">
+                        <!-- Hidden radio buttons -->
+                        <input type="radio" id="esi_yes" name="esi_content" value="Yes" style="display:none;">
+                        <input type="radio" id="esi_no" name="esi_content" value="No" style="display:none;">
+                        
+                        <!-- Visible buttons -->
+                        <button type="button" class="esi-btn" data-value="Yes">Yes</button>
+                        <button type="button" class="esi-btn" data-value="No">No</button>
                     </div>
-                    
                 </div>
                 <div class="input-group">
                     <label class="label">Sale Type:</label>
