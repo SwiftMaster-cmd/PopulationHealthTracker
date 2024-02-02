@@ -155,6 +155,7 @@ if (salesHistoryElement) {
     });
 }
 
+
 // Auth state change event listener
 onAuthStateChanged(auth, user => {
     if (user) {
@@ -165,6 +166,14 @@ onAuthStateChanged(auth, user => {
         window.location.href = 'login.html';
     }
 });
+
+
+document.getElementById('lead_id').addEventListener('input', function(e) {
+    // Remove non-digit characters from the input
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+
 
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
