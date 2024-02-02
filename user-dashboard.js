@@ -226,24 +226,17 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
     }
 });
 
-// Utility function to toggle button visibility
 function toggleButtons(saleContainer, editing) {
     const editBtn = saleContainer.querySelector('.edit-btn');
     const deleteBtn = saleContainer.querySelector('.delete-btn');
     const saveBtn = saleContainer.querySelector('.save-btn');
     const cancelBtn = saleContainer.querySelector('.cancel-btn');
 
-    if (editing) {
-        editBtn.style.display = 'none';
-        deleteBtn.style.display = 'none';
-        saveBtn.style.display = '';
-        cancelBtn.style.display = '';
-    } else {
-        editBtn.style.display = '';
-        deleteBtn.style.display = '';
-        saveBtn.style.display = 'none';
-        cancelBtn.style.display = 'none';
-    }
+    // Check if elements exist before trying to access their 'style' property
+    if (editBtn) editBtn.style.display = editing ? 'none' : '';
+    if (deleteBtn) deleteBtn.style.display = editing ? 'none' : '';
+    if (saveBtn) saveBtn.style.display = editing ? '' : 'none';
+    if (cancelBtn) cancelBtn.style.display = editing ? '' : 'none';
 }
 
 // Don't forget to call fetchSalesHistory with the current user's ID
