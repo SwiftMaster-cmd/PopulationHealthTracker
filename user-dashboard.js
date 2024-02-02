@@ -54,11 +54,25 @@ document.querySelectorAll('.sale-type-btn').forEach(btn => {
 
 // Existing JavaScript code...
 
+document.getElementById('lead_id').addEventListener('paste', function(e) {
+    // Prevent the default paste action
+    e.preventDefault();
+    
+    // Get the text content from the clipboard
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    
+    // Extract numbers from the pasted text
+    const numbers = text.match(/\d+/g);
+    
+    // If numbers are found, join them and set the input field's value
+    if (numbers) {
+        this.value = numbers.join('');
+    }
+});
+
+// Keep the input event listener to handle typing and ensure only numbers are entered
 document.getElementById('lead_id').addEventListener('input', function() {
-    // Extract numbers from the current value
-    const numbers = this.value.match(/\d+/g);
-    // Set the input field's value to the extracted numbers or empty if no numbers were found
-    this.value = numbers ? numbers.join('') : '';
+    this.value = this.value.replace(/[^0-9]/g, '');
 });
 
 
