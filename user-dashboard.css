@@ -57,16 +57,30 @@ header h2 {
     align-items: center;
     margin-bottom: 15px;
 }
+/* Container for inputs to apply gradient */
+.input-gradient-container {
+    background: linear-gradient(to bottom, #007BFF, #0056b3); /* Example gradient */
+    border-radius: 15px; /* Match your input field's border-radius */
+    padding: 1px; /* Adjust as needed to fit the design */
+}
 
+/* Adjusted styles for Lead ID input and Notes textarea */
 #lead_id,
 #notes {
-    width: 300px;
-    padding: 10px;
-    border-radius: 15px;
-    border: 1px solid #007BFF; /* Adjusted for consistency */
-    font-weight: bold;
-    color: #001F3F;
-    background-color: #FFFFFF;
+    width: 100%; /* Adjust width to fit inside the container */
+    margin: 0; /* Reset any margin to align properly inside the container */
+    padding: 10px; /* Padding for better text spacing */
+    border-radius: 14px; /* Slightly less than the container to fit inside */
+    border: none; /* Remove border to rely on container's styling */
+    font-weight: bold; /* Bold text for input fields */
+    color: #001F3F; /* Navy blue text for input fields */
+    background-color: transparent; /* Make the background transparent */
+    outline: none; /* Optional: remove the outline to rely on the container's styling */
+}
+
+/* Ensure container inherits focus styling */
+.input-gradient-container:focus-within {
+    box-shadow: 0 0 0 2px #0056b3; /* Example focus style */
 }
 
 #notes {
