@@ -13,19 +13,15 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #8ECAE6;
+    background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
     padding: 20px;
-    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
 }
 
 .dashboard-container {
-    max-width: 800px;
-    width: 100%;
-    background: white;
+    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s ease-out;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 h2, h3 {
@@ -34,12 +30,13 @@ h2, h3 {
 }
 
 /* Form Styles */
+/* Update the background of the sales-container and sales-history-container */
 .sales-container, .sales-history-container {
-    margin-bottom: 30px;
-    background-color: #FB8501; /* Orange background */
+    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    
 }
 
 .input-group {
@@ -57,7 +54,7 @@ h2, h3 {
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #219EBC; /* Medium blue border */
-    background-color: #FFB703; /* Light orange background for contrast */
+    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%); /* Orange gradient background */
     margin-bottom: 10px;
     font-size: 16px;
 }
@@ -102,9 +99,10 @@ input[type="text"]:focus, textarea:focus {
     border-color: #219EBC; /* Medium blue border on focus */
     outline: none;
 }
+
 /* Add this new CSS for the sale history */
 .sales-history-container {
-    background-color: #8ECAE6; /* Light blue background */
+    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -134,17 +132,13 @@ input[type="text"]:focus, textarea:focus {
     font-size: 14px;
 }
 
-.sale-item .sale-type {
-    margin-top: 10px;
-}
-
 /* Specific background colors based on your color palette */
 .sale-item:nth-child(odd) {
-    background-color: #FB8501; /* Orange background */
+    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%); /* Orange gradient background */
 }
 
 .sale-item:nth-child(even) {
-    background-color: #219EBC; /* Medium blue background */
+    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%); /* Orange gradient background */
 }
 
 
