@@ -89,8 +89,6 @@ function getSaleTypes() {
     });
     return saleTypes;
 }
-
-
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
@@ -98,29 +96,40 @@ function fetchSalesHistory(userId) {
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
-        for (let saleId in sales) {
-            const sale = sales[saleId];
+        if (sales) { // Ensure there are sales to process
+            Object.keys(sales).forEach((saleId) => {
+                const sale = sales[saleId];
+                const saleContainer = document.createElement('div');
+                saleContainer.className = 'sale-container';
 
-            // Create a container for each sale
-            const saleContainer = document.createElement('div');
-            saleContainer.className = 'sale-container';
+                // Function to add each detail
+                const addDetail = (title, value) => {
+                    const detailDiv = document.createElement('div');
+                    detailDiv.className = 'sale-detail';
+                    detailDiv.innerHTML = `<strong>${title}:</strong> ${value}`;
+                    saleContainer.appendChild(detailDiv);
+                };
 
-            // Function to add each detail
-            const addDetail = (title, value) => {
-                const detailDiv = document.createElement('div');
-                detailDiv.className = 'sale-detail';
-                detailDiv.innerHTML = `<strong>${title}:</strong> ${value}`;
-                saleContainer.appendChild(detailDiv);
-            };
+                // Add sale details
+                addDetail('Lead ID', sale.lead_id);
+                addDetail('ESI Content', sale.esi_content);
+                addDetail('Notes', sale.notes);
+                addDetail('Timestamp', sale.timestamp);
 
-            // Add sale details
-            addDetail('Lead ID', sale.lead_id);
-            addDetail('ESI Content', sale.esi_content);
-            addDetail('Sale Types', Object.keys(sale.sale_types).join(', '));
-            addDetail('Notes', sale.notes);
-            addDetail('Timestamp', sale.timestamp);
+                // Safely add Sale Types
+                if (sale.sale_types && typeof sale.sale_types === 'object') {
+                    const saleTypes = Object.keys(sale.sale_types).join(', ');
+                    addDetail('Sale Types', saleTypes);
+                } else {
+                    // Handle cases where sale_types might be missing or invalid
+                    addDetail('Sale Types', 'N/A');
+                }
 
-            salesHistoryElement.appendChild(saleContainer);
+                salesHistoryElement.appendChild(saleContainer);
+            });
+        } else {
+            // Handle case where there are no sales
+            salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
         }
     }, {
         onlyOnce: true
