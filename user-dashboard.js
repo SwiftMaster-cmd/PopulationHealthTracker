@@ -15,6 +15,7 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
+
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const auth = getAuth();
@@ -51,7 +52,7 @@ document.querySelectorAll('.sale-type-btn').forEach(btn => {
     });
 });
 
-// Form submission event listener
+// Form submission event listener for adding new sales
 const addSalesForm = document.getElementById('addSalesForm');
 if (addSalesForm) {
     addSalesForm.addEventListener('submit', async (event) => {
@@ -90,180 +91,80 @@ if (addSalesForm) {
     });
 }
 
-// Edit and Delete buttons click event listener
+// Handling Edit and Delete button actions
 const salesHistoryElement = document.getElementById('salesHistory');
-salesHistoryElement.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('edit-btn')) {
+if (salesHistoryElement) {
+    salesHistoryElement.addEventListener('click', async (event) => {
         const saleContainer = event.target.closest('.sale-container');
-        const saleId = saleContainer.getAttribute('data-sale-id');
-        const editableFields = saleContainer.querySelectorAll('.editable');
-        editableFields.forEach(field => field.contentEditable = true);
+        if (!saleContainer) return;
 
-        // Show Save and Cancel buttons, hide Edit button
-        saleContainer.querySelector('.edit-btn').style.display = 'none';
-        saleContainer.querySelector('.delete-btn').style.display = 'none';
-        saleContainer.querySelector('.save-btn').style.display = 'inline-block';
-        saleContainer.querySelector('.cancel-btn').style.display = 'inline-block';
-        
-        // Fetch all available sale types and update the buttons
-        const availableSaleTypes = await fetchAvailableSaleTypes(auth.currentUser.uid);
-        updateSaleTypeButtons(availableSaleTypes);
-    } else if (event.target.classList.contains('delete-btn')) {
-        const saleContainer = event.target.closest('.sale-container');
         const saleId = saleContainer.getAttribute('data-sale-id');
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await remove(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId));
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-                alert('Failed to delete sale.');
+
+        if (event.target.classList.contains('edit-btn')) {
+            // Code for handling edit action
+            const editableFields = saleContainer.querySelectorAll('.editable');
+            editableFields.forEach(field => field.contentEditable = true);
+
+            // Show Save and Cancel buttons, hide Edit and Delete buttons
+            saleContainer.querySelector('.edit-btn').style.display = 'none';
+            saleContainer.querySelector('.delete-btn').style.display = 'none';
+            saleContainer.querySelector('.save-btn').style.display = 'inline-block';
+            saleContainer.querySelector('.cancel-btn').style.display = 'inline-block';
+        } else if (event.target.classList.contains('delete-btn')) {
+            // Code for handling delete action
+            if (confirm('Are you sure you want to delete this sale?')) {
+                try {
+                    await remove(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId));
+                    // Optionally, refresh the sales history or remove the element from the DOM
+                } catch (error) {
+                    console.error('Error deleting sale:', error);
+                    alert('Failed to delete sale.');
+                }
             }
-        }
-    } else if (event.target.classList.contains('save-btn')) {
-        const saleContainer = event.target.closest('.sale-container');
-        const saleId = saleContainer.getAttribute('data-sale-id');
-        const editableFields = saleContainer.querySelectorAll('.editable');
-        const updatedSaleData = {};
+        } else if (event.target.classList.contains('save-btn')) {
+            // Code for handling save action after editing
+            const editableFields = saleContainer.querySelectorAll('.editable');
+            const updatedSaleData = {};
 
-        editableFields.forEach(field => {
-            const fieldName = field.getAttribute('data-name');
-            updatedSaleData[fieldName] = field.textContent.trim();
-            field.contentEditable = false;
-        });
-
-        try {
-            await set(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId), updatedSaleData);
-            event.target.style.display = 'none'; // Hide Save button
-            saleContainer.querySelector('.cancel-btn').style.display = 'none'; // Hide Cancel button
-            saleContainer.querySelector('.edit-btn').style.display = 'inline-block'; // Show Edit button
-            saleContainer.querySelector('.delete-btn').style.display = 'inline-block'; // Show Delete button
-        } catch (error) {
-            console.error('Error updating sale:', error);
-            alert('Failed to update sale.');
-        }
-    } else if (event.target.classList.contains('cancel-btn')) {
-        const saleContainer = event.target.closest('.sale-container');
-        const editableFields = saleContainer.querySelectorAll('.editable');
-        editableFields.forEach(field => field.contentEditable = false);
-
-        // Hide Save and Cancel buttons, show Edit and Delete buttons
-        event.target.style.display = 'none';
-        saleContainer.querySelector('.save-btn').style.display = 'none';
-        saleContainer.querySelector('.edit-btn').style.display = 'inline-block';
-        saleContainer.querySelector('.delete-btn').style.display = 'inline-block';
-    }
-});
-
-// Fetch available sale types based on the user's UID
-async function fetchAvailableSaleTypes(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    const snapshot = await get(salesRef);
-
-    let availableSaleTypes = {};
-    if (snapshot.exists()) {
-        snapshot.forEach(childSnapshot => {
-            const sale = childSnapshot.val();
-            Object.keys(sale.sale_types || {}).forEach(type => {
-                availableSaleTypes[type] = true;
+            editableFields.forEach(field => {
+                const fieldName = field.getAttribute('data-name');
+                updatedSaleData[fieldName] = field.textContent.trim();
             });
-        });
-    }
 
-    return availableSaleTypes;
+            try {
+                await set(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId), updatedSaleData);
+                // Reset UI to non-editable state
+                editableFields.forEach(field => field.contentEditable = false);
+                saleContainer.querySelector('.save-btn').style.display = 'none';
+                saleContainer.querySelector('.cancel-btn').style.display = 'none';
+                saleContainer.querySelector('.edit-btn').style.display = 'inline-block';
+                saleContainer.querySelector('.delete-btn').style.display = 'inline-block';
+            } catch (error) {
+                console.error('Error updating sale:', error);
+                alert('Failed to update sale.');
+            }
+        } else if (event.target.classList.contains('cancel-btn')) {
+            // Code for handling cancel action
+            const editableFields = saleContainer.querySelectorAll('.editable');
+            editableFields.forEach(field => field.contentEditable = false);
+            saleContainer.querySelector('.save-btn').style.display = 'none';
+            saleContainer.querySelector('.cancel-btn').style.display = 'none';
+            saleContainer.querySelector('.edit-btn').style.display = 'inline-block';
+            saleContainer.querySelector('.delete-btn').style.display = 'inline-block';
+        }
+    });
 }
 
 // Auth state change event listener
 onAuthStateChanged(auth, user => {
     if (user) {
+        // Function to fetch and display sales history
         fetchSalesHistory(user.uid);
     } else {
         console.log("User is not logged in. Redirecting to login page.");
         window.location.href = 'login.html';
     }
 });
-
-
-document.getElementById('salesHistory').addEventListener('click', function(event) {
-    if (event.target.classList.contains('edit-btn')) {
-        const saleId = event.target.getAttribute('data-sale-id');
-        const saleContainer = event.target.closest('.sales-history-entry');
-        editSale(saleId, saleContainer);
-    }
-});
-
-async function editSale(saleId, saleContainer) {
-    const saleRef = ref(database, `sales/${auth.currentUser.uid}/${saleId}`);
-    const snapshot = await get(saleRef);
-    if (snapshot.exists()) {
-        const saleData = snapshot.val();
-        const editFormHtml = generateEditFormHtml(saleData, saleId);
-        saleContainer.innerHTML = editFormHtml;
-        attachSaleTypeButtonListeners(saleContainer);
-        attachSaveButtonListener(saleContainer, saleId);
-    }
-}
-
-function generateEditFormHtml(saleData, saleId) {
-    // Assuming allSaleTypes is an array of all possible sale types
-    const saleTypesHtml = allSaleTypes.map(type => {
-        const isSelected = saleData.sale_types[type] ? 'selected' : '';
-        return `<button type="button" class="sale-type-btn ${isSelected}" data-value="${type}">${type}</button>`;
-    }).join('');
-
-    return `
-        <div class="edit-sale-info">
-            <input class="edit-lead-id" value="${saleData.lead_id}">
-            <div class="edit-sale-types">${saleTypesHtml}</div>
-            <textarea class="edit-notes">${saleData.notes}</textarea>
-        </div>
-        <div class="edit-sale-actions">
-            <button class="save-btn" data-sale-id="${saleId}">Save</button>
-        </div>
-    `;
-}
-
-function attachSaleTypeButtonListeners(container) {
-    container.querySelectorAll('.sale-type-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.classList.toggle('selected');
-        });
-    });
-}
-function attachSaveButtonListener(container, saleId) {
-    const saveBtn = container.querySelector('.save-btn');
-    saveBtn.addEventListener('click', async function() {
-        const updatedSaleData = {
-            lead_id: container.querySelector('.edit-lead-id').value,
-            sale_types: extractSelectedSaleTypes(container),
-            notes: container.querySelector('.edit-notes').value,
-            // Preserve other fields as needed
-        };
-
-        try {
-            await set(ref(database, `sales/${auth.currentUser.uid}/${saleId}`), updatedSaleData);
-            alert('Sale updated successfully.');
-            // Optionally, refresh the sales history list or update the UI to reflect the changes
-        } catch (error) {
-            console.error('Error updating sale:', error);
-            alert('Failed to update sale.');
-        }
-    });
-}
-
-function extractSelectedSaleTypes(container) {
-    const selectedSaleTypes = {};
-    container.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
-        const value = btn.getAttribute('data-value');
-        selectedSaleTypes[value] = true;
-    });
-    return selectedSaleTypes;
-}
-
-
-
-
-
-
 
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
