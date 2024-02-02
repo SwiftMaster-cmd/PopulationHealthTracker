@@ -102,14 +102,12 @@ input[type="text"]:focus, textarea:focus {
     border-color: #219EBC; /* Medium blue border on focus */
     outline: none;
 }
-
-/* Sales History Styles */
-.sales-history {
-    max-height: 400px;
-    overflow-y: auto;
+/* Add this new CSS for the sale history */
+.sales-history-container {
+    background-color: #8ECAE6; /* Light blue background */
+    padding: 20px;
     border-radius: 8px;
-    padding: 10px;
-    background-color: #8ECAE6; /* Consistent light blue background */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .sale-item {
@@ -148,6 +146,7 @@ input[type="text"]:focus, textarea:focus {
 .sale-item:nth-child(even) {
     background-color: #219EBC; /* Medium blue background */
 }
+
 
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
