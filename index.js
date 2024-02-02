@@ -47,17 +47,25 @@ async function loginUser(email, password) {
 async function googleSignIn() {
     try {
         const result = await signInWithPopup(auth, provider);
+        // User is signed in
         const user = result.user;
-        console.log('Google sign-in user:', user);
 
-        // Save or update user data in Realtime Database
-        const userDataRef = ref(database, 'users/' + user.uid);
-        await set(userDataRef, { email: user.email, displayName: user.displayName });
+        // Fetch user role from Firebase Realtime Database
+        const roleRef = firebase.database().ref('users/' + user.uid + '/role');
+        roleRef.once('value').then((snapshot) => {
+            const role = snapshot.val();
+
+            // Redirect based on role
+            if (role === 'manager') {
+                window.location.href = 'manager-dashboard.html';
+            } else {
+                window.location.href = 'user-dashboard.html';
+            }
+        });
     } catch (error) {
         console.error('Error during Google sign-in:', error);
     }
 }
-
 // Add Sale Function
 async function addSale(saleData) {
     try {
