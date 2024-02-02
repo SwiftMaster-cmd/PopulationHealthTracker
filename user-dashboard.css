@@ -73,18 +73,18 @@ h2, h3 {
 
 .submit-btn {
     width: 100%;
-    background-color: #00bfa5;
+    background-color: #FB8501;
     color: white;
 }
 
 .sale-type-btn {
     margin-right: 10px;
-    background-color: #29b6f6;
+    background-color: #FFB703;
     color: white;
 }
 
 .sale-type-btn.selected {
-    background-color: #009688;
+    background-color: #023047;
 }
 
 .sale-type-btn:hover, .submit-btn:hover {
@@ -99,7 +99,7 @@ h2, h3 {
 }
 
 input[type="text"]:focus, textarea:focus {
-    border-color: #29b6f6;
+    border-color: #FFB703;
     outline: none;
 }
 
@@ -113,7 +113,7 @@ input[type="text"]:focus, textarea:focus {
 }
 
 .sale-item {
-    background-color: #FFB703;
+    background-color: #FB8501;
     color: #023047;
     padding: 15px;
     margin-bottom: 15px;

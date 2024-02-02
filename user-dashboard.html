@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <link rel="stylesheet" href="user-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <h2>User Dashboard</h2>
+        <header>
+            <h2>User Dashboard</h2>
+        </header>
 
         <!-- Add Sales Section -->
         <div class="sales-container">
@@ -40,7 +43,7 @@
                     <label for="notes" class="label">Notes:</label>
                     <textarea id="notes" name="notes" rows="4" cols="50" class="input-field" required></textarea>
                 </div>
-                <button type="submit" class="submit-btn">Add Sale</button>
+                <button type="submit" class="submit-btn"><i class="fas fa-plus"></i> Add Sale</button>
             </form>
             <div id="confirmationMessage"></div>
         </div>
