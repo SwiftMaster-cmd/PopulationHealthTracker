@@ -101,6 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
@@ -109,29 +111,28 @@ function fetchSalesHistory(userId) {
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
         if (sales) {
-            // Convert sales object to an array and sort by timestamp
             const salesArray = Object.keys(sales).map(key => ({
                 ...sales[key],
                 id: key
             })).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
-            // Iterate through the sorted array to display each sale
             salesArray.forEach(sale => {
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sale-container';
+                saleContainer.setAttribute('data-sale-id', sale.id); // Add sale ID as data attribute for reference
 
-                const addDetail = (title, value) => {
-                    const detailDiv = document.createElement('div');
-                    detailDiv.className = 'sale-detail';
-                    detailDiv.innerHTML = `<strong>${title}:</strong> ${value}`;
-                    saleContainer.appendChild(detailDiv);
-                };
-
-                addDetail('Lead ID', sale.lead_id);
-                addDetail('ESI Content', sale.esi_content);
-                addDetail('Sale Types', Object.keys(sale.sale_types || {}).join(', '));
-                addDetail('Notes', sale.notes);
-                addDetail('Timestamp', new Date(sale.timestamp).toLocaleString());
+                // Add sale details as editable fields (hidden by default)
+                const formHtml = `
+                    <div class="sale-detail"><strong>Lead ID:</strong> <input type="text" class="edit-field" value="${sale.lead_id}" disabled></div>
+                    <div class="sale-detail"><strong>ESI Content:</strong> <input type="text" class="edit-field" value="${sale.esi_content}" disabled></div>
+                    <div class="sale-detail"><strong>Notes:</strong> <textarea class="edit-field" disabled>${sale.notes}</textarea></div>
+                    <div class="sale-detail"><strong>Sale Types:</strong> <input type="text" class="edit-field" value="${Object.keys(sale.sale_types || {}).join(', ')}" disabled></div>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                    <button class="save-btn" style="display:none;">Save</button>
+                    <button class="cancel-btn" style="display:none;">Cancel</button>
+                `;
+                saleContainer.innerHTML = formHtml;
 
                 salesHistoryElement.appendChild(saleContainer);
             });
