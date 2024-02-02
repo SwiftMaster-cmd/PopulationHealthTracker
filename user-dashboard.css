@@ -29,10 +29,10 @@ header {
 }
 
 /* Style the main container with gradient */
-.dashboard-container, .sales-container, .sales-history-container {
-    max-width: 750px; /* Set max width for the containers holding the forms and history */
+.dashboard-container {
+    max-width: 300px; /* Set max width for the User Dashboard container */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for dashboard, gold to orange for sales */
+    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for dashboard */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
@@ -42,8 +42,9 @@ header {
 }
 
 .sales-container, .sales-history-container {
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gold to orange gradient */
     max-width: 500px; /* Set max width for the sales and sales history containers */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gold to orange gradient */
+    width: 100%; /* Make sales and sales history containers fluid */
 }
 
 /* Style inputs and labels */
@@ -72,6 +73,7 @@ header {
     color: #001F3F;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); /* Add shadow to input fields */
 }
 
 .input-gradient-container:focus-within {
@@ -93,6 +95,7 @@ header {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); /* Add shadow to buttons */
 }
 
 .esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
@@ -131,6 +134,19 @@ header {
     justify-content: flex-end;
     gap: 10px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
