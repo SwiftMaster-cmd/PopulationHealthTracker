@@ -1,132 +1,157 @@
-/* General Reset */
+/* Reset some default styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
 }
 
+/* Body styles */
 body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #8ECAE6; /* Consistent light blue background */
 }
 
-.sales-container {
-    background-color: #FB8501; /* Consistent orange background */
+/* Dashboard container */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 20px;
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    width: 350px; /* Adjust as needed */
-    animation: scaleUp 0.5s ease-in-out;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Dashboard title */
 h2 {
-    color: #023047; /* Consistent dark blue text */
-    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
     text-align: center;
+    margin-bottom: 20px;
 }
 
-.input-group {
-    margin-bottom: 15px;
+/* Form container */
+.sales-container {
+    background-color: #f4b400;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-label {
+/* Form labels */
+.label {
     display: block;
+    font-weight: bold;
+    color: #023047;
     margin-bottom: 5px;
-    color: #023047; /* Consistent dark blue text */
 }
 
-input[type="text"], textarea, .options input[type="radio"] {
+/* Form input fields */
+.input-field {
     width: 100%;
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 10px;
-    border: 1px solid #219EBC; /* Medium blue border */
-    background-color: #FFB703; /* Light yellow background for contrast */
-    color: #023047; /* Dark blue text for readability */
+    border: 1px solid #219eBC;
+    background-color: #ffb703;
+    color: #023047;
 }
 
-input[type="text"]:focus, textarea:focus {
-    border-color: #FB8501; /* Consistent orange border on focus */
+/* Form input focus styles */
+.input-field:focus {
+    border-color: #fb8501;
     outline: none;
+}
+
+/* Radio buttons */
+.options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .options label {
     margin-right: 10px;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 3px;
 }
 
+.options label:hover {
+    background-color: #4285f4;
+    color: #fff;
+}
+
+/* Sale type buttons */
 .sale-type-buttons {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .sale-type-btn {
-    background-color: #023047; /* Dark blue background */
-    color: #FFB703; /* Yellow text */
+    flex: 1;
+    padding: 10px;
+    background-color: #4285f4;
+    color: #fff;
     border: none;
     border-radius: 4px;
-    padding: 5px 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .sale-type-btn.selected {
-    background-color: #219EBC; /* Medium blue when selected */
+    background-color: #f4b400;
 }
 
+/* Submit button */
 .submit-btn {
+    display: block;
     width: 100%;
     padding: 10px;
-    background-color: #023047; /* Dark blue background */
-    color: white;
+    background-color: #4285f4;
+    color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover {
-    background-color: #219EBC; /* Medium blue on hover */
+    background-color: #f4b400;
 }
 
-.view-history {
-    display: block;
-    text-align: center;
-    color: #FB8501; /* Orange text to match theme */
-    margin-top: 15px;
-    text-decoration: none;
-    transition: color 0.3s ease;
+/* Confirmation message */
+#confirmationMessage {
+    color: #4caf50;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
-.view-history:hover {
-    color: #219EBC; /* Medium blue for hover */
+/* Sales history container */
+.sales-history-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes scaleUp {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+.sales-history-container h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
 }
 
-/* Additional styles for sales history and item styling */
-#salesHistory {
-    max-height: 300px; /* Set a maximum height for the container */
-    overflow-y: auto; /* Add vertical scrollbar when content overflows */
-}
-
+/* Sales history item */
 .sale-item {
-    background-color: #FFB703; /* Light yellow background */
-    color: #023047; /* Dark blue text */
+    background-color: #ffb703;
+    color: #023047;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 10px;
@@ -134,10 +159,9 @@ input[type="text"]:focus, textarea:focus {
     text-align: left;
 }
 
-.sale-item p {
-    margin: 5px 0;
-}
-
-.sale-item strong {
-    font-weight: bold;
+/* Charts */
+canvas {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
 }

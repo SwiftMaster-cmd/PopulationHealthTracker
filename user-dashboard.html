@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
-    <link rel="stylesheet" href="user-dashboard.css"> <!-- Adjust if you have a separate CSS for sales history -->
-  
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel="stylesheet" href="user-dashboard.css">
 </head>
 <body>
     <div class="dashboard-container">
@@ -15,55 +13,51 @@
         <!-- Add Sales Section -->
         <div class="sales-container">
             <h3>Add Sales</h3>
-            <form id="addSalesForm" class="form-container">
+            <form id="addSalesForm">
                 <div class="input-group">
-                    <label for="lead_id">Lead ID:</label>
-                    <input type="text" id="lead_id" name="lead_id" required>
+                    <label for="lead_id" class="label">Lead ID:</label>
+                    <input type="text" id="lead_id" name="lead_id" class="input-field" required>
                 </div>
                 <div class="input-group">
-                    <label>ESI Content:</label>
+                    <label class="label">ESI Content:</label>
                     <div class="options">
-                        <input type="radio" id="esi_yes" name="esi_content" value="Yes">
+                        <input type="radio" id="esi_yes" name="esi_content" value="Yes" class="input-field">
                         <label for="esi_yes">Yes</label>
-                        <input type="radio" id="esi_no" name="esi_content" value="No">
+                        <input type="radio" id="esi_no" name="esi_content" value="No" class="input-field">
                         <label for="esi_no">No</label>
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Sale Type:</label>
+                    <label class="label">Sale Type:</label>
                     <div class="sale-type-buttons">
                         <button type="button" class="sale-type-btn" data-value="billable_hra">Billable HRA</button>
                         <button type="button" class="sale-type-btn" data-value="flex_hra">Flex HRA</button>
                         <button type="button" class="sale-type-btn" data-value="select_rx">Select RX</button>
                         <button type="button" class="sale-type-btn" data-value="transfer">Transfer</button>
                     </div>
-                    <!-- Hidden inputs to store sale type values -->
-                    <input type="hidden" id="sale_type_billable_hra" name="sale_type[billable_hra]" value="0">
-                    <input type="hidden" id="sale_type_flex_hra" name="sale_type[flex_hra]" value="0">
-                    <input type="hidden" id="sale_type_select_rx" name="sale_type[select_rx]" value="0">
-                    <input type="hidden" id="sale_type_transfer" name="sale_type[transfer]" value="0">
                 </div>
                 <div class="input-group">
-                    <label for="notes">Notes:</label>
-                    <textarea id="notes" name="notes" rows="4" cols="50" required></textarea>
+                    <label for="notes" class="label">Notes:</label>
+                    <textarea id="notes" name="notes" rows="4" cols="50" class="input-field" required></textarea>
                 </div>
                 <button type="submit" class="submit-btn">Add Sale</button>
             </form>
-            <div id="confirmationMessage" style="margin-top: 10px;"></div>
+            <div id="confirmationMessage"></div>
         </div>
 
         <!-- Sales History Section -->
         <div class="sales-history-container">
             <h3>Sales History</h3>
-            <div id="salesHistory">
+            <div id="salesHistory" class="sales-history">
                 <!-- Sales history will be dynamically populated here -->
             </div>
         </div>
 
-        <canvas id="dayPerformanceChart" width="400" height="200"></canvas>
-        <canvas id="monthPerformanceChart" width="400" height="200"></canvas>
-        <canvas id="yearPerformanceChart" width="400" height="200"></canvas>
-
+        <div class="charts-container">
+            <canvas id="dayPerformanceChart" width="400" height="200"></canvas>
+            <canvas id="monthPerformanceChart" width="400" height="200"></canvas>
+            <canvas id="yearPerformanceChart" width="400" height="200"></canvas>
+        </div>
     </div>
 
     <script type="module" src="user-dashboard.js"></script>
