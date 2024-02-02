@@ -193,14 +193,22 @@ function fetchSalesHistory(userId) {
             const salesArray = Object.keys(sales).map(key => ({
                 ...sales[key],
                 id: key
-            })).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+            }));
+
+            // Sort with a fallback for missing timestamps
+            salesArray.sort((a, b) => {
+                // Handle missing 'timestamp' by providing a fallback that sorts such entries last
+                const timestampA = a.timestamp || '0000-00-00T00:00:00Z'; // Fallback for missing or undefined timestamps
+                const timestampB = b.timestamp || '0000-00-00T00:00:00Z'; // Ensures comparison is always between strings
+                return timestampB.localeCompare(timestampA);
+            });
 
             salesArray.forEach(sale => {
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sale-container';
                 saleContainer.setAttribute('data-sale-id', sale.id);
 
-                // Create HTML for sale details, including edit and delete buttons
+                // HTML template for sale details
                 const formHtml = `
                     <div class="sale-detail"><strong>Lead ID:</strong> <span class="editable" data-name="lead_id">${sale.lead_id}</span></div>
                     <div class="sale-detail"><strong>ESI Content:</strong> <span class="editable" data-name="esi_content">${sale.esi_content}</span></div>
