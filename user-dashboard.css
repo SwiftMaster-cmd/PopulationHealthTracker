@@ -70,3 +70,16 @@
     flex-grow: 1;
     text-align: center;
 }
+/* Specific styles for Lead ID input and Notes textarea */
+#lead_id,
+#notes {
+    width: 300px; /* Set the width of the Lead ID input and Notes textarea to 300px */
+    max-width: 300px; /* Ensures the width does not exceed 300px */
+}
+
+/* Optional: If you want to prevent users from resizing the textarea */
+#notes {
+    resize: none; /* Disables resizing of the textarea */
+}
+
+/* The rest of your CSS stays the same */
