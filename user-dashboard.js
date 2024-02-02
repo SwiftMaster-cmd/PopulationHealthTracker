@@ -197,34 +197,34 @@ function fetchSalesHistory(userId) {
 
             // Sort with a fallback for missing timestamps
             salesArray.sort((a, b) => {
-                // Handle missing 'timestamp' by providing a fallback that sorts such entries last
-                const timestampA = a.timestamp || '0000-00-00T00:00:00Z'; // Fallback for missing or undefined timestamps
-                const timestampB = b.timestamp || '0000-00-00T00:00:00Z'; // Ensures comparison is always between strings
+                const timestampA = a.timestamp || '0000-00-00T00:00:00Z';
+                const timestampB = b.timestamp || '0000-00-00T00:00:00Z';
                 return timestampB.localeCompare(timestampA);
             });
 
             salesArray.forEach(sale => {
                 const saleContainer = document.createElement('div');
-                saleContainer.className = 'sale-container';
-                saleContainer.setAttribute('data-sale-id', sale.id);
-            
-                // Updated HTML template for sale details to include timestamp
+                saleContainer.className = 'sales-history-entry';
+
+                // Build the HTML for sale details
+                const saleTypesHtml = Object.keys(sale.sale_types || {}).map(type => 
+                    `<span class="sale-type-span">${type.replace(/_/g, ' ')}</span>` // Replace underscores with spaces for display
+                ).join('');
+
                 const formHtml = `
-                    <div class="sale-detail"><strong>Lead ID:</strong> <span class="editable" data-name="lead_id">${sale.lead_id}</span></div>
-                    <div class="sale-detail"><strong>ESI Content:</strong> <span class="editable" data-name="esi_content">${sale.esi_content}</span></div>
-                    <div class="sale-detail"><strong>Notes:</strong> <span class="editable" data-name="notes">${sale.notes}</span></div>
-                    <div class="sale-detail"><strong>Sale Types:</strong> <span class="editable" data-name="sale_types">${Object.keys(sale.sale_types || {}).join(', ')}</span></div>
-                    <div class="sale-detail"><strong>Timestamp:</strong> <span>${sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'N/A'}</span></div>
-                    <button class="edit-btn">Edit</button>
-                    <button class="delete-btn">Delete</button>
-                    <button class="save-btn" style="display:none;">Save</button>
-                    <button class="cancel-btn" style="display:none;">Cancel</button>
+                    <div class="sale-info">
+                        <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
+                        <div class="sale-data sale-type">${saleTypesHtml}</div>
+                        <div class="sale-data notes">${sale.notes}</div>
+                    </div>
+                    <div class="sale-actions">
+                        <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                    </div>
                 `;
                 saleContainer.innerHTML = formHtml;
-            
+
                 salesHistoryElement.appendChild(saleContainer);
             });
-            
         } else {
             salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
         }
