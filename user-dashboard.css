@@ -112,3 +112,70 @@ header h2 {
     background-color: #FF851B; /* Orange for selected state */
     transform: scale(1.1); /* Slightly increase size for selected state */
 }
+/* Sales History Container */
+.sales-history-container {
+    background-color: #FFA500; /* Orange background */
+    padding: 20px;
+    border-radius: 25px; /* Rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    margin: 20px auto; /* Centering the container */
+    width: 90%; /* Adjust width as needed */
+    max-width: 800px; /* Maximum width */
+}
+
+/* Sales History Entries */
+.sales-container {
+    background-color: #FFD700; /* Lighter orange for entries */
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 15px; /* Rounded corners */
+    display: flex;
+    justify-content: space-between; /* Spacing between items */
+    align-items: center;
+}
+
+/* Sales Detail Styling */
+.sale-detail {
+    font-weight: bold; /* Make text bold */
+    color: #001F3F; /* Navy blue text */
+    margin-right: 10px; /* Spacing to the right */
+}
+
+/* Buttons inside the Sales Entry */
+.edit-btn, .delete-btn, .save-btn, .cancel-btn {
+    background-color: #007BFF; /* Baby blue for buttons */
+    border: none;
+    border-radius: 10px; /* Rounded corners */
+    padding: 8px 16px;
+    color: white; /* White text */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; /* Interactive effects */
+}
+
+.edit-btn:hover, .delete-btn:hover, .save-btn:hover, .cancel-btn:hover {
+    background-color: #FF851B; /* Orange for hover state */
+    transform: scale(1.05); /* Slight increase in size on hover */
+}
+
+/* Icon styling if you are using font-awesome or similar */
+.fas {
+    margin-right: 5px; /* Space between icon and text */
+}
+
+/* Responsive adjustments if necessary */
+@media (max-width: 600px) {
+    .sales-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sale-detail {
+        margin-bottom: 5px;
+    }
+
+    .edit-btn, .delete-btn, .save-btn, .cancel-btn {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
