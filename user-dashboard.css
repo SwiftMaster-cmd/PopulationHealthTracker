@@ -68,7 +68,7 @@ header h2 {
     gap: 10px;
     margin-top: 5px;
 }
-
+/* Style the ESI content buttons */
 .esi-btn,
 .sale-type-btn {
     padding: 10px 15px;
@@ -77,6 +77,14 @@ header h2 {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
+/* Add styles for the buttons when they are clicked or pressed */
+.esi-btn:active,
+.sale-type-btn:active {
+    background-color: #555;
+    color: #fff;
+}
+
 
 .esi-btn:hover,
 .sale-type-btn:hover {
