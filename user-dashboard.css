@@ -150,6 +150,41 @@ header {
     gap: 10px;
 }
 
+
+
+
+
+.sales-history-entry {
+    max-width: 750px; /* Match the Add Sales section */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFA500, #FF8C00);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sale-type-span {
+    display: inline-block;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    cursor: default; /* Change to default to indicate non-clickable */
+    user-select: none; /* Prevent text selection */
+}
+
+
+
+
+
+
+
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
