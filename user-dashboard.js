@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
@@ -109,13 +108,18 @@ function fetchSalesHistory(userId) {
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
-        if (sales) { // Ensure there are sales to process
-            Object.keys(sales).forEach((saleId) => {
-                const sale = sales[saleId];
+        if (sales) {
+            // Convert sales object to an array and sort by timestamp
+            const salesArray = Object.keys(sales).map(key => ({
+                ...sales[key],
+                id: key
+            })).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+
+            // Iterate through the sorted array to display each sale
+            salesArray.forEach(sale => {
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sale-container';
 
-                // Function to add each detail
                 const addDetail = (title, value) => {
                     const detailDiv = document.createElement('div');
                     detailDiv.className = 'sale-detail';
@@ -123,25 +127,15 @@ function fetchSalesHistory(userId) {
                     saleContainer.appendChild(detailDiv);
                 };
 
-                // Add sale details
                 addDetail('Lead ID', sale.lead_id);
                 addDetail('ESI Content', sale.esi_content);
+                addDetail('Sale Types', Object.keys(sale.sale_types || {}).join(', '));
                 addDetail('Notes', sale.notes);
-                addDetail('Timestamp', sale.timestamp);
-
-                // Safely add Sale Types
-                if (sale.sale_types && typeof sale.sale_types === 'object') {
-                    const saleTypes = Object.keys(sale.sale_types).join(', ');
-                    addDetail('Sale Types', saleTypes);
-                } else {
-                    // Handle cases where sale_types might be missing or invalid
-                    addDetail('Sale Types', 'N/A');
-                }
+                addDetail('Timestamp', new Date(sale.timestamp).toLocaleString());
 
                 salesHistoryElement.appendChild(saleContainer);
             });
         } else {
-            // Handle case where there are no sales
             salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
         }
     }, {
