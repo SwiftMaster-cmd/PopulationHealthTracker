@@ -1,77 +1,90 @@
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-    }
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
 
-    .dashboard-container {
-        padding: 20px;
-    }
+.dashboard-container {
+    padding: 20px;
+}
 
-    header {
-        margin-bottom: 20px;
-    }
+header {
+    margin-bottom: 20px;
+}
 
-    .sales-container, .sales-history-container, .charts-container {
-        margin-bottom: 20px;
-    }
+.sales-container, .sales-history-container, .charts-container {
+    margin-bottom: 20px;
+}
 
-    .input-group, .sales-history-container, .sale-container {
-        margin-bottom: 10px;
-    }
+.input-group, .sales-history-container, .sale-container {
+    margin-bottom: 10px;
+}
 
-    .input-field, .submit-btn, .sale-type-btn {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        box-sizing: border-box;
-    }
+.input-field, .submit-btn, .sale-type-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+.esi-btn {
+    background-color: #f0f0f0;
+    color: black;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
 
-    .sale-type-btn {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-        margin-top: 10px;
-    }
+.esi-btn.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
 
-    .sale-type-btn.selected {
-        background-color: #0056b3;
-    }
 
-    .sales-history {
-        border: 1px solid #ddd;
-        height: 300px; /* Adjust based on your needs */
-        overflow-y: auto; /* Enables vertical scrolling */
-        padding: 10px;
-        background-color: #f9f9f9;
-    }
+.sale-type-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
 
-    .sale-container {
-        border: 1px solid #ccc;
-        padding: 10px;
-        background-color: white;
-        border-radius: 5px;
-    }
+.sale-type-btn.selected {
+    background-color: #0056b3;
+}
 
-    .sale-detail {
-        margin-bottom: 5px;
-    }
+.sales-history {
+    border: 1px solid #ddd;
+    height: 300px; /* Adjust based on your needs */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 10px;
+    background-color: #f9f9f9;
+}
 
-    .sale-detail strong {
-        margin-right: 5px;
-    }
+.sale-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+}
 
-    .submit-btn {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
+.sale-detail {
+    margin-bottom: 5px;
+}
 
-    .submit-btn i {
-        margin-right: 5px;
-    }
-</style>
+.sale-detail strong {
+    margin-right: 5px;
+}
+
+.submit-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.submit-btn i {
+    margin-right: 5px;
+}

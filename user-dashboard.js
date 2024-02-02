@@ -32,7 +32,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const leadId = document.getElementById('lead_id').value.trim();
-            const esiContent = document.querySelector('input[name="esi_content"]:checked').value;
+            document.querySelectorAll('.esi-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Deselect all buttons
+                    document.querySelectorAll('.esi-btn').forEach(b => {
+                        b.classList.remove('selected');
+                        // Deselect the radio button
+                        document.getElementById(`esi_${b.getAttribute('data-value').toLowerCase()}`).checked = false;
+                    });
+            
+                    // Select the clicked button
+                    this.classList.add('selected');
+                    // Check the corresponding radio button
+                    document.getElementById(`esi_${this.getAttribute('data-value').toLowerCase()}`).checked = true;
+                });
+            });
             const saleTypes = getSaleTypes();
 
             const notes = document.getElementById('notes').value.trim();

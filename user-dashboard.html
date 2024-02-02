@@ -26,14 +26,19 @@
                     <label for="lead_id" class="label">Lead ID:</label>
                     <input type="text" id="lead_id" name="lead_id" class="input-field" required>
                 </div>
-                <div class="input-group">
-                    <label class="label">ESI Content:</label>
-                    <div class="options">
-                        <input type="radio" id="esi_yes" name="esi_content" value="Yes" class="input-field">
-                        <label for="esi_yes">Yes</label>
-                        <input type="radio" id="esi_no" name="esi_content" value="No" class="input-field">
-                        <label for="esi_no">No</label>
+                    <div class="input-group">
+                        <label class="label">ESI Content:</label>
+                        <div class="options">
+                            <!-- Hidden radio buttons -->
+                            <input type="radio" id="esi_yes" name="esi_content" value="Yes" style="display:none;">
+                            <input type="radio" id="esi_no" name="esi_content" value="No" style="display:none;">
+                            
+                            <!-- Visible buttons -->
+                            <button type="button" class="esi-btn" data-value="Yes">Yes</button>
+                            <button type="button" class="esi-btn" data-value="No">No</button>
+                        </div>
                     </div>
+                    
                 </div>
                 <div class="input-group">
                     <label class="label">Sale Type:</label>
