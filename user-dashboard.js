@@ -132,164 +132,114 @@ onAuthStateChanged(auth, user => {
 
 
 
+
+
+
+
+// Assuming Firebase initialization has already been done
+
+// Function to fetch and display sales history
 function fetchSalesHistory(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
+    const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
         if (sales) {
-            const salesArray = Object.keys(sales).map(key => ({
-                ...sales[key],
-                id: key
-            }));
-
-            // Sort with a fallback for missing timestamps
-            salesArray.sort((a, b) => {
-                const timestampA = a.timestamp || '0000-00-00T00:00:00Z';
-                const timestampB = b.timestamp || '0000-00-00T00:00:00Z';
-                return timestampB.localeCompare(timestampA);
-            });
-
-            salesArray.forEach(sale => {
+            Object.keys(sales).forEach((key) => {
+                const sale = sales[key];
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
+                saleContainer.setAttribute('data-sale-id', key);
+                // Assuming sale.timestamp exists and is a valid date
+                const formattedTimestamp = new Date(sale.timestamp).toLocaleString();
 
-                // Build the HTML for sale details including ESI content
-                const esiContentHtml = sale.esi_content ? `<div class="sale-data esi-content">ESI: ${sale.esi_content}</div>` : '';
-                const saleTypesHtml = Object.keys(sale.sale_types || {}).map(type => 
-                    `<span class="sale-type-span">${type.replace(/_/g, ' ').toUpperCase()}</span>` // Replace underscores with spaces for display
-                ).join('');
-
-                const formHtml = `
+                saleContainer.innerHTML = `
                     <div class="sale-info">
-                        <div class="sale-data sale-id">Sale ID: ${sale.id}</div>
-                        ${esiContentHtml}
-                        <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
-                        <div class="sale-data sale-type">Sale Types: ${saleTypesHtml}</div>
-                        <div class="sale-data notes">Notes: ${sale.notes}</div>
+                        <div class="sale-data">Sale ID: ${key}</div>
+                        <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+                        <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+                        <div class="sale-data">Sale Types: ${Object.keys(sale.sale_types || {}).join(', ')}</div>
+                        <div class="sale-data">Notes: ${sale.notes}</div>
+                        <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
                     </div>
                     <div class="sale-actions">
-                        <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                        <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                        <button class="edit-btn" data-sale-id="${key}">Edit</button>
+                        <button class="delete-btn" data-sale-id="${key}">Delete</button>
                     </div>
                 `;
-                saleContainer.innerHTML = formHtml;
-
                 salesHistoryElement.appendChild(saleContainer);
             });
         } else {
             salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
         }
-    }, {
-      
     });
 }
 
-
-
-// Handling user actions
+// Handling user actions for edit and delete
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
     const saleContainer = event.target.closest('.sales-history-entry');
     if (!saleContainer) return;
 
     const saleId = saleContainer.getAttribute('data-sale-id');
-    const editableFields = saleContainer.querySelectorAll('.editable');
 
     if (event.target.classList.contains('edit-btn')) {
-        editableFields.forEach(field => field.contentEditable = true);
-        toggleButtons(saleContainer, true);
+        openEditModal(saleId);
     } else if (event.target.classList.contains('delete-btn')) {
         if (confirm('Are you sure you want to delete this sale?')) {
             try {
-                await remove(ref(database, `sales/${auth.currentUser.uid}/${saleId}`));
+                await remove(ref(database, `sales/${userId}/${saleId}`));
+                saleContainer.remove(); // Remove the sale entry from the DOM
             } catch (error) {
                 console.error('Error deleting sale:', error);
                 alert('Failed to delete sale.');
             }
         }
-    } else if (event.target.classList.contains('save-btn')) {
-        const updatedSaleData = { notes: editableFields[0].innerText }; // Example for notes, extend as needed
-        try {
-            await set(ref(database, `sales/${auth.currentUser.uid}/${saleId}`), updatedSaleData);
-            editableFields.forEach(field => field.contentEditable = false);
-            toggleButtons(saleContainer, false);
-        } catch (error) {
-            console.error('Error updating sale:', error);
-            alert('Failed to update sale.');
-        }
-    } else if (event.target.classList.contains('cancel-btn')) {
-        editableFields.forEach(field => field.contentEditable = false);
-        toggleButtons(saleContainer, false);
-        // Optionally, refresh the entry to revert unsaved changes
     }
 });
-document.getElementById('salesHistory').addEventListener('click', (event) => {
-    const saleContainer = event.target.closest('.sales-history-entry');
-    if (!saleContainer) return;
 
-    const saleId = saleContainer.getAttribute('data-sale-id');
+// Function to open the edit modal and populate it with sale data
+async function openEditModal(saleId) {
+    const saleRef = ref(database, `sales/${userId}/${saleId}`);
+    const snapshot = await get(saleRef);
+    const sale = snapshot.val();
 
-    if (event.target.classList.contains('edit-btn')) {
-        // Fetch the sale details from Firebase or from the element's data
-        const saleDetails = {/* Fetch sale details based on saleId */};
+    if (sale) {
+        document.getElementById('editSaleId').value = saleId;
+        document.getElementById('editLeadId').value = sale.lead_id;
+        document.getElementById('editEsiContent').value = sale.esi_content;
+        document.getElementById('editNotes').value = sale.notes;
 
-        // Populate the edit form fields
-        document.getElementById('editLeadId').value = saleDetails.lead_id;
-        document.getElementById('editEsiContent').value = saleDetails.esi_content;
-        document.getElementById('editNotes').value = saleDetails.notes;
-
-        // Store the current saleId in the form for reference
-        document.getElementById('editSaleForm').setAttribute('data-current-sale-id', saleId);
-
-        // Show the edit modal/form
         document.getElementById('editSaleModal').style.display = 'block';
     }
-});
+}
 
-// Function to close the modal
-function closeEditModal() {
-    document.getElementById('editSaleModal').style.display = 'none';
-}document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
+// Handling the edit form submission
+document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const currentSaleId = event.target.getAttribute('data-current-sale-id');
-    const updatedLeadId = document.getElementById('editLeadId').value;
-    const updatedEsiContent = document.getElementById('editEsiContent').value;
-    const updatedNotes = document.getElementById('editNotes').value;
-
-    // Construct the updated sale object
-    const updatedSale = {
-        lead_id: updatedLeadId,
-        esi_content: updatedEsiContent,
-        notes: updatedNotes,
-        // Include other fields as necessary
+    const saleId = document.getElementById('editSaleId').value;
+    const updatedSaleData = {
+        lead_id: document.getElementById('editLeadId').value,
+        esi_content: document.getElementById('editEsiContent').value,
+        notes: document.getElementById('editNotes').value,
     };
 
     try {
-        await set(ref(database, `sales/${auth.currentUser.uid}/${currentSaleId}`), updatedSale);
-        closeEditModal(); // Close the modal on success
-        // Optionally, refresh the sales history to reflect changes
+        await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
+        closeEditModal();
+        fetchSalesHistory(userId); // Refresh the sales history to reflect the changes
     } catch (error) {
         console.error('Error updating sale:', error);
         alert('Failed to update sale.');
     }
 });
 
-
-function toggleButtons(saleContainer, editing) {
-    const editBtn = saleContainer.querySelector('.edit-btn');
-    const deleteBtn = saleContainer.querySelector('.delete-btn');
-    const saveBtn = saleContainer.querySelector('.save-btn');
-    const cancelBtn = saleContainer.querySelector('.cancel-btn');
-
-    // Check if elements exist before trying to access their 'style' property
-    if (editBtn) editBtn.style.display = editing ? 'none' : '';
-    if (deleteBtn) deleteBtn.style.display = editing ? 'none' : '';
-    if (saveBtn) saveBtn.style.display = editing ? '' : 'none';
-    if (cancelBtn) cancelBtn.style.display = editing ? '' : 'none';
+// Function to close the edit modal
+function closeEditModal() {
+    document.getElementById('editSaleModal').style.display = 'none';
 }
 
-// Don't forget to call fetchSalesHistory with the current user's ID
-// fetchSalesHistory(auth.currentUser.uid);
+// Call fetchSalesHistory with the current user's ID upon initialization or user authentication state change
+fetchSalesHistory(userId);

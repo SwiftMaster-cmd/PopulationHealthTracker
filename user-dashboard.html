@@ -58,28 +58,27 @@
     <div id="confirmationMessage"></div>
 </div>
 
-
-<!-- Edit Sale Modal -->
+<!-- Edit Sale Modal/Form -->
 <div id="editSaleModal" style="display:none;">
     <form id="editSaleForm">
-        <label for="editLeadId">Lead ID:</label>
-        <input type="text" id="editLeadId" name="lead_id">
-
-        <label for="editEsiContent">ESI Content:</label>
-        <select id="editEsiContent" name="esi_content">
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
-
-        <!-- Add more fields as necessary -->
-        
-        <label for="editNotes">Notes:</label>
-        <textarea id="editNotes" name="notes"></textarea>
-
+        <input type="hidden" id="editSaleId">
+        <div>
+            <label for="editLeadId">Lead ID:</label>
+            <input type="text" id="editLeadId" name="lead_id">
+        </div>
+        <div>
+            <label for="editEsiContent">ESI Content:</label>
+            <input type="text" id="editEsiContent" name="esi_content">
+        </div>
+        <div>
+            <label for="editNotes">Notes:</label>
+            <textarea id="editNotes" name="notes"></textarea>
+        </div>
         <button type="submit">Save Changes</button>
         <button type="button" onclick="closeEditModal()">Cancel</button>
     </form>
 </div>
+
 
         <!-- Sales History Section -->
         <div class="sales-history-container">
