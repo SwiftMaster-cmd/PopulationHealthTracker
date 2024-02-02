@@ -89,7 +89,6 @@ if (addSalesForm) {
         }
     });
 }
-
 salesHistoryElement.addEventListener('click', async (event) => {
     if (event.target.classList.contains('edit-btn')) {
         const saleId = event.target.getAttribute('data-sale-id');
@@ -167,6 +166,23 @@ function extractSelectedSaleTypes(container) {
     return selectedSaleTypes;
 }
 
+// Fetch available sale types based on the user's UID
+async function fetchAvailableSaleTypes(userId) {
+    const salesRef = ref(database, 'sales/' + userId);
+    const snapshot = await get(salesRef);
+
+    let availableSaleTypes = {};
+    if (snapshot.exists()) {
+        snapshot.forEach(childSnapshot => {
+            const sale = childSnapshot.val();
+            Object.keys(sale.sale_types || {}).forEach(type => {
+                availableSaleTypes[type] = true;
+            });
+        });
+    }
+
+    return availableSaleTypes;
+}
 
 // Auth state change event listener
 onAuthStateChanged(auth, user => {
