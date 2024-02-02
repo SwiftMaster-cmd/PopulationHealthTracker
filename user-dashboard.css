@@ -1,156 +1,77 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
-    transition: background-color 0.3s ease;
-}
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
 
-body {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: linear-gradient(to bottom, #8ECAE6 0%, #219EBC 100%);
+    .dashboard-container {
         padding: 20px;
     }
-    
 
+    header {
+        margin-bottom: 20px;
+    }
 
-.dashboard-container {
-    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
+    .sales-container, .sales-history-container, .charts-container {
+        margin-bottom: 20px;
+    }
 
-h2, h3 {
-    color: #023047;
-    text-align: center;
-}
+    .input-group, .sales-history-container, .sale-container {
+        margin-bottom: 10px;
+    }
 
-/* Form Styles */
-/* Update the background of the sales-container and sales-history-container */
-.sales-container, .sales-history-container {
-    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-.label {
-    display: block;
-    margin-bottom: 5px;
-    color: #023047;
-}
-
-.input-field, textarea, .options input[type="radio"] {
-    width: 100%;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #219EBC; /* Medium blue border */
-    background: linear-gradient(to bottom, #FB8501 0%, #FFB703 100%);
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.submit-btn, .sale-type-btn {
-    cursor: pointer;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: all 0.2s ease-in-out;
-}
-
-.submit-btn {
-    width: 100%;
-    background: linear-gradient(to bottom, #023047 0%, #023047 100%);
-    color: white;
-}
-
-.sale-type-btn {
-    margin-right: 10px;
-    background-color: #219EBC; /* Medium blue */
-    color: white;
-}
-
-.sale-type-btn.selected {
-    background-color: #FFB703; /* Light orange when selected */
-}
-
-.sale-type-btn:hover, .submit-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Animations and Transitions */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-input[type="text"]:focus, textarea:focus {
-    border-color: #219EBC; /* Medium blue border on focus */
-    outline: none;
-}
-
-/* Add this new CSS for the sale history */
-.sales-history-container {
-    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.sale-item {
-    background-color: #FB8501; /* Orange background */
-    color: #023047; /* Dark blue text */
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-}
-
-.sale-item:not(:last-child) {
-    margin-bottom: 10px;
-}
-
-.sale-item h4 {
-    margin-bottom: 5px;
-}
-
-.sale-item p {
-    margin: 0;
-    font-size: 14px;
-}
-
-/* Specific background colors based on your color palette */
-.sale-item:nth-child(odd) {
-    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%); /* Orange gradient background */
-}
-
-.sale-item:nth-child(even) {
-    background: linear-gradient(120deg, #FB8500 0%, #FFB703 100%); /* Orange gradient background */
-}
-
-
-/* Media Queries for Responsive Design */
-@media (max-width: 768px) {
-    .sale-item {
+    .input-field, .submit-btn, .sale-type-btn {
+        display: block;
+        width: 100%;
         padding: 10px;
+        margin-top: 5px;
+        box-sizing: border-box;
     }
 
-    .sale-item h4 {
-        font-size: 16px;
+    .sale-type-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
     }
-}
+
+    .sale-type-btn.selected {
+        background-color: #0056b3;
+    }
+
+    .sales-history {
+        border: 1px solid #ddd;
+        height: 300px; /* Adjust based on your needs */
+        overflow-y: auto; /* Enables vertical scrolling */
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+
+    .sale-container {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: white;
+        border-radius: 5px;
+    }
+
+    .sale-detail {
+        margin-bottom: 5px;
+    }
+
+    .sale-detail strong {
+        margin-right: 5px;
+    }
+
+    .submit-btn {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .submit-btn i {
+        margin-right: 5px;
+    }
+</style>
