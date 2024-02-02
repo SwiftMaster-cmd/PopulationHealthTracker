@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Assuming `userId` is defined and valid
+    fetchSalesHistory(userId); 
+});
 
 
 // Existing JavaScript code...
