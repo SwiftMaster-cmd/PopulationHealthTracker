@@ -108,7 +108,7 @@ function setupEventListeners() {
             window.location.href = 'login.html';
         }
     });
-});
+
 
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
