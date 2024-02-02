@@ -52,6 +52,14 @@ document.querySelectorAll('.sale-type-btn').forEach(btn => {
     });
 });
 
+// Existing JavaScript code...
+
+// Add this at the end of user-dashboard.js
+document.getElementById('lead_id').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+
 // Form submission event listener for adding new sales
 const addSalesForm = document.getElementById('addSalesForm');
 if (addSalesForm) {
@@ -168,10 +176,6 @@ onAuthStateChanged(auth, user => {
 });
 
 
-document.getElementById('lead_id').addEventListener('input', function(e) {
-    // Remove non-digit characters from the input
-    this.value = this.value.replace(/[^0-9]/g, '');
-});
 
 
 
