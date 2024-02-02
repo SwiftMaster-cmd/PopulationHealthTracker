@@ -74,7 +74,7 @@ header h2 {
     border: none; /* Remove border to rely on container's styling */
     font-weight: bold; /* Bold text for input fields */
     color: #001F3F; /* Navy blue text for input fields */
-    background-color: transparent; /* Make the background transparent */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gradient from gold to orange */
     outline: none; /* Optional: remove the outline to rely on the container's styling */
 }
 
