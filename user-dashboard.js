@@ -1,128 +1,78 @@
-// Firebase configuration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getDatabase, ref, push, set, query, orderByChild, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
 const firebaseConfig = {
     // Your Firebase configuration
-    apiKey: "your-api-key",
-    authDomain: "your-auth-domain",
-    databaseURL: "your-database-url",
-    projectId: "your-project-id",
-    storageBucket: "your-storage-bucket",
-    messagingSenderId: "your-messaging-sender-id",
-    appId: "your-app-id",
-    measurementId: "your-measurement-id"
+    apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+    authDomain: "track-dac15.firebaseapp.com",
+    databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+    projectId: "track-dac15",
+    storageBucket: "track-dac15.appspot.com",
+    messagingSenderId: "495156821305",
+    appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+    measurementId: "G-RVBYB0RR06"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
+initializeApp(firebaseConfig);
+const auth = getAuth();
+const database = getDatabase();
 
-// Function to create and update charts
-function createCharts(salesData) {
-    // Prepare data for charts
-    const dayPerformanceData = calculatePerformanceByDay(salesData);
-    const monthPerformanceData = calculatePerformanceByMonth(salesData);
-    const yearPerformanceData = calculatePerformanceByYear(salesData);
+document.getElementById('addSalesForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-    // Create or update the Day Performance Chart
-    createOrUpdateChart('dayPerformanceChart', 'Day Performance', 'line', dayPerformanceData);
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+        alert('Please log in to add sales.');
+        return;
+    }
 
-    // Create or update the Month Performance Chart
-    createOrUpdateChart('monthPerformanceChart', 'Month Performance', 'line', monthPerformanceData);
-
-    // Create or update the Year Performance Chart
-    createOrUpdateChart('yearPerformanceChart', 'Year Performance', 'line', yearPerformanceData);
-}
-
-// Function to calculate day performance
-function calculatePerformanceByDay(salesData) {
-    // Implement logic to calculate day performance from salesData
-    // Return data in a suitable format for the chart
-    // Example:
-    const labels = ["Day 1", "Day 2", "Day 3"]; // Replace with actual labels
-    const data = [10, 15, 8]; // Replace with actual data
-    return {
-        labels: labels,
-        datasets: [
-            {
-                label: "Sales",
-                data: data,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                borderWidth: 1
-            }
-        ]
-    };
-}
-
-// Function to calculate month performance
-function calculatePerformanceByMonth(salesData) {
-    // Implement logic to calculate month performance from salesData
-    // Return data in a suitable format for the chart
-    // Example:
-    const labels = ["Jan", "Feb", "Mar"]; // Replace with actual labels
-    const data = [50, 60, 45]; // Replace with actual data
-    return {
-        labels: labels,
-        datasets: [
-            {
-                label: "Sales",
-                data: data,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                borderWidth: 1
-            }
-        ]
-    };
-}
-
-// Function to calculate year performance
-function calculatePerformanceByYear(salesData) {
-    // Implement logic to calculate year performance from salesData
-    // Return data in a suitable format for the chart
-    // Example:
-    const labels = ["2022", "2023", "2024"]; // Replace with actual labels
-    const data = [200, 250, 180]; // Replace with actual data
-    return {
-        labels: labels,
-        datasets: [
-            {
-                label: "Sales",
-                data: data,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                borderWidth: 1
-            }
-        ]
-    };
-}
-
-// Function to create or update a chart
-function createOrUpdateChart(chartId, chartTitle, chartType, data) {
-    const chartContext = document.getElementById(chartId).getContext('2d');
-    new Chart(chartContext, {
-        type: chartType,
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: chartTitle,
-                },
-            },
-        },
+    const leadId = document.getElementById('lead_id').value.trim();
+    const esiContent = document.querySelector('input[name="esi_content"]:checked').value;
+    const saleTypes = {};
+    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        saleTypes[value] = true;
+        document.getElementById(`sale_type_${value}`).value = '1';
     });
-}
 
-// Add the rest of your code...
+    const notes = document.getElementById('notes').value.trim();
+    const saleData = {
+        lead_id: leadId,
+        esi_content: esiContent,
+        sale_types: saleTypes,
+        notes: notes,
+        user_id: currentUser.uid,
+        timestamp: new Date().toISOString()
+    };
 
-// Fetch and use sales data from Firebase
-firebase.auth().onAuthStateChanged(user => {
+    try {
+        const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
+        await set(newSaleRef, saleData);
+
+        // Reset form and UI
+        event.target.reset();
+        document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
+        document.getElementById('confirmationMessage').textContent = `Sale with Lead ID ${leadId} added successfully.`;
+    } catch (error) {
+        console.error('Error adding sale:', error);
+        alert('Failed to add sale.');
+    }
+});
+
+// Functionality to toggle sale type selection
+document.querySelectorAll('.sale-type-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        this.classList.toggle('selected');
+        const value = this.getAttribute('data-value');
+        const hiddenInput = document.getElementById(`sale_type_${value}`);
+        hiddenInput.value = hiddenInput.value === '0' ? '1' : '0';
+    });
+});
+
+onAuthStateChanged(auth, user => {
     if (user) {
-        fetchSalesHistory(user.uid).then((salesData) => {
-            createCharts(salesData);
-        });
+        fetchSalesHistory(user.uid);
     } else {
         console.log("User is not logged in. Redirecting to login page.");
         window.location.href = 'login.html'; // Redirect to login
@@ -130,23 +80,22 @@ firebase.auth().onAuthStateChanged(user => {
 });
 
 function fetchSalesHistory(userId) {
-    const salesRef = firebase.database().ref('sales/' + userId);
-    return salesRef.once('value').then((snapshot) => {
+    const salesRef = ref(database, 'sales/' + userId);
+    onValue(salesRef, (snapshot) => {
         const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
-        const salesData = [];
         for (let saleId in sales) {
             const sale = sales[saleId];
             const saleElement = document.createElement('div');
             saleElement.textContent = `Lead ID: ${sale.lead_id}, ESI Content: ${sale.esi_content}, Notes: ${sale.notes}`;
             // Add more details as needed
             salesHistoryElement.appendChild(saleElement);
-            salesData.push(sale);
         }
-        return salesData;
-    }).catch((error) => {
-        console.error('Error fetching sales data:', error);
-        return [];
+    }, {
+        onlyOnce: true
     });
 }
+
+// Implement additional functions needed for sales history display
+// ...
