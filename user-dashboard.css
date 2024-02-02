@@ -1,162 +1,86 @@
-/* Reset some default styles to start with a clean slate */
+/* Reset and Base Styles */
 body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-/* Set a background color for the entire page */
 body {
-    background-color: #E3F2FD; /* Lighter shade of baby blue for the page background */
+    background-color: #E3F2FD;
     font-family: Arial, sans-serif;
-    font-size: 16px; /* Improved readability */
+    font-size: 16px;
+    color: #333;
 }
 
-/* Style the header */
+/* Header */
 header {
-    background-color: #001F3F; /* Navy blue for header background */
-    color: #FF851B; /* Orange for header text */
+    background-color: #001F3F;
+    color: #FF851B;
     text-align: center;
     padding: 20px 0;
+    font-size: 24px;
     animation: fade-in 0.5s ease-in-out;
 }
 
-header h2 {
-    font-size: 24px;
-}
-/* Style the sale type buttons when they are selected */
-.sale-type-btn.selected,
-.esi-btn.selected {
-    background-color: #FF851B; /* Orange for selected state */
-    color: #fff; /* White text for contrast */
-}
-
-/* Style the main container */
-.dashboard-container {
+/* Main Container and Sections */
+.dashboard-container, .sales-container, .sales-history-container {
     max-width: 1200px;
     margin: 20px auto;
+    padding: 20px;
     background-color: #fff;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    padding: 40px; /* Increased padding */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     animation: slide-up 0.5s ease-in-out;
 }
 
-/* Style the Add Sales section */
 .sales-container {
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #BBDEFB; /* Baby blue for Add Sales section background */
-    border: 1px solid #001F3F; /* Navy blue border */
-    border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    animation: fade-in 0.5s ease-in-out;
+    background-color: #BBDEFB; /* Blue background for Add Sales section */
+    border: 1px solid #001F3F;
 }
 
-.sales-container h3 {
-    font-size: 20px;
+.sales-container h3, .sales-container .label {
     margin-bottom: 10px;
-    color: #001F3F; /* Navy blue for titles */
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-.label {
     font-weight: bold;
-    display: block;
-    margin-bottom: 10px;
-    font-size: 18px; /* Increased font size */
-    color: #001F3F; /* Navy blue for labels */
+    color: #001F3F;
+    font-size: 20px;
 }
 
-.input-field {
+.input-field, .editable {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Added shadow */
-    animation: fade-in 0.5s ease-in-out;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.options {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* Style the buttons */
-.esi-btn,
-.sale-type-btn,
-.submit-btn,
-.edit-btn,
-.delete-btn,
-.save-btn,
-.cancel-btn {
+/* Buttons */
+button, .esi-btn, .sale-type-btn, .submit-btn, .edit-btn, .delete-btn, .save-btn, .cancel-btn {
     padding: 10px 15px;
-    border: none;
+    margin-right: 5px;
     border-radius: 5px;
+    color: #fff;
+    background-color: #007BFF;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    animation: fade-in 0.5s ease-in-out;
-    color: #fff; /* White text for better contrast */
 }
 
-/* Button colors for different states */
-.esi-btn,
-.sale-type-btn {
-    background-color: #007BFF; /* Baby blue for buttons */
+.sale-type-btn.selected, .esi-btn.selected {
+    background-color: #FF851B;
 }
 
-.esi-btn:hover,
-.sale-type-btn:hover,
-.submit-btn:hover,
-.edit-btn:hover,
-.delete-btn:hover,
-.save-btn:hover,
-.cancel-btn:hover {
-    background-color: #FF851B; /* Orange for hover state */
+button:hover {
+    background-color: #FF851B;
 }
 
-.submit-btn,
-.edit-btn,
-.delete-btn,
-.save-btn,
-.cancel-btn {
-    background-color: #001F3F; /* Navy blue for action buttons */
-}
-
-/* Style the Sales History section */
-.sales-history-container {
-    background-color: #BBDEFB; /* Baby blue for background */
-    border: 1px solid #001F3F; /* Navy blue border */
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    animation: fade-in 0.5s ease-in-out;
-}
-
-.sales-history-container h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #001F3F; /* Navy blue for titles */
-}
-
+/* Sale Container */
 .sale-container {
     margin-bottom: 20px;
     padding: 10px;
-    background-color: #fff;
+    background-color: #f5f5f5;
     border: 1px solid #ddd;
     border-radius: 5px;
-    position: relative;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Added shadow */
-    animation: fade-in 0.5s ease-in-out;
-}
-
-.editable {
-    border-bottom: 1px dashed #777;
-    cursor: text;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for editable fields */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Animations */
