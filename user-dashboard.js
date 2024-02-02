@@ -90,87 +90,83 @@ if (addSalesForm) {
     });
 }
 
-// Edit and Delete buttons click event listener
-const salesHistoryElement = document.getElementById('salesHistory');
 salesHistoryElement.addEventListener('click', async (event) => {
     if (event.target.classList.contains('edit-btn')) {
-        const saleContainer = event.target.closest('.sale-container');
-        const saleId = saleContainer.getAttribute('data-sale-id');
-        const editableFields = saleContainer.querySelectorAll('.editable');
-        editableFields.forEach(field => field.contentEditable = true);
+        const saleId = event.target.getAttribute('data-sale-id');
+        const saleContainer = event.target.closest('.sales-history-entry');
+        const saleData = {
+            // Assuming you fetch the current sale data to fill the form
+            // This part is simplified; you'll likely need to fetch or otherwise retrieve this data
+            lead_id: saleContainer.querySelector('.lead-id').textContent,
+            notes: saleContainer.querySelector('.notes').textContent,
+            sale_types: getSaleTypesFromContainer(saleContainer), // You need to implement this
+        };
 
-        // Show Save and Cancel buttons, hide Edit button
-        saleContainer.querySelector('.edit-btn').style.display = 'none';
-        saleContainer.querySelector('.delete-btn').style.display = 'none';
-        saleContainer.querySelector('.save-btn').style.display = 'inline-block';
-        saleContainer.querySelector('.cancel-btn').style.display = 'inline-block';
-        
-        // Fetch all available sale types and update the buttons
-        const availableSaleTypes = await fetchAvailableSaleTypes(auth.currentUser.uid);
-        updateSaleTypeButtons(availableSaleTypes);
-    } else if (event.target.classList.contains('delete-btn')) {
-        const saleContainer = event.target.closest('.sale-container');
-        const saleId = saleContainer.getAttribute('data-sale-id');
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await remove(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId));
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-                alert('Failed to delete sale.');
-            }
-        }
-    } else if (event.target.classList.contains('save-btn')) {
-        const saleContainer = event.target.closest('.sale-container');
-        const saleId = saleContainer.getAttribute('data-sale-id');
-        const editableFields = saleContainer.querySelectorAll('.editable');
-        const updatedSaleData = {};
+        // Generate the edit form HTML
+        const editFormHtml = generateEditFormHtml(saleData, saleId);
+        saleContainer.innerHTML = editFormHtml;
 
-        editableFields.forEach(field => {
-            const fieldName = field.getAttribute('data-name');
-            updatedSaleData[fieldName] = field.textContent.trim();
-            field.contentEditable = false;
-        });
-
-        try {
-            await set(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId), updatedSaleData);
-            event.target.style.display = 'none'; // Hide Save button
-            saleContainer.querySelector('.cancel-btn').style.display = 'none'; // Hide Cancel button
-            saleContainer.querySelector('.edit-btn').style.display = 'inline-block'; // Show Edit button
-            saleContainer.querySelector('.delete-btn').style.display = 'inline-block'; // Show Delete button
-        } catch (error) {
-            console.error('Error updating sale:', error);
-            alert('Failed to update sale.');
-        }
-    } else if (event.target.classList.contains('cancel-btn')) {
-        const saleContainer = event.target.closest('.sale-container');
-        const editableFields = saleContainer.querySelectorAll('.editable');
-        editableFields.forEach(field => field.contentEditable = false);
-
-        // Hide Save and Cancel buttons, show Edit and Delete buttons
-        event.target.style.display = 'none';
-        saleContainer.querySelector('.save-btn').style.display = 'none';
-        saleContainer.querySelector('.edit-btn').style.display = 'inline-block';
-        saleContainer.querySelector('.delete-btn').style.display = 'inline-block';
+        // Attach event listeners to the new sale type buttons and the save button
+        attachSaleTypeButtonListeners(saleContainer);
+        attachSaveButtonListener(saleContainer, saleId);
     }
 });
 
-// Fetch available sale types based on the user's UID
-async function fetchAvailableSaleTypes(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    const snapshot = await get(salesRef);
+function generateEditFormHtml(saleData, saleId) {
+    // Generate sale type buttons, mark them selected based on saleData.sale_types
+    const saleTypeButtonsHtml = Object.keys(allSaleTypes) // Assuming you have a list of all possible sale types
+        .map(type => {
+            const isSelected = saleData.sale_types[type] ? 'selected' : '';
+            return `<button class="sale-type-btn ${isSelected}" data-value="${type}">${type}</button>`;
+        })
+        .join('');
 
-    let availableSaleTypes = {};
-    if (snapshot.exists()) {
-        snapshot.forEach(childSnapshot => {
-            const sale = childSnapshot.val();
-            Object.keys(sale.sale_types || {}).forEach(type => {
-                availableSaleTypes[type] = true;
-            });
-        });
-    }
-
-    return availableSaleTypes;
+    return `
+        <div class="sale-info">
+            <input class="edit-lead-id" value="${saleData.lead_id}">
+            <div class="edit-sale-types">${saleTypeButtonsHtml}</div>
+            <textarea class="edit-notes">${saleData.notes}</textarea>
+        </div>
+        <div class="sale-actions">
+            <button class="save-btn" data-sale-id="${saleId}">Save</button>
+        </div>
+    `;
 }
+
+function attachSaleTypeButtonListeners(container) {
+    container.querySelectorAll('.sale-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+    });
+}
+
+function attachSaveButtonListener(container, saleId) {
+    const saveBtn = container.querySelector('.save-btn');
+    saveBtn.addEventListener('click', async () => {
+        // Extract updated data from form
+        const updatedSaleData = {
+            lead_id: container.querySelector('.edit-lead-id').value,
+            notes: container.querySelector('.edit-notes').value,
+            sale_types: extractSelectedSaleTypes(container),
+        };
+
+        // Save the updated data back to Firebase
+        await set(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId), updatedSaleData);
+
+        // Optionally, refresh or update the UI to reflect the saved changes
+    });
+}
+
+function extractSelectedSaleTypes(container) {
+    const selectedSaleTypes = {};
+    container.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        selectedSaleTypes[value] = true;
+    });
+    return selectedSaleTypes;
+}
+
 
 // Auth state change event listener
 onAuthStateChanged(auth, user => {
@@ -218,6 +214,7 @@ function fetchSalesHistory(userId) {
                         <div class="sale-data notes">${sale.notes}</div>
                     </div>
                     <div class="sale-actions">
+                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
                         <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
                     </div>
                 `;
