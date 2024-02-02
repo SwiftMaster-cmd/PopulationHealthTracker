@@ -54,9 +54,11 @@ document.querySelectorAll('.sale-type-btn').forEach(btn => {
 
 // Existing JavaScript code...
 
-// Add this at the end of user-dashboard.js
 document.getElementById('lead_id').addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9]/g, '');
+    // Extract numbers from the current value
+    const numbers = this.value.match(/\d+/g);
+    // Set the input field's value to the extracted numbers or empty if no numbers were found
+    this.value = numbers ? numbers.join('') : '';
 });
 
 
