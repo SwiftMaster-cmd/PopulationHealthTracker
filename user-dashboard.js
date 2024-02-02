@@ -130,53 +130,64 @@ onAuthStateChanged(auth, user => {
 });
 
 
-// Assuming Firebase and auth initialization has already been done
 
-// Function to fetch and continuously listen for sales history updates
+
 function fetchSalesHistory(userId) {
-    const salesRef = ref(database, `sales/${userId}`);
+    const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
+        const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
-        const sales = snapshot.val();
         if (sales) {
-            Object.keys(sales).forEach((key) => {
-                const sale = sales[key];
+            const salesArray = Object.keys(sales).map(key => ({
+                ...sales[key],
+                id: key
+            }));
+
+            // Sort with a fallback for missing timestamps
+            salesArray.sort((a, b) => {
+                const timestampA = a.timestamp || '0000-00-00T00:00:00Z';
+                const timestampB = b.timestamp || '0000-00-00T00:00:00Z';
+                return timestampB.localeCompare(timestampA);
+            });
+
+            salesArray.forEach(sale => {
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
-                saleContainer.setAttribute('data-sale-id', key);
 
-                const date = new Date(sale.timestamp);
-                const formattedTimestamp = date.toLocaleString('en-US', {
-                    year: 'numeric', month: 'long', day: 'numeric',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit'
-                });
+                // Build the HTML for sale details including ESI content
+                const esiContentHtml = sale.esi_content ? `<div class="sale-data esi-content">ESI: ${sale.esi_content}</div>` : '';
+                const saleTypesHtml = Object.keys(sale.sale_types || {}).map(type => 
+                    `<span class="sale-type-span">${type.replace(/_/g, ' ').toUpperCase()}</span>` // Replace underscores with spaces for display
+                ).join('');
 
-                saleContainer.innerHTML = `
+                const formHtml = `
                     <div class="sale-info">
-                        <div class="sale-data">Sale ID: ${key}</div>
-                        <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-                        <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-                        <div class="sale-data">Sale Types: ${Object.keys(sale.sale_types || {}).join(', ')}</div>
-                        <div class="sale-data">Notes: <span class="editable" contenteditable="false">${sale.notes}</span></div>
-                        <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+                        <div class="sale-data sale-id">Sale ID: ${sale.id}</div>
+                        ${esiContentHtml}
+                        <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
+                        <div class="sale-data sale-type">Sale Types: ${saleTypesHtml}</div>
+                        <div class="sale-data notes">Notes: ${sale.notes}</div>
                     </div>
                     <div class="sale-actions">
-                        <button class="edit-btn">Edit</button>
-                        <button class="delete-btn">Delete</button>
-                        <button class="save-btn" style="display:none;">Save</button>
-                        <button class="cancel-btn" style="display:none;">Cancel</button>
+                        <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                        <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
                     </div>
                 `;
+                saleContainer.innerHTML = formHtml;
 
                 salesHistoryElement.appendChild(saleContainer);
             });
         } else {
             salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
         }
+    }, {
+      
     });
 }
+
+
 
 // Handling user actions
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
