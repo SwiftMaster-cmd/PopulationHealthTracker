@@ -1,85 +1,114 @@
+/* Reset some default styles to start with a clean slate */
+body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a background color for the entire page */
+body {
+    background-color: #E3F2FD; /* Lighter shade of baby blue for the page background */
+    font-family: 'Arial', sans-serif;
+    font-size: 16px; /* Improved readability */
+}
+
+/* Style the header */
+header {
+    background-color: #001F3F; /* Navy blue for header background */
+    color: #FF851B; /* Orange for header text */
+    text-align: center;
+    padding: 20px 0;
+}
+
+header h2 {
+    font-size: 24px;
+    font-weight: bold; /* Make header text bold */
+    color: #001F3F; /* Navy blue color for the header text */
+}
+
+/* Style the main container */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px; /* More rounded corners for the container */
+    padding: 40px; /* Increased padding */
+}
+
 /* Style the Add Sales section */
 .sales-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 500px;
+    margin: 20px auto;
     background-color: #FFA500; /* Orange background for Add Sales section */
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 25px; /* More rounded corners for the Add Sales section */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow for depth */
 }
 
-/* Style for the input fields and labels */
-.input-field {
-    display: block;
+/* Style for the input fields and labels to align with the new flex layout */
+.input-group {
     width: 100%;
-    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 15px;
-    padding: 10px;
 }
 
-.label {
-    display: block;
-    margin-bottom: 5px;
+/* Specific styles for Lead ID input and Notes textarea */
+#lead_id,
+#notes {
+    width: 300px;
+    max-width: 300px;
+    margin: 0;
+    padding: 10px; /* Padding for better text spacing */
+    border-radius: 15px; /* Rounded corners for input fields */
+    border: 1px solid #001F3F; /* Navy blue border for input fields */
+    font-weight: bold; /* Bold text for input fields */
+    color: #001F3F; /* Navy blue text for input fields */
+    background-color: #FFF; /* White background for better readability */
+}
+
+/* Optional: If you want to prevent users from resizing the textarea */
+#notes {
+    resize: none;
 }
 
 /* Style for the buttons */
 .esi-btn,
 .sale-type-btn,
 .submit-btn {
-    background-color: #FF851B; /* Orange for buttons */
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin-right: 5px;
-    cursor: pointer;
-    color: white;
-    outline: none;
+    background-color: #007BFF; /* Baby blue for buttons */
+    color: white; /* White text for buttons */
+    font-weight: bold; /* Bold text for buttons */
+    padding: 12px 20px; /* Padding for larger, more clickable buttons */
+    margin: 5px; /* Margin for spacing between buttons */
+    border-radius: 15px; /* Rounded corners for buttons */
+    border: none; /* Remove default borders */
+    cursor: pointer; /* Cursor pointer to indicate clickable buttons */
+    transition: background-color 0.3s, transform 0.3s; /* Transition for interactive effects */
 }
 
 .esi-btn:hover,
 .sale-type-btn:hover,
 .submit-btn:hover {
-    background-color: #cc7000; /* Darker orange for hover state */
+    background-color: #FF851B; /* Orange for hover state */
+    transform: scale(1.05); /* Slightly increase size on hover for effect */
 }
 
 .submit-btn {
     background-color: #001F3F; /* Navy blue for submit button */
     color: white;
-    padding: 10px 20px;
-    display: block;
-    width: 100%;
-    margin-top: 10px;
+    width: 100%; /* Full width of the parent container */
+    margin-top: 15px; /* Margin on top for spacing */
 }
 
 /* Style for the selected state of the buttons */
 .esi-btn.selected,
 .sale-type-btn.selected {
-    background-color: #cc7000; /* Darker orange for selected state */
+    background-color: #FF851B; /* Orange for selected state */
+    transform: scale(1.1); /* Slightly increase size for selected state */
 }
-
-/* Adjustments to align items similar to the image */
-.input-group {
-    margin-bottom: 10px;
-}
-
-.esi-consent .options,
-.sale-type .sale-type-buttons {
-    display: flex;
-    justify-content: space-between;
-}
-
-.sale-type-btn,
-.esi-btn {
-    flex-grow: 1;
-    text-align: center;
-}
-/* Specific styles for Lead ID input and Notes textarea */
-#lead_id,
-#notes {
-    width: 300px; /* Set the width of the Lead ID input and Notes textarea to 300px */
-    max-width: 300px; /* Ensures the width does not exceed 300px */
-}
-
-/* Optional: If you want to prevent users from resizing the textarea */
-#notes {
-    resize: none; /* Disables resizing of the textarea */
-}
-
-/* The rest of your CSS stays the same */
