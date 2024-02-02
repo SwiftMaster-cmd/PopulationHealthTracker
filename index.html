@@ -43,17 +43,38 @@
             }
         }
 
-        // Google Sign-In Function
-        async function googleSignIn() {
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                console.log('Google sign-in user:', user);
-                window.location.href = 'user-dashboard.html';
-            } catch (error) {
-                console.error('Error during Google sign-in:', error);
+    // Assuming you've already imported and initialized Firebase services as shown previously
+
+async function googleSignIn() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        // User is signed in
+        const user = result.user;
+
+        // Fetch the user's role from Firebase Realtime Database
+        const roleRef = ref(database, `users/${user.uid}/role`);
+        get(roleRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const role = snapshot.val();
+                // Redirect user based on their role
+                if (role === 'manager') {
+                    window.location.href = 'manager-dashboard.html';
+                } else {
+                    // Default to user dashboard if role is 'user' or not specified
+                    window.location.href = 'user-dashboard.html';
+                }
+            } else {
+                console.log('Role not found, redirecting to user dashboard.');
+                window.location.href = 'user-dashboard.html'; // Redirect if no role is found
             }
-        }
+        }).catch((error) => {
+            console.error('Fetching role failed:', error);
+            // Handle error, possibly redirect to a default or error page
+        });
+    } catch (error) {
+        console.error('Error during Google sign-in:', error);
+    }
+}
 
        
     // Add event listeners
