@@ -1,23 +1,20 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getDatabase, ref, push, set, query, orderByChild, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
-    authDomain: "track-dac15.firebaseapp.com",
-    databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
-    projectId: "track-dac15",
-    storageBucket: "track-dac15.appspot.com",
-    messagingSenderId: "495156821305",
-    appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
-    measurementId: "G-RVBYB0RR06"
+    // Your Firebase configuration
+    apiKey: "your-api-key",
+    authDomain: "your-auth-domain",
+    databaseURL: "your-database-url",
+    projectId: "your-project-id",
+    storageBucket: "your-storage-bucket",
+    messagingSenderId: "your-messaging-sender-id",
+    appId: "your-app-id",
+    measurementId: "your-measurement-id"
 };
 
 // Initialize Firebase
-initializeApp(firebaseConfig);
-const auth = getAuth();
-const database = getDatabase();
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
 
 // Function to create and update charts
 function createCharts(salesData) {
@@ -121,7 +118,7 @@ function createOrUpdateChart(chartId, chartTitle, chartType, data) {
 // Add the rest of your code...
 
 // Fetch and use sales data from Firebase
-onAuthStateChanged(auth, user => {
+firebase.auth().onAuthStateChanged(user => {
     if (user) {
         fetchSalesHistory(user.uid).then((salesData) => {
             createCharts(salesData);
@@ -133,19 +130,23 @@ onAuthStateChanged(auth, user => {
 });
 
 function fetchSalesHistory(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    onValue(salesRef, (snapshot) => {
+    const salesRef = firebase.database().ref('sales/' + userId);
+    return salesRef.once('value').then((snapshot) => {
         const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
+        const salesData = [];
         for (let saleId in sales) {
             const sale = sales[saleId];
             const saleElement = document.createElement('div');
             saleElement.textContent = `Lead ID: ${sale.lead_id}, ESI Content: ${sale.esi_content}, Notes: ${sale.notes}`;
             // Add more details as needed
             salesHistoryElement.appendChild(saleElement);
+            salesData.push(sale);
         }
-    }, {
-        onlyOnce: true
+        return salesData;
+    }).catch((error) => {
+        console.error('Error fetching sales data:', error);
+        return [];
     });
 }
