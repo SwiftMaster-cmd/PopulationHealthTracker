@@ -116,69 +116,6 @@ if (addSalesForm) {
     });
 }
 
-// Handling Edit and Delete button actions
-const salesHistoryElement = document.getElementById('salesHistory');
-if (salesHistoryElement) {
-    salesHistoryElement.addEventListener('click', async (event) => {
-        const saleContainer = event.target.closest('.sale-container');
-        if (!saleContainer) return;
-
-        const saleId = saleContainer.getAttribute('data-sale-id');
-
-        if (event.target.classList.contains('edit-btn')) {
-            // Code for handling edit action
-            const editableFields = saleContainer.querySelectorAll('.editable');
-            editableFields.forEach(field => field.contentEditable = true);
-
-            // Show Save and Cancel buttons, hide Edit and Delete buttons
-            saleContainer.querySelector('.edit-btn').style.display = 'none';
-            saleContainer.querySelector('.delete-btn').style.display = 'none';
-            saleContainer.querySelector('.save-btn').style.display = 'inline-block';
-            saleContainer.querySelector('.cancel-btn').style.display = 'inline-block';
-        } else if (event.target.classList.contains('delete-btn')) {
-            // Code for handling delete action
-            if (confirm('Are you sure you want to delete this sale?')) {
-                try {
-                    await remove(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId));
-                    // Optionally, refresh the sales history or remove the element from the DOM
-                } catch (error) {
-                    console.error('Error deleting sale:', error);
-                    alert('Failed to delete sale.');
-                }
-            }
-        } else if (event.target.classList.contains('save-btn')) {
-            // Code for handling save action after editing
-            const editableFields = saleContainer.querySelectorAll('.editable');
-            const updatedSaleData = {};
-
-            editableFields.forEach(field => {
-                const fieldName = field.getAttribute('data-name');
-                updatedSaleData[fieldName] = field.textContent.trim();
-            });
-
-            try {
-                await set(ref(database, 'sales/' + auth.currentUser.uid + '/' + saleId), updatedSaleData);
-                // Reset UI to non-editable state
-                editableFields.forEach(field => field.contentEditable = false);
-                saleContainer.querySelector('.save-btn').style.display = 'none';
-                saleContainer.querySelector('.cancel-btn').style.display = 'none';
-                saleContainer.querySelector('.edit-btn').style.display = 'inline-block';
-                saleContainer.querySelector('.delete-btn').style.display = 'inline-block';
-            } catch (error) {
-                console.error('Error updating sale:', error);
-                alert('Failed to update sale.');
-            }
-        } else if (event.target.classList.contains('cancel-btn')) {
-            // Code for handling cancel action
-            const editableFields = saleContainer.querySelectorAll('.editable');
-            editableFields.forEach(field => field.contentEditable = false);
-            saleContainer.querySelector('.save-btn').style.display = 'none';
-            saleContainer.querySelector('.cancel-btn').style.display = 'none';
-            saleContainer.querySelector('.edit-btn').style.display = 'inline-block';
-            saleContainer.querySelector('.delete-btn').style.display = 'inline-block';
-        }
-    });
-}
 
 
 // Auth state change event listener
@@ -193,59 +130,45 @@ onAuthStateChanged(auth, user => {
 });
 
 
+// Assuming Firebase and auth initialization has already been done
 
+// Function to fetch and continuously listen for sales history updates
 function fetchSalesHistory(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
+    const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
-        const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
+        const sales = snapshot.val();
         if (sales) {
-            const salesArray = Object.keys(sales).map(key => ({
-                ...sales[key],
-                id: key
-            }));
-
-            // Sort with a fallback for missing timestamps
-            salesArray.sort((a, b) => {
-                const timestampA = a.timestamp || '0000-00-00T00:00:00Z';
-                const timestampB = b.timestamp || '0000-00-00T00:00:00Z';
-                return timestampB.localeCompare(timestampA);
-            });
-
-            salesArray.forEach(sale => {
+            Object.keys(sales).forEach((key) => {
+                const sale = sales[key];
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
+                saleContainer.setAttribute('data-sale-id', key);
 
-                // Format the timestamp
                 const date = new Date(sale.timestamp);
                 const formattedTimestamp = date.toLocaleString('en-US', {
                     year: 'numeric', month: 'long', day: 'numeric',
                     hour: '2-digit', minute: '2-digit', second: '2-digit'
                 });
 
-                // Build the HTML for sale details
-                const esiContentHtml = sale.esi_content ? `<div class="sale-data esi-content">ESI: ${sale.esi_content}</div>` : '';
-                const saleTypesHtml = Object.keys(sale.sale_types || {}).map(type => 
-                    `<span class="sale-type-span">${type.replace(/_/g, ' ').toUpperCase()}</span>`
-                ).join('');
-
-                const formHtml = `
+                saleContainer.innerHTML = `
                     <div class="sale-info">
-                        <div class="sale-data sale-id">Sale ID: ${sale.id}</div>
-                        ${esiContentHtml}
-                        <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
-                        <div class="sale-data sale-type">Sale Types: ${saleTypesHtml}</div>
-                        <div class="sale-data notes">Notes: ${sale.notes}</div>
-                        <div class="sale-data timestamp">Timestamp: ${formattedTimestamp}</div>
+                        <div class="sale-data">Sale ID: ${key}</div>
+                        <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+                        <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+                        <div class="sale-data">Sale Types: ${Object.keys(sale.sale_types || {}).join(', ')}</div>
+                        <div class="sale-data">Notes: <span class="editable" contenteditable="false">${sale.notes}</span></div>
+                        <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
                     </div>
                     <div class="sale-actions">
-                        <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                        <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                        <button class="save-btn" style="display:none;">Save</button>
+                        <button class="cancel-btn" style="display:none;">Cancel</button>
                     </div>
                 `;
-                saleContainer.innerHTML = formHtml;
 
                 salesHistoryElement.appendChild(saleContainer);
             });
@@ -254,3 +177,63 @@ function fetchSalesHistory(userId) {
         }
     });
 }
+
+// Handling user actions
+document.getElementById('salesHistory').addEventListener('click', async (event) => {
+    const saleContainer = event.target.closest('.sales-history-entry');
+    if (!saleContainer) return;
+
+    const saleId = saleContainer.getAttribute('data-sale-id');
+    const editableFields = saleContainer.querySelectorAll('.editable');
+
+    if (event.target.classList.contains('edit-btn')) {
+        editableFields.forEach(field => field.contentEditable = true);
+        toggleButtons(saleContainer, true);
+    } else if (event.target.classList.contains('delete-btn')) {
+        if (confirm('Are you sure you want to delete this sale?')) {
+            try {
+                await remove(ref(database, `sales/${auth.currentUser.uid}/${saleId}`));
+            } catch (error) {
+                console.error('Error deleting sale:', error);
+                alert('Failed to delete sale.');
+            }
+        }
+    } else if (event.target.classList.contains('save-btn')) {
+        const updatedSaleData = { notes: editableFields[0].innerText }; // Example for notes, extend as needed
+        try {
+            await set(ref(database, `sales/${auth.currentUser.uid}/${saleId}`), updatedSaleData);
+            editableFields.forEach(field => field.contentEditable = false);
+            toggleButtons(saleContainer, false);
+        } catch (error) {
+            console.error('Error updating sale:', error);
+            alert('Failed to update sale.');
+        }
+    } else if (event.target.classList.contains('cancel-btn')) {
+        editableFields.forEach(field => field.contentEditable = false);
+        toggleButtons(saleContainer, false);
+        // Optionally, refresh the entry to revert unsaved changes
+    }
+});
+
+// Utility function to toggle button visibility
+function toggleButtons(saleContainer, editing) {
+    const editBtn = saleContainer.querySelector('.edit-btn');
+    const deleteBtn = saleContainer.querySelector('.delete-btn');
+    const saveBtn = saleContainer.querySelector('.save-btn');
+    const cancelBtn = saleContainer.querySelector('.cancel-btn');
+
+    if (editing) {
+        editBtn.style.display = 'none';
+        deleteBtn.style.display = 'none';
+        saveBtn.style.display = '';
+        cancelBtn.style.display = '';
+    } else {
+        editBtn.style.display = '';
+        deleteBtn.style.display = '';
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+    }
+}
+
+// Don't forget to call fetchSalesHistory with the current user's ID
+// fetchSalesHistory(auth.currentUser.uid);
