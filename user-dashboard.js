@@ -80,8 +80,21 @@ onAuthStateChanged(auth, user => {
 });
 
 function fetchSalesHistory(userId) {
-    // Implement the fetchSalesHistory functionality as outlined previously
-    // ...
+    const salesRef = ref(database, 'sales/' + userId);
+    onValue(salesRef, (snapshot) => {
+        const sales = snapshot.val();
+        const salesHistoryElement = document.getElementById('salesHistory');
+        salesHistoryElement.innerHTML = ''; // Clear existing content
+        for (let saleId in sales) {
+            const sale = sales[saleId];
+            const saleElement = document.createElement('div');
+            saleElement.textContent = `Lead ID: ${sale.lead_id}, ESI Content: ${sale.esi_content}, Notes: ${sale.notes}`;
+            // Add more details as needed
+            salesHistoryElement.appendChild(saleElement);
+        }
+    }, {
+        onlyOnce: true
+    });
 }
 
 // Implement additional functions needed for sales history display
