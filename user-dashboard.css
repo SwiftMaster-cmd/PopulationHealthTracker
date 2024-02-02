@@ -1,115 +1,150 @@
-/* General Styles */
-body, html {
+/* Reset some default styles to start with a clean slate */
+body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #87CEEB, #1E90FF); /* Sky blue to navy blue background */
-    color: #333;
 }
 
-/* Dashboard Container */
-.dashboard-container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
+/* Set a background color for the entire page */
+body {
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
 }
 
+/* Style the header */
 header {
-    background: #1E90FF; /* Navy blue background */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    background-color: #333;
+    color: #fff;
     text-align: center;
-    margin-bottom: 20px;
+    padding: 20px 0;
 }
 
-h2, h3 {
-    margin: 0;
+header h2 {
+    font-size: 24px;
 }
 
-/* Sales & History Sections */
-.sales-container, .sales-history-container, .charts-container {
-    background: white;
-    padding: 20px;
+/* Style the main container */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    transition: transform 0.3s ease;
+    padding: 20px;
 }
 
-.sales-container:hover, .sales-history-container:hover, .charts-container:hover {
-    transform: translateY(-5px);
+/* Style the Add Sales section */
+.sales-container {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.sales-container h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
 }
 
 .input-group {
     margin-bottom: 15px;
 }
 
-.input-field, .submit-btn, .sale-type-btn, .esi-btn {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-top: 5px;
+.label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-field {
     width: 100%;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-/* Buttons */
-.sale-type-btn, .esi-btn, .submit-btn {
-    background: #FFA500; /* Orange background */
-    color: white;
-    cursor: pointer;
+.options {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.esi-btn,
+.sale-type-btn {
+    padding: 10px 15px;
     border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.sale-type-btn:hover, .esi-btn:hover {
-    background: #FF8C00; /* Darker orange */
-}
-
-.sale-type-btn.selected, .esi-btn.selected {
-    background: #1E90FF; /* Navy blue */
+.esi-btn:hover,
+.sale-type-btn:hover {
+    background-color: #333;
+    color: #fff;
 }
 
 .submit-btn {
-    background: #1E90FF; /* Navy blue */
-    display: block;
-    width: auto;
-    font-weight: bold;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover {
-    background: #87CEEB; /* Sky blue */
+    background-color: #0056b3;
 }
 
-/* Sales History */
-.sales-history {
-    max-height: 400px;
-    overflow-y: auto;
+/* Style the Sales History section */
+.sales-history-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.sales-history-container h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
 }
 
 .sale-container {
-    background: linear-gradient(to right bottom, #87CEEB, #FFA500); /* Gradient from sky blue to orange */
-    margin-bottom: 10px;
-    padding: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    color: white;
-    animation: fadeIn 0.5s ease-out;
+    position: relative;
 }
 
-.sale-detail {
-    margin-bottom: 10px;
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background-color 0.3s ease;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.edit-btn:hover,
+.delete-btn:hover,
+.save-btn:hover,
+.cancel-btn:hover {
+    background-color: #555;
 }
+
+.editable {
+    border-bottom: 1px dashed #777;
+    cursor: text;
+}
+
+/* Add more custom styles for your charts or other elements as needed */
+
