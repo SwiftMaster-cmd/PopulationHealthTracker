@@ -251,7 +251,31 @@ document.getElementById('salesHistory').addEventListener('click', (event) => {
 // Function to close the modal
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
-}
+}document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const currentSaleId = event.target.getAttribute('data-current-sale-id');
+    const updatedLeadId = document.getElementById('editLeadId').value;
+    const updatedEsiContent = document.getElementById('editEsiContent').value;
+    const updatedNotes = document.getElementById('editNotes').value;
+
+    // Construct the updated sale object
+    const updatedSale = {
+        lead_id: updatedLeadId,
+        esi_content: updatedEsiContent,
+        notes: updatedNotes,
+        // Include other fields as necessary
+    };
+
+    try {
+        await set(ref(database, `sales/${auth.currentUser.uid}/${currentSaleId}`), updatedSale);
+        closeEditModal(); // Close the modal on success
+        // Optionally, refresh the sales history to reflect changes
+    } catch (error) {
+        console.error('Error updating sale:', error);
+        alert('Failed to update sale.');
+    }
+});
 
 
 function toggleButtons(saleContainer, editing) {
