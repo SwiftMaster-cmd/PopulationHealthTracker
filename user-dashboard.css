@@ -23,6 +23,11 @@ header {
 header h2 {
     font-size: 24px;
 }
+/* Style the sale type buttons when they are selected */
+.sale-type-btn.selected {
+    background-color: #FF851B; /* Orange for selected state */
+    color: #fff; /* White text for contrast */
+}
 
 /* Style the main container */
 .dashboard-container {
