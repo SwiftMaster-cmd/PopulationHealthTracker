@@ -194,7 +194,6 @@ onAuthStateChanged(auth, user => {
 
 
 
-
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, 'sales/' + userId);
     onValue(salesRef, (snapshot) => {
@@ -219,10 +218,17 @@ function fetchSalesHistory(userId) {
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
 
-                // Build the HTML for sale details including ESI content
+                // Format the timestamp
+                const date = new Date(sale.timestamp);
+                const formattedTimestamp = date.toLocaleString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+
+                // Build the HTML for sale details
                 const esiContentHtml = sale.esi_content ? `<div class="sale-data esi-content">ESI: ${sale.esi_content}</div>` : '';
                 const saleTypesHtml = Object.keys(sale.sale_types || {}).map(type => 
-                    `<span class="sale-type-span">${type.replace(/_/g, ' ').toUpperCase()}</span>` // Replace underscores with spaces for display
+                    `<span class="sale-type-span">${type.replace(/_/g, ' ').toUpperCase()}</span>`
                 ).join('');
 
                 const formHtml = `
@@ -232,6 +238,7 @@ function fetchSalesHistory(userId) {
                         <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
                         <div class="sale-data sale-type">Sale Types: ${saleTypesHtml}</div>
                         <div class="sale-data notes">Notes: ${sale.notes}</div>
+                        <div class="sale-data timestamp">Timestamp: ${formattedTimestamp}</div>
                     </div>
                     <div class="sale-actions">
                         <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
@@ -245,7 +252,5 @@ function fetchSalesHistory(userId) {
         } else {
             salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
         }
-    }, {
-      
     });
 }
