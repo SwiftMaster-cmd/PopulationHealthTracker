@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -47,18 +47,21 @@ async function loginUser(email, password) {
 async function googleSignIn() {
     try {
         const result = await signInWithPopup(auth, provider);
-        // User is signed in
         const user = result.user;
 
-        // Fetch user role from Firebase Realtime Database
-        const roleRef = firebase.database().ref('users/' + user.uid + '/role');
-        roleRef.once('value').then((snapshot) => {
-            const role = snapshot.val();
-
-            // Redirect based on role
-            if (role === 'manager') {
-                window.location.href = 'manager-dashboard.html';
+        // Fetch user role from Firebase Realtime Database correctly
+        const roleRef = ref(database, `users/${user.uid}/role`);
+        get(roleRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const role = snapshot.val();
+                // Redirect based on role
+                if (role === 'manager') {
+                    window.location.href = 'manager-dashboard.html';
+                } else {
+                    window.location.href = 'user-dashboard.html';
+                }
             } else {
+                console.log('No specific role found, redirecting to user dashboard.');
                 window.location.href = 'user-dashboard.html';
             }
         });
@@ -66,6 +69,7 @@ async function googleSignIn() {
         console.error('Error during Google sign-in:', error);
     }
 }
+
 // Add Sale Function
 async function addSale(saleData) {
     try {
@@ -74,7 +78,7 @@ async function addSale(saleData) {
             throw new Error('User not authenticated');
         }
 
-        const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
+        const newSaleRef = push(ref(database, `sales/${currentUser.uid}`));
         await set(newSaleRef, saleData);
         console.log('Sale added successfully:', newSaleRef.key);
     } catch (error) {

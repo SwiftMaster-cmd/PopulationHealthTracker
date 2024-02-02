@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to work!</title>
+    <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
             authDomain: "track-dac15.firebaseapp.com",
@@ -25,75 +22,49 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth(app);
+        const database = getDatabase(app);
         const provider = new GoogleAuthProvider();
 
-        // Login Function
-        async function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
+        async function googleSignIn() {
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                console.log('Logged in user:', userCredential.user);
-                window.location.href = 'add-sales.html';
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                // Fetch the user's role from Firebase Realtime Database
+                const roleRef = ref(database, `users/${user.uid}/role`);
+                get(roleRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const role = snapshot.val();
+                        // Redirect user based on their role
+                        if (role === 'manager') {
+                            window.location.href = 'manager-dashboard.html';
+                        } else {
+                            // Default to user dashboard if role is 'user' or not specified
+                            window.location.href = 'user-dashboard.html';
+                        }
+                    } else {
+                        console.log('Role not found, redirecting to user dashboard.');
+                        window.location.href = 'user-dashboard.html'; // Redirect if no role is found
+                    }
+                }).catch((error) => {
+                    console.error('Fetching role failed:', error);
+                    // Handle error, possibly redirect to a default or error page
+                });
             } catch (error) {
-                console.error('Error logging in:', error);
+                console.error('Error during Google sign-in:', error);
             }
         }
 
-    // Assuming you've already imported and initialized Firebase services as shown previously
-
-async function googleSignIn() {
-    try {
-        const result = await signInWithPopup(auth, provider);
-        // User is signed in
-        const user = result.user;
-
-        // Fetch the user's role from Firebase Realtime Database
-        const roleRef = ref(database, `users/${user.uid}/role`);
-        get(roleRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const role = snapshot.val();
-                // Redirect user based on their role
-                if (role === 'manager') {
-                    window.location.href = 'manager-dashboard.html';
-                } else {
-                    // Default to user dashboard if role is 'user' or not specified
-                    window.location.href = 'user-dashboard.html';
-                }
-            } else {
-                console.log('Role not found, redirecting to user dashboard.');
-                window.location.href = 'user-dashboard.html'; // Redirect if no role is found
-            }
-        }).catch((error) => {
-            console.error('Fetching role failed:', error);
-            // Handle error, possibly redirect to a default or error page
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
         });
-    } catch (error) {
-        console.error('Error during Google sign-in:', error);
-    }
-}
-
-       
-    // Add event listeners
-    window.addEventListener('DOMContentLoaded', () => {
-        // Commented out the line adding event listener to the now non-existent login button
-        // document.getElementById('loginButton').addEventListener('click', login);
-        document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
-    });
     </script>
 </head>
 <body>
     <div class="login-container">
         <h2>Please Sign In</h2>
         <div class="form-group">
-       <!-- Commented out email and password fields -->
-            <!-- <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Password">
-            <button id="loginButton">Sign In</button> -->
-
             <!-- Google Sign-In Button -->
             <button id="googleSignInButton">Sign in with Google</button>
         </div>
