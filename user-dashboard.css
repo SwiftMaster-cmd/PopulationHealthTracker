@@ -28,6 +28,11 @@ header h2 {
     background-color: #FF851B; /* Orange for selected state */
     color: #fff; /* White text for contrast */
 }
+/* Style the ESI content buttons when they are selected */
+.esi-btn.selected {
+    background-color: #FF851B; /* Orange for selected state */
+    color: #fff; /* White text for contrast */
+}
 
 /* Style the main container */
 .dashboard-container {
