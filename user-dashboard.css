@@ -127,85 +127,109 @@ header h2 {
     align-items: center;
 }
 
-/* Style for the sales history entries */
-.sales-history-entry {
-    background-color: #FFB74D; /* Lighter orange for entries */
-    border-radius: 15px; /* Rounded corners for entries */
-    padding: 10px;
-    margin-bottom: 10px; /* Space between entries */
-    width: calc(100% - 20px); /* Full width of the parent container minus padding */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for each entry */
-    font-weight: bold; /* Bold font for text */
-    color: #001F3F; /* Navy blue text */
-}
 
-/* Style for the content inside each sales history entry */
-.sales-history-entry p {
-    margin: 5px 0; /* Margin for spacing */
-}
 
-/* Styles for the titles and inputs */
-h3 {
-    color: #001F3F; /* Navy blue color */
-    font-weight: bold; /* Bold font weight */
-    margin-bottom: 15px; /* Spacing below the title */
-}
 
-/* Continue with previous CSS styles for buttons and input fields */
 
-/* Sales History Entries */
-.sales-container {
-    background-color: #FFD700; /* Lighter orange for entries */
-    margin-bottom: 10px;
-    padding: 15px;
-    border-radius: 15px; /* Rounded corners */
+
+
+
+
+
+
+
+
+
+
+/* Style the Sales History container */
+.sales-history-container {
+    width: 500px;
+    height: 500px;
+    margin: 20px auto;
+    background-color: #FFA500;
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: auto;
     display: flex;
-    justify-content: space-between; /* Spacing between items */
+    flex-direction: column;
     align-items: center;
 }
 
-/* Sales Detail Styling */
-.sale-detail {
-    font-weight: bold; /* Make text bold */
-    color: #001F3F; /* Navy blue text */
-    margin-right: 10px; /* Spacing to the right */
+/* Style for the sales history list */
+.sales-history {
+    width: 100%;
+    max-height: 460px; /* Adjusted height to account for the title */
+    overflow-y: auto;
 }
 
-/* Buttons inside the Sales Entry */
-.edit-btn, .delete-btn, .save-btn, .cancel-btn {
-    background-color: #007BFF; /* Baby blue for buttons */
+/* Style for individual sale history entries */
+.sales-history-entry {
+    background-color: #FFB74D;
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-gap: 10px;
+    align-items: center;
+}
+
+/* Style for the sale info and actions */
+.sale-info {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-gap: 5px;
+}
+
+.sale-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style for each piece of sale data */
+.sale-data {
+    background-color: #FFA500;
+    border-radius: 10px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Sale type could have multiple items, so let's allow wrapping */
+.sale-type {
+    flex-wrap: wrap;
+}
+
+/* Style for sale type spans (individually) */
+.sale-type span {
+    background-color: #FFD180;
+    border-radius: 10px;
+    padding: 2px 5px;
+}
+
+/* Style for the notes section */
+.notes {
+    grid-column: span 2; /* Let the notes span across both columns */
+}
+
+/* Style for the delete button */
+.delete-btn {
+    background-color: #FF7043;
     border: none;
-    border-radius: 10px; /* Rounded corners */
-    padding: 8px 16px;
-    color: white; /* White text */
-    font-weight: bold;
+    border-radius: 10px;
+    padding: 5px 10px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s; /* Interactive effects */
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-.edit-btn:hover, .delete-btn:hover, .save-btn:hover, .cancel-btn:hover {
-    background-color: #FF851B; /* Orange for hover state */
-    transform: scale(1.05); /* Slight increase in size on hover */
+.delete-btn:hover {
+    background-color: #E64A19;
 }
 
-/* Icon styling if you are using font-awesome or similar */
-.fas {
-    margin-right: 5px; /* Space between icon and text */
-}
-
-/* Responsive adjustments if necessary */
-@media (max-width: 600px) {
-    .sales-container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .sale-detail {
-        margin-bottom: 5px;
-    }
-
-    .edit-btn, .delete-btn, .save-btn, .cancel-btn {
-        width: 100%;
-        margin-top: 5px;
-    }
-}
+/* Add any additional styling as needed */
