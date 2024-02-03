@@ -1,5 +1,5 @@
 html, body {
-    height: 100%;
+
     margin: 0; /* Removes the default margin */
     padding: 0; /* Removes the default padding */
 }
@@ -11,7 +11,7 @@ body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
     padding: 0;
     font-family: 'Patrick Hand', cursive; /* Apply Patrick Hand font */
     color: #023047;
-    height: 100%;
+    
 }
 
 /* Enhance font sizes and styles for better visual appeal */
