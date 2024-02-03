@@ -74,17 +74,4 @@ async function googleSignIn() {
 async function addSale(saleData) {
     try {
         const currentUser = auth.currentUser;
-        if (!currentUser) {
-            throw new Error('User not authenticated');
-        }
-
-        const newSaleRef = push(ref(database, `sales/${currentUser.uid}`));
-        await set(newSaleRef, saleData);
-        console.log('Sale added successfully:', newSaleRef.key);
-    } catch (error) {
-        console.error('Error adding sale:', error);
-    }
-}
-
-// Export the functions for use in other modules
-export { registerUser, loginUser, addSale, googleSignIn };
+    

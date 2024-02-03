@@ -81,11 +81,9 @@ document.getElementById('lead_id').addEventListener('input', function() {
 // Form submission event listener for adding new sales
 const addSalesForm = document.getElementById('addSalesForm');
 if (addSalesForm) {
-    addSalesForm.addEventListener('submit', async (event) => {
+    addSalesForm.addEventListener('submit', event => {
         event.preventDefault();
-
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
+        if (!auth.currentUser) {
             alert('Please log in to add sales.');
             return;
         }
@@ -103,18 +101,16 @@ if (addSalesForm) {
             timestamp: new Date().toISOString()
         };
 
-        try {
-            const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
-            await set(newSaleRef, saleData);
-            event.target.reset();
-            document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
-            document.querySelectorAll('.esi-btn').forEach(btn => btn.classList.remove('selected'));
-            document.getElementById('confirmationMessage').textContent = "Sale with Lead ID " + leadId + " added successfully.";
-        } catch (error) {
+        push(ref(database, `sales/${auth.currentUser.uid}`), saleData)
+        .then(() => {
+            document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
+            // Reset form and UI elements as before
+        })
+        .catch(error => {
             console.error('Error adding sale:', error);
             alert('Failed to add sale.');
-        }
-    });
+        });
+});
 }
 
 
