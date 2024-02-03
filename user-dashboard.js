@@ -197,29 +197,41 @@ function fetchSalesHistory() {
     });
 }
 
-// Handling user actions for edit and delete
-document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    if (!userId) return; // Ensure `userId` is available
+document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!userId) {
+        console.log("No user ID available for editing.");
+        return; // Ensure `userId` is available
+    }
 
-    const saleContainer = event.target.closest('.sales-history-entry');
-    if (!saleContainer) return;
+    const saleId = document.getElementById('editSaleId').value;
+    const updatedSaleData = {
+        lead_id: document.getElementById('editLeadId').value,
+        esi_content: document.getElementById('editEsiContent').value,
+        notes: document.getElementById('editNotes').value,
+    };
+    
+    console.log("Updating sale:", saleId, updatedSaleData);
 
-    const saleId = saleContainer.getAttribute('data-sale-id');
-
-    if (event.target.classList.contains('edit-btn')) {
-        openEditModal(saleId);
-    } else if (event.target.classList.contains('delete-btn')) {
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await remove(ref(database, `sales/${userId}/${saleId}`));
-                saleContainer.remove(); // Remove the sale entry from the DOM
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-                alert('Failed to delete sale.');
-            }
-        }
+    try {
+        await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
+        console.log("Sale updated successfully.");
+        closeEditModal();
+        fetchSalesHistory(); // Refresh the sales history to reflect the changes
+    } catch (error) {
+        console.error('Error updating sale:', error);
+        alert('Failed to update sale.');
     }
 });
+
+console.log("Fetching sales history for userID:", userId);
+
+onValue(salesRef, (snapshot) => {
+    // Existing code to process snapshot.val()
+}, (error) => {
+    console.error("Error fetching sales data:", error);
+});
+
 
 // Function to open the edit modal and populate it with sale data
 async function openEditModal(saleId) {
