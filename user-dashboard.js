@@ -120,10 +120,10 @@ if (addSalesForm) {
 
 onAuthStateChanged(auth, user => {
     if (user) {
-        currentUserUID = user.uid; // Update when the user logs in
+        userId = user.uid; // Update when the user logs in
     } else {
         // Handle user not logged in
-        currentUserUID = null; // Reset or handle the logged-out state
+        userId = null; // Reset or handle the logged-out state
     }
 });
 
