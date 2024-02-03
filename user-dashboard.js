@@ -280,8 +280,9 @@ const commissionStructures = [
     const currentYear = now.getFullYear();
 
     const salesRef = ref(database, `sales/${userId}`);
-    try {
-        const snapshot = await get(salesRef);
+    
+    // Listen for changes in the Firebase database using onValue
+    onValue(salesRef, (snapshot) => {
         const sales = snapshot.val();
         if (!sales) {
             console.log("No sales data found.");
@@ -318,14 +319,8 @@ const commissionStructures = [
         const totalCommissionElement = document.createElement('div');
         totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
         document.getElementById('commissionSummary').appendChild(totalCommissionElement);
-    } catch (error) {
-        console.error("Error fetching sales data: ", error);
-    }
+    });
 }
-
-// Make sure to call this function at the right moment, e.g., after sales history is fetched
-
-  
 
 
 
