@@ -254,7 +254,7 @@ push(ref(database, `sales/${userId}`), saleData)
   
     // Here, you can update the UI or perform further actions with salesCountByType
     console.log(salesCountByType);
-  }
+  }//
   
 
 
