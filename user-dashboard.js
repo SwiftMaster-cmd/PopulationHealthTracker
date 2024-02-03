@@ -101,7 +101,9 @@ if (addSalesForm) {
             timestamp: new Date().toISOString()
         };
 
-        push(ref(database, `sales/${auth.currentUser.uid}`), saleData)
+        const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
+        await set(newSaleRef, saleData);
+        
         .then(() => {
             document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
             // Reset form and UI elements as before
@@ -123,6 +125,8 @@ onAuthStateChanged(auth, user => {
     }
 });
 
+// After successfully adding a sale
+fetchSalesHistory(user.uid); // Assuming `user.uid` is available
 
 
 
