@@ -146,14 +146,15 @@ header {
 }
 
 .sales-history-entry {
-    background: #E3F2FD; /* Lighter background for readability */
-    border: 1px solid #BBDEFB; /* Subtle border styling */
+    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient matching the dashboard */
+    border-radius: 10px; /* Consistent rounded corners */
+    padding: 15px; /* Padding around content */
     margin-bottom: 15px; /* Space between entries */
-    padding: 15px; /* Inner spacing */
-    border-radius: 14px; /* Rounded corners */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Consistent shadow */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Soft shadow for depth */
+    color: #023047; /* Text color for readability */
     transition: all 0.3s ease; /* Smooth transition for interactions */
 }
+
 
 .sales-history-entry:hover {
     transform: scale(1.03); /* Slight enlargement on hover */
@@ -177,6 +178,19 @@ header {
     cursor: pointer;
     transition: background 0.3s ease, transform 0.3s ease;
 }
+
+.sale-type-span {
+    display: inline-block; /* Display as inline block for alignment */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
+    color: white; /* Text color for contrast */
+    padding: 5px 10px; /* Padding inside each "button" */
+    margin: 2px; /* Margin for spacing between buttons */
+    border-radius: 5px; /* Rounded corners for button-like appearance */
+    font-size: 16px; /* Font size for readability */
+    cursor: default; /* Default cursor to indicate non-interactivity */
+    user-select: none; /* Prevent text selection */
+}
+
 
 .sale-actions button:hover {
     background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect to match other buttons */
