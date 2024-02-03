@@ -188,10 +188,6 @@ function fetchSalesHistory() {
             id: key
         })).sort((a, b) => Number(a.timestamp) - Number(b.timestamp));
 
-
-        // If timestamp is in ISO string format, you may need to parse it to Date objects before sorting:
-        // .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
             const saleContainer = document.createElement('div');
@@ -213,10 +209,11 @@ function fetchSalesHistory() {
             `;
             salesHistoryElement.appendChild(saleContainer);
         });
-    });
-    updateCommissionSummary();
-}
 
+        // Call updateCommissionSummary here, inside the onValue callback
+        updateCommissionSummary();
+    });
+}
 
 
 
@@ -272,63 +269,58 @@ const commissionStructures = [
   }
   
   async function updateCommissionSummary() {
-
-    // Adjusted Date Filtering to Include Year Comparison
-const now = new Date();
-const currentMonth = now.getMonth();
-const currentYear = now.getFullYear();
-
-const salesCount = Object.values(sales).filter(sale => {
-    const saleDate = new Date(sale.timestamp);
-    return sale.category === structure.category && 
-           saleDate.getMonth() === currentMonth && 
-           saleDate.getFullYear() === currentYear;
-}).length;
-
-
     if (!userId) {
         console.log("User not logged in.");
         return;
     }
 
+    // Define the current date variables outside of the Firebase call
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
     const salesRef = ref(database, `sales/${userId}`);
-    const snapshot = await get(salesRef);
-    const sales = snapshot.val();
-
-    if (!sales) {
-        console.log("No sales data found.");
-        return;
-    }
-
-    let totalCommission = 0;
-
-    // Assuming sales data is structured with categories and counts
-    console.log("Calculating commissions...");
-commissionStructures.forEach(structure => {
-    console.log(`Processing category: ${structure.category}`);
-    // Your existing logic...
-
-        // Filter sales by category and sum their counts for the current month
-        const salesCount = Object.values(sales).filter(sale => 
-            sale.category === structure.category && 
-            new Date(sale.timestamp).getMonth() === new Date().getMonth() // Filter by current month
-        ).length; // Assuming each sale is a single entry, adjust if your data includes a count
-
-        try {
-            const commission = calculateCommission(salesCount, structure.category);
-            totalCommission += commission;
-
-            const commissionElement = document.createElement('div');
-            commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
-            document.getElementById('commissionSummary').appendChild(commissionElement);
-        } catch (error) {
-            console.error(`Error calculating commission for ${structure.category}:`, error);
+    try {
+        const snapshot = await get(salesRef);
+        const sales = snapshot.val();
+        if (!sales) {
+            console.log("No sales data found.");
+            return;
         }
-    });
 
-    const totalCommissionElement = document.createElement('div');
-    totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-    document.getElementById('commissionSummary').appendChild(totalCommissionElement);
+        let totalCommission = 0;
+        document.getElementById('commissionSummary').innerHTML = ''; // Clear existing content
+
+        // Iterate through each commission structure
+        commissionStructures.forEach(structure => {
+            // Filter and count sales for each category considering the current month and year
+            const salesCount = Object.values(sales).filter(sale => {
+                const saleDate = new Date(sale.timestamp);
+                return sale.category === structure.category && 
+                       saleDate.getMonth() === currentMonth && 
+                       saleDate.getFullYear() === currentYear;
+            }).length;
+
+            try {
+                const commission = calculateCommission(salesCount, structure.category);
+                totalCommission += commission;
+
+                // Update the UI for each category
+                const commissionElement = document.createElement('div');
+                commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
+                document.getElementById('commissionSummary').appendChild(commissionElement);
+            } catch (error) {
+                console.error(`Error calculating commission for ${structure.category}:`, error);
+            }
+        });
+
+        // Optionally, display total commission
+        const totalCommissionElement = document.createElement('div');
+        totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+        document.getElementById('commissionSummary').appendChild(totalCommissionElement);
+    } catch (error) {
+        console.error("Error fetching sales data: ", error);
+    }
 }
 
 // Make sure to call this function at the right moment, e.g., after sales history is fetched
