@@ -131,42 +131,30 @@ header {
 
 
 
-
-
-
-
-
-
 .sales-history-container {
     max-width: 750px; /* Consistent with other containers */
     margin: 20px auto; /* Center align */
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gold to orange gradient */
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Consistent shadow */
-    border-radius: 15px; /* Rounded corners */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gold to orange gradient for consistency */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Consistent shadow */
+    border-radius: 15px; /* Rounded corners for uniformity */
     padding: 20px; /* Padding for internal spacing */
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: hidden; /* Hide overflow for the border-radius to take effect */
-    max-height: 500px; /* Maximum height with overflow */
+    max-height: 500px; /* Maximum height with overflow, enabling vertical scrolling */
     overflow-y: auto; /* Enable vertical scrolling */
 }
 
-
-/* Style for the sales history list and entries */
-.sales-history {
-    width: 100%;
-    overflow-y: auto;
-}
-
-/* Styling for individual sales history entries for consistency */
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FFB74D, #FFA726); /* Lighter gradient for entries */
-    border-radius: 10px; /* Rounded corners */
-    padding: 15px; /* Padding around content */
+    background: linear-gradient(to bottom, #FFB74D, #FFA726); /* Subtle gradient for distinction */
+    border-radius: 10px; /* Consistent rounded corners */
+    padding: 15px; /* Padding around content for spacing */
     margin-bottom: 15px; /* Space between entries */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for hover effects */
+    color: #023047; /* Text color for consistency */
+    font-family: 'Patrick Hand', cursive; /* Unified font for consistency */
 }
 
 .sales-history-entry:hover {
@@ -174,72 +162,65 @@ header {
     box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
 }
 
-.sale-info, .sale-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.sale-actions {
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-
-/* Additional styles for text and buttons within sales history for readability and interaction */
-.sale-info div, .sale-actions button {
-    font-family: 'Patrick Hand', cursive; /* Consistent font family */
-    color: #023047; /* Consistent text color */
-    margin: 5px 0; /* Spacing for readability */
-}
-
-.sales-history-entry {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.sales-history-entry:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.sale-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 20px;
+.sale-info div {
+    font-size: 18px; /* Slightly larger font size for readability */
+    margin: 10px 0; /* Increased spacing for clarity */
 }
 
 .sale-data {
-    min-width: 120px;
-    color: #333;
-    font-size: 14px;
+    background-color: #E3F2FD; /* Background to mimic input fields */
+    border: 1px solid #BBDEFB; /* Border to distinguish data sections */
+    padding: 10px; /* Padding for content spacing */
+    border-radius: 4px; /* Rounded corners to match input fields */
+    margin: 5px 0; /* Margin for spacing between data points */
+    display: inline-block; /* Align items inline for a compact view */
+    min-width: 150px; /* Minimum width for alignment */
 }
 
 .sale-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Adjust to spread out buttons */
+    padding-top: 10px; /* Padding above the buttons for spacing */
 }
 
 .sale-actions button {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Button gradient */
-    color: white;
-    padding: 8px 16px;
-    border-radius: 5px; /* Rounded buttons */
-    border: none;
-    cursor: pointer; /* Cursor change to indicate clickable */
-    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    background-color: #8ECAE6; /* Button color for a fresh look */
+    color: #ffffff; /* Text color for readability */
+    border-radius: 15px; /* Rounded corners for buttons */
+    border: none; /* Remove border for cleaner appearance */
+    padding: 10px 20px; /* Padding for button size */
+    font-size: 16px; /* Font size for readability */
+    cursor: pointer; /* Cursor to indicate clickable */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
 }
+
 .sale-actions button:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover gradient change */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Shadow for depth */
+    background-color: #FF851B; /* Hover color change for interaction feedback */
+    transform: scale(1.05); /* Slight increase in size for hover effect */
 }
+
+/* Ensure scrolling within the .sales-history-container works as intended */
+.sales-history-container::-webkit-scrollbar {
+    width: 8px; /* Scrollbar width */
+}
+
+.sales-history-container::-webkit-scrollbar-thumb {
+    background: #BBDEFB; /* Scrollbar color */
+    border-radius: 4px; /* Rounded scrollbar for a smoother look */
+}
+
+.sales-history-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Scrollbar track color */
+}
+
+
+
+
+
+
+
+
+
 
 #editSaleModal {
     display: none; /* Hidden by default, shown when editing */
@@ -303,6 +284,15 @@ header {
 #editSaleForm button[type="button"]:hover {
     background-color: #c82333;
 }
+
+
+
+
+
+
+
+
+
 
 /* General styling for sale data to mimic input/label appearance */
 .sale-data {
