@@ -227,72 +227,6 @@ input:focus, textarea:focus {
 
 
 
-#editSaleModal {
-    display: none; /* Hidden by default, shown when editing */
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-}
-
-#editSaleForm {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 500px;
-    margin: auto;
-}
-
-#editSaleForm label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-#editSaleForm input, #editSaleForm select, #editSaleForm textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-#editSaleForm button[type="submit"] {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#editSaleForm button[type="submit"]:hover {
-    background-color: #218838;
-}
-
-#editSaleForm button[type="button"] {
-    background-color: #dc3545;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#editSaleForm button[type="button"]:hover {
-    background-color: #c82333;
-}
-
-
-
-
 
 
 
@@ -325,7 +259,20 @@ input:focus, textarea:focus {
 .sale-actions button {
     /* Additional styles if needed based on your previous setup */
     font-size: 14px; /* Adjust font size for buttons if necessary */
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
 #editSaleModal {
     display: none; /* Hidden by default, shown when editing */
     position: fixed;
@@ -346,14 +293,15 @@ input:focus, textarea:focus {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    width: auto;
-    max-width: 750px; /* Match the width of your sales containers */
+    width: 100%; /* Make form width adjustable */
+    max-width: 500px; /* Maximum width for the form */
     margin: auto;
     animation: fadeIn 0.5s ease-out; /* Use the fadeIn animation for a smooth appearance */
 }
 
 #editSaleForm input, #editSaleForm textarea, #editSaleForm select {
     width: 100%;
+    max-width: 300px; /* Maximum width for input fields */
     padding: 10px;
     margin: 8px 0;
     border-radius: 4px;
@@ -361,12 +309,17 @@ input:focus, textarea:focus {
     background: linear-gradient(to bottom, #FB8501, #FB8501);
     font-size: 18px; /* Slightly larger for improved readability */
     color: #023047; /* Consistent font color */
+    display: block; /* Ensure inputs are block-level for max-width to take effect */
+    margin-left: auto; /* Center align the inputs */
+    margin-right: auto; /* Center align the inputs */
 }
 
 #editSaleForm label {
+    display: block; /* Ensure labels are block-level for proper alignment */
     margin-bottom: 5px;
     color: #023047;
     font-size: 20px; /* Make labels slightly larger */
+    text-align: center; /* Center align the labels */
 }
 
 #editSaleForm button {
@@ -379,13 +332,16 @@ input:focus, textarea:focus {
     font-size: 18px; /* Consistent button font size */
     margin-top: 10px; /* Space above the button */
     transition: background 0.3s ease-in-out;
+    display: block; /* Make buttons block-level for centering */
+    margin-left: auto; /* Center align the button */
+    margin-right: auto; /* Center align the button */
 }
 
 #editSaleForm button:hover {
     background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect to match other buttons */
 }
 
-/* Close button specific styling (if you have one) */
+/* Adjustments for close button, if it exists */
 #closeEditModalButton {
     float: right; /* Position it to the right corner */
     font-size: 24px; /* Larger font size for clear visibility */
@@ -394,11 +350,6 @@ input:focus, textarea:focus {
     cursor: pointer;
     color: #FB8501; /* Color to match your theme */
 }
-
-
-
-
-
 
 
 
