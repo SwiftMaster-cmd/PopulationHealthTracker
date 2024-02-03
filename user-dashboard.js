@@ -132,40 +132,34 @@ onAuthStateChanged(auth, user => {
 
 
 
-let userId; // Define userId at a higher scope
-
-// Assuming you have a Firebase Authentication setup
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    userId = user.uid; // Set the userId when the user is logged in
-    fetchSalesHistory(userId); // Now you can use userId
-  } else {
-    // Handle user not logged in
-  }
+// Define `userId` at a higher scope and initialize it upon user authentication state change
+let userId = null;
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        userId = user.uid; // Set the userId when the user is logged in
+        fetchSalesHistory(); // Fetch sales history once the user is authenticated
+    } else {
+        console.log("User is not logged in.");
+        // Optionally, handle user not logged in or redirect to a login page
+    }
 });
 
-
-
-
-// Assuming Firebase initialization has already been done
-
 // Function to fetch and display sales history
-function fetchSalesHistory(userId) {
+function fetchSalesHistory() {
+    if (!userId) return; // Guard clause to ensure `userId` is set
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
-        const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
-        salesHistoryElement.innerHTML = ''; // Clear existing content
+        salesHistoryElement.innerHTML = ''; // Clear existing content before repopulating
 
+        const sales = snapshot.val();
         if (sales) {
             Object.keys(sales).forEach((key) => {
                 const sale = sales[key];
+                const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
                 saleContainer.setAttribute('data-sale-id', key);
-                // Assuming sale.timestamp exists and is a valid date
-                const formattedTimestamp = new Date(sale.timestamp).toLocaleString();
-
                 saleContainer.innerHTML = `
                     <div class="sale-info">
                         <div class="sale-data">Sale ID: ${key}</div>
@@ -190,6 +184,8 @@ function fetchSalesHistory(userId) {
 
 // Handling user actions for edit and delete
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
+    if (!userId) return; // Ensure `userId` is available
+
     const saleContainer = event.target.closest('.sales-history-entry');
     if (!saleContainer) return;
 
@@ -212,6 +208,7 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
 
 // Function to open the edit modal and populate it with sale data
 async function openEditModal(saleId) {
+    if (!userId) return; // Ensure `userId` is available
     const saleRef = ref(database, `sales/${userId}/${saleId}`);
     const snapshot = await get(saleRef);
     const sale = snapshot.val();
@@ -229,6 +226,7 @@ async function openEditModal(saleId) {
 // Handling the edit form submission
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
+    if (!userId) return; // Ensure `userId` is available
 
     const saleId = document.getElementById('editSaleId').value;
     const updatedSaleData = {
@@ -240,7 +238,7 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
     try {
         await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
         closeEditModal();
-        fetchSalesHistory(userId); // Refresh the sales history to reflect the changes
+        fetchSalesHistory(); // Refresh the sales history to reflect the changes
     } catch (error) {
         console.error('Error updating sale:', error);
         alert('Failed to update sale.');
@@ -251,6 +249,3 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
 }
-
-// Call fetchSalesHistory with the current user's ID upon initialization or user authentication state change
-fetchSalesHistory(userId);
