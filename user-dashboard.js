@@ -224,6 +224,7 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
         }
     }
 });
+
 // Function to open the edit modal and populate it with sale data
 async function openEditModal(saleId) {
     if (!userId) return; // Ensure `userId` is available
@@ -237,20 +238,11 @@ async function openEditModal(saleId) {
         document.getElementById('editEsiContent').value = sale.esi_content;
         document.getElementById('editNotes').value = sale.notes;
 
-        // Pre-select sale type buttons based on sale data
-        document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
-            const value = btn.getAttribute('data-value');
-            if (sale.sale_types && sale.sale_types[value]) {
-                btn.classList.add('selected');
-            } else {
-                btn.classList.remove('selected');
-            }
-        });
-
         document.getElementById('editSaleModal').style.display = 'block';
     }
 }
 
+// Handling the edit form submission
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!userId) return; // Ensure `userId` is available
@@ -260,11 +252,6 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
         lead_id: document.getElementById('editLeadId').value,
         esi_content: document.getElementById('editEsiContent').value,
         notes: document.getElementById('editNotes').value,
-        // Collect and save the updated sale types
-        sale_types: Array.from(document.querySelectorAll('.edit-sale-type-btn.selected')).reduce((acc, btn) => {
-            acc[btn.getAttribute('data-value')] = true;
-            return acc;
-        }, {}),
     };
 
     try {
@@ -276,3 +263,8 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
         alert('Failed to update sale.');
     }
 });
+
+// Function to close the edit modal
+function closeEditModal() {
+    document.getElementById('editSaleModal').style.display = 'none';
+}
