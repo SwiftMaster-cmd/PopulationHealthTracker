@@ -214,6 +214,7 @@ function fetchSalesHistory() {
             salesHistoryElement.appendChild(saleContainer);
         });
     });
+    updateCommissionSummary();
 }
 
 
@@ -271,6 +272,20 @@ const commissionStructures = [
   }
   
   async function updateCommissionSummary() {
+
+    // Adjusted Date Filtering to Include Year Comparison
+const now = new Date();
+const currentMonth = now.getMonth();
+const currentYear = now.getFullYear();
+
+const salesCount = Object.values(sales).filter(sale => {
+    const saleDate = new Date(sale.timestamp);
+    return sale.category === structure.category && 
+           saleDate.getMonth() === currentMonth && 
+           saleDate.getFullYear() === currentYear;
+}).length;
+
+
     if (!userId) {
         console.log("User not logged in.");
         return;
