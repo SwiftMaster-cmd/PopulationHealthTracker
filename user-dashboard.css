@@ -304,6 +304,33 @@ header {
     background-color: #c82333;
 }
 
+/* General styling for sale data to mimic input/label appearance */
+.sale-data {
+    background: #E3F2FD; /* Light background color similar to input fields */
+    border: 1px solid #BBDEFB; /* Border to distinguish each sale data */
+    padding: 8px 12px; /* Padding inside each sale data block */
+    border-radius: 4px; /* Rounded corners to match input fields */
+    margin: 4px 0; /* Margin for spacing between each sale data */
+    display: block; /* Ensure each sale data is on its own line */
+    color: #023047; /* Text color to match the overall theme */
+    font-size: 16px; /* Font size to match input labels */
+}
+
+/* Specific styling adjustments for better visual hierarchy */
+.sale-data:first-child {
+    font-weight: bold; /* Make the first piece of data (Sale ID) more prominent */
+    color: #FB8501; /* Use a distinct color for ID to stand out */
+}
+
+.sale-actions {
+    margin-top: 12px; /* Add some space between the sale data and action buttons */
+}
+
+/* You might already have styles for .sale-actions button from previous adjustments */
+.sale-actions button {
+    /* Additional styles if needed based on your previous setup */
+    font-size: 14px; /* Adjust font size for buttons if necessary */
+}
 
 
 
