@@ -219,6 +219,19 @@ function fetchSalesHistory() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Commission calculation logic integrated directly in user-dashboard.js
 
 const commissionStructures = [
@@ -273,6 +286,12 @@ function calculateCommission(sales, category) {
       console.log("User not logged in.");
       return;
     }
+
+    const currentMonthSales = Object.values(sales).filter(sale => {
+        const saleDate = new Date(sale.timestamp);
+        return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+      });
+      
   
     const now = new Date();
     const currentMonth = now.getMonth();
