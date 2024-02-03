@@ -194,11 +194,10 @@ function fetchSalesHistory() {
                 `;
                 salesHistoryElement.appendChild(saleContainer);
             });
-        } else {
-            salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
-        }
-    });
-}
+        }, (error) => {
+            console.error("Error fetching sales data:", error);
+        });
+    }
 
 // Handling user actions for edit and delete
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
