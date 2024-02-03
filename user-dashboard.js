@@ -15,14 +15,18 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-let currentUserUID = null; // Declare at the top level of your script
+
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
+
+let currentUserUID = null; // Declare at the top level of your script
 // Function to get the value of the selected ESI content button
+
+
 function getSelectedESIContent() {
     const selectedButton = document.querySelector('.esi-btn.selected');
     return selectedButton ? selectedButton.getAttribute('data-value') : null;
@@ -80,10 +84,12 @@ document.getElementById('lead_id').addEventListener('input', function() {
 
 // Form submission event listener for adding new sales
 const addSalesForm = document.getElementById('addSalesForm');
+
+// Update your form submission event listener to use `userId` instead of `currentUser.uid`
 if (addSalesForm) {
-    addSalesForm.addEventListener('submit', event => {
+    addSalesForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        if (!auth.currentUser) {
+        if (!userId) { // Use userId to check if a user is logged in
             alert('Please log in to add sales.');
             return;
         }
@@ -97,22 +103,23 @@ if (addSalesForm) {
             esi_content: esiContent,
             sale_types: saleTypes,
             notes: notes,
-            user_id: currentUser.uid,
+            user_id: userId,
             timestamp: new Date().toISOString()
         };
 
-        push(ref(database, `sales/${auth.currentUser.uid}`), saleData)
+        push(ref(database, `sales/${userId}`), saleData)
         .then(() => {
             document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
-            // Reset form and UI elements as before
+            event.target.reset();
+            // Reset selected buttons as before
         })
         .catch(error => {
             console.error('Error adding sale:', error);
             alert('Failed to add sale.');
         });
-});
-
+    });
 }
+
 
 
 onAuthStateChanged(auth, user => {
