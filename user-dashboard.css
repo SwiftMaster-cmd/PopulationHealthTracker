@@ -342,7 +342,7 @@ input:focus, textarea:focus {
 }
 
 #editSaleForm {
-    background: linear-gradient(to bottom, #e6ca8e, #bc9821);
+    background: linear-gradient(to bottom, #219EBC, #8ECAE6);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -357,8 +357,8 @@ input:focus, textarea:focus {
     padding: 10px;
     margin: 8px 0;
     border-radius: 4px;
-    border: 1px solid #fbdebb; /* Light border color */
-    background: linear-gradient(to bottom, #e6cc8e, #bc8d21);
+    border: 1px solid #219EBC; /* Light border color */
+    background: linear-gradient(to bottom, #219EBC, #8ECAE6);
     font-size: 18px; /* Slightly larger for improved readability */
     color: #023047; /* Consistent font color */
 }
