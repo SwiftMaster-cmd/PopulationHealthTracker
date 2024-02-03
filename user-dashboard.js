@@ -270,7 +270,50 @@ const commissionStructures = [
     return sales * rateInfo.rate;
   }
   
-  // Your existing code below...
+  async function updateCommissionSummary() {
+    if (!userId) {
+        console.log("User not logged in.");
+        return;
+    }
+
+    const salesRef = ref(database, `sales/${userId}`);
+    const snapshot = await get(salesRef);
+    const sales = snapshot.val();
+
+    if (!sales) {
+        console.log("No sales data found.");
+        return;
+    }
+
+    let totalCommission = 0;
+
+    // Assuming sales data is structured with categories and counts
+    commissionStructures.forEach(structure => {
+        // Filter sales by category and sum their counts for the current month
+        const salesCount = Object.values(sales).filter(sale => 
+            sale.category === structure.category && 
+            new Date(sale.timestamp).getMonth() === new Date().getMonth() // Filter by current month
+        ).length; // Assuming each sale is a single entry, adjust if your data includes a count
+
+        try {
+            const commission = calculateCommission(salesCount, structure.category);
+            totalCommission += commission;
+
+            const commissionElement = document.createElement('div');
+            commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
+            document.getElementById('commissionSummary').appendChild(commissionElement);
+        } catch (error) {
+            console.error(`Error calculating commission for ${structure.category}:`, error);
+        }
+    });
+
+    const totalCommissionElement = document.createElement('div');
+    totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+    document.getElementById('commissionSummary').appendChild(totalCommissionElement);
+}
+
+// Make sure to call this function at the right moment, e.g., after sales history is fetched
+
   
 
 
