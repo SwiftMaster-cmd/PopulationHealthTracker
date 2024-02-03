@@ -23,10 +23,6 @@ const auth = getAuth();
 const database = getDatabase();
 
 
-let currentUserUID = null; // Declare at the top level of your script
-// Function to get the value of the selected ESI content button
-
-
 function getSelectedESIContent() {
     const selectedButton = document.querySelector('.esi-btn.selected');
     return selectedButton ? selectedButton.getAttribute('data-value') : null;
@@ -139,22 +135,27 @@ onAuthStateChanged(auth, user => {
 
 
 
+let userId = null; // This will store the current user's ID
 
-
-
+// Auth state change listener to handle user login and logout
 onAuthStateChanged(auth, (user) => {
     if (user) {
         userId = user.uid; // Set the userId when the user is logged in
-        fetchSalesHistory(); // Call fetchSalesHistory here to ensure userId is set
+        fetchSalesHistory(); // Fetch sales history for the logged-in user
     } else {
-        userId = null; // Reset userId when no user is signed in
         console.log("User is not logged in.");
+        userId = null; // Clear userId if no user is signed in
+        // Optionally clear or update the UI to reflect the logged-out state
     }
 });
 
-// Function to fetch and display sales history
+// Function to fetch and display sales history for the logged-in user
 function fetchSalesHistory() {
-    if (!userId) return; // Guard clause to ensure `userId` is set
+    if (!userId) {
+        console.log("Attempted to fetch sales history without a valid user ID.");
+        return; // Exit the function if userId is not set
+    }
+
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const salesHistoryElement = document.getElementById('salesHistory');
@@ -164,7 +165,10 @@ function fetchSalesHistory() {
         if (sales) {
             Object.keys(sales).forEach((key) => {
                 const sale = sales[key];
+                // Format the timestamp, display 'Unknown' if not available
                 const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+                
+                // Create and append the sale container to the sales history element
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
                 saleContainer.setAttribute('data-sale-id', key);
