@@ -170,7 +170,8 @@ function fetchSalesHistory() {
         const salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
-        })).sort((a, b) => b.timestamp - a.timestamp); // Assuming timestamp is stored as Unix timestamp
+        })).sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
+
 
         // If timestamp is in ISO string format, you may need to parse it to Date objects before sorting:
         // .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
