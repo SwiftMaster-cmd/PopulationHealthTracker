@@ -229,11 +229,7 @@ function fetchSalesHistory() {
 
 
 
-
-
-
-// Commission calculation logic integrated directly in user-dashboard.js
-
+// Define your commission structures
 const commissionStructures = [
     {
       category: "Billable HRA",
@@ -267,7 +263,8 @@ const commissionStructures = [
     },
   ];
   
-function calculateCommission(sales, category) {
+  // Function to calculate commission
+  function calculateCommission(sales, category) {
     const structure = commissionStructures.find(s => s.category === category);
     if (!structure) {
       throw new Error("Invalid category");
@@ -280,13 +277,11 @@ function calculateCommission(sales, category) {
   
     return sales * rateInfo.rate;
   }
-  
   async function updateCommissionSummary() {
     if (!userId) {
       console.log("User not logged in.");
       return;
     }
-
   
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -309,19 +304,18 @@ function calculateCommission(sales, category) {
       commissionStructures.forEach(structure => {
         console.log(`Processing structure: ${structure.category}`); // Debugging: Check the structure being processed
   
-        const salesCount = Object.values(sales).filter(sale => {
-          if (!sale.timestamp || !sale.category) {
-            console.error("Sale record missing timestamp or category", sale);
-            return false; // Skip this sale if it lacks necessary fields
+        // Initialize sales count for the current structure category
+        let salesCount = 0;
+  
+        Object.values(sales).forEach(sale => {
+          const saleDate = new Date(sale.timestamp);
+          if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
+            // Check if sale_types includes the current structure category
+            if (sale.sale_types && sale.sale_types[structure.category]) {
+              salesCount += 1; // Increment count if the sale type matches the structure category
+            }
           }
-          const categories = sale.sale_types ? sale.sale_types.split(', ') : [];
-        const saleDate = new Date(sale.timestamp);
-          console.log("Sale category:", sale.category, "Structure category:", structure.category); // Debugging: Verify categories
-          console.log("Sale date:", saleDate.toISOString()); // Debugging: Verify sale date format and values
-          return categories.includes(structure.category) && 
-               saleDate.getMonth() === currentMonth && 
-               saleDate.getFullYear() === currentYear;
-        }).length;
+        });
   
         console.log(`${structure.category} sales count:`, salesCount); // Debugging: Check the calculated sales count
   
@@ -337,11 +331,15 @@ function calculateCommission(sales, category) {
         }
       });
   
+      // Display total commission
       const totalCommissionElement = document.createElement('div');
       totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
       document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     });
   }
+   // Placeholder for user ID, ensure this is set correctly in your auth flow
+  
+
 
 
 
