@@ -77,45 +77,69 @@ document.getElementById('lead_id').addEventListener('input', function() {
 });
 
 
-// Form submission event listener for adding new sales
-const addSalesForm = document.getElementById('addSalesForm');
+
+// Enhanced Auth State Change Handling
+onAuthStateChanged(auth, user => {
+    if (user) {
+        currentUserUID = user.uid; // Update the current user UID
+        // Optionally, fetch and display user-specific data here
+    } else {
+        // Redirect to login or show a login interface
+        console.log("No user is signed in.");
+        // Redirect or inform the user accordingly
+    }
+});
+
+// Function to get the value of the selected ESI content button
+function getSelectedESIContent() {
+    const selectedButton = document.querySelector('.esi-btn.selected');
+    return selectedButton ? selectedButton.getAttribute('data-value') : null;
+}
+
+// Function to get the selected sale types
+function getSaleTypes() {
+    const saleTypes = {};
+    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
+        saleTypes[btn.getAttribute('data-value')] = true;
+    });
+    return saleTypes;
+}
+
+
 if (addSalesForm) {
     addSalesForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
+        if (!currentUserUID) {
             alert('Please log in to add sales.');
             return;
         }
 
+        // Extract form data
         const leadId = document.getElementById('lead_id').value.trim();
         const esiContent = getSelectedESIContent();
         const saleTypes = getSaleTypes();
         const notes = document.getElementById('notes').value.trim();
+
         const saleData = {
             lead_id: leadId,
             esi_content: esiContent,
             sale_types: saleTypes,
             notes: notes,
-            user_id: currentUser.uid,
             timestamp: new Date().toISOString()
         };
 
+        // Push new sale data to Firebase
         try {
-            const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
-            await set(newSaleRef, saleData);
-            event.target.reset();
-            document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
-            document.querySelectorAll('.esi-btn').forEach(btn => btn.classList.remove('selected'));
-            document.getElementById('confirmationMessage').textContent = "Sale with Lead ID " + leadId + " added successfully.";
+            await push(ref(database, `sales/${currentUserUID}`), saleData);
+            document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
+            event.target.reset(); // Reset form fields
+            document.querySelectorAll('.sale-type-btn, .esi-btn').forEach(btn => btn.classList.remove('selected'));
         } catch (error) {
             console.error('Error adding sale:', error);
             alert('Failed to add sale.');
         }
     });
 }
-
 
 
 // Auth state change event listener
@@ -128,6 +152,18 @@ onAuthStateChanged(auth, user => {
         window.location.href = 'login.html';
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
