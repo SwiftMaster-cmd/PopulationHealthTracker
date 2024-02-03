@@ -300,12 +300,13 @@ function calculateCommission(sales, category) {
             console.error("Sale record missing timestamp or category", sale);
             return false; // Skip this sale if it lacks necessary fields
           }
-          const saleDate = new Date(sale.timestamp);
+          const categories = sale.sale_types ? sale.sale_types.split(', ') : [];
+        const saleDate = new Date(sale.timestamp);
           console.log("Sale category:", sale.category, "Structure category:", structure.category); // Debugging: Verify categories
           console.log("Sale date:", saleDate.toISOString()); // Debugging: Verify sale date format and values
-          return sale.category === structure.category && 
-                 saleDate.getMonth() === currentMonth && 
-                 saleDate.getFullYear() === currentYear;
+          return categories.includes(structure.category) && 
+               saleDate.getMonth() === currentMonth && 
+               saleDate.getFullYear() === currentYear;
         }).length;
   
         console.log(`${structure.category} sales count:`, salesCount); // Debugging: Check the calculated sales count
