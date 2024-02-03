@@ -288,7 +288,11 @@ const commissionStructures = [
     let totalCommission = 0;
 
     // Assuming sales data is structured with categories and counts
-    commissionStructures.forEach(structure => {
+    console.log("Calculating commissions...");
+commissionStructures.forEach(structure => {
+    console.log(`Processing category: ${structure.category}`);
+    // Your existing logic...
+
         // Filter sales by category and sum their counts for the current month
         const salesCount = Object.values(sales).filter(sale => 
             sale.category === structure.category && 
