@@ -127,43 +127,6 @@ onAuthStateChanged(auth, user => {
     }
 });
 
-push(ref(database, `sales/${userId}`), saleData)
-  .then(() => {
-    document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
-    event.target.reset(); // Reset form fields and selected buttons
-  })
-  .catch(error => {
-    console.error('Error adding sale:', error);
-    alert('Failed to add sale.');
-  });
-  function updateSalesCountByType(sales) {
-    // Assuming 'sales' is an object where each key is a sale ID and each value is a sale record
-    const salesCountByType = {};
-  
-    Object.values(sales).forEach(sale => {
-      const saleDate = new Date(sale.timestamp);
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-  
-      // Check if sale is in the current month and year
-      if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
-        Object.keys(sale.sale_types).forEach(type => {
-          if (sale.sale_types[type]) { // If the sale type is present and true
-            if (!salesCountByType[type]) {
-              salesCountByType[type] = 0;
-            }
-            salesCountByType[type] += 1; // Increment the counter for this sale type
-          }
-        });
-      }
-    });
-  
-    // Here, you can update the UI or perform further actions with salesCountByType
-    console.log(salesCountByType);
-  }
-  
-
 
 
 
@@ -255,9 +218,44 @@ function fetchSalesHistory() {
 
 
 
+push(ref(database, `sales/${userId}`), saleData)
+  .then(() => {
+    document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
+    event.target.reset(); // Reset form fields and selected buttons
+  })
+  .catch(error => {
+    console.error('Error adding sale:', error);
+    alert('Failed to add sale.');
+  });
 
 
-
+  function updateSalesCountByType(sales) {
+    // Assuming 'sales' is an object where each key is a sale ID and each value is a sale record
+    const salesCountByType = {};
+  
+    Object.values(sales).forEach(sale => {
+      const saleDate = new Date(sale.timestamp);
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+  
+      // Check if sale is in the current month and year
+      if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
+        Object.keys(sale.sale_types).forEach(type => {
+          if (sale.sale_types[type]) { // If the sale type is present and true
+            if (!salesCountByType[type]) {
+              salesCountByType[type] = 0;
+            }
+            salesCountByType[type] += 1; // Increment the counter for this sale type
+          }
+        });
+      }
+    });
+  
+    // Here, you can update the UI or perform further actions with salesCountByType
+    console.log(salesCountByType);
+  }
+  
 
 
 
