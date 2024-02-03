@@ -136,11 +136,21 @@ header {
 
 
 
+
+
+
+
+
+
+
+
+
+
 /* Apply consistent font family and color across the page */
 .sales-history-container {
     max-width: 750px;
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Matching gradient for consistency */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Updated gradient */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
@@ -154,29 +164,28 @@ header {
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient matching the dashboard */
-    border-radius: 10px; /* Consistent rounded corners */
-    padding: 15px; /* Padding around content */
-    margin-bottom: 15px; /* Space between entries */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Soft shadow for depth */
-    color: #023047; /* Text color for readability */
-    transition: all 0.3s ease; /* Smooth transition for interactions */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Updated gradient */
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: #023047;
+    transition: all 0.3s ease;
 }
 
-
 .sales-history-entry:hover {
-    transform: scale(1.03); /* Slight enlargement on hover */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
+    transform: scale(1.03);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
 }
 
 .sale-info div {
-    font-size: 18px; /* Slightly larger font size for improved readability */
-    color: #023047; /* Consistent text color */
-    padding: 5px 0; /* Spacing for readability */
+    font-size: 18px;
+    color: #023047;
+    padding: 5px 0;
 }
 
 .sale-actions button {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent button gradient */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent gradient applied */
     color: white;
     font-weight: bold;
     padding: 10px 20px;
@@ -188,47 +197,44 @@ header {
 }
 
 .sale-type-span {
-    display: inline-block; /* Display as inline block for alignment */
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
-    color: white; /* Text color for contrast */
-    padding: 5px 10px; /* Padding inside each "button" */
-    margin: 2px; /* Margin for spacing between buttons */
-    border-radius: 5px; /* Rounded corners for button-like appearance */
-    font-size: 16px; /* Font size for readability */
-    cursor: default; /* Default cursor to indicate non-interactivity */
-    user-select: none; /* Prevent text selection */
+    display: inline-block;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Updated gradient */
+    color: white;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: default;
+    user-select: none;
 }
-
 
 .sale-actions button:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect to match other buttons */
-    transform: translateY(-2px); /* Slight lift effect */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Hover effect updated to maintain the gradient */
+    transform: translateY(-2px);
 }
 
-/* Input and textarea focus effects for any editable fields within modal or page */
 input:focus, textarea:focus {
-    box-shadow: 0 0 10px #e6b081; /* Focus shadow */
-    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 10px #e6b081;
+    outline: none;
 }
 
-/* Scrollbar customization for consistency */
 .sales-history-container::-webkit-scrollbar {
     width: 8px;
 }
 
 .sales-history-container::-webkit-scrollbar-thumb {
-    background: #BBDEFB; /* Scrollbar color */
-    border-radius: 4px; /* Rounded scrollbar for a smoother look */
+    background: #BBDEFB; /* Consider adjusting this color if needed */
+    border-radius: 4px;
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect to match other buttons */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Updated gradient */
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+
+
+
+
 
 
 
@@ -270,6 +276,11 @@ input:focus, textarea:focus {
 
 
 }
+
+
+
+
+
 
 
 
@@ -354,6 +365,15 @@ input:focus, textarea:focus {
     cursor: pointer;
     color: #FB8501; /* Color to match your theme */
 }
+
+
+
+
+
+
+
+
+
 
 
 
