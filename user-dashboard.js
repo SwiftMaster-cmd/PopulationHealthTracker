@@ -147,22 +147,25 @@ firebase.auth().onAuthStateChanged((user) => {
 
 
 
+// Assuming Firebase initialization has already been done
+
 // Function to fetch and display sales history
 function fetchSalesHistory(userId) {
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const sales = snapshot.val();
         const salesHistoryElement = document.getElementById('salesHistory');
-        salesHistoryElement.innerHTML = ''; // Clear existing content before repopulating
+        salesHistoryElement.innerHTML = ''; // Clear existing content
 
         if (sales) {
-            Object.keys(sales).forEach(key => {
+            Object.keys(sales).forEach((key) => {
                 const sale = sales[key];
-                const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-
                 const saleContainer = document.createElement('div');
                 saleContainer.className = 'sales-history-entry';
                 saleContainer.setAttribute('data-sale-id', key);
+                // Assuming sale.timestamp exists and is a valid date
+                const formattedTimestamp = new Date(sale.timestamp).toLocaleString();
+
                 saleContainer.innerHTML = `
                     <div class="sale-info">
                         <div class="sale-data">Sale ID: ${key}</div>
@@ -185,17 +188,15 @@ function fetchSalesHistory(userId) {
     });
 }
 
-// Event Listener for Sales History Actions (Edit/Delete)
+// Handling user actions for edit and delete
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    if (!userId) return; // Ensure userId is available
-
     const saleContainer = event.target.closest('.sales-history-entry');
     if (!saleContainer) return;
 
     const saleId = saleContainer.getAttribute('data-sale-id');
 
     if (event.target.classList.contains('edit-btn')) {
-        openEditModal(saleId, userId);
+        openEditModal(saleId);
     } else if (event.target.classList.contains('delete-btn')) {
         if (confirm('Are you sure you want to delete this sale?')) {
             try {
@@ -208,49 +209,50 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
         }
     }
 });
-
-// Function to Open the Edit Modal and Populate with Sale Data
-async function openEditModal(saleId, userId) {
+// Function to open the edit modal and populate it with sale data
+async function openEditModal(saleId) {
+    const user = firebase.auth().currentUser; // Dynamically get the current user
+    if (!user) return; // Exit if no user is logged in
+  
+    const userId = user.uid; // Get the userId from the current user
     const saleRef = ref(database, `sales/${userId}/${saleId}`);
-    const snapshot = await get(saleRef);
-    const sale = snapshot.val();
+    
 
     if (sale) {
-        document.getElementById('editSaleId').value = saleId; // Assuming there's a hidden input to store saleId
+        document.getElementById('editSaleId').value = saleId;
         document.getElementById('editLeadId').value = sale.lead_id;
         document.getElementById('editEsiContent').value = sale.esi_content;
         document.getElementById('editNotes').value = sale.notes;
 
-        // Show the edit modal
         document.getElementById('editSaleModal').style.display = 'block';
     }
 }
 
-// Handling Edit Form Submission
+// Handling the edit form submission
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
-
-    if (!userId) return; // Ensure userId is available
 
     const saleId = document.getElementById('editSaleId').value;
     const updatedSaleData = {
         lead_id: document.getElementById('editLeadId').value,
         esi_content: document.getElementById('editEsiContent').value,
         notes: document.getElementById('editNotes').value,
-        // Consider re-adding the timestamp or other fields if necessary
     };
 
     try {
         await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
-        closeEditModal(); // Hide the modal on success
-        fetchSalesHistory(userId); // Refresh the displayed sales history
+        closeEditModal();
+        fetchSalesHistory(userId); // Refresh the sales history to reflect the changes
     } catch (error) {
         console.error('Error updating sale:', error);
         alert('Failed to update sale.');
     }
 });
 
-// Close the Edit Modal
+// Function to close the edit modal
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
 }
+
+// Call fetchSalesHistory with the current user's ID upon initialization or user authentication state change
+fetchSalesHistory(userId);
