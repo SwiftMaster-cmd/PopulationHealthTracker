@@ -4,6 +4,7 @@ body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
     padding: 0;
     font-family: 'Patrick Hand', cursive; /* Apply Patrick Hand font */
     color: #023047;
+    height: 100%;
 }
 
 /* Enhance font sizes and styles for better visual appeal */
@@ -270,29 +271,30 @@ input:focus, textarea:focus {
 
 
 #editSaleModal {
-    display: flex; /* Use flexbox for centering */
+    display: none; /* Initially hidden, shown via JS */
     position: fixed;
-    z-index: 1000; /* Ensure it's on top of other content */
+    z-index: 1000; /* High z-index to ensure it's on top */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Enable scrolling if the content is too long */
-    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    overflow: auto; /* Allows scrolling if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Dimmed background */
     align-items: center; /* Center vertically */
     justify-content: center; /* Center horizontally */
+    display: flex; /* Activate flexbox for centering */
 }
 
 #editSaleForm {
     background: linear-gradient(to bottom, #FB8501, #FFB703);
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    width: auto; /* Allow it to expand based on content */
-    max-width: 500px; /* Maximum width for the form */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%; /* Responsive width, with a max set above */
     animation: fadeIn 0.5s ease-out;
-    /* Removed margin:auto; since flexbox takes care of centering */
 }
+
 
 
 #editSaleForm input, #editSaleForm textarea, #editSaleForm select {
