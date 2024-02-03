@@ -123,20 +123,41 @@ header {
     transform: scale(1.1);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Style for the sales history list and entries */
 .sales-history {
     width: 100%;
     overflow-y: auto;
 }
 
+/* Styling for individual sales history entries for consistency */
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FFB74D, #FFA726);
-    border-radius: 15px;
-    padding: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    background: linear-gradient(to bottom, #FFB74D, #FFA726); /* Lighter gradient for entries */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Padding around content */
+    margin-bottom: 15px; /* Space between entries */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+.sales-history-entry:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
 }
 
 .sale-info, .sale-actions {
@@ -150,6 +171,13 @@ header {
     gap: 10px;
 }
 
+
+/* Additional styles for text and buttons within sales history for readability and interaction */
+.sale-info div, .sale-actions button {
+    font-family: 'Patrick Hand', cursive; /* Consistent font family */
+    color: #023047; /* Consistent text color */
+    margin: 5px 0; /* Spacing for readability */
+}
 
 .sales-history-entry {
     display: flex;
@@ -186,20 +214,18 @@ header {
 }
 
 .sale-actions button {
-    background-color: #007bff;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Button gradient */
     color: white;
+    padding: 8px 16px;
+    border-radius: 5px; /* Rounded buttons */
     border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-left: 10px;
+    cursor: pointer; /* Cursor change to indicate clickable */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
 }
-
 .sale-actions button:hover {
-    background-color: #0056b3;
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover gradient change */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Shadow for depth */
 }
-
 
 #editSaleModal {
     display: none; /* Hidden by default, shown when editing */
