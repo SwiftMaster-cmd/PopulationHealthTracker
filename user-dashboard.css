@@ -1,3 +1,10 @@
+html, body {
+    height: 100%;
+    margin: 0; /* Removes the default margin */
+    padding: 0; /* Removes the default padding */
+}
+
+
 /* Reset some default styles to start with a clean slate */
 body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
     margin: 0;
@@ -271,30 +278,29 @@ input:focus, textarea:focus {
 
 
 #editSaleModal {
-    display: none; /* Initially hidden, shown via JS */
+    display: flex; /* Use flexbox for centering */
     position: fixed;
-    z-index: 1000; /* High z-index to ensure it's on top */
+    z-index: 1000; /* Ensure it's on top of other content */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Allows scrolling if needed */
-    background-color: rgba(0, 0, 0, 0.4); /* Dimmed background */
+    overflow: auto; /* Enable scrolling if the content is too long */
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
     align-items: center; /* Center vertically */
     justify-content: center; /* Center horizontally */
-    display: flex; /* Activate flexbox for centering */
 }
 
 #editSaleForm {
     background: linear-gradient(to bottom, #FB8501, #FFB703);
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
-    width: 90%; /* Responsive width, with a max set above */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: auto; /* Allow it to expand based on content */
+    max-width: 500px; /* Maximum width for the form */
     animation: fadeIn 0.5s ease-out;
+    /* Removed margin:auto; since flexbox takes care of centering */
 }
-
 
 
 #editSaleForm input, #editSaleForm textarea, #editSaleForm select {
