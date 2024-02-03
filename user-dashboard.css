@@ -137,6 +137,20 @@ header {
 
 
 
+.sales-history-container {
+    max-width: 750px; /* Consistent with other containers */
+    margin: 20px auto; /* Center align */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gold to orange gradient */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Consistent shadow */
+    border-radius: 15px; /* Rounded corners */
+    padding: 20px; /* Padding for internal spacing */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; /* Hide overflow for the border-radius to take effect */
+    max-height: 500px; /* Maximum height with overflow */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
 
 
 /* Style for the sales history list and entries */
