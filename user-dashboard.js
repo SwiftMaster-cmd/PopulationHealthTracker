@@ -78,32 +78,6 @@ document.getElementById('lead_id').addEventListener('input', function() {
 
 
 
-// Enhanced Auth State Change Handling
-onAuthStateChanged(auth, user => {
-    if (user) {
-        currentUserUID = user.uid; // Update the current user UID
-        // Optionally, fetch and display user-specific data here
-    } else {
-        // Redirect to login or show a login interface
-        console.log("No user is signed in.");
-        // Redirect or inform the user accordingly
-    }
-});
-
-// Function to get the value of the selected ESI content button
-function getSelectedESIContent() {
-    const selectedButton = document.querySelector('.esi-btn.selected');
-    return selectedButton ? selectedButton.getAttribute('data-value') : null;
-}
-
-// Function to get the selected sale types
-function getSaleTypes() {
-    const saleTypes = {};
-    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
-        saleTypes[btn.getAttribute('data-value')] = true;
-    });
-    return saleTypes;
-}
 
 
 if (addSalesForm) {
