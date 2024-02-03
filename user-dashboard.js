@@ -14,6 +14,7 @@ const firebaseConfig = {
     appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
     measurementId: "G-RVBYB0RR06"
 };
+let currentUserUID = null; // Declare at the top level of your script
 
 
 // Initialize Firebase
@@ -141,16 +142,12 @@ onAuthStateChanged(auth, user => {
 
 
 
-
-// Define `userId` at a higher scope and initialize it upon user authentication state change
-let userId = null;
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, user => {
     if (user) {
-        userId = user.uid; // Set the userId when the user is logged in
-        fetchSalesHistory(); // Fetch sales history once the user is authenticated
+        currentUserUID = user.uid; // Update when the user logs in
     } else {
-        console.log("User is not logged in.");
-        // Optionally, handle user not logged in or redirect to a login page
+        // Handle user not logged in
+        currentUserUID = null; // Reset or handle the logged-out state
     }
 });
 
