@@ -133,6 +133,74 @@ onAuthStateChanged(auth, user => {
 
 
 
+// Commission calculation logic integrated directly in user-dashboard.js
+
+const commissionStructures = [
+    {
+      category: "Billable HRA",
+      rates: [
+        { min: 0, max: 9, rate: 1.0 },
+        { min: 10, max: 29, rate: 1.25 },
+        { min: 30, max: 44, rate: 1.5 },
+        { min: 45, max: 64, rate: 1.75 },
+        { min: 65, max: Infinity, rate: 2.0 },
+      ],
+    },
+    {
+      category: "Transfer/Schedule",
+      rates: [
+        { min: 0, max: 9, rate: 3.0 },
+        { min: 10, max: 14, rate: 3.5 },
+        { min: 15, max: 34, rate: 4.0 },
+        { min: 35, max: 54, rate: 4.5 },
+        { min: 55, max: Infinity, rate: 5.0 },
+      ],
+    },
+    {
+      category: "Select RX & MMP",
+      rates: [
+        { min: 0, max: 14, rate: 4.0 },
+        { min: 15, max: 24, rate: 7.0 },
+        { min: 25, max: 84, rate: 10.0 },
+        { min: 85, max: 154, rate: 13.0 },
+        { min: 155, max: Infinity, rate: 16.0 },
+      ],
+    },
+  ];
+  
+  function calculateCommission(sales, category) {
+    const structure = commissionStructures.find(s => s.category === category);
+    if (!structure) {
+      throw new Error("Invalid category");
+    }
+  
+    const rateInfo = structure.rates.find(rate => sales >= rate.min && sales <= rate.max);
+    if (!rateInfo) {
+      throw new Error("Sales out of range");
+    }
+  
+    return sales * rateInfo.rate;
+  }
+  
+  // Your existing code below...
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 let userId = null; // This will store the current user's ID
@@ -268,3 +336,13 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
 }
+
+
+
+
+
+
+
+
+
+
