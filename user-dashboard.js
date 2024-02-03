@@ -286,6 +286,7 @@ function calculateCommission(sales, category) {
       console.log("User not logged in.");
       return;
     }
+
   
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -306,16 +307,13 @@ function calculateCommission(sales, category) {
       document.getElementById('commissionSummary').innerHTML = ''; // Clear existing content
   
       commissionStructures.forEach(structure => {
+        console.log(`Processing structure: ${structure.category}`); // Debugging: Check the structure being processed
+  
         const salesCount = Object.values(sales).filter(sale => {
-            const saleDate = new Date(sale.timestamp);
-    
-            // Assuming 'sale_types' is an object where keys are the types, and values are boolean
-            const types = sale.sale_types ? Object.keys(sale.sale_types) : [];
-            const matchesCategory = types.includes(structure.category);
-    
-            return matchesCategory && saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
-        }).length;
-    
+          if (!sale.timestamp || !sale.category) {
+            console.error("Sale record missing timestamp or category", sale);
+            return false; // Skip this sale if it lacks necessary fields
+          }
           const categories = sale.sale_types ? sale.sale_types.split(', ') : [];
         const saleDate = new Date(sale.timestamp);
           console.log("Sale category:", sale.category, "Structure category:", structure.category); // Debugging: Verify categories
