@@ -14,8 +14,8 @@ const firebaseConfig = {
     appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
     measurementId: "G-RVBYB0RR06"
 };
-let currentUserUID = null; // Declare at the top level of your script
 
+let currentUserUID = null; // Declare at the top level of your script
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
@@ -78,37 +78,38 @@ document.getElementById('lead_id').addEventListener('input', function() {
 });
 
 
-
-
-
+// Form submission event listener for adding new sales
+const addSalesForm = document.getElementById('addSalesForm');
 if (addSalesForm) {
     addSalesForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        if (!currentUserUID) {
+
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
             alert('Please log in to add sales.');
             return;
         }
 
-        // Extract form data
         const leadId = document.getElementById('lead_id').value.trim();
         const esiContent = getSelectedESIContent();
         const saleTypes = getSaleTypes();
         const notes = document.getElementById('notes').value.trim();
-
         const saleData = {
             lead_id: leadId,
             esi_content: esiContent,
             sale_types: saleTypes,
             notes: notes,
+            user_id: currentUser.uid,
             timestamp: new Date().toISOString()
         };
 
-        // Push new sale data to Firebase
         try {
-            await push(ref(database, `sales/${currentUserUID}`), saleData);
-            document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
-            event.target.reset(); // Reset form fields
-            document.querySelectorAll('.sale-type-btn, .esi-btn').forEach(btn => btn.classList.remove('selected'));
+            const newSaleRef = push(ref(database, 'sales/' + currentUser.uid));
+            await set(newSaleRef, saleData);
+            event.target.reset();
+            document.querySelectorAll('.sale-type-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll('.esi-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('confirmationMessage').textContent = "Sale with Lead ID " + leadId + " added successfully.";
         } catch (error) {
             console.error('Error adding sale:', error);
             alert('Failed to add sale.');
@@ -117,14 +118,12 @@ if (addSalesForm) {
 }
 
 
-// Auth state change event listener
 onAuthStateChanged(auth, user => {
     if (user) {
-        // Function to fetch and display sales history
-        fetchSalesHistory(user.uid);
+        currentUserUID = user.uid; // Update when the user logs in
     } else {
-        console.log("User is not logged in. Redirecting to login page.");
-        window.location.href = 'login.html';
+        // Handle user not logged in
+        currentUserUID = null; // Reset or handle the logged-out state
     }
 });
 
@@ -142,12 +141,17 @@ onAuthStateChanged(auth, user => {
 
 
 
-onAuthStateChanged(auth, user => {
+
+
+// Define `userId` at a higher scope and initialize it upon user authentication state change
+let userId = null;
+onAuthStateChanged(auth, (user) => {
     if (user) {
-        currentUserUID = user.uid; // Update when the user logs in
+        userId = user.uid; // Set the userId when the user is logged in
+        fetchSalesHistory(); // Fetch sales history once the user is authenticated
     } else {
-        // Handle user not logged in
-        currentUserUID = null; // Reset or handle the logged-out state
+        console.log("User is not logged in.");
+        // Optionally, handle user not logged in or redirect to a login page
     }
 });
 
