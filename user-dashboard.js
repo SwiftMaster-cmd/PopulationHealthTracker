@@ -158,13 +158,19 @@ function fetchSalesHistory() {
 
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
+        // Ensure this part is executed
+        console.log("Fetching sales history for:", userId);
         const salesHistoryElement = document.getElementById('salesHistory');
-        salesHistoryElement.innerHTML = ''; // Clear existing content before repopulating
+        salesHistoryElement.innerHTML = ''; // Clear existing content
 
         const sales = snapshot.val();
-        if (sales) {
-            Object.keys(sales).forEach((key) => {
-                const sale = sales[key];
+        if (!sales) {
+            salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
+            return;
+        }
+
+        Object.keys(sales).forEach((key) => {
+            const sale = sales[key];
                 // Format the timestamp, display 'Unknown' if not available
                 const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
                 
