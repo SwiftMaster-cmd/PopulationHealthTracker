@@ -44,7 +44,7 @@ header {
 .dashboard-container, .sales-container, .sales-history-container {
     max-width: 750px; /* Set max width for the containers holding the forms and history */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Orange gradient for dashboard, gold to orange for sales */
+    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for dashboard, gold to orange for sales */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
