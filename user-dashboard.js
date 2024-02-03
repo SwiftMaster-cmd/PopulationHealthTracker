@@ -254,7 +254,7 @@ const commissionStructures = [
     },
   ];
   
-  function calculateCommission(sales, category) {
+function calculateCommission(sales, category) {
     const structure = commissionStructures.find(s => s.category === category);
     if (!structure) {
       throw new Error("Invalid category");
@@ -270,58 +270,63 @@ const commissionStructures = [
   
   async function updateCommissionSummary() {
     if (!userId) {
-        console.log("User not logged in.");
-        return;
+      console.log("User not logged in.");
+      return;
     }
-
-    // Define the current date variables outside of the Firebase call
+  
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
-
+  
     const salesRef = ref(database, `sales/${userId}`);
-    
-    // Listen for changes in the Firebase database using onValue
+  
     onValue(salesRef, (snapshot) => {
-        const sales = snapshot.val();
-        if (!sales) {
-            console.log("No sales data found.");
-            return;
+      const sales = snapshot.val();
+      console.log("Sales data:", sales); // Debugging: Check the raw sales data
+  
+      if (!sales) {
+        console.log("No sales data found.");
+        return;
+      }
+  
+      let totalCommission = 0;
+      document.getElementById('commissionSummary').innerHTML = ''; // Clear existing content
+  
+      commissionStructures.forEach(structure => {
+        console.log(`Processing structure: ${structure.category}`); // Debugging: Check the structure being processed
+  
+        const salesCount = Object.values(sales).filter(sale => {
+          if (!sale.timestamp || !sale.category) {
+            console.error("Sale record missing timestamp or category", sale);
+            return false; // Skip this sale if it lacks necessary fields
+          }
+          const saleDate = new Date(sale.timestamp);
+          console.log("Sale category:", sale.category, "Structure category:", structure.category); // Debugging: Verify categories
+          console.log("Sale date:", saleDate.toISOString()); // Debugging: Verify sale date format and values
+          return sale.category === structure.category && 
+                 saleDate.getMonth() === currentMonth && 
+                 saleDate.getFullYear() === currentYear;
+        }).length;
+  
+        console.log(`${structure.category} sales count:`, salesCount); // Debugging: Check the calculated sales count
+  
+        try {
+          const commission = calculateCommission(salesCount, structure.category);
+          totalCommission += commission;
+  
+          const commissionElement = document.createElement('div');
+          commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
+          document.getElementById('commissionSummary').appendChild(commissionElement);
+        } catch (error) {
+          console.error(`Error calculating commission for ${structure.category}:`, error);
         }
-
-        let totalCommission = 0;
-        document.getElementById('commissionSummary').innerHTML = ''; // Clear existing content
-
-        // Iterate through each commission structure
-        commissionStructures.forEach(structure => {
-            // Filter and count sales for each category considering the current month and year
-            const salesCount = Object.values(sales).filter(sale => {
-                const saleDate = new Date(sale.timestamp);
-                return sale.category === structure.category && 
-                       saleDate.getMonth() === currentMonth && 
-                       saleDate.getFullYear() === currentYear;
-            }).length;
-
-            try {
-                const commission = calculateCommission(salesCount, structure.category);
-                totalCommission += commission;
-
-                // Update the UI for each category
-                const commissionElement = document.createElement('div');
-                commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
-                document.getElementById('commissionSummary').appendChild(commissionElement);
-            } catch (error) {
-                console.error(`Error calculating commission for ${structure.category}:`, error);
-            }
-        });
-
-        // Optionally, display total commission
-        const totalCommissionElement = document.createElement('div');
-        totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-        document.getElementById('commissionSummary').appendChild(totalCommissionElement);
+      });
+  
+      const totalCommissionElement = document.createElement('div');
+      totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+      document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     });
-}
-
+  }
 
 
 
