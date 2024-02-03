@@ -132,6 +132,17 @@ onAuthStateChanged(auth, user => {
 
 
 
+let userId; // Define userId at a higher scope
+
+// Assuming you have a Firebase Authentication setup
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    userId = user.uid; // Set the userId when the user is logged in
+    fetchSalesHistory(userId); // Now you can use userId
+  } else {
+    // Handle user not logged in
+  }
+});
 
 
 
