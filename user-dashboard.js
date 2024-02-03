@@ -149,7 +149,6 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Function to fetch and display sales history for the logged-in user
 function fetchSalesHistory() {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -158,8 +157,6 @@ function fetchSalesHistory() {
 
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
-        // Ensure this part is executed
-        console.log("Fetching sales history for:", userId);
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
@@ -169,35 +166,39 @@ function fetchSalesHistory() {
             return;
         }
 
-        Object.keys(sales).forEach((key) => {
-            const sale = sales[key];
-                // Format the timestamp, display 'Unknown' if not available
-                const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-                
-                // Create and append the sale container to the sales history element
-                const saleContainer = document.createElement('div');
-                saleContainer.className = 'sales-history-entry';
-                saleContainer.setAttribute('data-sale-id', key);
-                saleContainer.innerHTML = `
-                    <div class="sale-info">
-                        <div class="sale-data">Sale ID: ${key}</div>
-                        <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-                        <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-                        <div class="sale-data">Sale Types: ${Object.keys(sale.sale_types || {}).join(', ')}</div>
-                        <div class="sale-data">Notes: ${sale.notes}</div>
-                        <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
-                    </div>
-                    <div class="sale-actions">
-                        <button class="edit-btn" data-sale-id="${key}">Edit</button>
-                        <button class="delete-btn" data-sale-id="${key}">Delete</button>
-                    </div>
-                `;
-                salesHistoryElement.appendChild(saleContainer);
-            });
-        }, (error) => {
-            console.error("Error fetching sales data:", error);
+        // Convert sales object to an array and sort by timestamp
+        const salesArray = Object.keys(sales).map(key => ({
+            ...sales[key],
+            id: key
+        })).sort((a, b) => b.timestamp - a.timestamp); // Assuming timestamp is stored as Unix timestamp
+
+        // If timestamp is in ISO string format, you may need to parse it to Date objects before sorting:
+        // .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+        salesArray.forEach(sale => {
+            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            const saleContainer = document.createElement('div');
+            saleContainer.className = 'sales-history-entry';
+            saleContainer.setAttribute('data-sale-id', sale.id);
+            saleContainer.innerHTML = `
+                <div class="sale-info">
+                    <div class="sale-data">Sale ID: ${sale.id}</div>
+                    <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+                    <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+                    <div class="sale-data">Sale Types: ${Object.keys(sale.sale_types || {}).join(', ')}</div>
+                    <div class="sale-data">Notes: ${sale.notes}</div>
+                    <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+                </div>
+                <div class="sale-actions">
+                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                </div>
+            `;
+            salesHistoryElement.appendChild(saleContainer);
         });
-    }
+    });
+}
+
 
 // Handling user actions for edit and delete
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
