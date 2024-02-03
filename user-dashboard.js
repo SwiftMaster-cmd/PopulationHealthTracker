@@ -228,11 +228,7 @@ function fetchSalesHistory() {
 
 
 
-const currentMonthSales = Object.values(sales).filter(sale => {
-    const saleDate = new Date(sale.timestamp);
-    return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
-  });
-  
+
 
 
 
