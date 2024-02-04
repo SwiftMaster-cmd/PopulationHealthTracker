@@ -163,7 +163,7 @@ header {
     width: auto; /* Allow the container to adjust its width based on content */
     min-width: 500px; /* Set a minimum width of 500px */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFD700, #FFA500);
+    background: linear-gradient(to bottom, #FFB703, #FFA500);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
@@ -185,8 +185,8 @@ header {
     border-radius: 10px; /* Consistent rounded corners */
     padding: 15px; /* Padding around content */
     margin-bottom: 15px; /* Space between entries */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Soft shadow for depth */
-    color: #023047; /* Text color for readability */
+   
+    color: #ffffff; /* Text color for readability */
     transition: all 0.3s ease; /* Smooth transition for interactions */
 }
 
