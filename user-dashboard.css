@@ -199,9 +199,12 @@ header {
 .sale-info div {
     background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient matching the dashboard */
     font-size: 18px; /* Slightly larger font size for improved readability */
-    color: #ffffff; /* Consistent text color */
+    color: #ffffff; /* Text color for contrast */
     padding: 5px 0; /* Spacing for readability */
+    border: none; /* Remove border */
+    outline: none; /* Remove outline */
 }
+
 /* Existing styles for buttons within .sales-history-container */
 .sale-actions button {
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
