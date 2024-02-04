@@ -138,86 +138,87 @@ header {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sales-history-container {
-    width: 500px; /* Allow the container to adjust its width based on content */
-    min-width: 300px; /* Set a minimum width to prevent it from becoming too small */
+    width: 500px;
+    min-width: 300px;
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFD700, #FFA500);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
-    padding: 20px;
+    padding: 2%; /* Set padding as a percentage of the container width */
     flex-direction: column;
     align-items: center;
-    overflow: hidden; /* For border-radius effect */
+    overflow: hidden;
     max-height: 500px;
-    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-y: auto;
     animation: fadeIn 1s ease-out;
 }
 
-
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient matching the dashboard */
-    border-radius: 10px; /* Consistent rounded corners */
-    padding: 15px; /* Padding around content */
-    margin-bottom: 15px; /* Space between entries */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Soft shadow for depth */
-    color: #023047; /* Text color for readability */
-    transition: all 0.3s ease; /* Smooth transition for interactions */
+    background: linear-gradient(to bottom, #FFA500, #FF8C00);
+    border-radius: 2%; /* Set border radius as a percentage of the container width */
+    padding: 2%; /* Set padding as a percentage of the container width */
+    margin-bottom: 2%; /* Set margin as a percentage of the container width */
+    box-shadow: 0 1% 2% rgba(0, 0, 0, 0.1); /* Set box shadow values as percentages */
+    font-size: 2%; /* Set font size as a percentage of the container width */
+    transition: all 0.3s ease;
 }
 
 .sales-history-entry:hover {
-    transform: scale(1.03); /* Slight enlargement on hover */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
+    transform: scale(1.03);
+    box-shadow: 0 2% 3% rgba(0, 0, 0, 0.15);
 }
 
 .sale-info div {
-    font-size: 18px; /* Slightly larger font size for improved readability */
-    color: #023047; /* Consistent text color */
-    padding: 5px 0; /* Spacing for readability */
+    font-size: 1.8%; /* Adjust font size proportionally */
+    padding: 1% 0;
 }
 
 .sale-actions button {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent button gradient */
-    color: white;
-    font-weight: bold;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 15px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease;
+    padding: 1% 2%;
+    margin: 1%;
+    border-radius: 3%;
+    font-size: 2%;
 }
 
 .sale-type-span {
-    display: inline-block; /* Display as inline block for alignment */
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
-    color: white; /* Text color for contrast */
-    padding: 5px 10px; /* Padding inside each "button" */
-    margin: 2px; /* Margin for spacing between buttons */
-    border-radius: 5px; /* Rounded corners for button-like appearance */
-    font-size: 16px; /* Font size for readability */
-    cursor: default; /* Default cursor to indicate non-interactivity */
-    user-select: none; /* Prevent text selection */
+    padding: 1% 2%;
+    margin: 0.5%;
+    border-radius: 1%;
+    font-size: 1.6%;
 }
 
-/* Input and textarea focus effects for any editable fields within modal or page */
 input:focus, textarea:focus {
-    box-shadow: 0 0 10px #e6b081; /* Focus shadow */
-    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 2% #e6b081;
 }
 
-/* Scrollbar customization for consistency */
 .sales-history-container::-webkit-scrollbar {
-    width: 8px;
+    width: 0.16%; /* Set scrollbar width as a percentage of the container width */
 }
 
 .sales-history-container::-webkit-scrollbar-thumb {
-    background: #BBDEFB; /* Scrollbar color */
-    border-radius: 4px; /* Rounded scrollbar for a smoother look */
+    background: #BBDEFB;
+    border-radius: 0.8%; /* Set scrollbar thumb border radius as a percentage */
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect to match other buttons */
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
 }
 
 
