@@ -287,7 +287,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
 let currentSaleData; // Global variable to store the current sale data, including timestamp
 
 function toggleButtonSelectedState() {
@@ -386,15 +385,21 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
         return;
     }
 
-    // Validate that at least one sale type and ESI consent button is selected
-    if (!document.querySelector('.edit-sale-type-btn.selected') || !document.querySelector('.edit-esi-consent-btn.selected')) {
-        alert('Please select at least one sale type and one ESI consent option.');
+    // Get the lead ID entered in the form
+    const editedLeadId = document.getElementById('editLeadId').value;
+
+    // Check if the edited lead ID already exists in other sales
+    const existingSales = await getSalesData(userId);
+
+    if (isLeadIdAlreadyExists(existingSales, editedLeadId)) {
+        alert('Lead ID already exists in another sale. Please choose a different lead ID.');
         return;
     }
 
+    // Continue with the update if lead ID is valid
     const saleId = document.getElementById('editSaleId').value;
     const updatedSaleData = {
-        lead_id: document.getElementById('editLeadId').value,
+        lead_id: editedLeadId,
         esi_content: document.querySelector('.edit-esi-consent-btn.selected').dataset.value,
         notes: document.getElementById('editNotes').value,
         sale_types: getEditSaleTypes(),
@@ -437,3 +442,23 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
         }
     }
 });
+
+// Function to check if lead ID already exists in other sales
+function isLeadIdAlreadyExists(salesData, leadId) {
+    for (const saleId in salesData) {
+        if (salesData.hasOwnProperty(saleId)) {
+            const sale = salesData[saleId];
+            if (sale.lead_id === leadId) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Function to retrieve sales data for the current user
+async function getSalesData(userId) {
+    const salesRef = ref(database, `sales/${userId}`);
+    const snapshot = await get(salesRef);
+    return snapshot.val() || {};
+}
