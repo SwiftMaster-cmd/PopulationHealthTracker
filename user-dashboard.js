@@ -258,129 +258,69 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
+// Add this code in your JavaScript file
 
+// Function to create and update the sales chart
+function updateSalesChart(salesData) {
+    const ctx = document.getElementById('salesChart').getContext('2d');
 
+    // Define data for the chart
+    const chartData = {
+        labels: ['Category 1', 'Category 2', 'Category 3'], // Replace with your category labels
+        datasets: [{
+            label: 'Sales',
+            data: [10, 20, 15], // Replace with your sales data
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)', // Bar color for Category 1
+                'rgba(54, 162, 235, 0.2)', // Bar color for Category 2
+                'rgba(255, 206, 86, 0.2)', // Bar color for Category 3
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+            ],
+            borderWidth: 1,
+        }],
+    };
 
-
-
-
-
-
-
-
-// Define your commission structures
-const commissionStructures = [
-    {
-      category: "Billable HRA",
-      rates: [
-        { min: 0, max: 9, rate: 1.0 },
-        { min: 10, max: 29, rate: 1.25 },
-        { min: 30, max: 44, rate: 1.5 },
-        { min: 45, max: 64, rate: 1.75 },
-        { min: 65, max: Infinity, rate: 2.0 },
-      ],
-    },
-    {
-      category: "Transfer/Schedule",
-      rates: [
-        { min: 0, max: 9, rate: 3.0 },
-        { min: 10, max: 14, rate: 3.5 },
-        { min: 15, max: 34, rate: 4.0 },
-        { min: 35, max: 54, rate: 4.5 },
-        { min: 55, max: Infinity, rate: 5.0 },
-      ],
-    },
-    {
-      category: "Select RX & MMP",
-      rates: [
-        { min: 0, max: 14, rate: 4.0 },
-        { min: 15, max: 24, rate: 7.0 },
-        { min: 25, max: 84, rate: 10.0 },
-        { min: 85, max: 154, rate: 13.0 },
-        { min: 155, max: Infinity, rate: 16.0 },
-      ],
-    },
-  ];
-  
-  
-
-// Assuming Firebase has already been initialized as per your provided setup
-// Assuming Firebase has already been initialized as per your provided setup
-function updateCommissionSummaryRealTime() {
-    if (!auth.currentUser) {
-        console.log("User not logged in.");
-        document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
-        return;
-    }
-
-    const userId = auth.currentUser.uid;
-    const salesRef = ref(database, `sales/${userId}`);
-    // Listen for real-time updates using onValue
-    onValue(salesRef, (snapshot) => {
-        const sales = snapshot.val();
-        if (!sales) {
-            console.log("No sales data found.");
-            document.getElementById('commissionSummary').innerHTML = 'No sales data found.';
-            return;
-        }
-
-        let totalCommission = 0;
-        let salesPoints = {};
-
-        // Initialize salesPoints with categories from commissionStructures, but with points instead of counts
-        commissionStructures.forEach(structure => {
-            salesPoints[structure.category] = 0; // Initialize points for each category
-        });
-
-        // Process sales data to sum up commission points for each sale type
-        Object.values(sales).forEach(sale => {
-            Object.keys(sale.sale_types || {}).forEach(type => {
-                if (sale.sale_types[type]) {
-                    // Assuming each selected sale type contributes a point towards commission
-                    // Adjust this logic if points vary by sale type
-                    salesPoints[type] = (salesPoints[type] || 0) + sale.sale_types[type];
-                }
-            });
-        });
-
-        // Calculate and display commission summary
-        document.getElementById('commissionSummary').innerHTML = '';
-        commissionStructures.forEach(structure => {
-            const points = salesPoints[structure.category];
-            const commissionRate = structure.rates.find(rate => points >= rate.min && (points <= rate.max || rate.max === Infinity));
-            if (commissionRate) {
-                const commission = points * commissionRate.rate; // Calculate commission based on points
-                totalCommission += commission;
-
-                // Append each category's commission to the summary
-                const commissionElement = document.createElement('div');
-                commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)} (Points: ${points})`;
-                document.getElementById('commissionSummary').appendChild(commissionElement);
-            }
-        });
-
-        // Append total commission to the summary
-        const totalCommissionElement = document.createElement('div');
-        totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-        document.getElementById('commissionSummary').appendChild(totalCommissionElement);
-    }, {
-        onlyOnce: false
+    // Create the chart
+    const salesChart = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
     });
 }
 
-// Initialize real-time commission summary update on user authentication state change
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log("User logged in:", user.uid);
-        updateCommissionSummaryRealTime(); // Call the updated function when the user logs in
-    } else {
-        console.log("User not logged in");
-        document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
-    }
+// Call this function to update the chart with sales data
+updateSalesChart(/* Pass your sales data here */);
+// Example event listener for time filter dropdown
+document.getElementById('timeFilter').addEventListener('change', () => {
+    // Get selected time filter value
+    const selectedTimeFilter = document.getElementById('timeFilter').value;
+
+    // Filter your sales data based on the selectedTimeFilter
+    const filteredSalesData = filterSalesData(selectedTimeFilter);
+
+    // Update the chart with the filtered data
+    updateSalesChart(filteredSalesData);
 });
 
 
-  
+
+
+
+
+
+
+
+
 
 
 
