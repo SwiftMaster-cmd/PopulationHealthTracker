@@ -197,10 +197,12 @@ header {
 }
 
 .sale-info div {
-    background: linear-gradient(to bottom, #ceeaf6, #8ed1e2); /* Orange gradient matching the dashboard */
+    background: linear-gradient(to bottom, #ceeaf6, #8ed1e2); /* Blue gradient */
     font-size: 18px; /* Slightly larger font size for improved readability */
     color: #023047; /* Text color for contrast */
-    padding: 5px 0; /* Spacing for readability */
+    padding: 10px 15px; /* Adjust padding for an indented look */
+    border-radius: 5px; /* Apply a slight border-radius for a softer appearance */
+    margin-left: 20px; /* Add left margin to create indentation */
     border: none; /* Remove border */
     outline: none; /* Remove outline */
 }
