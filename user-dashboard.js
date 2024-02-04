@@ -368,6 +368,18 @@ const commissionStructures = [
     });
 }
 
+// Process sales data to sum up commission points for each sale type
+Object.values(sales).forEach(sale => {
+    Object.keys(sale.sale_types || {}).forEach(type => {
+        if (sale.sale_types[type]) {
+            // Assuming each selected sale type contributes a point towards commission
+            // Adjust this logic if points vary by sale type
+            salesPoints[type] = (salesPoints[type] || 0) + sale.sale_types[type];
+        }
+    });
+});
+
+
 
 // Initialize real-time commission summary update on user authentication state change
 onAuthStateChanged(auth, (user) => {
