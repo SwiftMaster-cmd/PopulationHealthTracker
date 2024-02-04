@@ -79,7 +79,12 @@
         </div>
         
         <!-- Hidden input for preserving original timestamp -->
-        <input type="hidden" id="editTimestamp" name="timestamp">
+        <!-- Within your editSaleModal form -->
+<div>
+    <label for="editTimestamp">Timestamp:</label>
+    <input type="text" id="editTimestamp" name="timestamp" readonly> <!-- Make it readonly if you don't want users to change it -->
+</div>
+
         
         <!-- Sale Type Selection Buttons (Example) -->
         <div id="editSaleTypes">
