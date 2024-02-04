@@ -17,7 +17,7 @@ body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
 
 /* Enhance font sizes and styles for better visual appeal */
 body {
-    background: linear-gradient(to bottom, #E3F2FD, #BBDEFB);
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     font-size: 18px; /* Slightly larger for improved readability */
     text-align: center; /* Center align text for the whole document */
 }
