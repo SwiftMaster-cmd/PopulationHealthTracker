@@ -142,7 +142,7 @@ header {
 
 /* Apply consistent font family and color across the page */
 .sales-history-container {
-    width: 500;
+    width: 500px;
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFD700, #FFA500); /* Matching gradient for consistency */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
