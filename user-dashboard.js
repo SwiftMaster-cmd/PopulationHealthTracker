@@ -162,11 +162,11 @@ function fetchSalesHistory() {
             return;
         }
 
-        // Convert sales object to an array and sort by timestamp
+        // Convert sales object to an array and sort by timestamp in descending order (newest first)
         const salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
-        })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
@@ -192,7 +192,7 @@ function fetchSalesHistory() {
         });
 
         // Optionally call updateCommissionSummary here
-         updateCommissionSummary();
+        updateCommissionSummary();
     });
 }
 
