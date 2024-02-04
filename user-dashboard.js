@@ -319,38 +319,9 @@ const commissionStructures = [
 
 
 
-
-
-// Handling user actions for edit and delete
-document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    if (!userId) return; // Ensure `userId` is available
-
-    const saleContainer = event.target.closest('.sales-history-entry');
-    if (!saleContainer) return;
-
-    const saleId = saleContainer.getAttribute('data-sale-id');
-
-    if (event.target.classList.contains('edit-btn')) {
-        openEditModal(saleId);
-    } else if (event.target.classList.contains('delete-btn')) {
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await remove(ref(database, `sales/${userId}/${saleId}`));
-                saleContainer.remove(); // Remove the sale entry from the DOM
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-                alert('Failed to delete sale.');
-            }
-        }
-    }
-});
-
-
-
-
-// Function to open the edit modal and populate it with sale data
 async function openEditModal(saleId) {
-    if (!userId) return; // Ensure `userId` is available
+    if (!userId) return;
+
     const saleRef = ref(database, `sales/${userId}/${saleId}`);
     const snapshot = await get(saleRef);
     const sale = snapshot.val();
@@ -361,43 +332,60 @@ async function openEditModal(saleId) {
         document.getElementById('editEsiContent').value = sale.esi_content;
         document.getElementById('editNotes').value = sale.notes;
 
+        // Preserving original timestamp
+        document.getElementById('editTimestamp').value = sale.timestamp;
+
+        // Reset sale type buttons to not selected
+        document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+
+        // Set buttons to selected based on sale's sale types
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            const btn = document.querySelector(`.edit-sale-type-btn[data-value="${type}"]`);
+            if (btn && sale.sale_types[type]) {
+                btn.classList.add('selected');
+            }
+        });
+
         document.getElementById('editSaleModal').style.display = 'block';
     }
 }
 
-// Handling the edit form submission
+
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (!userId) return; // Ensure `userId` is available
+    if (!userId) return;
 
     const saleId = document.getElementById('editSaleId').value;
+    const originalTimestamp = document.getElementById('editTimestamp').value; // Retrieve original timestamp
+
+    // Collect sale types from the edit form
+    const saleTypes = getEditSaleTypes(); // Assumes you have a similar function to `getSaleTypes` for edit form
+
     const updatedSaleData = {
         lead_id: document.getElementById('editLeadId').value,
         esi_content: document.getElementById('editEsiContent').value,
         notes: document.getElementById('editNotes').value,
+        sale_types: saleTypes,
+        timestamp: originalTimestamp, // Preserve the original timestamp
     };
 
     try {
         await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
         closeEditModal();
-        fetchSalesHistory(); // Refresh the sales history to reflect the changes
+        fetchSalesHistory(); // Refresh the sales history
     } catch (error) {
         console.error('Error updating sale:', error);
         alert('Failed to update sale.');
     }
 });
 
-// Function to close the edit modal
-function closeEditModal() {
-    document.getElementById('editSaleModal').style.display = 'none';
+function getEditSaleTypes() {
+    const saleTypes = {};
+    document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        saleTypes[value] = true; // Indicates the sale type is selected
+    });
+    return saleTypes;
 }
-
-
-
-
-
-
-
-
-
-
