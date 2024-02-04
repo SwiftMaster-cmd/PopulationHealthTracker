@@ -181,9 +181,9 @@ header {
     color: #023047; /* Consistent text color */
     padding: 5px 0; /* Spacing for readability */
 }
-
+/* Existing styles for buttons within .sales-history-container */
 .sale-actions button {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent button gradient */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
     font-weight: bold;
     padding: 10px 20px;
@@ -193,6 +193,20 @@ header {
     cursor: pointer;
     transition: background 0.3s ease, transform 0.3s ease;
 }
+
+/* Add hover styles for buttons within .sales-history-container */
+.sale-actions button:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+/* Add focus styles for buttons within .sales-history-container */
+.sale-actions button:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
 
 .sale-type-span {
     display: inline-block; /* Display as inline block for alignment */
