@@ -303,86 +303,68 @@ input:focus, textarea:focus {
 
 
 
-
-
-
-/* Filters Container Styling */
+/* Ensures the filter container and its children are centered and display correctly */
 .filters-container {
-    width: 500px; /* Set width to 500px */
-    margin: 20px auto; /* Centering */
+    width: 500px; /* Set to 500px as specified */
+    margin: 20px auto; /* Center in the viewport */
     padding: 20px; /* Padding for internal spacing */
-    border-radius: 15px; /* Rounded corners */
+    border-radius: 15px; /* Rounded corners for aesthetics */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    display: flex; /* Use Flexbox for layout */
-    flex-direction: column; /* Stack items vertically by default */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack items vertically */
     align-items: center; /* Center items horizontally */
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Matching the gradient of sales sections */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gradient background */
 }
 
-@media (min-width: 600px) { /* Adjust the media query to fit the total width including padding, margins, etc. */
-    .filters-container {
-        flex-direction: row; /* Align items horizontally if the display allows */
-        justify-content: space-around; /* Distribute space around filter groups */
-        align-items: flex-start; /* Align items at the start of the container */
-    }
-    .filter-group {
-        width: auto; /* Allow the filter group to auto-adjust its width */
-        align-items: flex-start; /* Align items to the start for a tight fit */
-    }
-}
-
-/* Adjusted Filter Group for Horizontal Layout */
+/* Style for the filter groups to align the title above and picker below */
 .filter-group {
-    margin-bottom: 15px; /* Space between filter groups, adjust as necessary */
-    display: flex;
-    flex-direction: column; /* Align label and select/input vertically */
-    align-items: center; /* Center alignment in the vertical layout */
+    margin: 10px 0; /* Spacing above and below each filter group */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack the label and select/input vertically */
+    align-items: center; /* Center the items */
+    width: 100%; /* Take up the full width of the container */
 }
 
-/* Style adjustments for selects and buttons remain the same */
+.filter-group label {
+    margin-bottom: 5px; /* Space between the label and the select/input */
+    font-size: 20px; /* Font size for readability */
+    color: #ffffff; /* White color for contrast */
+}
 
-
-/* Style Select Inputs Consistently with Other Inputs */
+/* Style for select inputs to match the aesthetic of the application */
 .filter-group select {
-    width: 100%; /* Fluid width */
-    max-width: 300px; /* Consistency in max-width */
-    padding: 10px; /* Padding for easier interaction */
-    font-size: 18px; /* Font size for readability */
-    font-weight: bold; /* Bold font for emphasis */
-    color: #ffffff; /* White text for contrast */
+    width: calc(100% - 20px); /* Adjust width to ensure padding does not cause overflow */
+    max-width: 300px; /* Maximum width to maintain usability */
+    padding: 10px; /* Padding for ease of use */
+    margin-bottom: 10px; /* Spacing below each select, for when stacked vertically */
+    font-size: 18px; /* Font size for legibility */
+    border-radius: 14px; /* Rounded corners for aesthetic */
     background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
-    border-radius: 14px; /* Rounded corners */
     border: none; /* Remove default border */
-    outline: none; /* Remove focus outline */
-    box-shadow: none; /* No default box-shadow */
-    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+    color: white; /* Text color for contrast */
+    outline: none; /* Remove focus outline for aesthetic */
 }
 
-/* Hover and Focus Styles for Select */
-.filter-group select:hover, .filter-group select:focus {
-    box-shadow: 0 0 10px #e6b081; /* Highlight with an outer glow */
-    outline: none; /* Ensure outline is removed on focus */
-}
-
-/* Apply Button Styling */
+/* Adjustments for the apply button */
 #applyFilters {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent with other buttons */
-    color: white; /* White text for readability */
-    font-weight: bold; /* Bold text for emphasis */
-    padding: 12px 20px; /* Adequate padding */
-    border-radius: 15px; /* Rounded corners */
+    width: 400px; /* Width set to 400px as specified */
+    margin-top: 20px; /* Spacing above the button */
+    padding: 12px 0; /* Padding for height, adjust as needed */
+    font-weight: bold; /* Bold font for emphasis */
+    border-radius: 15px; /* Rounded corners for consistency */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Gradient background */
+    color: white; /* Text color for readability */
     border: none; /* Remove default border */
-    cursor: pointer; /* Cursor pointer to indicate clickability */
+    cursor: pointer; /* Cursor to indicate clickability */
     transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction */
 }
 
+/* Hover and focus styles for the apply button */
 #applyFilters:hover, #applyFilters:focus {
     background: linear-gradient(to bottom, #FF851B, #FF6314); /* Highlight state */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
-    transform: translateY(-3px); /* Slight lift effect */
+    transform: translateY(-3px); /* Slight lift effect for interaction feedback */
 }
-
-
 
 
 
