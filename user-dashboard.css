@@ -487,17 +487,14 @@ input:focus, textarea:focus {
     z-index: 1000;
     left: 0;
     top: 0;
-    width: 50%;
-    height: 50%;
+    width: 100%; /* Full width of the screen */
+    height: 100%; /* Full height of the screen */
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
     align-items: center;
     justify-content: center;
     animation: fadeIn 0.5s ease-out;
-    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
 }
-
-
 
 /* Modal Content */
 #editSaleForm {
@@ -507,7 +504,9 @@ input:focus, textarea:focus {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: auto;
     max-width: 500px;
+    margin: 0 auto; /* Center horizontally */
 }
+
 
 /* Input and textarea styles */
 #editSaleForm input,
