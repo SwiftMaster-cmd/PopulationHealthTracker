@@ -64,6 +64,7 @@ document.getElementById('lead_id').addEventListener('input', function() {
 });
 
 // Handling form submission for adding new sales
+// Handling form submission for adding new sales
 document.getElementById('addSalesForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!userId) {
@@ -91,6 +92,10 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
     .then(() => {
         document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
         document.getElementById('addSalesForm').reset(); // Reset form after successful submission
+
+        // Clear selected buttons
+        document.querySelectorAll('.esi-btn.selected').forEach(btn => btn.classList.remove('selected'));
+        document.querySelectorAll('.sale-type-btn.selected').forEach(btn => btn.classList.remove('selected'));
     })
     .catch(error => {
         console.error('Error adding sale:', error);
@@ -162,11 +167,11 @@ function fetchSalesHistory() {
             return;
         }
 
-        // Convert sales object to an array and sort by timestamp
+        // Convert sales object to an array and sort by timestamp in descending order (newest first)
         const salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
-        })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
@@ -192,9 +197,10 @@ function fetchSalesHistory() {
         });
 
         // Optionally call updateCommissionSummary here
-         updateCommissionSummary();
+        updateCommissionSummary();
     });
 }
+
 
 
 
@@ -254,90 +260,124 @@ const commissionStructures = [
   }
   async function updateCommissionSummary() {
     if (!userId) {
-      console.log("User not logged in.");
-      return;
+        console.log("User not logged in.");
+        return;
     }
-  
+
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
-  
+
     // Reference to the user's sales in the database
     const salesRef = ref(database, `sales/${userId}`);
-  
+
     // Listen for value changes at the sales reference
     onValue(salesRef, (snapshot) => {
-      const sales = snapshot.val(); // Get the sales data from the snapshot
-      if (!sales) {
-        console.log("No sales data found.");
-        return; // Exit if there are no sales
-      }
-  
-      let totalCommission = 0; // Initialize total commission
-      document.getElementById('commissionSummary').innerHTML = ''; // Clear existing commission summary content
-  
-      // Iterate over each commission structure to calculate commissions
-      commissionStructures.forEach(structure => {
-        let salesCount = 0; // Initialize sales count for the current commission structure
-  
-        // Filter sales for the current structure based on date and category
-        Object.values(sales).forEach(sale => {
-          const saleDate = new Date(sale.timestamp);
-          if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
-            // Check if the sale's types include the current structure category
-            if (sale.sale_types && sale.sale_types[structure.category]) {
-              salesCount++; // Increment sales count for the category
-            }
-          }
+        const sales = snapshot.val(); // Get the sales data from the snapshot
+        if (!sales) {
+            console.log("No sales data found.");
+            return; // Exit if there are no sales
+        }
+
+        let totalCommission = 0; // Initialize total commission
+        document.getElementById('commissionSummary').innerHTML = ''; // Clear existing commission summary content
+
+        // Iterate over each commission structure to calculate commissions
+        commissionStructures.forEach(structure => {
+            let salesCount = 0; // Initialize sales count for the current commission structure
+
+            // Filter sales for the current structure based on date and category
+            Object.values(sales).forEach(sale => {
+                const saleDate = new Date(sale.timestamp);
+                if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
+                    // Check if the sale's types include the current structure category
+                    if (sale.sale_types && sale.sale_types[structure.category]) {
+                        salesCount++; // Increment sales count for the category
+                    }
+                }
+            });
+
+            // Calculate commission for the current structure based on sales count
+            const commission = calculateCommission(salesCount, structure.category);
+            totalCommission += commission; // Add to total commission
+
+            // Create and append a new element for this commission category to the summary
+            const commissionElement = document.createElement('div');
+            commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)} (Sales Count: ${salesCount})`;
+            document.getElementById('commissionSummary').appendChild(commissionElement);
         });
-  
-        // Calculate commission for the current structure based on sales count
-        const commission = calculateCommission(salesCount, structure.category);
-        totalCommission += commission; // Add to total commission
-  
-        // Create and append a new element for this commission category to the summary
-        const commissionElement = document.createElement('div');
-        commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
-        document.getElementById('commissionSummary').appendChild(commissionElement);
-      });
-  
-      // Display total commission
-      const totalCommissionElement = document.createElement('div');
-      totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-      document.getElementById('commissionSummary').appendChild(totalCommissionElement);
+
+        // Display total commission
+        const totalCommissionElement = document.createElement('div');
+        totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+        document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     });
-  }
-  
-
-
-
-
-
-
-
-
-
+}
 
   
 
 
 
-  function toggleSaleTypeSelection() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+  function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
 
-// Retrieve sale types from the edit modal's selected buttons
+// Retrieves selected sale types for the edit form
 function getEditSaleTypes() {
     const saleTypes = {};
     document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
         const value = btn.getAttribute('data-value');
-        saleTypes[value] = true; // Indicates the sale type is selected
+        saleTypes[value] = true;
     });
     return saleTypes;
 }
 
-// Open the edit modal and populate it with sale data
-// Opens the edit modal and populates it with data from the selected sale
+// Setup ESI consent buttons with the current selection based on sale data
+function setupEsiConsentButtons(esiContent) {
+    const esiButtons = document.querySelectorAll('.edit-esi-consent-btn');
+    esiButtons.forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.dataset.value === esiContent) {
+            btn.classList.add('selected');
+        }
+        btn.addEventListener('click', function() {
+            esiButtons.forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+}
+
+// Function to visually indicate the pre-selected state of buttons
+function setupPreSelectedSaleTypes(saleTypes) {
+    const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
+    saleTypeButtons.forEach(btn => {
+        const type = btn.getAttribute('data-value');
+        if (saleTypes[type]) {
+            btn.classList.add('selected');
+        } else {
+            btn.classList.remove('selected');
+        }
+        btn.addEventListener('click', toggleButtonSelectedState);
+    });
+}
+
+// Populates the edit modal with data for editing a sale
+// ...
+
+// Function to open the edit modal and pre-select sales
 async function openEditModal(saleId) {
     if (!userId) return;
 
@@ -346,89 +386,102 @@ async function openEditModal(saleId) {
         const snapshot = await get(saleRef);
         const sale = snapshot.val();
 
-        // Ensure all elements are present
-        const editSaleId = document.getElementById('editSaleId');
-        const editLeadId = document.getElementById('editLeadId');
-        const editEsiContent = document.getElementById('editEsiContent');
-        const editNotes = document.getElementById('editNotes');
-        const editTimestamp = document.getElementById('editTimestamp'); // Ensure this element exists in HTML
+        // Make sure all elements exist before trying to set their values
+        const editSaleIdElement = document.getElementById('editSaleId');
+        const editLeadIdElement = document.getElementById('editLeadId');
+        const editNotesElement = document.getElementById('editNotes');
 
-        if (!editSaleId || !editLeadId || !editEsiContent || !editNotes || !editTimestamp) {
+        // Check for the existence of these elements to avoid TypeError
+        if (!editSaleIdElement || !editLeadIdElement || !editNotesElement) {
             console.error("One or more elements are missing in the edit modal.");
-            return;
+            return; // Exit the function if any element is missing
         }
 
-        // Populate modal fields with the existing sale data
-        editSaleId.value = saleId;
-        editLeadId.value = sale.lead_id;
-        editEsiContent.value = sale.esi_content;
-        editNotes.value = sale.notes;
-        editTimestamp.value = sale.timestamp;
+        // Set values for existing elements
+        editSaleIdElement.value = saleId;
+        editLeadIdElement.value = sale.lead_id;
+        editNotesElement.value = sale.notes;
+        setupEsiConsentButtons(sale.esi_content);
 
-        // Set up sale type buttons
+        // Pre-select sale type buttons based on the sale's data
         document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
-            btn.classList.remove('selected');
             const saleType = btn.getAttribute('data-value');
+            btn.classList.remove('selected');
             if (sale.sale_types && sale.sale_types[saleType]) {
                 btn.classList.add('selected');
             }
-            btn.onclick = toggleSaleTypeSelection;
+            btn.onclick = toggleButtonSelectedState;
         });
 
-        document.getElementById('editSaleModal').style.display = 'block';
+        // Display the modal
+        const editSaleModal = document.getElementById('editSaleModal');
+        editSaleModal.style.display = 'block';
+        editSaleModal.scrollTop = 0; // Scroll to top when opening
     } catch (error) {
         console.error('Error fetching sale data:', error);
     }
 }
 
+// Event listener for cancel button
+document.getElementById('cancelEditButton').addEventListener('click', () => {
+    closeEditModal();
+});
 
-// Handle form submission for updating a sale
+// ...
+
+
+// More code for handling form submission and closing the modal...
+
+
+// Handles the submission of the edit sale form
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!userId) return;
 
     const saleId = document.getElementById('editSaleId').value;
+    const esiContent = document.querySelector('.edit-esi-consent-btn.selected').getAttribute('data-value');
     const updatedSaleData = {
         lead_id: document.getElementById('editLeadId').value,
-        esi_content: document.getElementById('editEsiContent').value,
+        esi_content: esiContent,
         notes: document.getElementById('editNotes').value,
         sale_types: getEditSaleTypes(),
-        timestamp: document.getElementById('editTimestamp').value, // Use original timestamp
+        // Ensures the original timestamp is preserved (Add timestamp handling if necessary)
     };
 
     try {
         await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
         closeEditModal();
-        // Optionally, refresh sales history or perform other actions post-update
+        // Refresh sales history or other related elements as necessary
     } catch (error) {
         console.error('Error updating sale:', error);
         alert('Failed to update sale.');
     }
 });
 
-// Close the edit modal
+// Closes the edit modal and optionally clears or resets form fields
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
-    // Optionally, clear or reset modal fields here
+    // Add any cleanup or reset operations here if necessary
 }
 
-// Event delegation for handling edit and delete actions in the sales history
+// Handles click events for edit and delete buttons in the sales history list
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    const saleContainer = event.target.closest('.sales-history-entry');
+    if (!userId) return;
+
+    const target = event.target;
+    const saleContainer = target.closest('.sales-history-entry');
     if (!saleContainer) return;
 
     const saleId = saleContainer.getAttribute('data-sale-id');
-    if (event.target.classList.contains('edit-btn')) {
+    if (target.classList.contains('edit-btn')) {
         openEditModal(saleId);
-    } else if (event.target.classList.contains('delete-btn')) {
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await remove(ref(database, `sales/${userId}/${saleId}`));
-                saleContainer.remove(); // Update the UI to reflect the deletion
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-                alert('Failed to delete sale.');
-            }
+    } else if (target.classList.contains('delete-btn') && confirm('Are you sure you want to delete this sale?')) {
+        try {
+            await remove(ref(database, `sales/${userId}/${saleId}`));
+            saleContainer.remove();  // Updates the UI to reflect deletion
+        } catch (error) {
+            console.error('Error deleting sale:', error);
+            alert('Failed to delete sale.');
         }
     }
 });
