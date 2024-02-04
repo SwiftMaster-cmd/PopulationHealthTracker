@@ -181,7 +181,7 @@ header {
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FFB703, #FF8C00); /* Orange gradient matching the dashboard */
+    background: linear-gradient(to bottom, #FF8C00, #FFB703); /* Orange gradient matching the dashboard */
     border-radius: 10px; /* Consistent rounded corners */
     padding: 15px; /* Padding around content */
     margin-bottom: 15px; /* Space between entries */
