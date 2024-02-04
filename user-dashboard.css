@@ -305,6 +305,109 @@ input:focus, textarea:focus {
 
 
 
+
+
+/* Filters Container Styling */
+.filters-container {
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Matching the gradient of sales sections */
+    max-width: 500px; /* Consistency in max-width with other containers */
+    margin: 20px auto; /* Centering */
+    padding: 20px; /* Padding for internal spacing */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    display: flex;
+    flex-direction: column; /* Align items in a column */
+    align-items: center; /* Center items horizontally */
+}
+
+/* Filter Group Styling */
+.filter-group {
+    width: 100%; /* Full width of its parent */
+    margin-bottom: 15px; /* Space between filter groups */
+    display: flex;
+    flex-direction: column; /* Align label and select/input vertically */
+    align-items: center; /* Center alignment */
+}
+
+.filter-group label {
+    margin-bottom: 5px; /* Space between label and input/select */
+    font-size: 20px; /* Larger font for visibility */
+    color: #ffffff; /* White color for contrast */
+}
+
+/* Style Select Inputs Consistently with Other Inputs */
+.filter-group select {
+    width: 100%; /* Fluid width */
+    max-width: 300px; /* Consistency in max-width */
+    padding: 10px; /* Padding for easier interaction */
+    font-size: 18px; /* Font size for readability */
+    font-weight: bold; /* Bold font for emphasis */
+    color: #ffffff; /* White text for contrast */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
+    border-radius: 14px; /* Rounded corners */
+    border: none; /* Remove default border */
+    outline: none; /* Remove focus outline */
+    box-shadow: none; /* No default box-shadow */
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+/* Hover and Focus Styles for Select */
+.filter-group select:hover, .filter-group select:focus {
+    box-shadow: 0 0 10px #e6b081; /* Highlight with an outer glow */
+    outline: none; /* Ensure outline is removed on focus */
+}
+
+/* Apply Button Styling */
+#applyFilters {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent with other buttons */
+    color: white; /* White text for readability */
+    font-weight: bold; /* Bold text for emphasis */
+    padding: 12px 20px; /* Adequate padding */
+    border-radius: 15px; /* Rounded corners */
+    border: none; /* Remove default border */
+    cursor: pointer; /* Cursor pointer to indicate clickability */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction */
+}
+
+#applyFilters:hover, #applyFilters:focus {
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Highlight state */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    transform: translateY(-3px); /* Slight lift effect */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Modal Container */
 #editSaleModal {
     display: flex;
