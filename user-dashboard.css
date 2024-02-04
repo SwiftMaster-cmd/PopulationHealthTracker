@@ -304,8 +304,6 @@ input:focus, textarea:focus {
 
 
 
-
-/* Modal Container */
 #editSaleModal {
     display: flex;
     position: fixed;
@@ -318,8 +316,8 @@ input:focus, textarea:focus {
     background-color: rgba(0, 0, 0, 0.4);
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.5s ease-out;
 }
+
 
 /* Modal Content */
 #editSaleForm {
