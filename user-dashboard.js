@@ -23,107 +23,90 @@ const auth = getAuth();
 const database = getDatabase();
 
 
+// Assuming Firebase has already been initialized elsewhere in your script
+
+// Helper functions for UI interactions
 function getSelectedESIContent() {
     const selectedButton = document.querySelector('.esi-btn.selected');
     return selectedButton ? selectedButton.getAttribute('data-value') : null;
 }
 
-// Function to get the selected sale types
 function getSaleTypes() {
     const saleTypes = {};
     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
         const value = btn.getAttribute('data-value');
-        saleTypes[value] = true;
+        saleTypes[value] = true; // Adjusted to simply mark the sale type as present
     });
     return saleTypes;
 }
 
-// Toggle ESI content buttons
+// Event listeners for UI elements
 document.querySelectorAll('.esi-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', () => {
         document.querySelectorAll('.esi-btn').forEach(b => b.classList.remove('selected'));
-        this.classList.add('selected');
+        btn.classList.add('selected');
     });
 });
 
-// Toggle sale type buttons
 document.querySelectorAll('.sale-type-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        this.classList.toggle('selected');
-    });
+    btn.addEventListener('click', () => btn.classList.toggle('selected'));
 });
 
-
-// Existing JavaScript code...
-
-document.getElementById('lead_id').addEventListener('paste', function(e) {
-    // Prevent the default paste action
+document.getElementById('lead_id').addEventListener('paste', (e) => {
     e.preventDefault();
-    
-    // Get the text content from the clipboard
     const text = (e.clipboardData || window.clipboardData).getData('text');
-    
-    // Extract numbers from the pasted text
     const numbers = text.match(/\d+/g);
-    
-    // If numbers are found, join them and set the input field's value
-    if (numbers) {
-        this.value = numbers.join('');
-    }
+    if (numbers) e.target.value = numbers.join('');
 });
 
-// Keep the input event listener to handle typing and ensure only numbers are entered
 document.getElementById('lead_id').addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
 });
 
+// Handling form submission for adding new sales
+document.getElementById('addSalesForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!userId) {
+        alert('Please log in to add sales.');
+        return;
+    }
 
-// Form submission event listener for adding new sales
-const addSalesForm = document.getElementById('addSalesForm');
+    // Collecting form data
+    const leadId = document.getElementById('lead_id').value.trim();
+    const esiContent = getSelectedESIContent();
+    const saleTypes = getSaleTypes();
+    const notes = document.getElementById('notes').value.trim();
 
-// Update your form submission event listener to use `userId` instead of `currentUser.uid`
-if (addSalesForm) {
-    addSalesForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        if (!userId) { // Use userId to check if a user is logged in
-            alert('Please log in to add sales.');
-            return;
-        }
+    // Creating the sale data object
+    const saleData = {
+        lead_id: leadId,
+        esi_content: esiContent,
+        sale_types: saleTypes,
+        notes: notes,
+        timestamp: new Date().toISOString()
+    };
 
-        const leadId = document.getElementById('lead_id').value.trim();
-        const esiContent = getSelectedESIContent();
-        const saleTypes = getSaleTypes();
-        const notes = document.getElementById('notes').value.trim();
-        const saleData = {
-            lead_id: leadId,
-            esi_content: esiContent,
-            sale_types: saleTypes,
-            notes: notes,
-            user_id: userId,
-            timestamp: new Date().toISOString()
-        };
-
-        push(ref(database, `sales/${userId}`), saleData)
-        .then(() => {
-            document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
-            event.target.reset();
-            // Reset selected buttons as before
-        })
-        .catch(error => {
-            console.error('Error adding sale:', error);
-            alert('Failed to add sale.');
-        });
+    // Pushing the new sale to Firebase
+    push(ref(database, `sales/${userId}`), saleData)
+    .then(() => {
+        document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
+        document.getElementById('addSalesForm').reset(); // Reset form after successful submission
+    })
+    .catch(error => {
+        console.error('Error adding sale:', error);
+        alert('Failed to add sale.');
     });
-}
+});
 
-
-
-onAuthStateChanged(auth, user => {
+// Firebase Authentication state change listener
+onAuthStateChanged(auth, (user) => {
     if (user) {
-        userId = user.uid; // Update when the user logs in
+        userId = user.uid;
+        console.log("User logged in:", userId);
+        // Optionally call updateCommissionSummary() here if needed
     } else {
-        // Handle user not logged in
-        userId = null; // Reset or handle the logged-out state
+        userId = null;
+        console.log("User not logged in");
     }
 });
 
@@ -162,7 +145,6 @@ onAuthStateChanged(auth, (user) => {
         // Optionally clear or update the UI to reflect the logged-out state
     }
 });
-
 function fetchSalesHistory() {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -184,10 +166,11 @@ function fetchSalesHistory() {
         const salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
-        })).sort((a, b) => Number(a.timestamp) - Number(b.timestamp));
+        })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
@@ -196,7 +179,7 @@ function fetchSalesHistory() {
                     <div class="sale-data">Sale ID: ${sale.id}</div>
                     <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
                     <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-                    <div class="sale-data">Sale Types: ${Object.keys(sale.sale_types || {}).join(', ')}</div>
+                    <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
                     <div class="sale-data">Notes: ${sale.notes}</div>
                     <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
                 </div>
@@ -208,10 +191,11 @@ function fetchSalesHistory() {
             salesHistoryElement.appendChild(saleContainer);
         });
 
-        // Call updateCommissionSummary here, inside the onValue callback
-        updateCommissionSummary();
+        // Optionally call updateCommissionSummary here
+         updateCommissionSummary();
     });
 }
+
 
 
 
