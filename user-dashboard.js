@@ -149,8 +149,8 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Modified fetchSalesHistory to include filtering
-function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all') {
+// Modified fetchSalesHistory to include filtering and sorting
+function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
@@ -176,6 +176,13 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         // Apply filters
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter);
 
+        // Sort sales based on timeSort value
+        if (timeSort === 'newest') {
+            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        } else if (timeSort === 'oldest') {
+            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        }
+
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
             const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
@@ -193,11 +200,11 @@ document.getElementById('applyFilters').addEventListener('click', () => {
     const timeFilter = document.getElementById('timeFilter').value;
     const saleTypeFilter = document.getElementById('saleTypeFilter').value;
     const esiFilter = document.getElementById('esiFilter').value;
+    const timeSort = document.getElementById('timeSortFilter').value; // Get the selected time sort option
 
-    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter);
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort);
 });
 
-// Utility function to apply filters to the sales array
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter) {
     const now = new Date();
     return salesArray.filter(sale => {
@@ -217,7 +224,6 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter) {
     });
 }
 
-// Utility function to generate HTML for a sale entry
 function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
     return `
         <div class="sale-info">
@@ -234,6 +240,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
         </div>
     `;
 }
+
 
 
 
