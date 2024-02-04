@@ -59,14 +59,14 @@
 </div>
 
 
-
 <div id="editSaleModal" style="display:none;">
     <form id="editSaleForm">
         <input type="hidden" id="editSaleId">
         <div>
             <label for="editLeadId">Lead ID:</label>
-            <input type="text" id="editLeadId" name="lead_id">
+            <input type="text" id="editLeadId" name="lead_id" required>
         </div>
+        <!-- ESI Consent and Sale Types will be handled via JavaScript to ensure at least one is selected -->
         <div>
             <label>ESI Consent:</label>
             <button type="button" class="edit-esi-consent-btn" data-value="Yes">Yes</button>
@@ -81,14 +81,10 @@
         </div>
         <div>
             <label for="editNotes">Notes:</label>
-            <textarea id="editNotes" name="notes" rows="4" cols="50" ></textarea>
-
+            <textarea id="editNotes" name="notes" rows="4" cols="50" required></textarea>
         </div>
-        <!-- Changed to type="hidden" to not show the timestamp -->
-        <input type="hidden" id="editTimestamp" name="timestamp">
-        <button type="hidden">Save Changes</button>
-        <button id="cancelEditBtn" onclick="closeEditModal()">Cancel</button>
-
+        <button type="submit">Save Changes</button>
+        <button type="button" id="cancelEditBtn">Cancel</button>
     </form>
 </div>
 
