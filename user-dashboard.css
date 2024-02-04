@@ -17,7 +17,7 @@ body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
 
 /* Enhance font sizes and styles for better visual appeal */
 body {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    background: linear-gradient(to bottom, #219EBC, #023047);
     font-size: 18px; /* Slightly larger for improved readability */
     text-align: center; /* Center align text for the whole document */
 }
@@ -45,7 +45,7 @@ header {
 .dashboard-container, .sales-container, .sales-history-container {
     max-width: 750px; /* Set max width for the containers holding the forms and history */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC);  
+    background: linear-gradient(to bottom, #FFB703, #FB8501);  
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
