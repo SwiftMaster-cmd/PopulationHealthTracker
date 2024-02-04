@@ -139,7 +139,7 @@ header {
 
 
 .sales-history-container {
-    width: auto; /* Allow the container to adjust its width based on content */
+    width: 500px; /* Allow the container to adjust its width based on content */
     min-width: 300px; /* Set a minimum width to prevent it from becoming too small */
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFD700, #FFA500);
