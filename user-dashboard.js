@@ -252,34 +252,21 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
 // Function to create and update the sales chart
-function updateSalesChart(salesData, labels) {
+function updateSalesChart(salesData) {
     const ctx = document.getElementById('salesChart').getContext('2d');
 
     // Define data for the chart
     const chartData = {
-        labels: labels, // Use the labels provided as an argument
+        labels: ['Select RX'], // Label for "select rx" sales
         datasets: [{
-            label: 'Select RX Sales', // Change the label to match your requirement
-            data: salesData, // Use the sales data provided as an argument
+            label: 'Sales',
+            data: [salesData], // Use the sales data provided as an argument
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)', // Bar color
-                'rgba(54, 162, 235, 0.2)', // Bar color
-                'rgba(255, 206, 86, 0.2)', // Bar color
-                'rgba(75, 192, 192, 0.2)', // Bar color
-                'rgba(153, 102, 255, 0.2)', // Bar color
-                'rgba(255, 159, 64, 0.2)', // Bar color
-                'rgba(50, 50, 50, 0.2)' // Bar color
+                'rgba(255, 99, 132, 0.2)', // Bar color for "select rx"
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-                'rgba(50, 50, 50, 1)'
             ],
             borderWidth: 1,
         }],
@@ -299,43 +286,25 @@ function updateSalesChart(salesData, labels) {
     });
 }
 
-// Example event listener for time filter dropdown
-document.getElementById('timeFilter').addEventListener('change', () => {
-    // Get selected time filter value
-    const selectedTimeFilter = document.getElementById('timeFilter').value;
+// Example event listener for updating the chart (you can trigger this as needed)
+document.getElementById('updateChartButton').addEventListener('click', () => {
+    // Get the sales data for "select rx" (you need to implement this function)
+    const selectRxSalesData = getSelectRxSalesData();
 
-    if (selectedTimeFilter === '7days') {
-        // Filter your sales data for the last 7 days and "select rx sales"
-        const filteredSalesData = filterSalesData(selectedTimeFilter, 'select_rx');
-
-        // Generate labels for the last 7 days
-        const labels = generateLabelsForLast7Days();
-
-        // Update the chart with the filtered data and labels
-        updateSalesChart(filteredSalesData, labels);
-    }
+    // Update the chart with the new data
+    updateSalesChart(selectRxSalesData);
 });
 
-// Implement the filterSalesData and generateLabelsForLast7Days functions based on your data structure and requirements.
-// You'll need to fetch real-time data and apply filters accordingly.
-
-// Sample function to filter sales data based on the selected time filter and sale type
-function filterSalesData(selectedTimeFilter, saleType) {
-    // Implement your logic to fetch and filter real-time sales data here
-    // You should return an array of sales data that matches the selectedTimeFilter and saleType
+// Sample function to fetch "select rx" sales data (you need to implement this)
+function getSelectRxSalesData() {
+    // Implement your logic to fetch "select rx" sales data here
     // Example:
-    // const filteredData = fetchDataBasedOnTimeFilterAndSaleType(selectedTimeFilter, saleType);
-    // return filteredData;
+    // const selectRxData = fetchDataForSelectRx();
+    // return selectRxData;
 }
 
-// Sample function to generate labels for the last 7 days
-function generateLabelsForLast7Days() {
-    // Implement your logic to generate labels for the last 7 days
-    // You should return an array of labels that correspond to each day
-    // Example:
-    // const labels = generateLabelsForLast7Days();
-    // return labels;
-}
+// Initial chart setup (you can call this when the page loads)
+updateSalesChart(0); // Provide an initial value (0 in this case) or fetch data and pass it
 
 
 
