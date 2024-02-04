@@ -408,45 +408,46 @@ function setupPreSelectedSaleTypes(saleTypes) {
         btn.addEventListener('click', toggleButtonSelectedState);
     });
 }
-
-// Populates the edit modal with data for editing a sale
 async function openEditModal(saleId) {
-    if (!userId) return;
+    if (!userId) return; // Ensure there's a logged-in user
 
     const saleRef = ref(database, `sales/${userId}/${saleId}`);
     try {
         const snapshot = await get(saleRef);
-        currentSaleData = snapshot.val(); // Store the entire fetched sale data
+        currentSaleData = snapshot.val(); // Store the fetched sale data
 
-        // Make sure all elements exist before trying to set their values
+        if (!currentSaleData) {
+            console.error("Sale data not found.");
+            return;
+        }
+
+        // Set up the modal fields with the sale data
         const editSaleIdElement = document.getElementById('editSaleId');
         const editLeadIdElement = document.getElementById('editLeadId');
         const editNotesElement = document.getElementById('editNotes');
-        
+
         if (!editSaleIdElement || !editLeadIdElement || !editNotesElement) {
             console.error("One or more elements are missing in the edit modal.");
             return;
         }
 
         editSaleIdElement.value = saleId;
-        editLeadIdElement.value = currentSaleData.lead_id;
-        editNotesElement.value = currentSaleData.notes;
+        editLeadIdElement.value = currentSaleData.lead_id || '';
+        editNotesElement.value = currentSaleData.notes || '';
         setupEsiConsentButtons(currentSaleData.esi_content);
 
-        document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
-            const saleType = btn.getAttribute('data-value');
-            btn.classList.remove('selected');
-            if (currentSaleData.sale_types && currentSaleData.sale_types[saleType]) {
-                btn.classList.add('selected');
-            }
-            btn.onclick = toggleButtonSelectedState;
-        });
+        // Here's the crucial part:
+        // Check if the sale has a sale_types property and use it, 
+        // or define a default structure that matches your data model if not
+        const saleTypesToSetup = currentSaleData.sale_types || getDefaultSaleTypesStructure();
+        setupPreSelectedSaleTypes(saleTypesToSetup);
 
         document.getElementById('editSaleModal').style.display = 'block';
     } catch (error) {
         console.error('Error fetching sale data:', error);
     }
 }
+
 
 // Handles the submission of the edit sale form
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
