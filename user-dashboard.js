@@ -22,7 +22,6 @@ initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-
 // Assuming Firebase has already been initialized elsewhere in your script
 
 // Helper functions for UI interactions
@@ -65,19 +64,25 @@ document.getElementById('lead_id').addEventListener('input', function() {
 
 document.getElementById('addSalesForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Ensure user is logged in
     if (!userId) {
         alert('Please log in to add sales.');
         return;
     }
 
-    // Collecting form data
+    // Ensure all required fields are filled
     const leadId = document.getElementById('lead_id').value.trim();
+    if (!leadId || !getSelectedESIContent() || !Object.keys(getSaleTypesWithCommissionPoints()).length) {
+        alert('Please fill in all required fields and select at least one sale type.');
+        return;
+    }
+
     const esiContent = getSelectedESIContent();
-    // Update saleTypes to include commission points for each sale type
-    const saleTypes = getSaleTypesWithCommissionPoints();
+    const saleTypes = getSaleTypesWithCommissionPoints(); // Collecting sale types with commission points
     const notes = document.getElementById('notes').value.trim();
 
-    // Creating the sale data object with commission points for sale types
+    // Creating the sale data object with required fields
     const saleData = {
         lead_id: leadId,
         esi_content: esiContent,
@@ -91,11 +96,9 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
     .then(() => {
         document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
         document.getElementById('addSalesForm').reset(); // Reset form after successful submission
-
         // Clear selected buttons
         document.querySelectorAll('.esi-btn.selected').forEach(btn => btn.classList.remove('selected'));
         document.querySelectorAll('.sale-type-btn.selected').forEach(btn => btn.classList.remove('selected'));
-       
     })
     .catch(error => {
         console.error('Error adding sale:', error);
@@ -107,7 +110,8 @@ function getSaleTypesWithCommissionPoints() {
     const saleTypes = {};
     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
         const value = btn.getAttribute('data-value');
-        saleTypes[value] = 1; // Assign 1 commission point for each selected sale type
+        // Adjust the commission points as necessary
+        saleTypes[value] = 1; // Here, assigning 1 commission point for each selected sale type as an example
     });
     return saleTypes;
 }
