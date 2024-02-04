@@ -618,6 +618,43 @@ input:focus, textarea:focus {
 
 
 
+
+.refresh-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding for size */
+    margin: 10px 0; /* Margin for spacing */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+    font-size: 16px; /* Text size */
+}
+
+.refresh-button:hover {
+    background-color: #45a049; /* Darker shade of green for hover effect */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
