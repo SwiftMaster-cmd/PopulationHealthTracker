@@ -58,7 +58,6 @@
     <div id="confirmationMessage"></div>
 </div>
 
-<!-- Edit Sale Modal/Form -->
 <div id="editSaleModal" style="display:none;">
     <form id="editSaleForm">
         <input type="hidden" id="editSaleId">
@@ -74,6 +73,18 @@
             <label for="editNotes">Notes:</label>
             <textarea id="editNotes" name="notes"></textarea>
         </div>
+        
+        <!-- Hidden input for preserving original timestamp -->
+        <input type="hidden" id="editTimestamp" name="timestamp">
+        
+        <!-- Sale Type Selection Buttons (Example) -->
+        <div id="editSaleTypes">
+            <label>Sale Types:</label>
+            <button type="button" class="edit-sale-type-btn" data-value="Type1">Type 1</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Type2">Type 2</button>
+            <!-- Add more buttons as needed for each sale type -->
+        </div>
+
         <button type="submit">Save Changes</button>
         <button type="button" onclick="closeEditModal()">Cancel</button>
     </form>
