@@ -306,76 +306,61 @@ const commissionStructures = [
     },
   ];
   
-// Function to fetch and update commission summary once
+// Assuming this function is called within a context where `userId` is defined and valid
 async function updateCommissionSummary() {
     if (!userId) {
-      console.log("User not logged in.");
-      return;
-    }
-  
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-    const salesRef = ref(database, `sales/${userId}`);
-  
-    try {
-      const snapshot = await get(salesRef);
-      const sales = snapshot.val();
-      if (!sales) {
-        console.log("No sales data found.");
+        console.log("User not logged in.");
         return;
-      }
-  
-      let totalCommission = 0;
-      let salesCounts = {}; // Object to store sales count for each category
-  
-      // Initialize salesCounts with categories
-      commissionStructures.forEach(structure => {
-        salesCounts[structure.category] = 0;
-      });
-  
-      Object.values(sales).forEach(sale => {
-        const saleDate = new Date(sale.timestamp);
-        if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
-          Object.entries(sale.sale_types).forEach(([type, isSelected]) => {
-            if (isSelected) {
-              salesCounts[type] = (salesCounts[type] || 0) + 1;
-            }
-          });
-        }
-      });
-  
-      document.getElementById('commissionSummary').innerHTML = '';
-  
-      commissionStructures.forEach(structure => {
-        const salesCount = salesCounts[structure.category];
-        const commission = calculateCommission(salesCount, structure.category);
-        totalCommission += commission;
-  
-        const commissionElement = document.createElement('div');
-        commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)} (Sales Count: ${salesCount})`;
-        document.getElementById('commissionSummary').appendChild(commissionElement);
-      });
-  
-      const totalCommissionElement = document.createElement('div');
-      totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-      document.getElementById('commissionSummary').appendChild(totalCommissionElement);
-    } catch (error) {
-      console.error("Failed to fetch sales data:", error);
     }
-  }
- 
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      userId = user.uid;
-      updateCommissionSummary(); // Update commission summary on user login
-    } else {
-      userId = null;
-      console.log("User not logged in");
+    const salesRef = ref(database, `sales/${userId}`);
+    try {
+        const snapshot = await get(salesRef);
+        const sales = snapshot.val();
+        if (!sales) {
+            console.log("No sales data found.");
+            return;
+        }
+
+        let totalCommission = 0;
+        let salesCounts = {}; // Object to store sales count for each category
+
+        // Initialize salesCounts with categories from commissionStructures
+        commissionStructures.forEach(structure => {
+            salesCounts[structure.category] = 0;
+        });
+
+        // Aggregate sales counts by category
+        Object.values(sales).forEach(sale => {
+            // Assuming each sale can belong to multiple categories and has a 'sale_types' property
+            Object.keys(sale.sale_types).forEach(type => {
+                if (sale.sale_types[type]) { // If sale type is true/selected
+                    salesCounts[type] = (salesCounts[type] || 0) + 1;
+                }
+            });
+        });
+
+        // Calculate commission for each category
+        commissionStructures.forEach(structure => {
+            const salesCount = salesCounts[structure.category];
+            const commissionRate = structure.rates.find(rate => salesCount >= rate.min && salesCount <= rate.max);
+            if (commissionRate) { // If a matching rate is found
+                const commission = salesCount * commissionRate.rate;
+                totalCommission += commission;
+
+                // Update UI or log for each category
+                console.log(`${structure.category}: ${commission} (Sales Count: ${salesCount})`);
+            }
+        });
+
+        // Update total commission in UI or log
+        console.log(`Total Commission: ${totalCommission}`);
+
+    } catch (error) {
+        console.error("Failed to fetch sales data:", error);
     }
-  });
-    
+}
+
   
 
 
