@@ -364,10 +364,19 @@ async function updateCommissionSummary() {
       console.error("Failed to fetch sales data:", error);
     }
   }
-  
-  
+ 
 
-
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      userId = user.uid;
+      updateCommissionSummary(); // Update commission summary on user login
+    } else {
+      userId = null;
+      console.log("User not logged in");
+    }
+  });
+    
+  
 
 
 
