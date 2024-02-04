@@ -156,7 +156,7 @@ header {
 
 /* Set a maximum width for the contents inside the container */
 .sales-history-container > * {
-    max-width: 100%; /* Allow contents to take the full width of the container */
+    min-width: 100%; /* Allow contents to take the full width of the container */
 }
 
 .sales-history-entry {
