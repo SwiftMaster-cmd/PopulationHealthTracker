@@ -324,7 +324,6 @@ const commissionStructures = [
 
 
 
-
 // Assuming `userId` is globally available and correctly set upon user authentication
 
 // Toggles the selected class on sale type and ESI consent buttons
@@ -399,7 +398,7 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
         esi_content: esiContent,
         notes: document.getElementById('editNotes').value,
         sale_types: getEditSaleTypes(),
-        // Ensures the original timestamp is preserved
+        // Ensures the original timestamp is preserved (Add timestamp handling if necessary)
     };
 
     try {
