@@ -231,7 +231,7 @@ header {
 .sale-type-span {
     display: inline-block; /* Display as inline block for alignment */
     background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
-    color: white; /* Text color for contrast */
+    color: rgb(206, 36, 36); /* Text color for contrast */
     padding: 5px 10px; /* Padding inside each "button" */
     margin: 2px; /* Margin for spacing between buttons */
     border-radius: 5px; /* Rounded corners for button-like appearance */
