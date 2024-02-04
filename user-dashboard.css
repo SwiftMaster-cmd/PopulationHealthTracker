@@ -163,7 +163,7 @@ header {
     width: auto; /* Allow the container to adjust its width based on content */
     min-width: 500px; /* Set a minimum width of 500px */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFB703, #FFA500);
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
@@ -181,7 +181,7 @@ header {
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FF8C00, #FFB703); /* Orange gradient matching the dashboard */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient matching the dashboard */
     border-radius: 10px; /* Consistent rounded corners */
     padding: 15px; /* Padding around content */
     margin-bottom: 15px; /* Space between entries */
@@ -197,7 +197,7 @@ header {
 }
 
 .sale-info div {
-    background: linear-gradient(to bottom, #FFB703, #FF8C00); /* Orange gradient matching the dashboard */
+    background: linear-gradient(to bottom, #FB8501, #FFB703); /* Orange gradient matching the dashboard */
     font-size: 18px; /* Slightly larger font size for improved readability */
     color: #ffffff; /* Text color for contrast */
     padding: 5px 0; /* Spacing for readability */
@@ -220,7 +220,7 @@ header {
 
 /* Add hover styles for buttons within .sales-history-container */
 .sale-actions button:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
@@ -261,7 +261,7 @@ input:focus, textarea:focus {
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect to match other buttons */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Hover effect to match other buttons */
 }
 
 
