@@ -278,48 +278,43 @@ const commissionStructures = [
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
   
+    // Reference to the user's sales in the database
     const salesRef = ref(database, `sales/${userId}`);
   
+    // Listen for value changes at the sales reference
     onValue(salesRef, (snapshot) => {
-      const sales = snapshot.val();
-      console.log("Sales data:", sales); // Debugging: Check the raw sales data
-  
+      const sales = snapshot.val(); // Get the sales data from the snapshot
       if (!sales) {
         console.log("No sales data found.");
-        return;
+        return; // Exit if there are no sales
       }
   
-      let totalCommission = 0;
-      document.getElementById('commissionSummary').innerHTML = ''; // Clear existing content
+      let totalCommission = 0; // Initialize total commission
+      document.getElementById('commissionSummary').innerHTML = ''; // Clear existing commission summary content
   
+      // Iterate over each commission structure to calculate commissions
       commissionStructures.forEach(structure => {
-        console.log(`Processing structure: ${structure.category}`); // Debugging: Check the structure being processed
+        let salesCount = 0; // Initialize sales count for the current commission structure
   
-        // Initialize sales count for the current structure category
-        let salesCount = 0;
-  
+        // Filter sales for the current structure based on date and category
         Object.values(sales).forEach(sale => {
           const saleDate = new Date(sale.timestamp);
           if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
-            // Check if sale_types includes the current structure category
+            // Check if the sale's types include the current structure category
             if (sale.sale_types && sale.sale_types[structure.category]) {
-              salesCount += 1; // Increment count if the sale type matches the structure category
+              salesCount++; // Increment sales count for the category
             }
           }
         });
   
-        console.log(`${structure.category} sales count:`, salesCount); // Debugging: Check the calculated sales count
+        // Calculate commission for the current structure based on sales count
+        const commission = calculateCommission(salesCount, structure.category);
+        totalCommission += commission; // Add to total commission
   
-        try {
-          const commission = calculateCommission(salesCount, structure.category);
-          totalCommission += commission;
-  
-          const commissionElement = document.createElement('div');
-          commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
-          document.getElementById('commissionSummary').appendChild(commissionElement);
-        } catch (error) {
-          console.error(`Error calculating commission for ${structure.category}:`, error);
-        }
+        // Create and append a new element for this commission category to the summary
+        const commissionElement = document.createElement('div');
+        commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
+        document.getElementById('commissionSummary').appendChild(commissionElement);
       });
   
       // Display total commission
@@ -328,7 +323,6 @@ const commissionStructures = [
       document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     });
   }
-   // Placeholder for user ID, ensure this is set correctly in your auth flow
   
 
 
