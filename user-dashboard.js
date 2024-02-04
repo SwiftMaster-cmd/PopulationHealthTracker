@@ -223,12 +223,15 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter) {
 function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
     return `
         <div class="sale-info">
-            <div class="sale-data">Sale ID: ${sale.id}</div>
-            <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
-            <div class="sale-data">Notes: ${sale.notes}</div>
-            <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+
+        <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+        <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+        <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+        <div class="sale-data">Notes: ${sale.notes}</div>
+        <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+
+
+
         </div>
         <div class="sale-actions">
             <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
