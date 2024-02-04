@@ -370,7 +370,7 @@ async function openEditModal(saleId) {
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!userId) {
-        alert('Please log in to update sales.');
+       
         return;
     }
 
@@ -386,10 +386,10 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
     try {
         await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
         closeEditModal();
-        alert('Sale updated successfully.');
+       
     } catch (error) {
         console.error('Error updating sale:', error);
-        alert('Failed to update sale.');
+       
     }
 });
 
@@ -401,7 +401,7 @@ function closeEditModal() {
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
     const target = event.target;
     if (!userId) {
-        alert('Please log in to edit or delete sales.');
+       
         return;
     }
 
@@ -416,10 +416,10 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
             try {
                 await remove(ref(database, `sales/${userId}/${saleId}`));
                 saleContainer.remove(); // Reflect deletion in UI
-                alert('Sale deleted successfully.');
+               
             } catch (error) {
                 console.error('Error deleting sale:', error);
-                alert('Failed to delete sale.');
+              
             }
         }
     }
