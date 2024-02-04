@@ -138,24 +138,22 @@ header {
 
 
 
-
-
-/* Apply consistent font family and color across the page */
 .sales-history-container {
-    width: 500px;
+    width: auto; /* Allow the container to adjust its width based on content */
+    min-width: 300px; /* Set a minimum width to prevent it from becoming too small */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Matching gradient for consistency */
+    background: linear-gradient(to bottom, #FFD700, #FFA500);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
-  
     flex-direction: column;
     align-items: center;
     overflow: hidden; /* For border-radius effect */
-    max-height: 500px; /* Scrollable content */
+    max-height: 500px;
     overflow-y: auto; /* Enable vertical scrolling */
     animation: fadeIn 1s ease-out;
 }
+
 
 .sales-history-entry {
     background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient matching the dashboard */
