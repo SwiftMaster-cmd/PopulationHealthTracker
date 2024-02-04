@@ -303,10 +303,10 @@ const commissionStructures = [
   
   
 
+// Assuming Firebase has already been initialized as per your provided setup
+// Assuming Firebase has already been initialized as per your provided setup
 
-  // Assuming Firebase has already been initialized as per your provided setup
-
-  function updateCommissionSummaryRealTime() {
+function updateCommissionSummaryRealTime() {
     if (!auth.currentUser) {
         console.log("User not logged in.");
         document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
@@ -368,30 +368,16 @@ const commissionStructures = [
     });
 }
 
-// Process sales data to sum up commission points for each sale type
-Object.values(sales).forEach(sale => {
-    Object.keys(sale.sale_types || {}).forEach(type => {
-        if (sale.sale_types[type]) {
-            // Assuming each selected sale type contributes a point towards commission
-            // Adjust this logic if points vary by sale type
-            salesPoints[type] = (salesPoints[type] || 0) + sale.sale_types[type];
-        }
-    });
-});
-
-
-
 // Initialize real-time commission summary update on user authentication state change
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("User logged in:", user.uid);
-        updateCommissionSummaryRealTime(); // Call the updated function when user logs in
+        updateCommissionSummaryRealTime(); // Call the updated function when the user logs in
     } else {
         console.log("User not logged in");
         document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
     }
 });
-
 
 
   
