@@ -443,7 +443,7 @@ input:focus, textarea:focus {
 }
 /* Style adjustments for the placeholder text */
 .filter-group input[type="text"]::placeholder {
-    color: lightgray; /* Set the placeholder text color to light gray */
+    color: rgb(255, 255, 255); /* Set the placeholder text color to light gray */
 }
 
 
