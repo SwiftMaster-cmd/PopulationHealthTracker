@@ -304,10 +304,7 @@ const commissionStructures = [
   
 
 
-  // Assuming Firebase has already been initialized as per your provided setup
-
-// Improved Real-time Commission Summary Update Function
-function updateCommissionSummaryRealTime() {
+  function updateCommissionSummaryRealTime() {
     if (!auth.currentUser) {
         console.log("User not logged in.");
         document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
@@ -326,18 +323,20 @@ function updateCommissionSummaryRealTime() {
         }
 
         let totalCommission = 0;
-        let salesCounts = {};
+        let salesPoints = {};
 
-        // Reset counts for each category based on the commissionStructures
+        // Initialize salesPoints with categories from commissionStructures, but with points instead of counts
         commissionStructures.forEach(structure => {
-            salesCounts[structure.category] = 0;
+            salesPoints[structure.category] = 0; // Initialize points for each category
         });
 
-        // Process sales data
+        // Process sales data to sum up commission points for each sale type
         Object.values(sales).forEach(sale => {
             Object.keys(sale.sale_types || {}).forEach(type => {
                 if (sale.sale_types[type]) {
-                    salesCounts[type] = (salesCounts[type] || 0) + 1;
+                    // Assuming each selected sale type contributes a point towards commission
+                    // Adjust this logic if points vary by sale type
+                    salesPoints[type] = (salesPoints[type] || 0) + sale.sale_types[type];
                 }
             });
         });
@@ -345,15 +344,15 @@ function updateCommissionSummaryRealTime() {
         // Calculate and display commission summary
         document.getElementById('commissionSummary').innerHTML = '';
         commissionStructures.forEach(structure => {
-            const salesCount = salesCounts[structure.category];
-            const commissionRate = structure.rates.find(rate => salesCount >= rate.min && (salesCount <= rate.max || rate.max === Infinity));
+            const points = salesPoints[structure.category];
+            const commissionRate = structure.rates.find(rate => points >= rate.min && (points <= rate.max || rate.max === Infinity));
             if (commissionRate) {
-                const commission = salesCount * commissionRate.rate;
+                const commission = points * commissionRate.rate; // Calculate commission based on points
                 totalCommission += commission;
 
                 // Append each category's commission to the summary
                 const commissionElement = document.createElement('div');
-                commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)} (Sales Count: ${salesCount})`;
+                commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)} (Points: ${points})`;
                 document.getElementById('commissionSummary').appendChild(commissionElement);
             }
         });
@@ -366,17 +365,6 @@ function updateCommissionSummaryRealTime() {
         onlyOnce: false
     });
 }
-
-// Initialize real-time commission summary update on user authentication state change
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log("User logged in:", user.uid);
-        updateCommissionSummaryRealTime(); // Call the updated function when user logs in
-    } else {
-        console.log("User not logged in");
-        document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
-    }
-});
 
 
 
