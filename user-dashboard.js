@@ -149,17 +149,8 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-document.getElementById('applyFilters').addEventListener('click', () => {
-    const timeFilter = document.getElementById('timeFilter').value;
-    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
-    const esiFilter = document.getElementById('esiFilter').value;
-    const timeSort = document.getElementById('timeSortFilter').value; // Get the selected time sort option
-
-    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort);
-});
-
-// Modified fetchSalesHistory to include sorting
-function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest') {
+// Modified fetchSalesHistory to include filtering
+function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
@@ -176,29 +167,26 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
+        // Convert sales object to an array for filtering
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
         }));
 
-        // Apply time, type, and ESI filters
+        // Apply filters
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter);
 
-        // Sort sales based on timeSort value
-        if (timeSort === 'newest') {
-            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        } else if (timeSort === 'oldest') {
-            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        }
-
-        // Display sorted and filtered sales
         salesArray.forEach(sale => {
-            const saleEntryHTML = generateSaleEntryHTML(sale);
-            salesHistoryElement.innerHTML += saleEntryHTML;
+            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
+            const saleContainer = document.createElement('div');
+            saleContainer.className = 'sales-history-entry';
+            saleContainer.setAttribute('data-sale-id', sale.id);
+            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
+            salesHistoryElement.appendChild(saleContainer);
         });
     });
 }
-
 
 // Listen to the apply filters button click
 document.getElementById('applyFilters').addEventListener('click', () => {
