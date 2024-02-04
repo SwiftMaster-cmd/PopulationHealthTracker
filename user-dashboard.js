@@ -306,13 +306,20 @@ const commissionStructures = [
     },
   ];
   
-// Assuming this function is called within a context where `userId` is defined and valid
+  
+
+
+  // Assuming Firebase has already been initialized as per your provided setup
+
+// Improved Real-time Commission Summary Update Function
 function updateCommissionSummaryRealTime() {
-    if (!userId) {
+    if (!auth.currentUser) {
         console.log("User not logged in.");
+        document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
         return;
     }
 
+    const userId = auth.currentUser.uid;
     const salesRef = ref(database, `sales/${userId}`);
     // Listen for real-time updates using onValue
     onValue(salesRef, (snapshot) => {
@@ -324,26 +331,27 @@ function updateCommissionSummaryRealTime() {
         }
 
         let totalCommission = 0;
-        let salesCounts = {}; // Initialize salesCounts with categories
+        let salesCounts = {};
 
+        // Reset counts for each category based on the commissionStructures
         commissionStructures.forEach(structure => {
-            salesCounts[structure.category] = 0; // Reset counts for each category
+            salesCounts[structure.category] = 0;
         });
 
         // Process sales data
         Object.values(sales).forEach(sale => {
-            Object.keys(sale.sale_types).forEach(type => {
-                if (sale.sale_types[type]) { // If sale type is true/selected
+            Object.keys(sale.sale_types || {}).forEach(type => {
+                if (sale.sale_types[type]) {
                     salesCounts[type] = (salesCounts[type] || 0) + 1;
                 }
             });
         });
 
         // Calculate and display commission summary
-        document.getElementById('commissionSummary').innerHTML = ''; // Clear existing summary
+        document.getElementById('commissionSummary').innerHTML = '';
         commissionStructures.forEach(structure => {
             const salesCount = salesCounts[structure.category];
-            const commissionRate = structure.rates.find(rate => salesCount >= rate.min && salesCount <= rate.max);
+            const commissionRate = structure.rates.find(rate => salesCount >= rate.min && (salesCount <= rate.max || rate.max === Infinity));
             if (commissionRate) {
                 const commission = salesCount * commissionRate.rate;
                 totalCommission += commission;
@@ -360,9 +368,21 @@ function updateCommissionSummaryRealTime() {
         totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
         document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     }, {
-        onlyOnce: false // Ensure listener remains active for real-time updates
+        onlyOnce: false
     });
 }
+
+// Initialize real-time commission summary update on user authentication state change
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        console.log("User logged in:", user.uid);
+        updateCommissionSummaryRealTime(); // Call the updated function when user logs in
+    } else {
+        console.log("User not logged in");
+        document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
+    }
+});
+
 
 
   
