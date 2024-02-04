@@ -139,8 +139,8 @@ header {
 
 
 .sales-history-container {
-    width: 500px; /* Allow the container to adjust its width based on content */
-    min-width: 300px; /* Set a minimum width to prevent it from becoming too small */
+    width: auto; /* Allow the container to adjust its width based on content */
+    min-width: 500px; /* Set a minimum width of 500px */
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFD700, #FFA500);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -156,9 +156,8 @@ header {
 
 /* Set a maximum width for the contents inside the container */
 .sales-history-container > * {
-    width: 450px;
+    max-width: 100%; /* Allow contents to take the full width of the container */
 }
-
 
 .sales-history-entry {
     background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient matching the dashboard */
@@ -169,6 +168,7 @@ header {
     color: #023047; /* Text color for readability */
     transition: all 0.3s ease; /* Smooth transition for interactions */
 }
+
 
 .sales-history-entry:hover {
     transform: scale(1.03); /* Slight enlargement on hover */
