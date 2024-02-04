@@ -181,7 +181,7 @@ header {
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Orange gradient matching the dashboard */
+    background: linear-gradient(to bottom, #ffc942, #ff9c2b); /* Orange gradient matching the dashboard */
     border-radius: 10px; /* Consistent rounded corners */
     padding: 15px; /* Padding around content */
     margin-bottom: 15px; /* Space between entries */
@@ -197,19 +197,17 @@ header {
 }
 
 .sale-info div {
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Blue gradient */
+    background: linear-gradient(to bottom, #ceeaf6, #8dcada); /* Orange gradient matching the dashboard */
     font-size: 18px; /* Slightly larger font size for improved readability */
-    color: #ffffff; /* Text color for contrast */
-    padding: 10px 15px; /* Adjust padding for an indented look */
-    border-radius: 5px; /* Apply a slight border-radius for a softer appearance */
-    margin-left: 20px; /* Add left margin to create indentation */
+    color: #023047; /* Text color for contrast */
+    padding: 5px 0; /* Spacing for readability */
     border: none; /* Remove border */
     outline: none; /* Remove outline */
 }
 
 /* Existing styles for buttons within .sales-history-container */
 .sale-actions button {
-    background: linear-gradient(to bottom, #219EBC, #023047);
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
     font-weight: bold;
     padding: 10px 20px;
@@ -222,7 +220,7 @@ header {
 
 /* Add hover styles for buttons within .sales-history-container */
 .sale-actions button:hover {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
@@ -236,7 +234,7 @@ header {
 
 .sale-type-span {
     display: inline-block; /* Display as inline block for alignment */
-    background: linear-gradient(to bottom, #219EBC, #023047); /* Styling to match the "Add Sales" button */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
     color: white; /* Text color for contrast */
     padding: 5px 10px; /* Padding inside each "button" */
     margin: 2px; /* Margin for spacing between buttons */
@@ -263,7 +261,7 @@ input:focus, textarea:focus {
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Hover effect to match other buttons */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Hover effect to match other buttons */
 }
 
 
