@@ -254,60 +254,59 @@ const commissionStructures = [
   }
   async function updateCommissionSummary() {
     if (!userId) {
-        console.log("User not logged in.");
-        return;
+      console.log("User not logged in.");
+      return;
     }
-
+  
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
-
+  
     // Reference to the user's sales in the database
     const salesRef = ref(database, `sales/${userId}`);
-
+  
     // Listen for value changes at the sales reference
     onValue(salesRef, (snapshot) => {
-        const sales = snapshot.val(); // Get the sales data from the snapshot
-        if (!sales) {
-            console.log("No sales data found.");
-            return; // Exit if there are no sales
-        }
-
-        let totalCommission = 0; // Initialize total commission
-        document.getElementById('commissionSummary').innerHTML = ''; // Clear existing commission summary content
-
-        // Iterate over each commission structure to calculate commissions
-        commissionStructures.forEach(structure => {
-            let salesCount = 0; // Initialize sales count for the current commission structure
-
-            // Filter sales for the current structure based on date and category
-            Object.values(sales).forEach(sale => {
-                const saleDate = new Date(sale.timestamp);
-                if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
-                    // Check if the sale's types include the current structure category
-                    if (sale.sale_types && sale.sale_types[structure.category]) {
-                        salesCount++; // Increment sales count for the category
-                    }
-                }
-            });
-
-            // Calculate commission for the current structure based on sales count
-            const commission = calculateCommission(salesCount, structure.category);
-            totalCommission += commission; // Add to total commission
-
-            // Create and append a new element for this commission category to the summary
-            const commissionElement = document.createElement('div');
-            commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)} (Sales Count: ${salesCount})`;
-            document.getElementById('commissionSummary').appendChild(commissionElement);
+      const sales = snapshot.val(); // Get the sales data from the snapshot
+      if (!sales) {
+        console.log("No sales data found.");
+        return; // Exit if there are no sales
+      }
+  
+      let totalCommission = 0; // Initialize total commission
+      document.getElementById('commissionSummary').innerHTML = ''; // Clear existing commission summary content
+  
+      // Iterate over each commission structure to calculate commissions
+      commissionStructures.forEach(structure => {
+        let salesCount = 0; // Initialize sales count for the current commission structure
+  
+        // Filter sales for the current structure based on date and category
+        Object.values(sales).forEach(sale => {
+          const saleDate = new Date(sale.timestamp);
+          if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
+            // Check if the sale's types include the current structure category
+            if (sale.sale_types && sale.sale_types[structure.category]) {
+              salesCount++; // Increment sales count for the category
+            }
+          }
         });
-
-        // Display total commission
-        const totalCommissionElement = document.createElement('div');
-        totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-        document.getElementById('commissionSummary').appendChild(totalCommissionElement);
+  
+        // Calculate commission for the current structure based on sales count
+        const commission = calculateCommission(salesCount, structure.category);
+        totalCommission += commission; // Add to total commission
+  
+        // Create and append a new element for this commission category to the summary
+        const commissionElement = document.createElement('div');
+        commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
+        document.getElementById('commissionSummary').appendChild(commissionElement);
+      });
+  
+      // Display total commission
+      const totalCommissionElement = document.createElement('div');
+      totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+      document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     });
-}
-
+  }
   
 
 
@@ -325,50 +324,39 @@ const commissionStructures = [
 
 
 
-  function toggleButtonSelectedState() {
+// Assuming `userId` is globally available and correctly set upon user authentication
+
+// Toggles the selected class on sale type and ESI consent buttons
+function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
 
-// Retrieves selected sale types for the edit form
+// Retrieves selected sale types for saving
 function getEditSaleTypes() {
     const saleTypes = {};
     document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
         const value = btn.getAttribute('data-value');
-        saleTypes[value] = true;
+        saleTypes[value] = true;  // Marks the sale type as selected
     });
     return saleTypes;
 }
 
-// Setup ESI consent buttons with the current selection based on sale data
+// Setup ESI consent buttons with pre-selected value based on the sale's data
 function setupEsiConsentButtons(esiContent) {
     const esiButtons = document.querySelectorAll('.edit-esi-consent-btn');
     esiButtons.forEach(btn => {
-        btn.classList.remove('selected');
-        if (btn.dataset.value === esiContent) {
-            btn.classList.add('selected');
+        btn.classList.remove('selected');  // Clears previous selections
+        if (btn.getAttribute('data-value') === esiContent) {
+            btn.classList.add('selected');  // Marks the correct button as selected
         }
         btn.addEventListener('click', function() {
-            esiButtons.forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
+            esiButtons.forEach(b => b.classList.remove('selected'));  // Ensures only one button can be selected
+            btn.classList.add('selected');
         });
     });
 }
 
-// Function to visually indicate the pre-selected state of buttons
-function setupPreSelectedSaleTypes(saleTypes) {
-    const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
-    saleTypeButtons.forEach(btn => {
-        const type = btn.getAttribute('data-value');
-        if (saleTypes[type]) {
-            btn.classList.add('selected');
-        } else {
-            btn.classList.remove('selected');
-        }
-        btn.addEventListener('click', toggleButtonSelectedState);
-    });
-}
-
-// Populates the edit modal with data for editing a sale
+// Populates the edit modal with data for a specific sale
 async function openEditModal(saleId) {
     if (!userId) return;
 
@@ -377,42 +365,26 @@ async function openEditModal(saleId) {
         const snapshot = await get(saleRef);
         const sale = snapshot.val();
 
-        // Make sure all elements exist before trying to set their values
-        const editSaleIdElement = document.getElementById('editSaleId');
-        const editLeadIdElement = document.getElementById('editLeadId');
-        const editNotesElement = document.getElementById('editNotes');
-        
-        // Check for the existence of these elements to avoid TypeError
-        if (!editSaleIdElement || !editLeadIdElement || !editNotesElement) {
-            console.error("One or more elements are missing in the edit modal.");
-            return; // Exit the function if any element is missing
-        }
+        // Populate form fields with sale data
+        document.getElementById('editSaleId').value = saleId;
+        document.getElementById('editLeadId').value = sale.lead_id;
+        document.getElementById('editNotes').value = sale.notes;
+        setupEsiConsentButtons(sale.esi_content);  // Setup ESI consent with the current sale's data
 
-        // Set values for existing elements
-        editSaleIdElement.value = saleId;
-        editLeadIdElement.value = sale.lead_id;
-        editNotesElement.value = sale.notes;
-        setupEsiConsentButtons(sale.esi_content);
-
-        // Pre-select sale type buttons based on the sale's data
+        // Pre-select sale type buttons based on current sale data
         document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
-            const saleType = btn.getAttribute('data-value');
             btn.classList.remove('selected');
-            if (sale.sale_types && sale.sale_types[saleType]) {
+            if (sale.sale_types && sale.sale_types[btn.getAttribute('data-value')]) {
                 btn.classList.add('selected');
             }
             btn.onclick = toggleButtonSelectedState;
         });
 
-        // Display the modal
         document.getElementById('editSaleModal').style.display = 'block';
     } catch (error) {
         console.error('Error fetching sale data:', error);
     }
 }
-
-// More code for handling form submission and closing the modal...
-
 
 // Handles the submission of the edit sale form
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
