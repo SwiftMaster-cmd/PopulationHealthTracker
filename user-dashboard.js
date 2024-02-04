@@ -351,17 +351,17 @@ async function openEditModal(saleId) {
         editNotesElement.value = currentSaleData.notes || '';
         setupEsiConsentButtons(currentSaleData.esi_content);
 
-        // Here's the crucial part:
         // Check if the sale has a sale_types property and use it, 
         // or define a default structure that matches your data model if not
         const saleTypesToSetup = currentSaleData.sale_types || getDefaultSaleTypesStructure();
-        setupPreSelectedSaleTypes(saleTypesToSetup);
+        setupPreSelectedSaleTypes(saleTypesToSetup); // Pre-select sale types based on the sale data
 
         document.getElementById('editSaleModal').style.display = 'block';
     } catch (error) {
         console.error('Error fetching sale data:', error);
     }
 }
+
 
 
 // Handles the submission of the edit sale form
