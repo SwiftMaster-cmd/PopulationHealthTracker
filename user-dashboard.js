@@ -306,28 +306,8 @@ const commissionStructures = [
     },
   ];
   
-
-// Function to calculate commission
-function calculateCommission(sales, category) {
-    console.log(`Calculating commission for ${sales} sales in category ${category}`);
-    const structure = commissionStructures.find(s => s.category === category);
-    if (!structure) {
-      console.error("Invalid category:", category);
-      return 0;
-    }
-  
-    const rateInfo = structure.rates.find(rate => sales >= rate.min && sales <= rate.max);
-    if (!rateInfo) {
-      console.error("Sales out of range for category:", category);
-      return 0;
-    }
-  
-    console.log(`Rate found: ${rateInfo.rate} for category ${category}`);
-    return sales * rateInfo.rate;
-  }
-  
-  // Updates the commission summary based on the current sales data
-  async function updateCommissionSummary() {
+// Function to fetch and update commission summary once
+async function fetchAndUpdateCommissionSummary() {
     if (!userId) {
       console.log("User not logged in.");
       return;
@@ -338,7 +318,8 @@ function calculateCommission(sales, category) {
     const currentYear = now.getFullYear();
     const salesRef = ref(database, `sales/${userId}`);
   
-    onValue(salesRef, (snapshot) => {
+    try {
+      const snapshot = await get(salesRef);
       const sales = snapshot.val();
       if (!sales) {
         console.log("No sales data found.");
@@ -371,7 +352,9 @@ function calculateCommission(sales, category) {
       const totalCommissionElement = document.createElement('div');
       totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
       document.getElementById('commissionSummary').appendChild(totalCommissionElement);
-    });
+    } catch (error) {
+      console.error("Failed to fetch sales data:", error);
+    }
   }
   
 
