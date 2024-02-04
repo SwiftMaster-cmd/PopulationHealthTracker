@@ -318,45 +318,26 @@ const commissionStructures = [
 
 
 
+  
 
 
 
-
-
-
-// Assuming `userId` is globally available and correctly set upon user authentication
-
-// Toggles the selected class on sale type and ESI consent buttons
-function toggleButtonSelectedState() {
+  function toggleSaleTypeSelection() {
     this.classList.toggle('selected');
 }
 
-// Retrieves selected sale types for saving
+// Retrieve sale types from the edit modal's selected buttons
 function getEditSaleTypes() {
     const saleTypes = {};
     document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
         const value = btn.getAttribute('data-value');
-        saleTypes[value] = true;  // Marks the sale type as selected
+        saleTypes[value] = true; // Indicates the sale type is selected
     });
     return saleTypes;
 }
 
-// Setup ESI consent buttons with pre-selected value based on the sale's data
-function setupEsiConsentButtons(esiContent) {
-    const esiButtons = document.querySelectorAll('.edit-esi-consent-btn');
-    esiButtons.forEach(btn => {
-        btn.classList.remove('selected');  // Clears previous selections
-        if (btn.getAttribute('data-value') === esiContent) {
-            btn.classList.add('selected');  // Marks the correct button as selected
-        }
-        btn.addEventListener('click', function() {
-            esiButtons.forEach(b => b.classList.remove('selected'));  // Ensures only one button can be selected
-            btn.classList.add('selected');
-        });
-    });
-}
-
-// Populates the edit modal with data for a specific sale
+// Open the edit modal and populate it with sale data
+// Opens the edit modal and populates it with data from the selected sale
 async function openEditModal(saleId) {
     if (!userId) return;
 
@@ -365,19 +346,33 @@ async function openEditModal(saleId) {
         const snapshot = await get(saleRef);
         const sale = snapshot.val();
 
-        // Populate form fields with sale data
-        document.getElementById('editSaleId').value = saleId;
-        document.getElementById('editLeadId').value = sale.lead_id;
-        document.getElementById('editNotes').value = sale.notes;
-        setupEsiConsentButtons(sale.esi_content);  // Setup ESI consent with the current sale's data
+        // Ensure all elements are present
+        const editSaleId = document.getElementById('editSaleId');
+        const editLeadId = document.getElementById('editLeadId');
+        const editEsiContent = document.getElementById('editEsiContent');
+        const editNotes = document.getElementById('editNotes');
+        const editTimestamp = document.getElementById('editTimestamp'); // Ensure this element exists in HTML
 
-        // Pre-select sale type buttons based on current sale data
+        if (!editSaleId || !editLeadId || !editEsiContent || !editNotes || !editTimestamp) {
+            console.error("One or more elements are missing in the edit modal.");
+            return;
+        }
+
+        // Populate modal fields with the existing sale data
+        editSaleId.value = saleId;
+        editLeadId.value = sale.lead_id;
+        editEsiContent.value = sale.esi_content;
+        editNotes.value = sale.notes;
+        editTimestamp.value = sale.timestamp;
+
+        // Set up sale type buttons
         document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
             btn.classList.remove('selected');
-            if (sale.sale_types && sale.sale_types[btn.getAttribute('data-value')]) {
+            const saleType = btn.getAttribute('data-value');
+            if (sale.sale_types && sale.sale_types[saleType]) {
                 btn.classList.add('selected');
             }
-            btn.onclick = toggleButtonSelectedState;
+            btn.onclick = toggleSaleTypeSelection;
         });
 
         document.getElementById('editSaleModal').style.display = 'block';
@@ -386,55 +381,54 @@ async function openEditModal(saleId) {
     }
 }
 
-// Handles the submission of the edit sale form
+
+// Handle form submission for updating a sale
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!userId) return;
 
     const saleId = document.getElementById('editSaleId').value;
-    const esiContent = document.querySelector('.edit-esi-consent-btn.selected').getAttribute('data-value');
     const updatedSaleData = {
         lead_id: document.getElementById('editLeadId').value,
-        esi_content: esiContent,
+        esi_content: document.getElementById('editEsiContent').value,
         notes: document.getElementById('editNotes').value,
         sale_types: getEditSaleTypes(),
-        // Ensures the original timestamp is preserved (Add timestamp handling if necessary)
+        timestamp: document.getElementById('editTimestamp').value, // Use original timestamp
     };
 
     try {
         await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
         closeEditModal();
-        // Refresh sales history or other related elements as necessary
+        // Optionally, refresh sales history or perform other actions post-update
     } catch (error) {
         console.error('Error updating sale:', error);
         alert('Failed to update sale.');
     }
 });
 
-// Closes the edit modal and optionally clears or resets form fields
+// Close the edit modal
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
-    // Add any cleanup or reset operations here if necessary
+    // Optionally, clear or reset modal fields here
 }
 
-// Handles click events for edit and delete buttons in the sales history list
+// Event delegation for handling edit and delete actions in the sales history
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    if (!userId) return;
-
-    const target = event.target;
-    const saleContainer = target.closest('.sales-history-entry');
+    const saleContainer = event.target.closest('.sales-history-entry');
     if (!saleContainer) return;
 
     const saleId = saleContainer.getAttribute('data-sale-id');
-    if (target.classList.contains('edit-btn')) {
+    if (event.target.classList.contains('edit-btn')) {
         openEditModal(saleId);
-    } else if (target.classList.contains('delete-btn') && confirm('Are you sure you want to delete this sale?')) {
-        try {
-            await remove(ref(database, `sales/${userId}/${saleId}`));
-            saleContainer.remove();  // Updates the UI to reflect deletion
-        } catch (error) {
-            console.error('Error deleting sale:', error);
-            alert('Failed to delete sale.');
+    } else if (event.target.classList.contains('delete-btn')) {
+        if (confirm('Are you sure you want to delete this sale?')) {
+            try {
+                await remove(ref(database, `sales/${userId}/${saleId}`));
+                saleContainer.remove(); // Update the UI to reflect the deletion
+            } catch (error) {
+                console.error('Error deleting sale:', error);
+                alert('Failed to delete sale.');
+            }
         }
     }
 });
