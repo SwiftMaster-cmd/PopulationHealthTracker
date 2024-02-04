@@ -374,9 +374,6 @@ function setupPreSelectedSaleTypes(saleTypes) {
 }
 
 // Populates the edit modal with data for editing a sale
-// ...
-
-// Function to open the edit modal and pre-select sales
 async function openEditModal(saleId) {
     if (!userId) return;
 
@@ -389,7 +386,7 @@ async function openEditModal(saleId) {
         const editSaleIdElement = document.getElementById('editSaleId');
         const editLeadIdElement = document.getElementById('editLeadId');
         const editNotesElement = document.getElementById('editNotes');
-
+        
         // Check for the existence of these elements to avoid TypeError
         if (!editSaleIdElement || !editLeadIdElement || !editNotesElement) {
             console.error("One or more elements are missing in the edit modal.");
@@ -413,21 +410,11 @@ async function openEditModal(saleId) {
         });
 
         // Display the modal
-        const editSaleModal = document.getElementById('editSaleModal');
-        editSaleModal.style.display = 'block';
-        editSaleModal.scrollTop = 0; // Scroll to top when opening
+        document.getElementById('editSaleModal').style.display = 'block';
     } catch (error) {
         console.error('Error fetching sale data:', error);
     }
 }
-
-// Event listener for cancel button
-document.getElementById('cancelEditButton').addEventListener('click', () => {
-    closeEditModal();
-});
-
-// ...
-
 
 // More code for handling form submission and closing the modal...
 
