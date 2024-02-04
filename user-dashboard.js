@@ -286,7 +286,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
 let currentSaleData; // Global variable to store the current sale data, including timestamp
 
 function toggleButtonSelectedState() {
@@ -381,17 +380,15 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
 
     // Get the lead ID entered in the form
     const editedLeadId = document.getElementById('editLeadId').value;
-
-    // Check if the edited lead ID already exists in other sales
+    const saleId = document.getElementById('editSaleId').value; // Get the current sale ID
     const existingSales = await getSalesData(userId);
 
-    if (isLeadIdAlreadyExists(existingSales, editedLeadId)) {
+    if (isLeadIdAlreadyExists(existingSales, editedLeadId, saleId)) {
         alert('Lead ID already exists in another sale. Please choose a different lead ID.');
         return;
     }
 
-    // Continue with the update if lead ID is valid
-    const saleId = document.getElementById('editSaleId').value;
+    // Proceed with the form submission if the edited lead ID is unique or unchanged
     const updatedSaleData = {
         lead_id: editedLeadId,
         esi_content: document.querySelector('.edit-esi-consent-btn.selected').dataset.value,
@@ -407,9 +404,6 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
         console.error('Error updating sale:', error);
     }
 });
-
-
-
 
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
@@ -440,17 +434,11 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
     }
 });
 
-// Function to check if lead ID already exists in other sales
-function isLeadIdAlreadyExists(salesData, leadId) {
-    for (const saleId in salesData) {
-        if (salesData.hasOwnProperty(saleId)) {
-            const sale = salesData[saleId];
-            if (sale.lead_id === leadId) {
-                return true;
-            }
-        }
-    }
-    return false;
+// Updated function to check if the edited lead ID already exists in other sales, excluding the current sale
+function isLeadIdAlreadyExists(salesData, editedLeadId, currentSaleId) {
+    return Object.entries(salesData).some(([saleId, sale]) => {
+        return sale.lead_id === editedLeadId && saleId !== currentSaleId;
+    });
 }
 
 // Function to retrieve sales data for the current user
