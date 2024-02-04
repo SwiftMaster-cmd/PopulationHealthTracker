@@ -427,7 +427,7 @@ input:focus, textarea:focus {
     border-radius: 14px;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     border: none;
-    color: lightgray; /* Set the initial text color to light gray */
+    color: rgb(255, 255, 255); /* Set the initial text color to light gray */
     outline: none;
     text-align: center;
     transition: background-color 0.3s, box-shadow 0.3s, color 0.3s; /* Add color transition */
@@ -441,7 +441,10 @@ input:focus, textarea:focus {
     transform: translateY(-3px);
     color: white; /* Set the text color to white on hover and focus */
 }
-
+/* Style adjustments for the placeholder text */
+.filter-group input[type="text"]::placeholder {
+    color: lightgray; /* Set the placeholder text color to light gray */
+}
 
 
 
