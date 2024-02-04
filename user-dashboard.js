@@ -306,7 +306,6 @@ const commissionStructures = [
 
 // Assuming Firebase has already been initialized as per your provided setup
 // Assuming Firebase has already been initialized as per your provided setup
-
 function updateCommissionSummaryRealTime() {
     if (!auth.currentUser) {
         console.log("User not logged in.");
