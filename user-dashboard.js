@@ -324,8 +324,7 @@ const commissionStructures = [
 
 
 
-// Function to toggle the selection of sale type and ESI consent buttons
-function toggleButtonSelectedState() {
+  function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
 
@@ -347,7 +346,24 @@ function setupEsiConsentButtons(esiContent) {
         if (btn.dataset.value === esiContent) {
             btn.classList.add('selected');
         }
-        btn.onclick = toggleButtonSelectedState; // Reuse the same toggle function
+        btn.addEventListener('click', function() {
+            esiButtons.forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+}
+
+// Function to visually indicate the pre-selected state of buttons
+function setupPreSelectedSaleTypes(saleTypes) {
+    const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
+    saleTypeButtons.forEach(btn => {
+        const type = btn.getAttribute('data-value');
+        if (saleTypes[type]) {
+            btn.classList.add('selected');
+        } else {
+            btn.classList.remove('selected');
+        }
+        btn.addEventListener('click', toggleButtonSelectedState);
     });
 }
 
