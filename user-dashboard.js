@@ -254,59 +254,60 @@ const commissionStructures = [
   }
   async function updateCommissionSummary() {
     if (!userId) {
-      console.log("User not logged in.");
-      return;
+        console.log("User not logged in.");
+        return;
     }
-  
+
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
-  
+
     // Reference to the user's sales in the database
     const salesRef = ref(database, `sales/${userId}`);
-  
+
     // Listen for value changes at the sales reference
     onValue(salesRef, (snapshot) => {
-      const sales = snapshot.val(); // Get the sales data from the snapshot
-      if (!sales) {
-        console.log("No sales data found.");
-        return; // Exit if there are no sales
-      }
-  
-      let totalCommission = 0; // Initialize total commission
-      document.getElementById('commissionSummary').innerHTML = ''; // Clear existing commission summary content
-  
-      // Iterate over each commission structure to calculate commissions
-      commissionStructures.forEach(structure => {
-        let salesCount = 0; // Initialize sales count for the current commission structure
-  
-        // Filter sales for the current structure based on date and category
-        Object.values(sales).forEach(sale => {
-          const saleDate = new Date(sale.timestamp);
-          if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
-            // Check if the sale's types include the current structure category
-            if (sale.sale_types && sale.sale_types[structure.category]) {
-              salesCount++; // Increment sales count for the category
-            }
-          }
+        const sales = snapshot.val(); // Get the sales data from the snapshot
+        if (!sales) {
+            console.log("No sales data found.");
+            return; // Exit if there are no sales
+        }
+
+        let totalCommission = 0; // Initialize total commission
+        document.getElementById('commissionSummary').innerHTML = ''; // Clear existing commission summary content
+
+        // Iterate over each commission structure to calculate commissions
+        commissionStructures.forEach(structure => {
+            let salesCount = 0; // Initialize sales count for the current commission structure
+
+            // Filter sales for the current structure based on date and category
+            Object.values(sales).forEach(sale => {
+                const saleDate = new Date(sale.timestamp);
+                if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
+                    // Check if the sale's types include the current structure category
+                    if (sale.sale_types && sale.sale_types[structure.category]) {
+                        salesCount++; // Increment sales count for the category
+                    }
+                }
+            });
+
+            // Calculate commission for the current structure based on sales count
+            const commission = calculateCommission(salesCount, structure.category);
+            totalCommission += commission; // Add to total commission
+
+            // Create and append a new element for this commission category to the summary
+            const commissionElement = document.createElement('div');
+            commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)} (Sales Count: ${salesCount})`;
+            document.getElementById('commissionSummary').appendChild(commissionElement);
         });
-  
-        // Calculate commission for the current structure based on sales count
-        const commission = calculateCommission(salesCount, structure.category);
-        totalCommission += commission; // Add to total commission
-  
-        // Create and append a new element for this commission category to the summary
-        const commissionElement = document.createElement('div');
-        commissionElement.textContent = `${structure.category}: $${commission.toFixed(2)}`;
-        document.getElementById('commissionSummary').appendChild(commissionElement);
-      });
-  
-      // Display total commission
-      const totalCommissionElement = document.createElement('div');
-      totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-      document.getElementById('commissionSummary').appendChild(totalCommissionElement);
+
+        // Display total commission
+        const totalCommissionElement = document.createElement('div');
+        totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+        document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     });
-  }
+}
+
   
 
 
