@@ -487,8 +487,9 @@ input:focus, textarea:focus {
     display: flex;
     position: fixed;
     z-index: 1000;
-    left: 0;
-    top: 0;
+    left: 50%; /* Center horizontally */
+    top: 50%; /* Center vertically */
+    transform: translate(-50%, -50%); /* Translate to center both horizontally and vertically */
     width: 100%;
     height: 100%;
     overflow: auto;
@@ -497,6 +498,7 @@ input:focus, textarea:focus {
     justify-content: center;
     animation: fadeIn 0.5s ease-out;
 }
+
 
 /* Modal Content */
 #editSaleForm {
