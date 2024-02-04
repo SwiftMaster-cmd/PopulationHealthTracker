@@ -480,70 +480,52 @@ input:focus, textarea:focus {
 
 
 
-
 #editSaleModal {
     display: flex;
     position: fixed;
     z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* Full width of the screen */
-    height: 100%; /* Full height of the screen */
+    width: 50%;
+    height: 50%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
     align-items: center;
     justify-content: center;
     animation: fadeIn 0.5s ease-out;
+    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
 }
 
-/* Modal Content */
-#editSaleForm {
+/* Modal Content Container */
+#editModalContainer {
     background: linear-gradient(to bottom, #FB8501, #FFB703);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: auto;
     max-width: 500px;
-    margin: 0 auto; /* Center horizontally */
+    margin: 200px auto 0; /* Add spacing to the top */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center vertically */
-    height: 70vh; /* Set a specific height if needed */
 }
-
 
 /* Input and textarea styles */
 #editSaleForm input,
 #editSaleForm select,
-#editSaleForm button {
-    width: 100%;
-    max-width: 300px;
-    padding: 10px;
-    margin: 8px auto;
-    border-radius: 20px; /* Rounded corners */
-    border: none;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
-    color: white; /* Text color */
-    display: block;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-/* Textarea styles */
+#editSaleForm button,
 #editSaleForm textarea {
     width: 100%;
     max-width: 300px;
-    height: auto; /* Allow the height to adjust based on content */
-    min-height: 100px; /* Minimum height to prevent resizing */
     padding: 10px;
     margin: 8px auto;
     border-radius: 20px; /* Rounded corners */
     border: none;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    font-size: 18px;
     color: white; /* Text color */
     display: block;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
-    resize: none; /* Disable resizing */
 }
 
 /* Input labels */
