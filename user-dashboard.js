@@ -252,6 +252,14 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
+
+
+
+
+
+
+
+
 // Function to create and update the sales chart
 function updateSalesChart(salesData, labels) {
     const ctx = document.getElementById('salesChart').getContext('2d');
@@ -295,35 +303,76 @@ document.getElementById('timeFilter').addEventListener('change', () => {
     // Get selected time filter value
     const selectedTimeFilter = document.getElementById('timeFilter').value;
 
-    // Filter your sales data based on the selectedTimeFilter (You need to implement this function)
+    // Filter your sales data based on the selectedTimeFilter
     const filteredSalesData = filterSalesData(selectedTimeFilter);
 
-    // Get labels for the chart based on the selectedTimeFilter (You need to implement this function)
+    // Get labels for the chart based on the selectedTimeFilter
     const labels = getLabelsForTimeFilter(selectedTimeFilter);
 
     // Update the chart with the filtered data and labels
     updateSalesChart(filteredSalesData, labels);
 });
 
-// Implement the filterSalesData and getLabelsForTimeFilter functions based on your data structure and requirements.
-
-// Sample function to filter sales data based on the selected time filter
+// Sample function to filter sales data based on the selected time filter and sale type
 function filterSalesData(selectedTimeFilter) {
     // Implement your logic to fetch and filter real-time sales data here
     // You should return an array of sales data that matches the selectedTimeFilter
+    // and sale type (e.g., Category 1, Category 2, Category 3) for the last 7 days.
     // Example:
-    // const filteredData = fetchDataBasedOnTimeFilter(selectedTimeFilter);
+    // const filteredData = fetchDataBasedOnTimeFilterAndSaleType(selectedTimeFilter, saleType);
     // return filteredData;
+    // For now, let's assume you have a sample data array:
+    const sampleData = [
+        { date: '2024-01-01', category: 'Category 1', sales: 100 },
+        { date: '2024-01-02', category: 'Category 2', sales: 150 },
+        // Add more data for different days and categories...
+    ];
+
+    // Filter the sample data for the last 7 days and the selected category
+    const filteredData = sampleData.filter((item) => {
+        const currentDate = new Date();
+        const itemDate = new Date(item.date);
+        const timeDiff = currentDate - itemDate;
+        const daysDiff = timeDiff / (1000 * 3600 * 24);
+        return daysDiff <= 7 && item.category === selectedCategory;
+    });
+
+    // Extract sales values from the filtered data
+    const salesValues = filteredData.map((item) => item.sales);
+
+    return salesValues;
 }
 
-// Sample function to get labels for the chart based on the selected time filter
+// Sample function to generate labels for the chart based on the selected time filter
 function getLabelsForTimeFilter(selectedTimeFilter) {
     // Implement your logic to generate labels based on the selectedTimeFilter
     // You should return an array of labels that correspond to the time intervals
+    // For example, labels for the last 7 days.
     // Example:
     // const labels = generateLabelsForTimeFilter(selectedTimeFilter);
     // return labels;
+    // For now, let's assume you have labels for the last 7 days as an example:
+    const labels = [
+        'Day 1',
+        'Day 2',
+        'Day 3',
+        'Day 4',
+        'Day 5',
+        'Day 6',
+        'Day 7',
+    ];
+
+    return labels;
 }
+
+
+
+
+
+
+
+
+
 
 
 
