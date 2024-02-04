@@ -9,7 +9,8 @@ html, body {
 body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
     margin: 0;
     padding: 0;
-    font-family: 'Patrick Hand', cursive; /* Apply Patrick Hand font */
+    font-family: 'Arial', sans-serif; /* Use a professional font like Arial */
+    font-weight: bold; /* Make the text bold */
     color: #ffffff;
     
 }
