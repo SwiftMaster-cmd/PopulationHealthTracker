@@ -295,6 +295,8 @@ function getEditSaleTypes() {
     return saleTypes;
 }
 
+
+
 // Setup ESI consent buttons with the current selection based on sale data
 function setupEsiConsentButtons(esiContent) {
     const esiButtons = document.querySelectorAll('.edit-esi-consent-btn');
@@ -311,11 +313,12 @@ function setupEsiConsentButtons(esiContent) {
 }
 
 // Function to visually indicate the pre-selected state of buttons
-function setupPreSelectedSaleTypes(saleTypes) {
+function setupPreSelectedSaleTypes(saleTypesToSetup) {
     const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
     saleTypeButtons.forEach(btn => {
-        const type = btn.getAttribute('data-value');
-        if (saleTypes[type]) {
+        const type = btn.getAttribute('data-sale-type');
+
+        if (saleTypesToSetup[type]) {
             btn.classList.add('selected');
         } else {
             btn.classList.remove('selected');
