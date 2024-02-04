@@ -190,6 +190,16 @@ header {
     transition: all 0.3s ease; /* Smooth transition for interactions */
 }
 
+.sale-info div {
+    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient matching the dashboard */
+    border-radius: 10px; /* Consistent rounded corners */
+    padding: 15px; /* Padding around content */
+    margin-bottom: 15px; /* Space between entries */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Soft shadow for depth */
+    color: #023047; /* Text color for readability */
+    transition: all 0.3s ease; /* Smooth transition for interactions */
+}
+
 
 .sales-history-entry:hover {
     transform: scale(1.03); /* Slight enlargement on hover */
