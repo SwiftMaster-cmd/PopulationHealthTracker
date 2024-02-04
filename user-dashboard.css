@@ -300,71 +300,70 @@ input:focus, textarea:focus {
 
 
 
-
 /* Styles for the filter container */
 .filters-container {
-    width: 500px; /* Set width to 500px */
+    width: 500px; /* Maintain container width */
     margin: 20px auto; /* Center the container */
-    padding: 10px 20px; /* Reduce vertical padding as requested */
+    padding: 10px 20px; /* Adjusted padding */
     border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
     display: flex;
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column; /* Stack children vertically */
+    align-items: stretch; /* Stretch children to fill the width */
     background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gradient background */
 }
 
-/* Styles for each filter group */
+/* Style adjustments for each filter group */
 .filter-group {
-    display: flex; /* Use flexbox for layout */
-    flex-direction: row; /* Arrange items in a row */
-    align-items: center; /* Align items vertically in the center */
-    width: 100%; /* Full width of its parent */
-    margin: 10px 0; /* Reduced vertical margin */
+    display: flex; /* Use flexbox */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Align items vertically */
+    width: 100%; /* Full width to utilize space */
+    margin: 10px 0; /* Adjusted margin for spacing */
 }
 
-/* Style adjustments for filter labels (titles) */
+/* Style adjustments for filter labels */
 .filter-group label {
-    margin-right: 10px; /* Space between the label and the select */
+    text-align: left; /* Align text to the left */
     font-size: 20px; /* Font size for readability */
-    color: #ffffff; /* Text color for contrast */
-    white-space: nowrap; /* Prevent the label from wrapping */
+    color: #ffffff; /* Color for contrast */
+    flex: 1; /* Allow label to grow and fill available space */
 }
 
-/* Style adjustments for select elements (pickers) */
+/* Style adjustments for select elements */
 .filter-group select {
-    width: 100%; /* Allow the select element to fill available space */
-    max-width: 300px; /* Maximum width to maintain usability */
-    padding: 10px; /* Padding for ease of use */
-    margin-left: 10px; /* Ensure some space between label and select */
+    flex: 1; /* Allow select to grow but control its max-width for aesthetics */
+    max-width: 200px; /* Adjusted max width for balance */
+    padding: 10px; /* Padding for appearance and usability */
+    margin-left: 10px; /* Margin to separate from label */
     font-size: 18px; /* Font size for legibility */
-    border-radius: 14px; /* Rounded corners for aesthetics */
+    border-radius: 14px; /* Rounded corners */
     background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
-    border: none; /* Remove the default border */
-    color: white; /* Text color for contrast */
-    outline: none; /* Remove the focus outline for cleaner look */
+    border: none; /* Remove default border */
+    color: white; /* Text color for readability */
+    outline: none; /* Remove focus outline */
+    text-align: left; /* Ensure option text aligns left */
 }
 
-/* Style adjustments for the apply button */
+/* Adjustments for the apply button to center it and set its width */
 #applyFilters {
-    width: 400px; /* Set width to 400px */
+    width: 400px; /* Width of the button */
+    margin: 20px auto; /* Margin for auto-left and auto-right centers the button */
     padding: 12px 0; /* Padding for height */
-    margin-top: 20px; /* Space above the button */
-    font-weight: bold; /* Bold text for emphasis */
+    font-weight: bold; /* Bold font */
     border-radius: 15px; /* Rounded corners */
     background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Gradient background */
-    color: white; /* Text color for readability */
+    color: white; /* Text color */
     border: none; /* No border */
-    cursor: pointer; /* Pointer to indicate clickability */
-    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    cursor: pointer; /* Cursor to indicate clickability */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction feedback */
 }
 
 #applyFilters:hover, #applyFilters:focus {
     background: linear-gradient(to bottom, #FF851B, #FF6314); /* Highlight effect */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-    transform: translateY(-3px); /* Slight lift on hover/focus */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
+    transform: translateY(-3px); /* Slight lift for interaction */
 }
-
 
 
 
