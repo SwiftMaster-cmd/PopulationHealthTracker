@@ -209,6 +209,7 @@ function fetchSalesHistory() {
 
 
 
+
 // Define your commission structures
 const commissionStructures = [
     {
