@@ -220,6 +220,7 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter) {
     });
 }
 
+
 function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
     return `
         <div class="sale-info">
@@ -236,9 +237,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
         </div>
     `;
 }
-
-
-
 
 
 
