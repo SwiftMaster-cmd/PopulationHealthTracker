@@ -336,35 +336,37 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
     });
 }
 
-async function openEditModal(saleId) {
+function openEditModal(saleId) {
     if (!userId) {
         console.error("No user logged in.");
         return;
     }
 
     const saleRef = ref(database, `sales/${userId}/${saleId}`);
-    try {
-        const snapshot = await get(saleRef);
-        currentSaleData = snapshot.val();
+    get(saleRef)
+        .then((snapshot) => {
+            currentSaleData = snapshot.val();
 
-        if (!currentSaleData) {
-            console.error("Sale data not found.");
-            return;
-        }
+            if (!currentSaleData) {
+                console.error("Sale data not found.");
+                return;
+            }
 
-        // Setup modal fields
-        document.getElementById('editSaleId').value = saleId;
-        document.getElementById('editLeadId').value = currentSaleData.lead_id || '';
-        document.getElementById('editNotes').value = currentSaleData.notes || '';
-        
-        setupEsiConsentButtons(currentSaleData.esi_content);
-        setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
+            // Setup modal fields
+            document.getElementById('editSaleId').value = saleId;
+            document.getElementById('editLeadId').value = currentSaleData.lead_id || '';
+            document.getElementById('editNotes').value = currentSaleData.notes || '';
 
-        document.getElementById('editSaleModal').style.display = 'block';
-    } catch (error) {
-        console.error('Error fetching sale data:', error);
-    }
+            setupEsiConsentButtons(currentSaleData.esi_content);
+            setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
+
+            document.getElementById('editSaleModal').style.display = 'block';
+        })
+        .catch((error) => {
+            console.error('Error fetching sale data:', error);
+        });
 }
+
 
 // Apply numeric-only input rules to 'editLeadId'
 document.getElementById('editLeadId').addEventListener('paste', (e) => {
