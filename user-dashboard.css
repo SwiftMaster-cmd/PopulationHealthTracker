@@ -296,20 +296,18 @@ input:focus, textarea:focus {
 
 
 
-
-
 #editSaleModal {
-    display: flex; /* Use flexbox for centering */
+    display: flex;
     position: fixed;
-    z-index: 1000; /* Ensure it's on top of other content */
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Enable scrolling if the content is too long */
-    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    align-items: center;
+    justify-content: center;
 }
 
 #editSaleForm {
@@ -317,65 +315,64 @@ input:focus, textarea:focus {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    width: auto; /* Allow it to expand based on content */
-    max-width: 500px; /* Maximum width for the form */
+    width: auto;
+    max-width: 500px;
     animation: fadeIn 0.5s ease-out;
-    /* Removed margin:auto; since flexbox takes care of centering */
 }
 
-
-#editSaleForm input, #editSaleForm textarea, #editSaleForm select {
+#editSaleForm input, #editSaleForm textarea, #editSaleForm select, #editSaleForm button {
     width: 100%;
-    max-width: 300px; /* Maximum width for input fields */
+    max-width: 300px;
     padding: 10px;
-    margin: 8px 0;
+    margin: 8px auto; /* Center align inputs and buttons */
     border-radius: 4px;
-    border: 1px solid #219EBC; /* Light border color */
-    background: linear-gradient(to bottom, #FB8501, #FB8501);
-    font-size: 18px; /* Slightly larger for improved readability */
-    color: #023047; /* Consistent font color */
-    display: block; /* Ensure inputs are block-level for max-width to take effect */
-    margin-left: auto; /* Center align the inputs */
-    margin-right: auto; /* Center align the inputs */
+    border: 1px solid #219EBC;
+    background: #FB8501;
+    font-size: 18px;
+    color: #023047;
+    display: block;
 }
 
 #editSaleForm label {
-    display: block; /* Ensure labels are block-level for proper alignment */
+    display: block;
     margin-bottom: 5px;
     color: #023047;
-    font-size: 20px; /* Make labels slightly larger */
-    text-align: center; /* Center align the labels */
+    font-size: 20px;
+    text-align: center;
 }
 
 #editSaleForm button {
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: none;
     cursor: pointer;
-    font-size: 18px; /* Consistent button font size */
-    margin-top: 10px; /* Space above the button */
     transition: background 0.3s ease-in-out;
-    display: block; /* Make buttons block-level for centering */
-    margin-left: auto; /* Center align the button */
-    margin-right: auto; /* Center align the button */
 }
 
 #editSaleForm button:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect to match other buttons */
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
 }
 
-/* Adjustments for close button, if it exists */
+#editSaleForm button:active {
+    transform: scale(0.98); /* Slightly scale down the button when pressed */
+    background: linear-gradient(to bottom, #FF6314, #FF851B); /* Invert gradient for a pressed effect */
+}
+
+/* Optional: Keyframes for fadeIn animation if not already defined */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Adjustments for a close button, if it exists */
 #closeEditModalButton {
-    float: right; /* Position it to the right corner */
-    font-size: 24px; /* Larger font size for clear visibility */
+    float: right;
+    font-size: 24px;
     background: none;
     border: none;
     cursor: pointer;
-    color: #FB8501; /* Color to match your theme */
+    color: #FB8501;
+    margin-bottom: 10px; /* Ensure spacing at the bottom */
 }
-
 
 
 
