@@ -250,7 +250,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
 // Fetch select Rx sales for the last 5 days and update the chart
 function fetchSelectRxSalesForChart() {
     if (!userId) return;
@@ -264,37 +263,56 @@ function fetchSelectRxSalesForChart() {
             return;
         }
 
-        // Filter and extract select Rx sales for the last 5 days
+        // Create a data structure to store daily select Rx sales counts for the last 5 days
         const currentDate = new Date();
-        const fiveDaysAgo = new Date();
-        fiveDaysAgo.setDate(currentDate.getDate() - 4); // Last 5 days, including today
+        const salesCountsByDay = {};
 
-        const filteredSalesData = {};
+        // Initialize salesCountsByDay with zeros for each day
+        for (let i = 0; i < 5; i++) {
+            const date = new Date(currentDate);
+            date.setDate(currentDate.getDate() - i); // Calculate the date for each day
+            const formattedDate = formatDate(date);
+            salesCountsByDay[formattedDate] = 0;
+        }
 
+        // Iterate through sales data and count select Rx sales per day
         for (const saleId in salesData) {
             const sale = salesData[saleId];
             const saleTimestamp = sale.timestamp;
 
-            // Check if the sale is "select Rx" and within the last 5 days
             if (
                 sale.sale_types &&
-                sale.sale_types['select Rx'] &&
+                sale.sale_types['select_rx'] &&
                 saleTimestamp >= fiveDaysAgo.getTime() &&
                 saleTimestamp <= currentDate.getTime()
             ) {
-                filteredSalesData[saleId] = sale;
+                const saleDate = new Date(saleTimestamp);
+                const formattedSaleDate = formatDate(saleDate);
+                if (salesCountsByDay[formattedSaleDate] !== undefined) {
+                    salesCountsByDay[formattedSaleDate]++;
+                }
             }
         }
 
-        // Update the chart with the filtered sales data
-        updateSalesChart(filteredSalesData);
+        // Convert the salesCountsByDay object to arrays for the chart
+        const dates = Object.keys(salesCountsByDay);
+        const counts = Object.values(salesCountsByDay);
+
+        // Update the chart with the sales counts data
+        updateSalesChart(dates, counts);
     });
+}
+
+// Helper function to format a date as "YYYY-MM-DD"
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 // Initial update of the chart when the page loads
 fetchSelectRxSalesForChart();
-
-
 
 
 
