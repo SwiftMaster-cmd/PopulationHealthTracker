@@ -309,10 +309,10 @@ input:focus, textarea:focus {
 }
 
 #editSaleForm {
-    background: linear-gradient(to bottom, #FB8501, #FFB703);
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Orange gradient */
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: auto;
     max-width: 500px;
     animation: fadeIn 0.5s ease-out;
@@ -324,30 +324,30 @@ input:focus, textarea:focus {
     padding: 10px;
     margin: 8px auto;
     border-radius: 4px;
-    border: 1px solid #219EBC;
-    background: #FB8501;
+    border: 1px solid #FF851B; /* Orange border */
+    background: #FF851B; /* Orange background */
     font-size: 18px;
-    color: #023047;
+    color: #fff; /* White text color */
     display: block;
 }
 
 #editSaleForm label {
     display: block;
     margin-bottom: 5px;
-    color: #023047;
+    color: #fff; /* White text color */
     font-size: 20px;
     text-align: center;
 }
 
 #editSaleForm button {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Orange gradient */
     color: white;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
 }
 
 #editSaleForm button:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    background: linear-gradient(to bottom, #FF6314, #FF851B); /* Hover effect */
 }
 
 #editSaleForm button:active {
@@ -355,8 +355,9 @@ input:focus, textarea:focus {
     background: #FF851B; /* Invert gradient for a pressed effect */
 }
 
-.edit-sale-type-btn, .edit-esi-consent-btn {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+.edit-sale-type-btn,
+.edit-esi-consent-btn {
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Orange gradient */
     color: white;
     padding: 10px 15px;
     border-radius: 5px;
@@ -367,17 +368,17 @@ input:focus, textarea:focus {
     transition: background 0.3s ease-in-out;
 }
 
-.edit-sale-type-btn:hover, .edit-esi-consent-btn:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
+.edit-sale-type-btn:hover,
+.edit-esi-consent-btn:hover {
+    background: linear-gradient(to bottom, #FF6314, #FF851B); /* Hover effect */
 }
 
-.edit-sale-type-btn.selected, .edit-esi-consent-btn.selected {
+.edit-sale-type-btn.selected,
+.edit-esi-consent-btn.selected {
     background: #FF851B; /* Orange background for selected state */
     color: white;
     border: 2px solid #FFD700; /* Highlight with a gold border */
 }
-
-
 
 
 
