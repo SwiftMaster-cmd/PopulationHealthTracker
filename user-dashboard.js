@@ -307,7 +307,7 @@ const commissionStructures = [
   ];
   
 // Function to fetch and update commission summary once
-async function fetchAndUpdateCommissionSummary() {
+async function updateCommissionSummary() {
     if (!userId) {
       console.log("User not logged in.");
       return;
@@ -327,20 +327,28 @@ async function fetchAndUpdateCommissionSummary() {
       }
   
       let totalCommission = 0;
+      let salesCounts = {}; // Object to store sales count for each category
+  
+      // Initialize salesCounts with categories
+      commissionStructures.forEach(structure => {
+        salesCounts[structure.category] = 0;
+      });
+  
+      Object.values(sales).forEach(sale => {
+        const saleDate = new Date(sale.timestamp);
+        if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
+          Object.entries(sale.sale_types).forEach(([type, isSelected]) => {
+            if (isSelected) {
+              salesCounts[type] = (salesCounts[type] || 0) + 1;
+            }
+          });
+        }
+      });
+  
       document.getElementById('commissionSummary').innerHTML = '';
   
       commissionStructures.forEach(structure => {
-        let salesCount = 0;
-  
-        Object.values(sales).forEach(sale => {
-          const saleDate = new Date(sale.timestamp);
-          if (saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear) {
-            if (sale.sale_types && sale.sale_types[structure.category] === true) {
-              salesCount++;
-            }
-          }
-        });
-  
+        const salesCount = salesCounts[structure.category];
         const commission = calculateCommission(salesCount, structure.category);
         totalCommission += commission;
   
@@ -356,6 +364,7 @@ async function fetchAndUpdateCommissionSummary() {
       console.error("Failed to fetch sales data:", error);
     }
   }
+  
   
 
 
