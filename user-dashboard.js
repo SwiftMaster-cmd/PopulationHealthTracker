@@ -135,9 +135,8 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-
-
-let userId = null; // This will store the current user's ID
+// Placeholder for user's ID
+let userId;
 
 // Auth state change listener to handle user login and logout
 onAuthStateChanged(auth, (user) => {
@@ -147,13 +146,14 @@ onAuthStateChanged(auth, (user) => {
     } else {
         console.log("User is not logged in.");
         userId = null; // Clear userId if no user is signed in
-        // Optionally clear or update the UI to reflect the logged-out state
     }
 });
-function fetchSalesHistory() {
+
+// Modified fetchSalesHistory to include filtering
+function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
-        return; // Exit the function if userId is not set
+        return;
     }
 
     const salesRef = ref(database, `sales/${userId}`);
@@ -161,17 +161,20 @@ function fetchSalesHistory() {
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
 
-        const sales = snapshot.val();
+        let sales = snapshot.val();
         if (!sales) {
             salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
             return;
         }
 
-        // Convert sales object to an array and sort by timestamp in descending order (newest first)
-        const salesArray = Object.keys(sales).map(key => ({
+        // Convert sales object to an array for filtering
+        let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
-        })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }));
+
+        // Apply filters
+        salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter);
 
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
@@ -179,26 +182,57 @@ function fetchSalesHistory() {
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = `
-                <div class="sale-info">
-                    <div class="sale-data">Sale ID: ${sale.id}</div>
-                    <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-                    <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-                    <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
-                    <div class="sale-data">Notes: ${sale.notes}</div>
-                    <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
-                </div>
-                <div class="sale-actions">
-                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
-                </div>
-            `;
+            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
             salesHistoryElement.appendChild(saleContainer);
         });
-
-        // Optionally call updateCommissionSummary here
-        updateCommissionSummary();
     });
+}
+
+// Listen to the apply filters button click
+document.getElementById('applyFilters').addEventListener('click', () => {
+    const timeFilter = document.getElementById('timeFilter').value;
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter);
+});
+
+// Utility function to apply filters to the sales array
+function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter) {
+    const now = new Date();
+    return salesArray.filter(sale => {
+        // Time filter
+        const saleDate = new Date(sale.timestamp);
+        if (timeFilter === 'day' && saleDate.toDateString() !== now.toDateString()) return false;
+        if (timeFilter === 'week' && (now - saleDate) / (1000 * 60 * 60 * 24) > 7) return false;
+        if (timeFilter === 'month' && (saleDate.getMonth() !== now.getMonth() || saleDate.getFullYear() !== now.getFullYear())) return false;
+
+        // Sale type filter
+        if (saleTypeFilter !== 'all' && (!sale.sale_types || !sale.sale_types[saleTypeFilter])) return false;
+
+        // ESI filter
+        if (esiFilter !== 'all' && sale.esi_content !== esiFilter) return false;
+
+        return true; // Include sale if all filters match
+    });
+}
+
+// Utility function to generate HTML for a sale entry
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
+    return `
+        <div class="sale-info">
+            <div class="sale-data">Sale ID: ${sale.id}</div>
+            <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+            <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Notes: ${sale.notes}</div>
+            <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+        </div>
+        <div class="sale-actions">
+            <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+            <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+        </div>
+    `;
 }
 
 
