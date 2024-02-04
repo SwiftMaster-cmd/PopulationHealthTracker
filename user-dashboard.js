@@ -149,7 +149,7 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
-
+// Assuming Firebase has already been initialized elsewhere in your script
 
 // Placeholder for user's ID
 let userId;
@@ -165,8 +165,8 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Modified fetchSalesHistory to include filtering and sorting
-function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest') {
+// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
+function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
@@ -189,8 +189,8 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             id: key
         }));
 
-        // Apply filters
-        salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter);
+        // Apply filters including lead ID
+        salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
         // Sort sales based on timeSort value
         if (timeSort === 'newest') {
@@ -211,17 +211,18 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
     });
 }
 
-// Listen to the apply filters button click
+// Listen to the apply filters button click, including lead ID filter
 document.getElementById('applyFilters').addEventListener('click', () => {
     const timeFilter = document.getElementById('timeFilter').value;
     const saleTypeFilter = document.getElementById('saleTypeFilter').value;
     const esiFilter = document.getElementById('esiFilter').value;
-    const timeSort = document.getElementById('timeSortFilter').value; // Get the selected time sort option
+    const timeSort = document.getElementById('timeSortFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
 
-    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort);
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
 });
 
-function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter) {
+function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
     const now = new Date();
     return salesArray.filter(sale => {
         // Time filter
@@ -236,10 +237,12 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter) {
         // ESI filter
         if (esiFilter !== 'all' && sale.esi_content !== esiFilter) return false;
 
+        // Lead ID filter
+        if (leadIdFilter && sale.lead_id !== leadIdFilter) return false;
+
         return true; // Include sale if all filters match
     });
 }
-
 
 function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
     return `
@@ -249,11 +252,10 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
             <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
-            <div class="sale-data hidden">Sale ID: ${sale.id}</div> <!-- Hidden sale ID -->
-        </div>
-        <div class="sale-actions">
-            <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-            <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+            <div class="sale-actions">
+                <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+            </div>
         </div>
     `;
 }
