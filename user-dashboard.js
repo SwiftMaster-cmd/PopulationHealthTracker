@@ -64,7 +64,6 @@ document.getElementById('lead_id').addEventListener('input', function() {
 });
 
 // Handling form submission for adding new sales
-// Handling form submission for adding new sales
 document.getElementById('addSalesForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!userId) {
@@ -92,10 +91,6 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
     .then(() => {
         document.getElementById('confirmationMessage').textContent = "Sale added successfully.";
         document.getElementById('addSalesForm').reset(); // Reset form after successful submission
-
-        // Clear selected buttons
-        document.querySelectorAll('.esi-btn.selected').forEach(btn => btn.classList.remove('selected'));
-        document.querySelectorAll('.sale-type-btn.selected').forEach(btn => btn.classList.remove('selected'));
     })
     .catch(error => {
         console.error('Error adding sale:', error);
@@ -167,11 +162,11 @@ function fetchSalesHistory() {
             return;
         }
 
-        // Convert sales object to an array and sort by timestamp in descending order (newest first)
+        // Convert sales object to an array and sort by timestamp
         const salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
-        })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
@@ -197,10 +192,9 @@ function fetchSalesHistory() {
         });
 
         // Optionally call updateCommissionSummary here
-        updateCommissionSummary();
+         updateCommissionSummary();
     });
 }
-
 
 
 
@@ -375,9 +369,6 @@ function setupPreSelectedSaleTypes(saleTypes) {
 }
 
 // Populates the edit modal with data for editing a sale
-// ...
-
-// Function to open the edit modal and pre-select sales
 async function openEditModal(saleId) {
     if (!userId) return;
 
@@ -390,7 +381,7 @@ async function openEditModal(saleId) {
         const editSaleIdElement = document.getElementById('editSaleId');
         const editLeadIdElement = document.getElementById('editLeadId');
         const editNotesElement = document.getElementById('editNotes');
-
+        
         // Check for the existence of these elements to avoid TypeError
         if (!editSaleIdElement || !editLeadIdElement || !editNotesElement) {
             console.error("One or more elements are missing in the edit modal.");
@@ -414,21 +405,11 @@ async function openEditModal(saleId) {
         });
 
         // Display the modal
-        const editSaleModal = document.getElementById('editSaleModal');
-        editSaleModal.style.display = 'block';
-        editSaleModal.scrollTop = 0; // Scroll to top when opening
+        document.getElementById('editSaleModal').style.display = 'block';
     } catch (error) {
         console.error('Error fetching sale data:', error);
     }
 }
-
-// Event listener for cancel button
-document.getElementById('cancelEditButton').addEventListener('click', () => {
-    closeEditModal();
-});
-
-// ...
-
 
 // More code for handling form submission and closing the modal...
 
