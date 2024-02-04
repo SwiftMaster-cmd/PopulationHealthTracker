@@ -477,10 +477,6 @@ input:focus, textarea:focus {
 
 
 
-
-
-
-
 #editSaleModal {
     display: flex;
     position: fixed;
@@ -504,8 +500,9 @@ input:focus, textarea:focus {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: auto;
     max-width: 500px;
-    margin: 0 auto; /* Center horizontally */
+    margin: 150px auto 0; /* Bring the form down by 150 pixels */
 }
+
 
 
 /* Input and textarea styles */
