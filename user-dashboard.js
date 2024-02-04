@@ -367,15 +367,7 @@ function openEditModal(saleId) {
         });
 }
 
-
 // Apply numeric-only input rules to 'editLeadId'
-document.getElementById('editLeadId').addEventListener('paste', (e) => {
-    e.preventDefault();
-    const text = (e.clipboardData || window.clipboardData).getData('text');
-    const numbers = text.match(/\d+/g);
-    if (numbers) e.target.value = numbers.join('');
-});
-
 document.getElementById('editLeadId').addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
 });
@@ -415,6 +407,19 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
         console.error('Error updating sale:', error);
     }
 });
+
+// Function to check if the edited lead ID already exists in other sales
+function isLeadIdAlreadyExists(salesData, editedLeadId) {
+    for (const saleId in salesData) {
+        if (salesData.hasOwnProperty(saleId) && saleId !== currentSaleData.saleId) {
+            if (salesData[saleId].lead_id === editedLeadId) {
+                return true; // Lead ID already exists in another sale
+            }
+        }
+    }
+    return false; // Lead ID is unique
+}
+
 
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
