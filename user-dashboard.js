@@ -280,10 +280,13 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 let currentSaleData; // Global variable to store the current sale data, including timestamp
 
-// Toggles the 'selected' class on button click
 function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
+document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
+    btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
+    btn.addEventListener('click', toggleButtonSelectedState);
+});
 
 // Retrieves selected sale types for the edit form
 function getEditSaleTypes() {
@@ -325,13 +328,7 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
     });
 }
 
-function toggleButtonSelectedState() {
-    this.classList.toggle('selected');
-}
-document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
-    btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
-    btn.addEventListener('click', toggleButtonSelectedState);
-});
+
 
 
 async function openEditModal(saleId) {
