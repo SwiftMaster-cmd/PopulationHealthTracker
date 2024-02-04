@@ -505,6 +505,11 @@ input:focus, textarea:focus {
     width: auto;
     max-width: 500px;
     margin: 0 auto; /* Center horizontally */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    height: 70vh; /* Set a specific height if needed */
 }
 
 
