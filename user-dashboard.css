@@ -349,7 +349,7 @@ input:focus, textarea:focus {
 }
 
 #editSaleForm button.selected {
-    background: linear-gradient(to bottom, #dfe68e, #c2d2d6);
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
     color: white;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
@@ -376,27 +376,11 @@ input:focus, textarea:focus {
     color: #FB8501;
     margin-bottom: 10px; /* Ensure spacing at the bottom */
 }
-.edit-sale-type-btn {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px; /* Adjust font size as needed */
-    margin: 5px; /* Space between buttons */
-    transition: background 0.3s ease-in-out;
-}
 
-.edit-sale-type-btn:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Hover effect */
-}
 
-.edit-sale-type-btn.selected {
-    background: linear-gradient(to bottom, #FF6314, #FF851B); /* Selected state */
-    color: #FFF; /* Optional: Change text color for selected state */
-    border: 2px solid #FFD700; /* Optional: Add a border to highlight */
-}
+
+
+
 
 
 

@@ -321,7 +321,6 @@ const commissionStructures = [
 
 
 
-
 // Assuming `userId` is globally available and correctly set upon user authentication
 
 // Toggles the selected class on sale type and ESI consent buttons
@@ -407,6 +406,12 @@ function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
 }
 
+// Functionality for the cancel button
+document.getElementById('cancelButton').addEventListener('click', () => {
+    closeEditModal();
+});
+
+// Event listener for salesHistory element
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
     if (!userId) return;
 
@@ -427,4 +432,3 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
         }
     }
 });
-
