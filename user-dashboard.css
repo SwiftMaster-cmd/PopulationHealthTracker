@@ -386,7 +386,7 @@ input:focus, textarea:focus {
 /* Style adjustments for select elements */
 .filter-group select {
     flex: 1; /* Allow select to grow but control its max-width for aesthetics */
-    max-width: 200px; /* Adjusted max width for balance */
+    width: 200px; /* Adjusted max width for balance */
     padding: 10px; /* Padding for appearance and usability */
     margin-left: 10px; /* Margin to separate from label */
     font-size: 18px; /* Font size for legibility */
@@ -419,18 +419,18 @@ input:focus, textarea:focus {
 
 /* Style adjustments for the lead ID filter */
 .filter-group input[type="text"] {
-    flex: 1; /* Allow input to grow but control its max-width for aesthetics */
-    max-width: 200px; /* Adjusted max width for balance */
-    padding: 10px; /* Padding for appearance and usability */
-    margin-left: 10px; /* Margin to separate from label */
-    font-size: 18px; /* Font size for legibility */
-    border-radius: 14px; /* Rounded corners */
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
-    border: none; /* Remove default border */
-    color: white; /* Text color for readability */
-    outline: none; /* Remove focus outline */
-    text-align: left; /* Ensure input text aligns left */
-    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction feedback */
+    flex: 1;
+    width: 200px;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 18px;
+    border-radius: 14px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border: none;
+    color: lightgray; /* Set the initial text color to light gray */
+    outline: none;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s, color 0.3s; /* Add color transition */
 }
 
 /* Adjustments for the lead ID filter on hover and focus */
@@ -439,6 +439,7 @@ input:focus, textarea:focus {
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
+    color: white; /* Set the text color to white on hover and focus */
 }
 
 
