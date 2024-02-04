@@ -330,33 +330,50 @@ function getEditSaleTypes() {
 }
 
 // Open the edit modal and populate it with sale data
+// Opens the edit modal and populates it with data from the selected sale
 async function openEditModal(saleId) {
     if (!userId) return;
 
     const saleRef = ref(database, `sales/${userId}/${saleId}`);
-    const snapshot = await get(saleRef);
-    const sale = snapshot.val();
+    try {
+        const snapshot = await get(saleRef);
+        const sale = snapshot.val();
 
-    if (sale) {
-        document.getElementById('editSaleId').value = saleId;
-        document.getElementById('editLeadId').value = sale.lead_id;
-        document.getElementById('editEsiContent').value = sale.esi_content;
-        document.getElementById('editNotes').value = sale.notes;
-        document.getElementById('editTimestamp').value = sale.timestamp; // Preserving original timestamp
+        // Ensure all elements are present
+        const editSaleId = document.getElementById('editSaleId');
+        const editLeadId = document.getElementById('editLeadId');
+        const editEsiContent = document.getElementById('editEsiContent');
+        const editNotes = document.getElementById('editNotes');
+        const editTimestamp = document.getElementById('editTimestamp'); // Ensure this element exists in HTML
 
-        const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
-        saleTypeButtons.forEach(btn => {
+        if (!editSaleId || !editLeadId || !editEsiContent || !editNotes || !editTimestamp) {
+            console.error("One or more elements are missing in the edit modal.");
+            return;
+        }
+
+        // Populate modal fields with the existing sale data
+        editSaleId.value = saleId;
+        editLeadId.value = sale.lead_id;
+        editEsiContent.value = sale.esi_content;
+        editNotes.value = sale.notes;
+        editTimestamp.value = sale.timestamp;
+
+        // Set up sale type buttons
+        document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
             btn.classList.remove('selected');
-            const type = btn.getAttribute('data-value');
-            if (sale.sale_types && sale.sale_types[type]) {
+            const saleType = btn.getAttribute('data-value');
+            if (sale.sale_types && sale.sale_types[saleType]) {
                 btn.classList.add('selected');
             }
-            btn.onclick = toggleSaleTypeSelection; // Assign click handler
+            btn.onclick = toggleSaleTypeSelection;
         });
 
         document.getElementById('editSaleModal').style.display = 'block';
+    } catch (error) {
+        console.error('Error fetching sale data:', error);
     }
 }
+
 
 // Handle form submission for updating a sale
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
