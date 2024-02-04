@@ -408,17 +408,7 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
     }
 });
 
-// Function to check if the edited lead ID already exists in other sales
-function isLeadIdAlreadyExists(salesData, editedLeadId) {
-    for (const saleId in salesData) {
-        if (salesData.hasOwnProperty(saleId) && saleId !== currentSaleData.saleId) {
-            if (salesData[saleId].lead_id === editedLeadId) {
-                return true; // Lead ID already exists in another sale
-            }
-        }
-    }
-    return false; // Lead ID is unique
-}
+
 
 
 function closeEditModal() {
