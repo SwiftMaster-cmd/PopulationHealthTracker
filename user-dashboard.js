@@ -277,66 +277,67 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle button selected state
-    document.querySelectorAll('.edit-sale-type-btn, .edit-esi-consent-btn').forEach(btn => {
+let currentSaleData; // Global variable to store the current sale data, including timestamp
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Toggle button selected state for sale type buttons
+    document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             this.classList.toggle('selected');
-            // For ESI buttons, ensure only one can be selected at a time
-            if (this.classList.contains('edit-esi-consent-btn')) {
-                document.querySelectorAll('.edit-esi-consent-btn').forEach(otherBtn => {
-                    if (otherBtn !== this) {
-                        otherBtn.classList.remove('selected');
-                    }
-                });
-            }
         });
     });
 
-    // Open Edit Modal - Ensure this function is correctly fetching and opening the modal
-    // This placeholder function should be replaced with your actual implementation
-    window.openEditModal = async function(saleId) {
-        // Your existing openEditModal implementation
-    };
-
-    // Close Edit Modal
-    function closeEditModal() {
-        document.getElementById('editSaleModal').style.display = 'none';
-    }
-
-    // Attach event listener to the cancel button without using inline JavaScript
-    document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+    // Setup ESI consent buttons with exclusive selection
+    document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.edit-esi-consent-btn').forEach(otherBtn => {
+                otherBtn.classList.remove('selected');
+            });
+            this.classList.add('selected');
+        });
+    });
 
     // Form submission with validation
-    document.getElementById('editSaleForm').addEventListener('submit', function(event) {
+    document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (!userId) {
+            console.log("User ID not found."); // Replace with UI notification if needed
+            return;
+        }
 
-        // Validation for ESI Consent
-        const esiSelected = document.querySelector('.edit-esi-consent-btn.selected') !== null;
-        // Validation for at least one sale type selected
-        const saleTypeSelected = document.querySelector('.edit-sale-type-btn.selected') !== null;
-        
+        const esiSelected = !!document.querySelector('.edit-esi-consent-btn.selected');
+        const saleTypeSelected = !!document.querySelector('.edit-sale-type-btn.selected');
         if (!esiSelected || !saleTypeSelected) {
-            alert('Please select at least one option for ESI Consent and Sale Types.');
+            console.log('Please select at least one option for ESI Consent and Sale Types.'); // Replace with UI notification if needed
             return; // Stop the form submission
         }
 
-        // Prepare data for submission
         const saleId = document.getElementById('editSaleId').value;
         const updatedSaleData = {
             lead_id: document.getElementById('editLeadId').value,
             esi_content: document.querySelector('.edit-esi-consent-btn.selected').getAttribute('data-value'),
             notes: document.getElementById('editNotes').value,
             sale_types: getEditSaleTypes(),
-            // Use the timestamp from the currentSaleData or get the current timestamp
-            timestamp: currentSaleData ? currentSaleData.timestamp : new Date().toISOString(),
+            timestamp: currentSaleData.timestamp,
         };
 
-        // Proceed with updating the sale data
-        updateSaleData(saleId, updatedSaleData); // Placeholder for your update function
+        try {
+            await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
+            closeEditModal();
+        } catch (error) {
+            console.error('Error updating sale:', error); // Replace with UI notification if needed
+        }
     });
 
-    // Retrieves selected sale types for the edit form
+    // Close modal with cancel button without using inline onclick
+    document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+
+    // Function to close edit modal
+    function closeEditModal() {
+        document.getElementById('editSaleModal').style.display = 'none';
+    }
+
+    // Function to retrieve selected sale types for the edit form
     function getEditSaleTypes() {
         const saleTypes = {};
         document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
@@ -345,14 +346,55 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         return saleTypes;
     }
-
-    // Placeholder function to simulate updating sale data
-    // Replace this with your actual Firebase set/update call
-    async function updateSaleData(saleId, saleData) {
-        console.log('Updating sale data for saleId:', saleId, 'with data:', saleData);
-        // Simulate async operation, e.g., Firebase set/update
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
-        closeEditModal(); // Close modal after update
-        // Optionally, refresh or update UI to reflect changes
-    }
 });
+
+// Placeholder for opening the edit modal with pre-filled data
+async function openEditModal(saleId) {
+    if (!userId) {
+        console.error("No user logged in."); // Replace with UI notification if needed
+        return;
+    }
+
+    const saleRef = ref(database, `sales/${userId}/${saleId}`);
+    try {
+        const snapshot = await get(saleRef);
+        currentSaleData = snapshot.val();
+
+        if (!currentSaleData) {
+            console.error("Sale data not found."); // Replace with UI notification if needed
+            return;
+        }
+
+        // Pre-fill the modal fields
+        document.getElementById('editSaleId').value = saleId;
+        document.getElementById('editLeadId').value = currentSaleData.lead_id;
+        document.getElementById('editNotes').value = currentSaleData.notes;
+
+        setupPreSelectedSaleTypes(currentSaleData.sale_types);
+        setupEsiConsentButtons(currentSaleData.esi_content);
+
+        document.getElementById('editSaleModal').style.display = 'block';
+    } catch (error) {
+        console.error('Error fetching sale data:', error); // Replace with UI notification if needed
+    }
+}
+
+// Function to visually indicate the pre-selected state of buttons
+function setupPreSelectedSaleTypes(saleTypesToSetup) {
+    document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (saleTypesToSetup && saleTypesToSetup[btn.getAttribute('data-value')]) {
+            btn.classList.add('selected');
+        }
+    });
+}
+
+// Function to set up ESI consent buttons based on current selection
+function setupEsiConsentButtons(esiContent) {
+    document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.getAttribute('data-value') === esiContent) {
+            btn.classList.add('selected');
+        }
+    });
+}
