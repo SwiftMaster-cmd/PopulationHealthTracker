@@ -290,10 +290,7 @@ input:focus, textarea:focus {
 
 
 
-
-
-
-
+/* Modal Container */
 #editSaleModal {
     display: flex;
     position: fixed;
@@ -306,31 +303,38 @@ input:focus, textarea:focus {
     background-color: rgba(0, 0, 0, 0.4);
     align-items: center;
     justify-content: center;
+    animation: fadeIn 0.5s ease-out;
 }
 
+/* Modal Content */
 #editSaleForm {
     background: linear-gradient(to bottom, #FB8501, #FFB703);
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: auto;
     max-width: 500px;
-    animation: fadeIn 0.5s ease-out;
 }
 
-#editSaleForm input, #editSaleForm textarea, #editSaleForm select, #editSaleForm button {
+/* Input and textarea styles */
+#editSaleForm input,
+#editSaleForm textarea,
+#editSaleForm select,
+#editSaleForm button {
     width: 100%;
     max-width: 300px;
     padding: 10px;
-    margin: 8px auto; /* Center align inputs and buttons */
+    margin: 8px auto;
     border-radius: 4px;
     border: 1px solid #219EBC;
     background: #FB8501;
     font-size: 18px;
     color: #023047;
     display: block;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
+/* Input labels */
 #editSaleForm label {
     display: block;
     margin-bottom: 5px;
@@ -339,32 +343,28 @@ input:focus, textarea:focus {
     text-align: center;
 }
 
+/* Buttons */
 #editSaleForm button {
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+    border: none;
 }
 
-#editSaleForm button.selected {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
-}
-
-
+/* Hover effect for buttons */
 #editSaleForm button:hover {
     background: linear-gradient(to bottom, #FF851B, #FF6314);
+    transform: translateY(-3px);
 }
 
+/* Click effect for buttons */
 #editSaleForm button:active {
-    transform: scale(0.98); /* Slightly scale down the button when pressed */
-    background: linear-gradient(to bottom, #FF6314, #FF851B); /* Invert gradient for a pressed effect */
+    transform: scale(0.98);
+    background: linear-gradient(to bottom, #FF6314, #FF851B);
 }
 
-
-/* Adjustments for a close button, if it exists */
+/* Close Button */
 #closeEditModalButton {
     float: right;
     font-size: 24px;
@@ -372,10 +372,20 @@ input:focus, textarea:focus {
     border: none;
     cursor: pointer;
     color: #FB8501;
-    margin-bottom: 10px; /* Ensure spacing at the bottom */
+    margin-bottom: 10px;
+    transition: color 0.3s ease-in-out;
 }
 
+/* Hover effect for close button */
+#closeEditModalButton:hover {
+    color: #FF6314;
+}
 
+/* Selected Button (if needed) */
+#editSaleForm button.selected {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    color: white;
+}
 
 
 
