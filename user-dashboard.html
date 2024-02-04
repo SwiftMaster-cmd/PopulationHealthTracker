@@ -61,9 +61,6 @@
 
 
 
-
-
-
 <div id="editSaleModal" style="display:none;">
     <form id="editSaleForm">
         <input type="hidden" id="editSaleId">
@@ -78,28 +75,17 @@
         </div>
         <div id="editSaleTypes">
             <label>Sale Types:</label>
-            <button type="button" class="edit-sale-type-btn" data-value="Type1">Type 1</button>
-            <button type="button" class="edit-sale-type-btn" data-value="Type2">Type 2</button>
-            <button type="button" class="edit-sale-type-btn" data-value="Type3">Type 3</button>
-            <button type="button" class="edit-sale-type-btn" data-value="Type4">Type 4</button>
+            <button type="button" class="edit-sale-type-btn" data-value="billable HRA">Billable HRA</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Flex HRA">Flex HRA</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Select RX">Select RX</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Transfer">Transfer</button>
         </div>
-        
-        <!-- Hidden input for preserving original timestamp -->
-        <!-- Within your editSaleModal form -->
-<div>
-    <label for="editTimestamp">Timestamp:</label>
-    <input type="text" id="editTimestamp" name="timestamp" readonly> <!-- Make it readonly if you don't want users to change it -->
-</div>
-
-        
-        <!-- Sale Type Selection Buttons (Example) -->
-        <div id="editSaleTypes">
-            <label>Sale Types:</label>
-            <button type="button" class="edit-sale-type-btn" data-value="Type1">Type 1</button>
-            <button type="button" class="edit-sale-type-btn" data-value="Type2">Type 2</button>
-            <!-- Add more buttons as needed for each sale type -->
+        <div>
+            <label for="editNotes">Notes:</label>
+            <textarea id="editNotes" name="notes"></textarea>
         </div>
-
+        <!-- Changed to type="hidden" to not show the timestamp -->
+        <input type="hidden" id="editTimestamp" name="timestamp">
         <button type="submit">Save Changes</button>
         <button type="button" onclick="closeEditModal()">Cancel</button>
     </form>
