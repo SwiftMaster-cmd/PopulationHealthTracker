@@ -24,7 +24,7 @@ body {
 
 header {
     background: linear-gradient(to bottom, #FFB703, #FB8501);
-    color: #ffffff;
+        color: #ffffff;
     border-radius: 15px;
     text-align: center;
     padding: 20px 0;
@@ -45,8 +45,7 @@ header {
 .dashboard-container, .sales-container, .sales-history-container {
     max-width: 750px; /* Set max width for the containers holding the forms and history */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for dashboard, gold to orange for sales */
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
     display: flex;
@@ -56,8 +55,7 @@ header {
 }
 
 .sales-container, .sales-history-container {
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Gold to orange gradient */
-    max-width: 500px; /* Set max width for the sales and sales history containers */
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    max-width: 500px; /* Set max width for the sales and sales history containers */
 }
 
 /* Style inputs and labels */
@@ -180,8 +178,7 @@ header {
     min-width: 100%; /* Allow contents to take the full width of the container */
 }
 
-.sales-history-entry {
-    background: linear-gradient(to bottom, #ffd260, #ffae51); /* Orange gradient matching the dashboard */
+.sales-history-entry {    background: linear-gradient(to bottom, #FFB703, #FB8501);
     border-radius: 10px; /* Consistent rounded corners */
     padding: 15px; /* Padding around content */
     margin-bottom: 15px; /* Space between entries */
@@ -311,7 +308,7 @@ input:focus, textarea:focus {
 /* Specific styling adjustments for better visual hierarchy */
 .sale-data:first-child {
     font-weight: bold; /* Make the first piece of data (Sale ID) more prominent */
-    color: #FB8501; /* Use a distinct color for ID to stand out */
+    color: #ffffff; /* Use a distinct color for ID to stand out */
 }
 
 .sale-actions {
@@ -393,8 +390,7 @@ input:focus, textarea:focus {
     margin-left: 10px; /* Margin to separate from label */
     font-size: 18px; /* Font size for legibility */
     border-radius: 14px; /* Rounded corners */
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
-    border: none; /* Remove default border */
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    border: none; /* Remove default border */
     color: white; /* Text color for readability */
     outline: none; /* Remove focus outline */
     text-align: left; /* Ensure option text aligns left */
@@ -415,8 +411,7 @@ input:focus, textarea:focus {
 }
 
 #applyFilters:hover, #applyFilters:focus {
-    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Highlight effect */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
     transform: translateY(-3px); /* Slight lift for interaction */
 }
 
@@ -495,8 +490,7 @@ input:focus, textarea:focus {
     margin: 8px auto;
     border-radius: 20px; /* Rounded corners */
     border: none;
-    background: linear-gradient(to bottom, #FB8501, #FFB703); /* Background gradient */
-    font-size: 18px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
     color: white; /* Text color */
     display: block;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
@@ -512,8 +506,7 @@ input:focus, textarea:focus {
     margin: 8px auto;
     border-radius: 20px; /* Rounded corners */
     border: none;
-    background: linear-gradient(to bottom, #FB8501, #FFB703); /* Background gradient */
-    font-size: 18px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
     color: white; /* Text color */
     display: block;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
@@ -634,8 +627,7 @@ input:focus, textarea:focus {
 }
 
 .commission-type {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    color: #ffffff;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    color: #ffffff;
     border-radius: 15px;
     text-align: center;
     padding: 20px 0;
@@ -742,8 +734,7 @@ input:focus, textarea:focus {
 #salesChartContainer {
     max-width: 750px; /* Set max width for the chart container */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for chart */
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
     display: flex;
