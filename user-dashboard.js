@@ -324,39 +324,34 @@ const commissionStructures = [
 
 
 
-// Assuming `userId` is globally available and correctly set upon user authentication
-
-// Toggles the selected class on sale type and ESI consent buttons
+// Function to toggle the selection of sale type and ESI consent buttons
 function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
 
-// Retrieves selected sale types for saving
+// Retrieves selected sale types for the edit form
 function getEditSaleTypes() {
     const saleTypes = {};
     document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
         const value = btn.getAttribute('data-value');
-        saleTypes[value] = true;  // Marks the sale type as selected
+        saleTypes[value] = true;
     });
     return saleTypes;
 }
 
-// Setup ESI consent buttons with pre-selected value based on the sale's data
+// Setup ESI consent buttons with the current selection based on sale data
 function setupEsiConsentButtons(esiContent) {
     const esiButtons = document.querySelectorAll('.edit-esi-consent-btn');
     esiButtons.forEach(btn => {
-        btn.classList.remove('selected');  // Clears previous selections
-        if (btn.getAttribute('data-value') === esiContent) {
-            btn.classList.add('selected');  // Marks the correct button as selected
-        }
-        btn.addEventListener('click', function() {
-            esiButtons.forEach(b => b.classList.remove('selected'));  // Ensures only one button can be selected
+        btn.classList.remove('selected');
+        if (btn.dataset.value === esiContent) {
             btn.classList.add('selected');
-        });
+        }
+        btn.onclick = toggleButtonSelectedState; // Reuse the same toggle function
     });
 }
 
-// Populates the edit modal with data for a specific sale
+// Populates the edit modal with data for editing a sale
 async function openEditModal(saleId) {
     if (!userId) return;
 
@@ -365,26 +360,42 @@ async function openEditModal(saleId) {
         const snapshot = await get(saleRef);
         const sale = snapshot.val();
 
-        // Populate form fields with sale data
-        document.getElementById('editSaleId').value = saleId;
-        document.getElementById('editLeadId').value = sale.lead_id;
-        document.getElementById('editNotes').value = sale.notes;
-        setupEsiConsentButtons(sale.esi_content);  // Setup ESI consent with the current sale's data
+        // Make sure all elements exist before trying to set their values
+        const editSaleIdElement = document.getElementById('editSaleId');
+        const editLeadIdElement = document.getElementById('editLeadId');
+        const editNotesElement = document.getElementById('editNotes');
+        
+        // Check for the existence of these elements to avoid TypeError
+        if (!editSaleIdElement || !editLeadIdElement || !editNotesElement) {
+            console.error("One or more elements are missing in the edit modal.");
+            return; // Exit the function if any element is missing
+        }
 
-        // Pre-select sale type buttons based on current sale data
+        // Set values for existing elements
+        editSaleIdElement.value = saleId;
+        editLeadIdElement.value = sale.lead_id;
+        editNotesElement.value = sale.notes;
+        setupEsiConsentButtons(sale.esi_content);
+
+        // Pre-select sale type buttons based on the sale's data
         document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
+            const saleType = btn.getAttribute('data-value');
             btn.classList.remove('selected');
-            if (sale.sale_types && sale.sale_types[btn.getAttribute('data-value')]) {
+            if (sale.sale_types && sale.sale_types[saleType]) {
                 btn.classList.add('selected');
             }
             btn.onclick = toggleButtonSelectedState;
         });
 
+        // Display the modal
         document.getElementById('editSaleModal').style.display = 'block';
     } catch (error) {
         console.error('Error fetching sale data:', error);
     }
 }
+
+// More code for handling form submission and closing the modal...
+
 
 // Handles the submission of the edit sale form
 document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
