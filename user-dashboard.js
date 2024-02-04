@@ -252,33 +252,28 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
-
-
-
-
-
-
 // Function to create and update the sales chart
-function updateSalesChart(salesData, labels) {
+function updateSalesChart(salesData) {
     const ctx = document.getElementById('salesChart').getContext('2d');
+
+    // Extract data for the chart
+    const labels = [];
+    const salesValues = [];
+
+    for (const timestamp in salesData) {
+        const sale = salesData[timestamp];
+        labels.push(new Date(timestamp).toLocaleDateString());
+        salesValues.push(sale.sale_types ? Object.keys(sale.sale_types).length : 0);
+    }
 
     // Define data for the chart
     const chartData = {
         labels: labels,
         datasets: [{
-            label: 'Sales',
-            data: salesData,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-            ],
+            label: 'Number of Sales',
+            data: salesValues,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
         }],
     };
@@ -291,23 +286,15 @@ function updateSalesChart(salesData, labels) {
             scales: {
                 y: {
                     beginAtZero: true,
+                    stepSize: 1, // Adjust this based on your data range
                 },
             },
         },
     });
 }
 
-// Example event listener for time filter dropdown
-document.getElementById('timeFilter').addEventListener('change', () => {
-    // Get selected time filter value
-    const selectedTimeFilter = document.getElementById('timeFilter').value;
-
-    // Filter your sales data based on the selectedTimeFilter
-    filterSalesData(selectedTimeFilter);
-});
-
-// Listen for changes in the Firebase database and update the chart accordingly
-function filterSalesData(selectedTimeFilter) {
+// Fetch sales history and update the chart
+function fetchSalesHistoryForChart() {
     if (!userId) return;
 
     const salesRef = ref(database, `sales/${userId}`);
@@ -315,74 +302,20 @@ function filterSalesData(selectedTimeFilter) {
         const salesData = snapshot.val();
         if (!salesData) {
             // Handle the case where there is no sales data
-            updateSalesChart([], []);
+            updateSalesChart({});
             return;
         }
 
-        // Process and filter the sales data based on the selectedTimeFilter and sale types
-        const filteredData = processDataBasedOnTimeFilter(salesData, selectedTimeFilter);
-
-        // Extract labels and sales values from the filtered data
-        const labels = Object.keys(filteredData);
-        const salesValues = Object.values(filteredData);
-
-        // Update the chart with the filtered data and labels
-        updateSalesChart(salesValues, labels);
+        // Update the chart with the fetched sales data
+        updateSalesChart(salesData);
     });
 }
 
-// Implement your logic to process and filter sales data based on the selectedTimeFilter and sale types
-function processDataBasedOnTimeFilter(salesData, selectedTimeFilter) {
-    // Initialize an object to store filtered data
-    const filteredData = {};
+// Initial update of the chart when the page loads
+fetchSalesHistoryForChart();
 
-    // Get the current date for comparison
-    const currentDate = new Date();
 
-    // Define the number of days for each time filter
-    const daysMap = {
-        'day': 1,
-        'week': 7,
-        'month': 30,
-    };
 
-    // Loop through the sales data and filter based on time
-    for (const saleId in salesData) {
-        const sale = salesData[saleId];
-        const saleDate = new Date(sale.timestamp);
-
-        // Calculate the time difference in days
-        const timeDiff = Math.floor((currentDate - saleDate) / (1000 * 60 * 60 * 24));
-
-        // Check if the sale falls within the selected time filter
-        if (timeDiff <= daysMap[selectedTimeFilter]) {
-            // Check if the sale types are selected (modify this logic as needed)
-            if (areSaleTypesSelected(sale)) {
-                // Extract the day or week or month from the timestamp as the label
-                const label = saleDate.toLocaleDateString();
-                if (!filteredData[label]) {
-                    filteredData[label] = 0;
-                }
-
-                // Increment the sales value for the label
-                filteredData[label]++;
-            }
-        }
-    }
-
-    return filteredData;
-}
-
-// Implement your logic to check if sale types are selected (modify this logic as needed)
-function areSaleTypesSelected(sale) {
-    // Modify this logic to check if the sale types in the sale object match the selected sale types
-    // For example, if you have selected sale types as an array, you can use a loop to check.
-    // Here, we are assuming 'Category 1' is selected.
-    return sale.sale_types && sale.sale_types['Category 1'];
-}
-
-// Initial update of the chart when the page loads with the 'day' filter
-filterSalesData('day');
 
 
 
