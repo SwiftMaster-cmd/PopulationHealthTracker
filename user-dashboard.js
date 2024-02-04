@@ -306,25 +306,28 @@ const commissionStructures = [
     },
   ];
   
+
+
+  
   // Function to calculate commission
   function calculateCommission(sales, category) {
+    console.log(`Calculating commission for ${sales} sales in category ${category}`);
     const structure = commissionStructures.find(s => s.category === category);
     if (!structure) {
-      throw new Error("Invalid category");
+      console.error("Invalid category:", category);
+      return 0; // Return 0 to avoid throwing an error
     }
   
     const rateInfo = structure.rates.find(rate => sales >= rate.min && sales <= rate.max);
     if (!rateInfo) {
-      throw new Error("Sales out of range");
+      console.error("Sales out of range for category:", category);
+      return 0; // Return 0 for similar reason
     }
   
+    console.log(`Rate found: ${rateInfo.rate} for category ${category}`);
     return sales * rateInfo.rate;
-  }
-  async function updateCommissionSummary() {
-    if (!userId) {
-        console.log("User not logged in.");
-        return;
-    }
+}
+
 
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -374,7 +377,6 @@ const commissionStructures = [
         totalCommissionElement.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
         document.getElementById('commissionSummary').appendChild(totalCommissionElement);
     });
-}
 
   
 
