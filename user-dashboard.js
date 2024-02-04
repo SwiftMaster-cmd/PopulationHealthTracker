@@ -95,7 +95,7 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
         // Clear selected buttons
         document.querySelectorAll('.esi-btn.selected').forEach(btn => btn.classList.remove('selected'));
         document.querySelectorAll('.sale-type-btn.selected').forEach(btn => btn.classList.remove('selected'));
-        updateCommissionSummaryRealTime();
+       
     })
     .catch(error => {
         console.error('Error adding sale:', error);
