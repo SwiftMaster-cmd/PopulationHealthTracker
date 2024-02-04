@@ -251,50 +251,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
-// Function to create and update the sales chart
-function updateSalesChart(salesData) {
-    const ctx = document.getElementById('salesChart').getContext('2d');
-
-    // Extract data for the chart
-    const labels = [];
-    const salesValues = [];
-
-    for (const timestamp in salesData) {
-        const sale = salesData[timestamp];
-        labels.push(new Date(timestamp).toLocaleDateString());
-        salesValues.push(sale.sale_types ? Object.keys(sale.sale_types).length : 0);
-    }
-
-    // Define data for the chart
-    const chartData = {
-        labels: labels,
-        datasets: [{
-            label: 'Number of Sales',
-            data: salesValues,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-        }],
-    };
-
-    // Create the chart
-    const salesChart = new Chart(ctx, {
-        type: 'bar',
-        data: chartData,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    stepSize: 1, // Adjust this based on your data range
-                },
-            },
-        },
-    });
-}
-
-// Fetch sales history and update the chart
-function fetchSalesHistoryForChart() {
+// Fetch select Rx sales for the last 5 days and update the chart
+function fetchSelectRxSalesForChart() {
     if (!userId) return;
 
     const salesRef = ref(database, `sales/${userId}`);
@@ -306,13 +264,35 @@ function fetchSalesHistoryForChart() {
             return;
         }
 
-        // Update the chart with the fetched sales data
-        updateSalesChart(salesData);
+        // Filter and extract select Rx sales for the last 5 days
+        const currentDate = new Date();
+        const fiveDaysAgo = new Date();
+        fiveDaysAgo.setDate(currentDate.getDate() - 4); // Last 5 days, including today
+
+        const filteredSalesData = {};
+
+        for (const saleId in salesData) {
+            const sale = salesData[saleId];
+            const saleTimestamp = sale.timestamp;
+
+            // Check if the sale is "select Rx" and within the last 5 days
+            if (
+                sale.sale_types &&
+                sale.sale_types['select Rx'] &&
+                saleTimestamp >= fiveDaysAgo.getTime() &&
+                saleTimestamp <= currentDate.getTime()
+            ) {
+                filteredSalesData[saleId] = sale;
+            }
+        }
+
+        // Update the chart with the filtered sales data
+        updateSalesChart(filteredSalesData);
     });
 }
 
 // Initial update of the chart when the page loads
-fetchSalesHistoryForChart();
+fetchSelectRxSalesForChart();
 
 
 
