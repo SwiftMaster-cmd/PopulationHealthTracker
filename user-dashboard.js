@@ -304,6 +304,8 @@ const commissionStructures = [
   
 
 
+  // Assuming Firebase has already been initialized as per your provided setup
+
   function updateCommissionSummaryRealTime() {
     if (!auth.currentUser) {
         console.log("User not logged in.");
@@ -365,6 +367,18 @@ const commissionStructures = [
         onlyOnce: false
     });
 }
+
+
+// Initialize real-time commission summary update on user authentication state change
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        console.log("User logged in:", user.uid);
+        updateCommissionSummaryRealTime(); // Call the updated function when user logs in
+    } else {
+        console.log("User not logged in");
+        document.getElementById('commissionSummary').innerHTML = 'Please log in to view commission summary.';
+    }
+});
 
 
 
