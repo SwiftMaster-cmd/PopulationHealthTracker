@@ -63,8 +63,6 @@ document.getElementById('lead_id').addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
 });
 
-// Handling form submission for adding new sales
-// Handling form submission for adding new sales
 document.getElementById('addSalesForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!userId) {
@@ -75,10 +73,11 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
     // Collecting form data
     const leadId = document.getElementById('lead_id').value.trim();
     const esiContent = getSelectedESIContent();
-    const saleTypes = getSaleTypes();
+    // Update saleTypes to include commission points for each sale type
+    const saleTypes = getSaleTypesWithCommissionPoints();
     const notes = document.getElementById('notes').value.trim();
 
-    // Creating the sale data object
+    // Creating the sale data object with commission points for sale types
     const saleData = {
         lead_id: leadId,
         esi_content: esiContent,
@@ -103,18 +102,14 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
     });
 });
 
-// Firebase Authentication state change listener
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        userId = user.uid;
-        console.log("User logged in:", userId);
-        // Optionally call updateCommissionSummary() here if needed
-    } else {
-        userId = null;
-        console.log("User not logged in");
-    }
-});
-
+function getSaleTypesWithCommissionPoints() {
+    const saleTypes = {};
+    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        saleTypes[value] = 1; // Assign 1 commission point for each selected sale type
+    });
+    return saleTypes;
+}
 
 
 
