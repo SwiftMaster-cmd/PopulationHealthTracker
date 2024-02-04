@@ -315,6 +315,18 @@ const commissionStructures = [
 
 
 
+
+
+
+
+
+
+
+
+  
+
+
+
   function toggleSaleTypeSelection() {
     this.classList.toggle('selected');
 }

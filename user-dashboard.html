@@ -66,12 +66,16 @@
             <input type="text" id="editLeadId" name="lead_id">
         </div>
         <div>
-            <label for="editEsiContent">ESI Content:</label>
-            <input type="text" id="editEsiContent" name="esi_content">
+            <label>ESI Consent:</label>
+            <button type="button" class="edit-esi-consent-btn" data-value="Yes">Yes</button>
+            <button type="button" class="edit-esi-consent-btn" data-value="No">No</button>
         </div>
-        <div>
-            <label for="editNotes">Notes:</label>
-            <textarea id="editNotes" name="notes"></textarea>
+        <div id="editSaleTypes">
+            <label>Sale Types:</label>
+            <button type="button" class="edit-sale-type-btn" data-value="Type1">Type 1</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Type2">Type 2</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Type3">Type 3</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Type4">Type 4</button>
         </div>
         
         <!-- Hidden input for preserving original timestamp -->
