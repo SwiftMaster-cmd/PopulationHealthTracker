@@ -257,19 +257,16 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
-// Add this code in your JavaScript file
-
 // Function to create and update the sales chart
-function updateSalesChart(salesData) {
+function updateSalesChart(salesData, labels) {
     const ctx = document.getElementById('salesChart').getContext('2d');
 
     // Define data for the chart
     const chartData = {
-        labels: ['Category 1', 'Category 2', 'Category 3'], // Replace with your category labels
+        labels: labels, // Use the labels provided as an argument
         datasets: [{
             label: 'Sales',
-            data: [10, 20, 15], // Replace with your sales data
+            data: salesData, // Use the sales data provided as an argument
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)', // Bar color for Category 1
                 'rgba(54, 162, 235, 0.2)', // Bar color for Category 2
@@ -298,19 +295,22 @@ function updateSalesChart(salesData) {
     });
 }
 
-// Call this function to update the chart with sales data
-updateSalesChart(/* Pass your sales data here */);
 // Example event listener for time filter dropdown
 document.getElementById('timeFilter').addEventListener('change', () => {
     // Get selected time filter value
     const selectedTimeFilter = document.getElementById('timeFilter').value;
 
-    // Filter your sales data based on the selectedTimeFilter
+    // Filter your sales data based on the selectedTimeFilter (You need to implement this function)
     const filteredSalesData = filterSalesData(selectedTimeFilter);
 
-    // Update the chart with the filtered data
-    updateSalesChart(filteredSalesData);
+    // Get labels for the chart based on the selectedTimeFilter (You need to implement this function)
+    const labels = getLabelsForTimeFilter(selectedTimeFilter);
+
+    // Update the chart with the filtered data and labels
+    updateSalesChart(filteredSalesData, labels);
 });
+
+// Implement the filterSalesData and getLabelsForTimeFilter functions based on your data structure and requirements.
 
 
 
