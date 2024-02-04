@@ -306,34 +306,41 @@ input:focus, textarea:focus {
 
 
 
-
 /* Filters Container Styling */
 .filters-container {
-    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Matching the gradient of sales sections */
-    max-width: 500px; /* Consistency in max-width with other containers */
+    width: 500px; /* Set width to 500px */
     margin: 20px auto; /* Centering */
     padding: 20px; /* Padding for internal spacing */
     border-radius: 15px; /* Rounded corners */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    display: flex;
-    flex-direction: column; /* Align items in a column */
+    display: flex; /* Use Flexbox for layout */
+    flex-direction: column; /* Stack items vertically by default */
     align-items: center; /* Center items horizontally */
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* Matching the gradient of sales sections */
 }
 
-/* Filter Group Styling */
+@media (min-width: 600px) { /* Adjust the media query to fit the total width including padding, margins, etc. */
+    .filters-container {
+        flex-direction: row; /* Align items horizontally if the display allows */
+        justify-content: space-around; /* Distribute space around filter groups */
+        align-items: flex-start; /* Align items at the start of the container */
+    }
+    .filter-group {
+        width: auto; /* Allow the filter group to auto-adjust its width */
+        align-items: flex-start; /* Align items to the start for a tight fit */
+    }
+}
+
+/* Adjusted Filter Group for Horizontal Layout */
 .filter-group {
-    width: 100%; /* Full width of its parent */
-    margin-bottom: 15px; /* Space between filter groups */
+    margin-bottom: 15px; /* Space between filter groups, adjust as necessary */
     display: flex;
     flex-direction: column; /* Align label and select/input vertically */
-    align-items: center; /* Center alignment */
+    align-items: center; /* Center alignment in the vertical layout */
 }
 
-.filter-group label {
-    margin-bottom: 5px; /* Space between label and input/select */
-    font-size: 20px; /* Larger font for visibility */
-    color: #ffffff; /* White color for contrast */
-}
+/* Style adjustments for selects and buttons remain the same */
+
 
 /* Style Select Inputs Consistently with Other Inputs */
 .filter-group select {
