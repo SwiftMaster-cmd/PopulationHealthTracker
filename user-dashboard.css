@@ -139,6 +139,26 @@ header {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sales-history-container {
     width: auto; /* Allow the container to adjust its width based on content */
     min-width: 500px; /* Set a minimum width of 500px */
@@ -255,6 +275,23 @@ input:focus, textarea:focus {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* General styling for sale data to mimic input/label appearance */
 .sale-data {
     background: #E3F2FD; /* Light background color similar to input fields */
@@ -284,6 +321,20 @@ input:focus, textarea:focus {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -364,6 +415,16 @@ input:focus, textarea:focus {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
     transform: translateY(-3px); /* Slight lift for interaction */
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -536,6 +597,16 @@ input:focus, textarea:focus {
 
 
 
+
+
+
+
+
+
+
+
+
+
 /* Commission Structure Styles */
 
 /* Reset some default styles to start with a clean slate */
@@ -619,6 +690,7 @@ input:focus, textarea:focus {
 
 
 
+
 .refresh-button {
     background-color: #4CAF50; /* Green background */
     color: white; /* White text */
@@ -633,6 +705,91 @@ input:focus, textarea:focus {
 .refresh-button:hover {
     background-color: #45a049; /* Darker shade of green for hover effect */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Styles for the chart container */
+#salesChartContainer {
+    max-width: 750px; /* Set max width for the chart container */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFA500, #FF8C00); /* Orange gradient for chart */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Style the chart canvas */
+#salesChart {
+    max-width: 100%; /* Make the chart responsive */
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

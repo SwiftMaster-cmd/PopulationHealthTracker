@@ -253,20 +253,24 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 // Function to create and update the sales chart
-function updateSalesChart(salesData) {
+function updateSalesChart(salesData, labels) {
     const ctx = document.getElementById('salesChart').getContext('2d');
 
     // Define data for the chart
     const chartData = {
-        labels: ['Select RX'], // Label for "select rx" sales
+        labels: labels, // Use the labels provided as an argument
         datasets: [{
             label: 'Sales',
-            data: [salesData], // Use the sales data provided as an argument
+            data: salesData, // Use the sales data provided as an argument
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)', // Bar color for "select rx"
+                'rgba(255, 99, 132, 0.2)', // Bar color for Category 1
+                'rgba(54, 162, 235, 0.2)', // Bar color for Category 2
+                'rgba(255, 206, 86, 0.2)', // Bar color for Category 3
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
             ],
             borderWidth: 1,
         }],
@@ -286,26 +290,40 @@ function updateSalesChart(salesData) {
     });
 }
 
-// Example event listener for updating the chart (you can trigger this as needed)
-document.getElementById('updateChartButton').addEventListener('click', () => {
-    // Get the sales data for "select rx" (you need to implement this function)
-    const selectRxSalesData = getSelectRxSalesData();
+// Example event listener for time filter dropdown
+document.getElementById('timeFilter').addEventListener('change', () => {
+    // Get selected time filter value
+    const selectedTimeFilter = document.getElementById('timeFilter').value;
 
-    // Update the chart with the new data
-    updateSalesChart(selectRxSalesData);
+    // Filter your sales data based on the selectedTimeFilter (You need to implement this function)
+    const filteredSalesData = filterSalesData(selectedTimeFilter);
+
+    // Get labels for the chart based on the selectedTimeFilter (You need to implement this function)
+    const labels = getLabelsForTimeFilter(selectedTimeFilter);
+
+    // Update the chart with the filtered data and labels
+    updateSalesChart(filteredSalesData, labels);
 });
 
-// Sample function to fetch "select rx" sales data (you need to implement this)
-function getSelectRxSalesData() {
-    // Implement your logic to fetch "select rx" sales data here
+// Implement the filterSalesData and getLabelsForTimeFilter functions based on your data structure and requirements.
+
+// Sample function to filter sales data based on the selected time filter
+function filterSalesData(selectedTimeFilter) {
+    // Implement your logic to fetch and filter real-time sales data here
+    // You should return an array of sales data that matches the selectedTimeFilter
     // Example:
-    // const selectRxData = fetchDataForSelectRx();
-    // return selectRxData;
+    // const filteredData = fetchDataBasedOnTimeFilter(selectedTimeFilter);
+    // return filteredData;
 }
 
-// Initial chart setup (you can call this when the page loads)
-updateSalesChart(0); // Provide an initial value (0 in this case) or fetch data and pass it
-
+// Sample function to get labels for the chart based on the selected time filter
+function getLabelsForTimeFilter(selectedTimeFilter) {
+    // Implement your logic to generate labels based on the selectedTimeFilter
+    // You should return an array of labels that correspond to the time intervals
+    // Example:
+    // const labels = generateLabelsForTimeFilter(selectedTimeFilter);
+    // return labels;
+}
 
 
 
