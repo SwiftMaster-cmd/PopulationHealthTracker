@@ -266,22 +266,12 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 let currentSaleData; // Global variable to store the current sale data, including timestamp
 
 function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
+
 document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
     btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
     btn.addEventListener('click', toggleButtonSelectedState);
@@ -326,7 +316,6 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
 }
 
 async function openEditModal(saleId) {
-    // Assuming 'userId' and other variables like 'database', 'ref', and 'get' are defined elsewhere in your script.
     if (!userId) {
         console.error("No user logged in.");
         return;
@@ -348,8 +337,6 @@ async function openEditModal(saleId) {
         document.getElementById('editNotes').value = currentSaleData.notes || '';
         
         setupEsiConsentButtons(currentSaleData.esi_content);
-        
-        // If sale_types property is missing, define a default or handle accordingly
         setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
 
         document.getElementById('editSaleModal').style.display = 'block';
@@ -358,12 +345,7 @@ async function openEditModal(saleId) {
     }
 }
 
-document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    // Further implementation goes here, including validation for required fields.
-});
-
-// Add input validation similar to 'add sales lead id' for 'edit lead id'
+// Apply numeric-only input rules to 'editLeadId'
 document.getElementById('editLeadId').addEventListener('paste', (e) => {
     e.preventDefault();
     const text = (e.clipboardData || window.clipboardData).getData('text');
@@ -375,4 +357,61 @@ document.getElementById('editLeadId').addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
 });
 
-// Additional functions and event listeners (e.g., for closing the modal, handling deletion) remain as in your original code.
+document.getElementById('editSaleForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!userId) {
+        console.error('No user logged in.');
+        return;
+    }
+
+    // Validate that at least one sale type and ESI consent button is selected
+    if (!document.querySelector('.edit-sale-type-btn.selected') || !document.querySelector('.edit-esi-consent-btn.selected')) {
+        alert('Please select at least one sale type and one ESI consent option.');
+        return;
+    }
+
+    const saleId = document.getElementById('editSaleId').value;
+    const updatedSaleData = {
+        lead_id: document.getElementById('editLeadId').value,
+        esi_content: document.querySelector('.edit-esi-consent-btn.selected').dataset.value,
+        notes: document.getElementById('editNotes').value,
+        sale_types: getEditSaleTypes(),
+        timestamp: currentSaleData.timestamp, // Assuming timestamp handling is correct
+    };
+
+    try {
+        await set(ref(database, `sales/${userId}/${saleId}`), updatedSaleData);
+        closeEditModal();
+    } catch (error) {
+        console.error('Error updating sale:', error);
+    }
+});
+
+function closeEditModal() {
+    document.getElementById('editSaleModal').style.display = 'none';
+}
+
+document.getElementById('salesHistory').addEventListener('click', async (event) => {
+    const target = event.target;
+    if (!userId) {
+        console.error('No user logged in.');
+        return;
+    }
+
+    const saleContainer = target.closest('.sales-history-entry');
+    if (!saleContainer) return;
+
+    const saleId = saleContainer.getAttribute('data-sale-id');
+    if (target.classList.contains('edit-btn')) {
+        openEditModal(saleId);
+    } else if (target.classList.contains('delete-btn')) {
+        if (confirm('Are you sure you want to delete this sale?')) {
+            try {
+                await remove(ref(database, `sales/${userId}/${saleId}`));
+                saleContainer.remove(); // Reflect deletion in UI
+            } catch (error) {
+                console.error('Error deleting sale:', error);
+            }
+        }
+    }
+});
