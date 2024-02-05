@@ -483,3 +483,22 @@ async function getSalesData(userId) {
     const snapshot = await get(salesRef);
     return snapshot.val() || {};
 }
+document.getElementById('cancelEditSale').addEventListener('click', function() {
+    // Clear selections and any input fields as needed
+    document.querySelectorAll('.edit-sale-type-btn.selected, .edit-esi-consent-btn.selected').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    // Clear global variables or reset them to their default states
+    selectedSaleTypes = {};
+    selectedEsiContent = null;
+    
+    // Optionally, clear input fields if necessary
+    document.getElementById('editSaleId').value = '';
+    document.getElementById('editLeadId').value = '';
+    document.getElementById('editNotes').value = '';
+
+    // Hide the modal
+    document.getElementById('editSaleModal').style.display = 'none';
+});
+
