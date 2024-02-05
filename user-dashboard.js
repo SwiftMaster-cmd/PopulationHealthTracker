@@ -284,8 +284,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
-
 let currentSaleData; // Global variable to store the current sale data, including timestamp
 let selectedSaleType = null; // Global variable to track the selected sale type
 let selectedEsiContent = null; // Global variable to track the selected ESI content
@@ -388,7 +386,6 @@ function openEditModal(saleId) {
 
 // Rest of the code remains the same
 
-
 // Apply numeric-only input rules to 'editLeadId'
 document.getElementById('editLeadId').addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
@@ -414,7 +411,7 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
     // Proceed with the form submission if the edited lead ID is unique or unchanged
     const updatedSaleData = {
         lead_id: editedLeadId,
-        esi_content: document.querySelector('.edit-esi-consent-btn.selected').dataset.value,
+        esi_content: selectedEsiContent,
         notes: document.getElementById('editNotes').value,
         sale_types: getEditSaleTypes(),
         timestamp: currentSaleData.timestamp, // Assuming timestamp handling is correct
