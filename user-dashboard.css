@@ -207,7 +207,7 @@ header {
     background: transparent; /* Make the container background transparent */
     padding: 10px; /* Add padding to separate buttons */
     display: flex; /* Display buttons horizontally */
-    justify-content: flex-end; /* Align buttons to the right */
+    justify-content: center; /* Center the buttons */
 }
 
 .sale-actions button {
