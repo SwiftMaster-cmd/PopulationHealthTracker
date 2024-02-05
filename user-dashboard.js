@@ -224,6 +224,9 @@ document.getElementById('applyFilters').addEventListener('click', () => {
 
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
     const now = new Date();
+    // Ensure leadIdFilter is numeric-only by removing non-numeric characters
+    const numericLeadIdFilter = leadIdFilter.replace(/\D/g, '');
+
     return salesArray.filter(sale => {
         // Time filter
         const saleDate = new Date(sale.timestamp);
@@ -237,8 +240,8 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
         // ESI filter
         if (esiFilter !== 'all' && sale.esi_content !== esiFilter) return false;
 
-        // Lead ID filter
-        if (leadIdFilter && sale.lead_id !== leadIdFilter) return false;
+        // Lead ID filter, ensuring it's applied only if numericLeadIdFilter is not empty
+        if (numericLeadIdFilter && sale.lead_id !== numericLeadIdFilter) return false;
 
         return true; // Include sale if all filters match
     });
