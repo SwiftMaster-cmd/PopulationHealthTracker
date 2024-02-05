@@ -351,19 +351,21 @@ function setupEsiConsentButtons(esiContent) {
 // Function to visually indicate the pre-selected state of buttons
 function setupPreSelectedSaleTypes(saleTypesToSetup) {
     const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
-    // Reset selectedSaleTypes to ensure it reflects the current state accurately
+    // Clear any previous selections in the global variable
     selectedSaleTypes = {};
+
     saleTypeButtons.forEach(btn => {
         const type = btn.getAttribute('data-value');
-        if (saleTypesToSetup && saleTypesToSetup.hasOwnProperty(type)) {
+        // Check if this type is in the saleTypesToSetup and is true
+        if (saleTypesToSetup && saleTypesToSetup[type]) {
             btn.classList.add('selected');
-            selectedSaleTypes[type] = true; // Adjust to support multiple selections
+            selectedSaleTypes[type] = true; // Ensure global tracking of selected sale types
         } else {
             btn.classList.remove('selected');
-            delete selectedSaleTypes[type]; // Ensure it's removed if not part of the setup
         }
     });
 }
+
 
 
 function openEditModal(saleId) {
