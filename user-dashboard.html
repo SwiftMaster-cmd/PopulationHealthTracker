@@ -65,12 +65,13 @@
             <label for="editLeadId">Lead ID:</label>
             <input type="text" id="editLeadId" name="lead_id" required>
         </div>
-        <!-- ESI Consent and Sale Types will be handled via JavaScript to ensure at least one is selected -->
+        <!-- ESI Consent Buttons -->
         <div>
             <label>ESI Consent:</label>
             <button type="button" class="edit-esi-consent-btn" data-value="Yes">Yes</button>
             <button type="button" class="edit-esi-consent-btn" data-value="No">No</button>
         </div>
+        <!-- Sale Types Buttons -->
         <div id="editSaleTypes">
             <label>Sale Types:</label>
             <button type="button" class="edit-sale-type-btn" data-value="billable HRA">Billable HRA</button>
@@ -82,7 +83,7 @@
             <label for="editNotes">Notes:</label>
             <textarea id="editNotes" name="notes" rows="4" cols="50" required></textarea>
         </div>
-        <!-- Assign an ID to the submit button for easy JavaScript access -->
+        <!-- Submit Button with ID for JavaScript targeting -->
         <button type="submit" id="editSaleSubmitBtn">Save Changes</button>
     </form>
 </div>
