@@ -287,6 +287,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 let currentSaleData; // Global variable to store the current sale data, including timestamp
+let selectedSaleType = null; // Global variable to track the selected sale type
+let selectedEsiContent = null; // Global variable to track the selected ESI content
 
 function toggleButtonSelectedState() {
     this.classList.toggle('selected');
@@ -294,8 +296,27 @@ function toggleButtonSelectedState() {
 
 document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
     btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
-    btn.addEventListener('click', toggleButtonSelectedState);
+    btn.addEventListener('click', function () {
+        toggleButtonSelectedState.call(this); // Toggle the selected state of the button
+        selectedSaleType = this.classList.contains('selected') ? this.getAttribute('data-value') : null;
+        enableSubmitButton();
+    });
 });
+
+document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
+    btn.removeEventListener('click', toggleButtonSelectedState);
+    btn.addEventListener('click', function () {
+        toggleButtonSelectedState.call(this);
+        selectedEsiContent = this.classList.contains('selected') ? this.getAttribute('data-value') : null;
+        enableSubmitButton();
+    });
+});
+
+// Enable or disable the submit button based on the selected sale type and ESI content
+function enableSubmitButton() {
+    const submitButton = document.getElementById('editSaleSubmitBtn');
+    submitButton.disabled = !(selectedSaleType && selectedEsiContent);
+}
 
 // Retrieves selected sale types for the edit form
 function getEditSaleTypes() {
@@ -314,11 +335,8 @@ function setupEsiConsentButtons(esiContent) {
         btn.classList.remove('selected');
         if (btn.dataset.value === esiContent) {
             btn.classList.add('selected');
+            selectedEsiContent = esiContent; // Set the selected ESI content
         }
-        btn.addEventListener('click', function() {
-            esiButtons.forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-        });
     });
 }
 
@@ -329,8 +347,7 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
         const type = btn.getAttribute('data-value');
         if (saleTypesToSetup && saleTypesToSetup.hasOwnProperty(type)) {
             btn.classList.add('selected');
-        } else {
-            btn.classList.remove('selected');
+            selectedSaleType = type; // Set the selected sale type
         }
     });
 }
@@ -360,11 +377,17 @@ function openEditModal(saleId) {
             setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
 
             document.getElementById('editSaleModal').style.display = 'block';
+
+            // Enable or disable the submit button initially based on the pre-selected values
+            enableSubmitButton();
         })
         .catch((error) => {
             console.error('Error fetching sale data:', error);
         });
 }
+
+// Rest of the code remains the same
+
 
 // Apply numeric-only input rules to 'editLeadId'
 document.getElementById('editLeadId').addEventListener('input', function() {
