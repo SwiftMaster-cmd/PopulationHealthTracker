@@ -1,7 +1,7 @@
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const auth = getAuth();
-const OWNER_UID = 'your-owner-uid'; // Replace with the actual owner's UID
+const OWNER_UID = 'wNpqlW2HCWR1awF1x95hUUp3ryw1'; // Replace with the actual owner's UID
 
 onAuthStateChanged(auth, (user) => {
     if (user && user.uid === OWNER_UID) {
