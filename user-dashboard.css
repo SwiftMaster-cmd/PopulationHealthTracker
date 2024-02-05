@@ -269,7 +269,7 @@ input:focus, textarea:focus {
 
 .sales-history-entry .sale-note {
     max-width: 100%; /* Ensure the note does not exceed the width of its container */
-    max-height: 75px; /* Set a maximum height to prevent excessively long notes from overflowing */
+    height: 75px; /* Set a maximum height to prevent excessively long notes from overflowing */
     overflow-y: auto; /* Enable vertical scrolling for notes exceeding the max height */
     margin: 10px 0; /* Provide some space around the note for readability */
     padding: 8px; /* Padding inside the note for content separation from edges */
