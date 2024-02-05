@@ -402,11 +402,10 @@ function openEditModal(saleId) {
             document.getElementById('editLeadId').value = currentSaleData.lead_id || '';
             document.getElementById('editNotes').value = currentSaleData.notes || '';
 
-            // Set the selected sale types before calling setupPreSelectedSaleTypes
-            selectedSaleTypes = currentSaleData.sale_types || {};
-
             // Call setup functions to set sale types and ESI content
             setupEsiConsentButtons(currentSaleData.esi_content);
+
+            // Call setupPreSelectedSaleTypes to set selected sale types based on currentSaleData
             setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
 
             document.getElementById('editSaleModal').style.display = 'block';
@@ -418,6 +417,7 @@ function openEditModal(saleId) {
             console.error('Error fetching sale data:', error);
         });
 }
+
 
 // Rest of the code remains the same
 
