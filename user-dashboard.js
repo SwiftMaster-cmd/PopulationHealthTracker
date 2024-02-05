@@ -283,30 +283,42 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
+// Global variable to store the current sale data, including timestamp
+let currentSaleData;
 
-let currentSaleData; // Global variable to store the current sale data, including timestamp
-let selectedSaleTypes = {}; // Adjusted to support multiple sale types
-let selectedEsiContent; // Global variable to track the selected ESI content
+// Global variable to track the selected sale types
+let selectedSaleTypes = {};
 
+// Global variable to track the selected ESI content
+let selectedEsiContent;
+
+// Function to toggle the selected state of a button
 function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
 
+// Event listeners for edit sale type buttons
 document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
     btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
     btn.addEventListener('click', function () {
         toggleButtonSelectedState.call(this); // Toggle the selected state of the button
-        // Adjusted to support multiple selections
+        
+        // Get the value of the clicked button
         const value = this.getAttribute('data-value');
+        
+        // Adjusted to support multiple selections
         if (this.classList.contains('selected')) {
             selectedSaleTypes[value] = true; // Add to the selection
         } else {
             delete selectedSaleTypes[value]; // Remove from the selection
         }
+        
+        // Enable or disable the submit button based on the selections
         enableSubmitButton();
     });
 });
 
+// Event listeners for edit ESI consent buttons
 document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
     btn.addEventListener('click', function () {
         // First, remove 'selected' class from all ESI consent buttons
@@ -316,27 +328,30 @@ document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
         
         // Then, toggle the 'selected' class for the clicked button
         this.classList.add('selected');
-        selectedEsiContent = this.getAttribute('data-value'); // Directly set, since only one can be selected
         
-        enableSubmitButton(); // Update submit button state
+        // Directly set the selected ESI content, since only one can be selected
+        selectedEsiContent = this.getAttribute('data-value');
+        
+        // Update submit button state
+        enableSubmitButton();
     });
 });
 
-
-// Enable or disable the submit button based on the selections
+// Function to enable or disable the submit button based on the selections
 function enableSubmitButton() {
     const submitButton = document.getElementById('editSaleSubmitBtn');
+    
     // Check if any sale type is selected and if ESI content is selected
     const isAnySaleTypeSelected = Object.keys(selectedSaleTypes).length > 0;
     submitButton.disabled = !(isAnySaleTypeSelected && selectedEsiContent);
 }
 
-// Retrieves selected sale types for the edit form
+// Function to retrieve selected sale types for the edit form
 function getEditSaleTypes() {
     return selectedSaleTypes; // Directly return the adjusted selectedSaleTypes object
 }
 
-// Setup ESI consent buttons with the current selection based on sale data
+// Function to setup ESI consent buttons with the current selection based on sale data
 function setupEsiConsentButtons(esiContent) {
     const esiButtons = document.querySelectorAll('.edit-esi-consent-btn');
     esiButtons.forEach(btn => {
@@ -351,11 +366,13 @@ function setupEsiConsentButtons(esiContent) {
 // Function to visually indicate the pre-selected state of buttons
 function setupPreSelectedSaleTypes(saleTypesToSetup) {
     const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
+    
     // Clear any previous selections in the global variable
     selectedSaleTypes = {};
 
     saleTypeButtons.forEach(btn => {
         const type = btn.getAttribute('data-value');
+        
         // Check if this type is in the saleTypesToSetup and is true
         if (saleTypesToSetup && saleTypesToSetup[type]) {
             btn.classList.add('selected');
@@ -365,7 +382,6 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
         }
     });
 }
-
 
 
 function openEditModal(saleId) {
