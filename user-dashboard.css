@@ -384,6 +384,7 @@ input:focus, textarea:focus {
 }
 
 /* Style adjustments for select elements */
+/* Style adjustments for select elements */
 .filter-group select {
     flex: 1;
     width: 200px;
@@ -400,9 +401,10 @@ input:focus, textarea:focus {
 
 /* Style adjustments for the selected option */
 .filter-group select option:checked {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    background: black; /* Change background color to black */
     color: white;
 }
+
 
 /* Adjustments for the apply button to center it and set its width */
 #applyFilters {
