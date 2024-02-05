@@ -308,13 +308,20 @@ document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
 });
 
 document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
-    btn.removeEventListener('click', toggleButtonSelectedState);
     btn.addEventListener('click', function () {
-        toggleButtonSelectedState.call(this);
-        selectedEsiContent = this.classList.contains('selected') ? this.getAttribute('data-value') : null;
-        enableSubmitButton();
+        // First, remove 'selected' class from all ESI consent buttons
+        document.querySelectorAll('.edit-esi-consent-btn').forEach(otherBtn => {
+            otherBtn.classList.remove('selected');
+        });
+        
+        // Then, toggle the 'selected' class for the clicked button
+        this.classList.add('selected');
+        selectedEsiContent = this.getAttribute('data-value'); // Directly set, since only one can be selected
+        
+        enableSubmitButton(); // Update submit button state
     });
 });
+
 
 // Enable or disable the submit button based on the selections
 function enableSubmitButton() {
