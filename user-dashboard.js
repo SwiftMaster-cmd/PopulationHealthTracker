@@ -282,7 +282,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
 // Global variable to store the current sale data, including timestamp
 let currentSaleData;
 
@@ -299,7 +298,9 @@ function toggleButtonSelectedState() {
 
 // Event listeners for edit sale type buttons
 document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
-    btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
+    // Remove existing event listeners to prevent duplicates
+    btn.removeEventListener('click', toggleButtonSelectedState);
+    
     btn.addEventListener('click', function () {
         toggleButtonSelectedState.call(this); // Toggle the selected state of the button
         
@@ -383,6 +384,7 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
     });
 }
 
+// Function to open the edit modal and populate it with sale data
 function openEditModal(saleId) {
     if (!userId) {
         console.error("No user logged in.");
@@ -419,7 +421,8 @@ function openEditModal(saleId) {
             console.error('Error fetching sale data:', error);
         });
 }
-// Rest of the code remains the same
+
+
 
 // Apply numeric-only input rules to 'editLeadId'
 document.getElementById('editLeadId').addEventListener('input', function() {
