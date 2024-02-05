@@ -264,7 +264,6 @@ input:focus, textarea:focus {
 
 .sales-history-entry .sale-note {
     max-width: 100%; /* Ensure the note does not exceed the width of its container */
-    height: auto; /* Allow the height to adjust based on the content */
     max-height: 100px; /* Set a maximum height to prevent excessively long notes from overflowing */
     overflow-y: auto; /* Enable vertical scrolling for notes exceeding the max height */
     margin: 10px 0; /* Provide some space around the note for readability */
@@ -290,7 +289,6 @@ input:focus, textarea:focus {
 .sales-history-entry .sale-note::-webkit-scrollbar-track {
     background: #f0f0f0; /* Match the note's background */
 }
-
 
 
 
