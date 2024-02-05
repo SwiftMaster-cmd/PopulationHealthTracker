@@ -152,58 +152,140 @@ header {
 
 
 
-
-
-
-
-
-
-.sales-history-container {
-    width: auto; /* Allow the container to adjust its width based on content */
-    min-width: 500px; /* Set a minimum width of 500px */
+/* Styles for the filter container */
+.filters-container {
+    width: 500px;
     margin: 20px auto;
+    padding: 10px 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+}
+
+/* Style adjustments for each filter group */
+.filter-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* Style adjustments for filter labels */
+.filter-group label {
+    text-align: left;
+    font-size: 20px;
+    color: #ffffff;
+    flex: 1;
+}
+
+/* Style adjustments for select elements */
+.filter-group select {
+    flex: 1;
+    width: 200px;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 18px;
+    border-radius: 14px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border: none;
+    color: white;
+    outline: none;
+    text-align: left;
+}
+
+/* Adjustments for the apply button to center it and set its width */
+#applyFilters {
+    width: 400px;
+    margin: 20px auto;
+    padding: 12px 0;
+    font-weight: bold;
+    border-radius: 15px;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+#applyFilters:hover, #applyFilters:focus {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+/* Style adjustments for the lead ID filter */
+.filter-group input[type="text"] {
+    flex: 1;
+    width: 200px;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 18px;
+    border-radius: 14px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border: none;
+    color: rgb(255, 255, 255);
+    outline: none;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s, color 0.3s;
+}
+
+/* Adjustments for the lead ID filter on hover and focus */
+.filter-group input[type="text"]:hover,
+.filter-group input[type="text"]:focus {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    color: white;
+}
+
+/* Style adjustments for the placeholder text */
+.filter-group input[type="text"]::placeholder {
+    color: rgb(255, 255, 255);
+}
+
+/* Styles for the sales history container */
+.sales-history-container {
+    width: auto;
+    min-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
-    padding: 20px;
+    overflow: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+    animation: fadeIn 1s ease-out;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: hidden; /* For border-radius effect */
-    max-height: 500px;
-    overflow-y: auto; /* Enable vertical scrolling */
-    animation: fadeIn 1s ease-out;
 }
 
 /* Set a maximum width for the contents inside the container */
 .sales-history-container > * {
-    min-width: 100%; /* Allow contents to take the full width of the container */
+    min-width: 100%;
 }
 
-.sales-history-entry {    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    border-radius: 10px; /* Consistent rounded corners */
-    padding: 15px; /* Padding around content */
-    margin-bottom: 15px; /* Space between entries */
-   
-    color: #ffffff; /* Text color for readability */
-    transition: all 0.3s ease; /* Smooth transition for interactions */
+/* Style adjustments for each sales history entry */
+.sales-history-entry {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    color: #ffffff;
+    transition: all 0.3s ease;
 }
-
 
 .sales-history-entry:hover {
-    transform: scale(1.03); /* Slight enlargement on hover */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
+    transform: scale(1.03);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
-.sale-info div {
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient matching the dashboard */
-    font-size: 18px; /* Slightly larger font size for improved readability */
-    color: #ffffff; /* Text color for contrast */
-    padding: 5px 0; /* Spacing for readability */
-    border: none; /* Remove border */
-    outline: none; /* Remove outline */
-}
-
-/* Existing styles for buttons within .sales-history-container */
+/* Styles for buttons within .sales-history-container */
 .sale-actions button {
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
@@ -216,80 +298,78 @@ header {
     transition: background 0.3s ease, transform 0.3s ease;
 }
 
-/* Add hover styles for buttons within .sales-history-container */
 .sale-actions button:hover {
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
 
-/* Add focus styles for buttons within .sales-history-container */
 .sale-actions button:focus {
     box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
     transform: translateY(-2px);
 }
 
-
+/* Style for sale type span */
 .sale-type-span {
-    display: inline-block; /* Display as inline block for alignment */
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
-    color: white; /* Text color for contrast */
-    padding: 5px 10px; /* Padding inside each "button" */
-    margin: 2px; /* Margin for spacing between buttons */
-    border-radius: 5px; /* Rounded corners for button-like appearance */
-    font-size: 16px; /* Font size for readability */
-    cursor: default; /* Default cursor to indicate non-interactivity */
-    user-select: none; /* Prevent text selection */
+    display: inline-block;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: default;
+    user-select: none;
 }
 
-/* Input and textarea focus effects for any editable fields within modal or page */
+/* Focus effects for input and textarea fields */
 input:focus, textarea:focus {
-    box-shadow: 0 0 10px #e6b081; /* Focus shadow */
-    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 10px #e6b081;
+    outline: none;
 }
 
-/* Scrollbar customization for consistency */
+/* Scrollbar customization */
 .sales-history-container::-webkit-scrollbar {
     width: 8px;
 }
 
 .sales-history-container::-webkit-scrollbar-thumb {
-    background: #BBDEFB; /* Scrollbar color */
-    border-radius: 4px; /* Rounded scrollbar for a smoother look */
+    background: #BBDEFB;
+    border-radius: 4px;
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Hover effect to match other buttons */
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
 }
 
+/* Styles for sale notes */
 .sales-history-entry .sale-note {
-    max-width: 100%; /* Ensure the note does not exceed the width of its container */
-    max-height: 75px; /* Set a maximum height to prevent excessively long notes from overflowing */
-    overflow-y: auto; /* Enable vertical scrolling for notes exceeding the max height */
-    margin: 10px 0; /* Provide some space around the note for readability */
-    padding: 8px; /* Padding inside the note for content separation from edges */
-    background: #f0f0f0; /* Optional: Different background to distinguish notes */
-    border-radius: 5px; /* Rounded corners for aesthetics */
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.2); /* Optional: Inner shadow for depth */
-    color: #333; /* Text color for readability */
-    font-size: 14px; /* Adjust font size for note content */
-    line-height: 1.4; /* Adjust line height for better readability */
+    max-width: 100%;
+    max-height: 75px;
+    overflow-y: auto;
+    margin: 10px 0;
+    padding: 8px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
-/* Custom scrollbar for the note if it overflows */
+/* Custom scrollbar for sale notes */
 .sales-history-entry .sale-note::-webkit-scrollbar {
-    width: 6px; /* Narrower scrollbar for space efficiency */
+    width: 6px;
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar-thumb {
-    background: #888; /* Scrollbar color */
-    border-radius: 3px; /* Rounded scrollbar for a smoother look */
+    background: #888;
+    border-radius: 3px;
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar-track {
-    background: #f0f0f0; /* Match the note's background */
+    background: #f0f0f0;
 }
-
 
 
  
