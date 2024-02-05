@@ -283,9 +283,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 // Global variables to store the current sale data, including timestamp
-// Global variables to store the current sale data, including timestamp
 let currentSaleData;
-let selectedSaleTypes = {}; // Revised to support multiple sale types
+let selectedSaleType; // Global variable to track the selected sale type
 let selectedEsiContent; // Global variable to track the selected ESI content
 
 // Function to toggle the selected state of buttons
@@ -293,21 +292,19 @@ function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
 
-// Revised event listeners for sale type buttons to support multiple selections
+// Add event listeners to sale type buttons
 document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
+    btn.removeEventListener('click', toggleButtonSelectedState); // Prevent duplicate listeners
     btn.addEventListener('click', function () {
-        const value = this.getAttribute('data-value');
-        if (this.classList.contains('selected')) {
-            selectedSaleTypes[value] = true; // Add to selected sale types
-        } else {
-            delete selectedSaleTypes[value]; // Remove from selected sale types if deselected
-        }
-        enableSubmitButton(); // Update the submit button state
+        toggleButtonSelectedState.call(this); // Toggle the button's selected state
+        selectedSaleType = this.classList.contains('selected') ? this.getAttribute('data-value') : null;
+        enableSubmitButton(); // Enable or disable the submit button based on selection
     });
 });
 
-// Event listeners for ESI consent buttons
+// Add event listeners to ESI consent buttons
 document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
+    btn.removeEventListener('click', toggleButtonSelectedState); // Clean up old listeners
     btn.addEventListener('click', function () {
         toggleButtonSelectedState.call(this); // Update button state
         selectedEsiContent = this.classList.contains('selected') ? this.getAttribute('data-value') : null;
@@ -315,21 +312,52 @@ document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
     });
 });
 
-// Revised function to enable or disable the submit button based on new requirements
+// Function to enable or disable the submit button
+// Function to enable or disable the submit button
 function enableSubmitButton() {
     const submitButton = document.getElementById('editSaleSubmitBtn');
-    const isAnySaleTypeSelected = Object.keys(selectedSaleTypes).length > 0; // Check if any sale type is selected
-    const isEsiSelected = selectedEsiContent !== null; // Check if ESI content is selected
     if (submitButton) {
+        // Ensure at least one sale type is selected
+        const isAnySaleTypeSelected = Object.keys(getEditSaleTypes()).length > 0;
+        // Check if ESI content is selected
+        const isEsiSelected = selectedEsiContent !== null;
+        // Enable submit button only if both conditions are met
         submitButton.disabled = !(isAnySaleTypeSelected && isEsiSelected);
     } else {
         console.error('Submit button not found!');
     }
 }
 
+// Adjust event listener setup for sale type buttons to ensure proper tracking
+document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        // No change in how the 'selected' class is toggled
+        toggleButtonSelectedState.call(this); 
+        // No direct assignment to selectedSaleType here, as we rely on getEditSaleTypes to aggregate selections
+        enableSubmitButton(); // This is where we check the updated conditions
+    });
+});
+
+// Event listeners for ESI consent buttons remain unchanged
+document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        toggleButtonSelectedState.call(this);
+        selectedEsiContent = this.classList.contains('selected') ? this.getAttribute('data-value') : null;
+        enableSubmitButton();
+    });
+});
+
+// No change required to the rest of your functions based on the given instructions
+
+
 // Function to retrieve selected sale types
 function getEditSaleTypes() {
-    return selectedSaleTypes; // Now directly returns the object tracking selected sale types
+    const saleTypes = {};
+    document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        saleTypes[value] = true;
+    });
+    return saleTypes;
 }
 
 // Setup ESI consent buttons based on current selection
@@ -339,7 +367,7 @@ function setupEsiConsentButtons(esiContent) {
         btn.classList.remove('selected');
         if (btn.dataset.value === esiContent) {
             btn.classList.add('selected');
-            selectedEsiContent = esiContent;
+            selectedEsiContent = esiContent; // Update selected ESI content
         }
     });
 }
@@ -351,15 +379,10 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
         const type = btn.getAttribute('data-value');
         if (saleTypesToSetup && saleTypesToSetup.hasOwnProperty(type)) {
             btn.classList.add('selected');
-            selectedSaleTypes[type] = true; // Correctly track pre-selected sale types
-        } else {
-            btn.classList.remove('selected');
-            delete selectedSaleTypes[type]; // Ensure accurate tracking
+            selectedSaleType = type; // Update selected sale type
         }
     });
 }
-
-// The rest of your functions follow here without modification as they are not directly affected by the change in requirements.
 
 // Function to open the edit modal and populate it with sale data
 function openEditModal(saleId) {
