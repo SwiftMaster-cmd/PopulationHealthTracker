@@ -285,8 +285,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 let currentSaleData; // Global variable to store the current sale data, including timestamp
-let selectedSaleType = null; // Global variable to track the selected sale type
-let selectedEsiContent = null; // Global variable to track the selected ESI content
+let selectedSaleType ; // Global variable to track the selected sale type
+let selectedEsiContent ; // Global variable to track the selected ESI content
 
 function toggleButtonSelectedState() {
     this.classList.toggle('selected');
