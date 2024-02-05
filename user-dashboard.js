@@ -285,8 +285,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 let currentSaleData; // Global variable to store the current sale data, including timestamp
-let selectedSaleType ; // Global variable to track the selected sale type
-let selectedEsiContent ; // Global variable to track the selected ESI content
+let selectedSaleTypes = {}; // Adjusted to support multiple sale types
+let selectedEsiContent; // Global variable to track the selected ESI content
 
 function toggleButtonSelectedState() {
     this.classList.toggle('selected');
@@ -296,7 +296,13 @@ document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
     btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
     btn.addEventListener('click', function () {
         toggleButtonSelectedState.call(this); // Toggle the selected state of the button
-        selectedSaleType = this.classList.contains('selected') ? this.getAttribute('data-value') : null;
+        // Adjusted to support multiple selections
+        const value = this.getAttribute('data-value');
+        if (this.classList.contains('selected')) {
+            selectedSaleTypes[value] = true; // Add to the selection
+        } else {
+            delete selectedSaleTypes[value]; // Remove from the selection
+        }
         enableSubmitButton();
     });
 });
@@ -310,20 +316,17 @@ document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
     });
 });
 
-// Enable or disable the submit button based on the selected sale type and ESI content
+// Enable or disable the submit button based on the selections
 function enableSubmitButton() {
     const submitButton = document.getElementById('editSaleSubmitBtn');
-    submitButton.disabled = !(selectedSaleType && selectedEsiContent);
+    // Check if any sale type is selected and if ESI content is selected
+    const isAnySaleTypeSelected = Object.keys(selectedSaleTypes).length > 0;
+    submitButton.disabled = !(isAnySaleTypeSelected && selectedEsiContent);
 }
 
 // Retrieves selected sale types for the edit form
 function getEditSaleTypes() {
-    const saleTypes = {};
-    document.querySelectorAll('.edit-sale-type-btn.selected').forEach(btn => {
-        const value = btn.getAttribute('data-value');
-        saleTypes[value] = true;
-    });
-    return saleTypes;
+    return selectedSaleTypes; // Directly return the adjusted selectedSaleTypes object
 }
 
 // Setup ESI consent buttons with the current selection based on sale data
@@ -341,14 +344,20 @@ function setupEsiConsentButtons(esiContent) {
 // Function to visually indicate the pre-selected state of buttons
 function setupPreSelectedSaleTypes(saleTypesToSetup) {
     const saleTypeButtons = document.querySelectorAll('.edit-sale-type-btn');
+    // Reset selectedSaleTypes to ensure it reflects the current state accurately
+    selectedSaleTypes = {};
     saleTypeButtons.forEach(btn => {
         const type = btn.getAttribute('data-value');
         if (saleTypesToSetup && saleTypesToSetup.hasOwnProperty(type)) {
             btn.classList.add('selected');
-            selectedSaleType = type; // Set the selected sale type
+            selectedSaleTypes[type] = true; // Adjust to support multiple selections
+        } else {
+            btn.classList.remove('selected');
+            delete selectedSaleTypes[type]; // Ensure it's removed if not part of the setup
         }
     });
 }
+
 
 function openEditModal(saleId) {
     if (!userId) {
