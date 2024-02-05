@@ -382,8 +382,6 @@ input:focus, textarea:focus {
     color: #ffffff; /* Color for contrast */
     flex: 1; /* Allow label to grow and fill available space */
 }
-
-/* Style adjustments for select elements */
 /* Style adjustments for select elements */
 .filter-group select {
     flex: 1;
@@ -399,11 +397,18 @@ input:focus, textarea:focus {
     text-align: left;
 }
 
+/* Style adjustments for all options (selected and unselected) */
+.filter-group select option {
+    background: black; /* Change background color for all options to black */
+    color: white; /* Text color for all options */
+}
+
 /* Style adjustments for the selected option */
 .filter-group select option:checked {
-    background: black; /* Change background color to black */
+    background: black; /* Change background color to black for the selected option */
     color: white;
 }
+
 
 
 /* Adjustments for the apply button to center it and set its width */
