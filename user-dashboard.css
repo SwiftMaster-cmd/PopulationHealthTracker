@@ -350,72 +350,70 @@ input:focus, textarea:focus {
 
 
 
-
-
-
 /* Styles for the filter container */
 .filters-container {
-    width: 500px; /* Maintain container width */
-    margin: 20px auto; /* Center the container */
-    padding: 10px 20px; /* Adjusted padding */
-    border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    width: 500px;
+    margin: 20px auto;
+    padding: 20px; /* Increased padding for better spacing */
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column; /* Stack children vertically */
-    align-items: stretch; /* Stretch children to fill the width */
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
+    flex-direction: column;
+    align-items: stretch;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
 }
 
 /* Style adjustments for each filter group */
 .filter-group {
-    display: flex; /* Use flexbox */
-    justify-content: space-between; /* Space between items */
-    align-items: center; /* Align items vertically */
-    width: 100%; /* Full width to utilize space */
-    margin: 10px 0; /* Adjusted margin for spacing */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0;
 }
 
 /* Style adjustments for filter labels */
 .filter-group label {
-    text-align: left; /* Align text to the left */
-    font-size: 20px; /* Font size for readability */
-    color: #ffffff; /* Color for contrast */
-    flex: 1; /* Allow label to grow and fill available space */
+    text-align: left;
+    font-size: 18px; /* Slightly reduced font size for better balance */
+    color: white;
+    flex: 1;
 }
 
 /* Style adjustments for select elements */
 .filter-group select {
-    flex: 1; /* Allow select to grow but control its max-width for aesthetics */
-    width: 200px; /* Adjusted max width for balance */
-    padding: 10px; /* Padding for appearance and usability */
-    margin-left: 10px; /* Margin to separate from label */
-    font-size: 18px; /* Font size for legibility */
-    border-radius: 14px; /* Rounded corners */
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    border: none; /* Remove default border */
-    color: white; /* Text color for readability */
-    outline: none; /* Remove focus outline */
-    text-align: left; /* Ensure option text aligns left */
+    flex: 1;
+    width: 200px;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 18px;
+    border-radius: 14px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border: none;
+    color: white;
+    outline: none;
+    text-align: left;
 }
 
-/* Adjustments for the apply button to center it and set its width */
+/* Adjustments for the apply button */
 #applyFilters {
-    width: 400px; /* Width of the button */
-    margin: 20px auto; /* Margin for auto-left and auto-right centers the button */
-    padding: 12px 0; /* Padding for height */
-    font-weight: bold; /* Bold font */
-    border-radius: 15px; /* Rounded corners */
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Gradient background */
-    color: white; /* Text color */
-    border: none; /* No border */
-    cursor: pointer; /* Cursor to indicate clickability */
-    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction feedback */
+    width: 100%; /* Width set to 100% to fill the container */
+    margin: 20px 0; /* Center the button vertically */
+    padding: 12px 0;
+    font-weight: bold;
+    border-radius: 15px;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 #applyFilters:hover, #applyFilters:focus {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
-    transform: translateY(-3px); /* Slight lift for interaction */
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
 }
-
 
 /* Style adjustments for the lead ID filter */
 .filter-group input[type="text"] {
@@ -427,10 +425,10 @@ input:focus, textarea:focus {
     border-radius: 14px;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     border: none;
-    color: rgb(255, 255, 255); /* Set the initial text color to light gray */
+    color: white;
     outline: none;
-    text-align: center;
-    transition: background-color 0.3s, box-shadow 0.3s, color 0.3s; /* Add color transition */
+    text-align: left;
+    transition: background-color 0.3s, box-shadow 0.3s, color 0.3s;
 }
 
 /* Adjustments for the lead ID filter on hover and focus */
@@ -439,18 +437,13 @@ input:focus, textarea:focus {
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
-    color: white; /* Set the text color to white on hover and focus */
+    color: white;
 }
+
 /* Style adjustments for the placeholder text */
 .filter-group input[type="text"]::placeholder {
-    color: rgb(255, 255, 255); /* Set the placeholder text color to light gray */
+    color: white;
 }
-
-
-
-
-
-
 
 
 
