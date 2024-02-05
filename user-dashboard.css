@@ -210,7 +210,6 @@ header {
     justify-content: flex-end; /* Align buttons to the right */
 }
 
-/* Existing styles for buttons within .sales-history-container */
 .sale-actions button {
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
@@ -235,7 +234,6 @@ header {
     box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
     transform: translateY(-2px);
 }
-
 
 .sale-type-span {
     display: inline-block; /* Display as inline block for alignment */
