@@ -281,7 +281,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
 // Global variable to store the current sale data, including timestamp
 let currentSaleData;
 
@@ -298,9 +297,7 @@ function toggleButtonSelectedState() {
 
 // Event listeners for edit sale type buttons
 document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
-    // Remove existing event listeners to prevent duplicates
-    btn.removeEventListener('click', toggleButtonSelectedState);
-    
+    btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
     btn.addEventListener('click', function () {
         toggleButtonSelectedState.call(this); // Toggle the selected state of the button
         
@@ -384,7 +381,6 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
     });
 }
 
-// Function to open the edit modal and populate it with sale data
 function openEditModal(saleId) {
     if (!userId) {
         console.error("No user logged in.");
@@ -409,8 +405,9 @@ function openEditModal(saleId) {
             // Set the selected sale types before calling setupPreSelectedSaleTypes
             selectedSaleTypes = currentSaleData.sale_types || {};
 
+            // Call setup functions to set sale types and ESI content
             setupEsiConsentButtons(currentSaleData.esi_content);
-            setupPreSelectedSaleTypes(); // No need to pass sale types as it uses the updated global variable
+            setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
 
             document.getElementById('editSaleModal').style.display = 'block';
 
@@ -422,7 +419,7 @@ function openEditModal(saleId) {
         });
 }
 
-
+// Rest of the code remains the same
 
 // Apply numeric-only input rules to 'editLeadId'
 document.getElementById('editLeadId').addEventListener('input', function() {
@@ -505,6 +502,7 @@ async function getSalesData(userId) {
     const snapshot = await get(salesRef);
     return snapshot.val() || {};
 }
+
 document.getElementById('cancelEditSale').addEventListener('click', function() {
     // Clear selections and any input fields as needed
     document.querySelectorAll('.edit-sale-type-btn.selected, .edit-esi-consent-btn.selected').forEach(btn => {
