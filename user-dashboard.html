@@ -58,7 +58,6 @@
     <div id="confirmationMessage"></div>
 </div>
 
-
 <div id="editSaleModal" style="display:none;">
     <form id="editSaleForm">
         <input type="hidden" id="editSaleId">
@@ -83,11 +82,10 @@
             <label for="editNotes">Notes:</label>
             <textarea id="editNotes" name="notes" rows="4" cols="50" required></textarea>
         </div>
-        <button type="submit">Save Changes</button>
-        
+        <!-- Assign an ID to the submit button for easy JavaScript access -->
+        <button type="submit" id="editSaleSubmitBtn">Save Changes</button>
     </form>
 </div>
-
 
 
 
