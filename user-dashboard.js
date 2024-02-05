@@ -383,7 +383,6 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
     });
 }
 
-
 function openEditModal(saleId) {
     if (!userId) {
         console.error("No user logged in.");
@@ -405,8 +404,11 @@ function openEditModal(saleId) {
             document.getElementById('editLeadId').value = currentSaleData.lead_id || '';
             document.getElementById('editNotes').value = currentSaleData.notes || '';
 
+            // Set the selected sale types before calling setupPreSelectedSaleTypes
+            selectedSaleTypes = currentSaleData.sale_types || {};
+
             setupEsiConsentButtons(currentSaleData.esi_content);
-            setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
+            setupPreSelectedSaleTypes(); // No need to pass sale types as it uses the updated global variable
 
             document.getElementById('editSaleModal').style.display = 'block';
 
@@ -417,7 +419,6 @@ function openEditModal(saleId) {
             console.error('Error fetching sale data:', error);
         });
 }
-
 // Rest of the code remains the same
 
 // Apply numeric-only input rules to 'editLeadId'
