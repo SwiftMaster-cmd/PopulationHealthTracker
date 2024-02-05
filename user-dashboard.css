@@ -203,6 +203,13 @@ header {
     outline: none; /* Remove outline */
 }
 
+.sale-actions {
+    background: transparent; /* Make the container background transparent */
+    padding: 10px; /* Add padding to separate buttons */
+    display: flex; /* Display buttons horizontally */
+    justify-content: flex-end; /* Align buttons to the right */
+}
+
 /* Existing styles for buttons within .sales-history-container */
 .sale-actions button {
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
