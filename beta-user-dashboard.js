@@ -325,23 +325,6 @@ function findCommissionRate(type, quantity) {
     return 0; // Default rate if no bracket fits
 }
 
-function updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType) {
-    const salesTotalsElement = document.getElementById('salesTotals');
-    salesTotalsElement.innerHTML = '<h4>Sales Totals and Commissions by Type:</h4>';
-
-    Object.entries(totalsBySaleType).forEach(([type, total]) => {
-        const entry = document.createElement('div');
-        const commission = commissionsBySaleType[type];
-        entry.textContent = `${type}: ${total} Sales, $${commission.toFixed(2)} Commission`;
-        salesTotalsElement.appendChild(entry);
-    });
-
-    // Optionally, calculate and display the combined total commission
-    const totalCommission = Object.values(commissionsBySaleType).reduce((acc, curr) => acc + curr, 0);
-    const totalEntry = document.createElement('div');
-    totalEntry.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-    salesTotalsElement.appendChild(totalEntry);
-}
 
 
 
