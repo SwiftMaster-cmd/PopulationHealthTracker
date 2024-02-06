@@ -236,9 +236,8 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         }));
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-        let {totalsBySaleType, commissionsBySaleType} = calculateSalesTotalsAndCommissions(salesArray);
+        let totalsBySaleType = calculateSalesTotals(salesArray);
         updateSalesTotalsUI(totalsBySaleType);
-        updateCommissionTotalsUI(commissionsBySaleType); // Add this line to update commission totals
 
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
