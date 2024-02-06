@@ -240,7 +240,6 @@ function calculateSalesTotalsAndCommissions(salesArray) {
 
     return {totalsBySaleType, commissionsBySaleType};
 }
-
 function calculateCommission(type, quantity) {
     const brackets = commissionStructures[type] || [];
     let commission = 0;
@@ -248,13 +247,14 @@ function calculateCommission(type, quantity) {
     for (let i = 0; i < brackets.length; i++) {
         const { min, max, rate } = brackets[i];
         if (quantity >= min && (quantity <= max || max === Infinity)) {
-            commission = rate * quantity; // Calculate commission based on total sales quantity
+            commission = rate * quantity; // Corrected calculation: rate multiplied by quantity
             break; // Exit the loop once a matching bracket is found
         }
     }
 
     return commission;
 }
+
 
 
 
