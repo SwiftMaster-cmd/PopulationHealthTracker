@@ -221,22 +221,29 @@ function calculateSalesTotalsAndCommissions(salesArray) {
                 commissionsBySaleType[type] = 0;
             }
             totalsBySaleType[type] += 1;
-            const commissionRate = findCommissionRate(type, totalsBySaleType[type]);
-            commissionsBySaleType[type] += commissionRate; // Calculate commission for each sale
+            
+            // Calculate commission for each sale based on the commission structure
+            const commissionRate = calculateCommission(type, totalsBySaleType[type]);
+            commissionsBySaleType[type] += commissionRate;
         });
     });
 
     return {totalsBySaleType, commissionsBySaleType};
 }
 
-function findCommissionRate(type, quantity) {
+function calculateCommission(type, quantity) {
     const brackets = commissionStructures[type] || [];
-    for (let {min, max, rate} of brackets) {
-        if (quantity >= min && quantity <= max) {
-            return rate;
+    let commission = 0;
+
+    for (let i = 0; i < brackets.length; i++) {
+        const { min, max, rate } = brackets[i];
+        if (quantity >= min && (quantity <= max || max === Infinity)) {
+            commission = rate;
+            break; // Exit the loop once a matching bracket is found
         }
     }
-    return 0; // Default rate if no bracket fits
+
+    return commission;
 }
 
 
