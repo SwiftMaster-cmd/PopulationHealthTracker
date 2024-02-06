@@ -323,42 +323,67 @@ input:focus, textarea:focus {
 
 
 
-/* Style the Sales Totals Section */
+
+
+
+
+/* Style the container for sales totals and commissions */
+#salesTotalsAndCommissions {
+    max-width: 500px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    color: #ffffff;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Style the sales totals section */
 #salesTotals {
-    max-width: 750px; /* Match the width of other containers for consistency */
-    margin: 20px auto; /* Center it on the page */
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Use a gradient similar to other sections */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a slight shadow for depth */
-    border-radius: 15px; /* Rounded corners */
-    padding: 20px; /* Padding inside the container */
-    color: #ffffff; /* Text color for contrast */
-    text-align: center; /* Align text to the center */
-    animation: fadeIn 1s ease-out; /* Reuse the fadeIn animation for consistency */
-}
-
-/* Style individual sales total entries */
-#salesTotals div {
+    flex: 1; /* Occupy 50% of the container's width */
     background: transparent; /* No background to keep it simple and clean */
-    margin: 10px 0; /* Space out each sale type entry */
-    font-size: 18px; /* Slightly larger font for readability */
-    padding: 5px; /* Padding for spacing */
-    border-radius: 5px; /* Consistency in design */
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1); /* Subtle inner shadow for depth */
-    transition: background-color 0.3s ease-in-out, transform 0.3s ease; /* Smooth transition for hover effects */
+    margin: 0;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease;
 }
 
-/* Enhance readability on hover */
-#salesTotals div:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Slightly highlight the entry on hover */
+/* Style the commission totals section */
+#commissionTotals {
+    flex: 1; /* Occupy 50% of the container's width */
+    background: transparent; /* No background to keep it simple and clean */
+    margin: 0;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease;
+}
+
+/* Enhance readability on hover for both sections */
+#salesTotals:hover, #commissionTotals:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly highlight on hover */
     cursor: pointer; /* Change cursor to indicate interactiveness */
-    transform: translateY(-2px); /* Lift the entry a bit to indicate selection */
+    transform: translateY(-2px); /* Lift the section a bit on hover */
 }
 
-/* Add a title style for the sales totals */
+/* Add a title style for the sales totals section */
 #salesTotals h4 {
-    font-size: 24px; /* Make the title stand out */
-    margin-bottom: 15px; /* Space between the title and the entries */
-    color: #FFEBCD; /* Use a lighter color for contrast and emphasis */
+    font-size: 24px;
+    margin-bottom: 10px; /* Adjust spacing between title and entries */
+    color: #FFEBCD;
+}
+
+/* Add a title style for the commission totals section */
+#commissionTotals h4 {
+    font-size: 24px;
+    margin-bottom: 10px; /* Adjust spacing between title and entries */
+    color: #FFEBCD;
 }
 
 
@@ -366,6 +391,16 @@ input:focus, textarea:focus {
 
 
 
+<div id="salesTotalsAndCommissions">
+    <div id="salesTotals">
+        <h4>Sales Totals:</h4>
+        <!-- Sales totals entries will be added here -->
+    </div>
+    <div id="commissionTotals">
+        <h4>Commission Totals:</h4>
+        <!-- Commission totals entries will be added here -->
+    </div>
+</div>
 
 
 
@@ -411,39 +446,6 @@ input:focus, textarea:focus {
 
 
 
-
-
-
-
-/* General styling for sale data to mimic input/label appearance */
-.sale-data {
-    background: #E3F2FD; /* Light background color similar to input fields */
-    border: 1px solid #BBDEFB; /* Border to distinguish each sale data */
-    padding: 8px 12px; /* Padding inside each sale data block */
-    border-radius: 4px; /* Rounded corners to match input fields */
-    margin: 4px 0; /* Margin for spacing between each sale data */
-    display: block; /* Ensure each sale data is on its own line */
-    color: #023047; /* Text color to match the overall theme */
-    font-size: 16px; /* Font size to match input labels */
-}
-
-/* Specific styling adjustments for better visual hierarchy */
-.sale-data:first-child {
-    font-weight: bold; /* Make the first piece of data (Sale ID) more prominent */
-    color: #ffffff; /* Use a distinct color for ID to stand out */
-}
-
-.sale-actions {
-    margin-top: 12px; /* Add some space between the sale data and action buttons */
-}
-
-/* You might already have styles for .sale-actions button from previous adjustments */
-.sale-actions button {
-    /* Additional styles if needed based on your previous setup */
-    font-size: 14px; /* Adjust font size for buttons if necessary */
-
-
-}
 
 
 
