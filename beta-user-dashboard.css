@@ -323,6 +323,98 @@ input:focus, textarea:focus {
 
 
 
+/* Style the Sales Totals Section */
+#salesTotals {
+    max-width: 750px; /* Match the width of other containers for consistency */
+    margin: 20px auto; /* Center it on the page */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Use a gradient similar to other sections */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a slight shadow for depth */
+    border-radius: 15px; /* Rounded corners */
+    padding: 20px; /* Padding inside the container */
+    color: #ffffff; /* Text color for contrast */
+    text-align: center; /* Align text to the center */
+    animation: fadeIn 1s ease-out; /* Reuse the fadeIn animation for consistency */
+}
+
+/* Style individual sales total entries */
+#salesTotals div {
+    background: transparent; /* No background to keep it simple and clean */
+    margin: 10px 0; /* Space out each sale type entry */
+    font-size: 18px; /* Slightly larger font for readability */
+    padding: 5px; /* Padding for spacing */
+    border-radius: 5px; /* Consistency in design */
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1); /* Subtle inner shadow for depth */
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* Enhance readability on hover */
+#salesTotals div:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly highlight the entry on hover */
+    cursor: pointer; /* Change cursor to indicate interactiveness */
+    transform: translateY(-2px); /* Lift the entry a bit to indicate selection */
+}
+
+/* Add a title style for the sales totals */
+#salesTotals h4 {
+    font-size: 24px; /* Make the title stand out */
+    margin-bottom: 15px; /* Space between the title and the entries */
+    color: #FFEBCD; /* Use a lighter color for contrast and emphasis */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* General styling for sale data to mimic input/label appearance */
 .sale-data {
     background: #E3F2FD; /* Light background color similar to input fields */

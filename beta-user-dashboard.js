@@ -148,7 +148,19 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
+
+
+
+
+
+
+
+
+
 let userId;
+
+
+
 
 // Auth state change listener to handle user login and logout
 onAuthStateChanged(auth, (user) => {
