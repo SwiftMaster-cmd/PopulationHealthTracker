@@ -149,9 +149,13 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
-// Assuming Firebase has already been initialized elsewhere in your script
 
-// Placeholder for user's ID
+
+
+
+
+
+
 let userId;
 
 // Auth state change listener to handle user login and logout
@@ -163,29 +167,111 @@ onAuthStateChanged(auth, (user) => {
         console.log("User is not logged in.");
         userId = null; // Clear userId if no user is signed in
     }
-}); 
-
-// Apply filters including lead ID
-salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-
-// Calculate total sales points based on filters
-let totalSalesPoints = 0;
-salesArray.forEach(sale => {
-    // Assuming each sale has a 'points' property or you calculate points based on sale type
-    // For simplicity, we're adding 1 point per sale; replace this with actual logic to calculate points based on sale type
-    totalSalesPoints += sale.points || 0; // Make sure to define how points are calculated based on sale types
 });
 
-// Display total sales points
-document.getElementById('totalSalesPoints').textContent = `Total Sales Points: ${totalSalesPoints}`;
+function calculateSalesTotals(salesArray) {
+    let totalsBySaleType = {};
 
-// Sort sales based on timeSort value
-// (Sorting code remains unchanged)
+    salesArray.forEach(sale => {
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            if (!totalsBySaleType[type]) {
+                totalsBySaleType[type] = 0;
+            }
+            totalsBySaleType[type] += 1;
+        });
+    });
+
+    return totalsBySaleType;
+}
+
+function updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType) {
+    const salesTotalsElement = document.getElementById('salesTotals');
+    salesTotalsElement.innerHTML = '<h4>Sales Totals and Commissions:</h4>';
+
+    Object.entries(totalsBySaleType).forEach(([type, total]) => {
+        const entry = document.createElement('div');
+        const commission = commissionsBySaleType[type] || 0;
+        entry.textContent = `${type}: ${total} Sales, $${commission.toFixed(2)} Commission`;
+        salesTotalsElement.appendChild(entry);
+    });
+}
+
+const commissionStructures = {
+    "billable HRA": [
+        { min: 0, max: 9, rate: 1.0 },
+        { min: 10, max: 29, rate: 1.25 },
+        { min: 20, max: 44, rate: 1.5 },
+        { min: 45, max: 64, rate: 1.75 },
+        { min: 65, max: Infinity, rate: 2.0 }
+    ],
+    "Transfer": [
+        { min: 0, max: 9, rate: 3.0 },
+        { min: 10, max: 14, rate: 3.5 },
+        { min: 15, max: 34, rate: 4.0 },
+        { min: 35, max: 54, rate: 4.5 },
+        { min: 55, max: Infinity, rate: 5.0 }
+    ],
+    "Select RX": [
+        { min: 0, max: 14, rate: 4.0 },
+        { min: 15, max: 24, rate: 7.0 },
+        { min: 25, max: 84, rate: 10.0 },
+        { min: 85, max: 154, rate: 13.0 },
+        { min: 155, max: Infinity, rate: 16.0 }
+    ]
+};
+
+function calculateSalesTotalsAndCommissions(salesArray) {
+    let totalsBySaleType = {};
+    let commissionsBySaleType = {};
+
+    salesArray.forEach(sale => {
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            if (!totalsBySaleType[type]) {
+                totalsBySaleType[type] = 0;
+                commissionsBySaleType[type] = 0;
+            }
+            totalsBySaleType[type] += 1;
+
+            // Calculate commission for each sale based on the commission structure
+            const commissionRate = calculateCommission(type, totalsBySaleType[type]);
+            commissionsBySaleType[type] += commissionRate;
+        });
+    });
+
+    return {totalsBySaleType, commissionsBySaleType};
+}
+function calculateCommission(type, quantity) {
+    const brackets = commissionStructures[type] || [];
+    let commission = 0;
+
+    for (let i = 0; i < brackets.length; i++) {
+        const { min, max, rate } = brackets[i];
+        if (quantity >= min && (quantity <= max || max === Infinity)) {
+            commission = rate * quantity; // Corrected calculation: rate multiplied by quantity
+            break; // Exit the loop once a matching bracket is found
+        }
+    }
+
+    return commission;
+}
 
 
 
 
-// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
+function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
+    return salesArray.filter(sale => {
+        const saleDate = new Date(sale.timestamp);
+        const now = new Date();
+        if (timeFilter === 'day' && saleDate.toDateString() !== now.toDateString()) return false;
+        if (timeFilter === 'week' && (now - saleDate) / (1000 * 60 * 60 * 24) > 7) return false;
+        if (timeFilter === 'month' && (saleDate.getMonth() !== now.getMonth() || saleDate.getFullYear() !== now.getFullYear())) return false;
+        if (saleTypeFilter !== 'all' && (!sale.sale_types || !sale.sale_types[saleTypeFilter])) return false;
+        if (esiFilter !== 'all' && sale.esi_content !== esiFilter) return false;
+        if (leadIdFilter && sale.lead_id !== leadIdFilter) return false;
+        return true;
+    });
+}
+
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -195,7 +281,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const salesHistoryElement = document.getElementById('salesHistory');
-        salesHistoryElement.innerHTML = ''; // Clear existing content
+        salesHistoryElement.innerHTML = '';
 
         let sales = snapshot.val();
         if (!sales) {
@@ -203,16 +289,18 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
-        // Convert sales object to an array for filtering
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
         }));
 
-        // Apply filters including lead ID
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort sales based on timeSort value
+        // Calculate both sales totals and commissions
+        let {totalsBySaleType, commissionsBySaleType} = calculateSalesTotalsAndCommissions(salesArray);
+        updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType); // Update to include commissions
+
+        // Sort based on timeSort filter
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
@@ -231,38 +319,17 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
     });
 }
 
-// Listen to the apply filters button click, including lead ID filter
+
+
 document.getElementById('applyFilters').addEventListener('click', () => {
     const timeFilter = document.getElementById('timeFilter').value;
     const saleTypeFilter = document.getElementById('saleTypeFilter').value;
     const esiFilter = document.getElementById('esiFilter').value;
     const timeSort = document.getElementById('timeSortFilter').value;
-    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim();
 
     fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
 });
-
-function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
-    const now = new Date();
-    return salesArray.filter(sale => {
-        // Time filter
-        const saleDate = new Date(sale.timestamp);
-        if (timeFilter === 'day' && saleDate.toDateString() !== now.toDateString()) return false;
-        if (timeFilter === 'week' && (now - saleDate) / (1000 * 60 * 60 * 24) > 7) return false;
-        if (timeFilter === 'month' && (saleDate.getMonth() !== now.getMonth() || saleDate.getFullYear() !== now.getFullYear())) return false;
-
-        // Sale type filter
-        if (saleTypeFilter !== 'all' && (!sale.sale_types || !sale.sale_types[saleTypeFilter])) return false;
-
-        // ESI filter
-        if (esiFilter !== 'all' && sale.esi_content !== esiFilter) return false;
-
-        // Lead ID filter
-        if (leadIdFilter && sale.lead_id !== leadIdFilter) return false;
-
-        return true; // Include sale if all filters match
-    });
-}
 
 function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
     return `
@@ -279,6 +346,74 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
         </div>
     `;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

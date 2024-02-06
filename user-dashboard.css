@@ -322,36 +322,106 @@ input:focus, textarea:focus {
 
 
 
-
-/* General styling for sale data to mimic input/label appearance */
-.sale-data {
-    background: #E3F2FD; /* Light background color similar to input fields */
-    border: 1px solid #BBDEFB; /* Border to distinguish each sale data */
-    padding: 8px 12px; /* Padding inside each sale data block */
-    border-radius: 4px; /* Rounded corners to match input fields */
-    margin: 4px 0; /* Margin for spacing between each sale data */
-    display: block; /* Ensure each sale data is on its own line */
-    color: #023047; /* Text color to match the overall theme */
-    font-size: 16px; /* Font size to match input labels */
+/* General styling for the Sales Totals Section */
+#salesTotals {
+    width: 500px;
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 25px;
+    color: #FFFFFF;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
 }
 
-/* Specific styling adjustments for better visual hierarchy */
-.sale-data:first-child {
-    font-weight: bold; /* Make the first piece of data (Sale ID) more prominent */
-    color: #ffffff; /* Use a distinct color for ID to stand out */
+/* Title styling within the sales totals for clear hierarchy */
+#salesTotals h4 {
+    font-size: 22px;
+    color: #FFEBCD;
+    margin-bottom: 20px;
+    text-transform: uppercase; /* Adds a bit of formality and emphasis */
 }
 
-.sale-actions {
-    margin-top: 12px; /* Add some space between the sale data and action buttons */
+/* Styling for individual entries within the sales totals */
+#salesTotals div {
+    margin: 10px 0;
+    font-size: 18px;
+    padding: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2); /* Subtle border for definition without overwhelming */
+    border-radius: 8px; /* Soft rounded corners */
+    background-color: rgba(255, 255, 255, 0.1); /* Slight visibility to distinguish entries */
+    box-shadow: none; /* Removing inner shadow for a cleaner look */
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease, border-color 0.3s ease;
 }
 
-/* You might already have styles for .sale-actions button from previous adjustments */
-.sale-actions button {
-    /* Additional styles if needed based on your previous setup */
-    font-size: 14px; /* Adjust font size for buttons if necessary */
-
-
+/* Hover effects for entries to improve interactivity */
+#salesTotals div:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Lighter highlight on hover */
+    border-color: rgba(255, 255, 255, 0.3); /* Slightly more visible border on hover */
+    transform: translateY(-3px); /* More pronounced lift effect */
+    cursor: pointer;
 }
+
+/* Apply consistent spacing and alignment for overall cleanliness */
+#salesTotals p {
+    margin: 5px 0; /* Ensure texts within divs are not too cramped */
+    line-height: 1.5; /* Improve readability */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
