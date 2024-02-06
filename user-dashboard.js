@@ -149,6 +149,11 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
+// Assuming Firebase has already been initialized elsewhere in your script
+
+// Placeholder for user's ID
+let userId;
+
 // Auth state change listener to handle user login and logout
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -158,7 +163,11 @@ onAuthStateChanged(auth, (user) => {
         console.log("User is not logged in.");
         userId = null; // Clear userId if no user is signed in
     }
-});
+}); 
+
+
+
+
 
 // Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
@@ -178,23 +187,16 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
-        // Define a points system for each sale type
-        const saleTypePoints = {
-            "billable HRA": 1,
-            "Flex HRA": 1,
-            "Select RX": 1,
-            "Transfer": 1,
-            // Define points for other sale types as needed
-        };
+        // Convert sales object to an array for filtering
+        let salesArray = Object.keys(sales).map(key => ({
+            ...sales[key],
+            id: key
+        }));
 
-        // Initialize an object to track total points for each sale type for the current fetch
-        let pointsBySaleType = Object.keys(saleTypePoints).reduce((acc, type) => ({...acc, [type]: 0}), {});
-
-        // Convert sales object to an array for filtering and processing
-        let salesArray = Object.keys(sales).map(key => ({...sales[key], id: key}));
-
-        // Process salesArray to apply filters, sort, and calculate points
+        // Apply filters including lead ID
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+
+        // Sort sales based on timeSort value
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
@@ -202,25 +204,16 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         }
 
         salesArray.forEach(sale => {
-            Object.entries(sale.sale_types || {}).forEach(([type, isSelected]) => {
-                if (isSelected && saleTypePoints[type]) {
-                    pointsBySaleType[type] += saleTypePoints[type];
-                }
-            });
-        });
-
-        // Update the HTML for each sale type's total points after processing all sales
-        Object.entries(pointsBySaleType).forEach(([type, points]) => {
-            const elementId = `totalPoints-${type.replace(/\s+/g, '')}`;
-            const pointsElement = document.getElementById(elementId);
-            if (pointsElement) {
-                pointsElement.textContent = `${type} Points: ${points}`;
-            }
+            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
+            const saleContainer = document.createElement('div');
+            saleContainer.className = 'sales-history-entry';
+            saleContainer.setAttribute('data-sale-id', sale.id);
+            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
+            salesHistoryElement.appendChild(saleContainer);
         });
     });
 }
-
-
 
 // Listen to the apply filters button click, including lead ID filter
 document.getElementById('applyFilters').addEventListener('click', () => {
