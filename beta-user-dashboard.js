@@ -164,16 +164,22 @@ onAuthStateChanged(auth, (user) => {
     }
 }); 
 
-function calculateSalesTotals(salesArray) {
+function calculateSalesTotals(salesArray, selectedSaleType) {
     let totalsBySaleType = {};
+
+    // Filter salesArray based on selectedSaleType before calculating totals
+    salesArray = salesArray.filter(sale => selectedSaleType === 'all' || sale.sale_types[selectedSaleType]);
 
     salesArray.forEach(sale => {
         Object.keys(sale.sale_types || {}).forEach(type => {
-            if (!totalsBySaleType[type]) {
-                totalsBySaleType[type] = 0;
+            // Proceed only if selectedSaleType is 'all' or matches the current type
+            if (selectedSaleType === 'all' || type === selectedSaleType) {
+                if (!totalsBySaleType[type]) {
+                    totalsBySaleType[type] = 0;
+                }
+                // Increment the counter for this sale type by 1 or by the sale's points if available
+                totalsBySaleType[type] += sale.points ? sale.points[type] || 0 : 1;
             }
-            // Increment the counter for this sale type by 1 or by the sale's points if available
-            totalsBySaleType[type] += sale.points ? sale.points[type] || 0 : 1;
         });
     });
 
