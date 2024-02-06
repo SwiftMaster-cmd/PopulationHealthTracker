@@ -190,7 +190,7 @@ function calculateSalesTotals(salesArray) {
 
 function updateSalesTotalsUI(totalsBySaleType) {
     const salesTotalsElement = document.getElementById('salesTotals');
-    salesTotalsElement.innerHTML = '<h4>Sales Totals by Type:</h4>';
+    salesTotalsElement.innerHTML = '<h4>Sales Totals:</h4>';
 
     Object.entries(totalsBySaleType).forEach(([type, total]) => {
         const entry = document.createElement('div');
@@ -198,6 +198,47 @@ function updateSalesTotalsUI(totalsBySaleType) {
         salesTotalsElement.appendChild(entry);
     });
 }
+
+
+
+
+const commissionStructures = {
+    "Billable HRA": [{min: 0, max: 9, rate: 1.0}, {min: 10, max: 29, rate: 1.25}, {min: 20, max: 44, rate: 1.5}, {min: 45, max: 64, rate: 1.75}, {min: 65, max: Infinity, rate: 2.0}],
+    "Transfer/Schedule": [{min: 0, max: 9, rate: 3.0}, {min: 10, max: 14, rate: 3.5}, {min: 15, max: 34, rate: 4.0}, {min: 35, max: 54, rate: 4.5}, {min: 55, max: Infinity, rate: 5.0}],
+    "Select RX & MMP": [{min: 0, max: 14, rate: 4.0}, {min: 15, max: 24, rate: 7.0}, {min: 25, max: 84, rate: 10.0}, {min: 85, max: 154, rate: 13.0}, {min: 155, max: Infinity, rate: 16.0}]
+};
+
+function calculateSalesTotalsAndCommissions(salesArray) {
+    let totalsBySaleType = {};
+    let commissionsBySaleType = {};
+
+    salesArray.forEach(sale => {
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            if (!totalsBySaleType[type]) {
+                totalsBySaleType[type] = 0;
+                commissionsBySaleType[type] = 0;
+            }
+            totalsBySaleType[type] += 1;
+            const commissionRate = findCommissionRate(type, totalsBySaleType[type]);
+            commissionsBySaleType[type] += commissionRate; // Calculate commission for each sale
+        });
+    });
+
+    return {totalsBySaleType, commissionsBySaleType};
+}
+
+function findCommissionRate(type, quantity) {
+    const brackets = commissionStructures[type] || [];
+    for (let {min, max, rate} of brackets) {
+        if (quantity >= min && quantity <= max) {
+            return rate;
+        }
+    }
+    return 0; // Default rate if no bracket fits
+}
+
+
+
 
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
     return salesArray.filter(sale => {
@@ -287,43 +328,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
-
-
-
-const commissionStructures = {
-    "Billable HRA": [{min: 0, max: 9, rate: 1.0}, {min: 10, max: 29, rate: 1.25}, {min: 20, max: 44, rate: 1.5}, {min: 45, max: 64, rate: 1.75}, {min: 65, max: Infinity, rate: 2.0}],
-    "Transfer/Schedule": [{min: 0, max: 9, rate: 3.0}, {min: 10, max: 14, rate: 3.5}, {min: 15, max: 34, rate: 4.0}, {min: 35, max: 54, rate: 4.5}, {min: 55, max: Infinity, rate: 5.0}],
-    "Select RX & MMP": [{min: 0, max: 14, rate: 4.0}, {min: 15, max: 24, rate: 7.0}, {min: 25, max: 84, rate: 10.0}, {min: 85, max: 154, rate: 13.0}, {min: 155, max: Infinity, rate: 16.0}]
-};
-
-function calculateSalesTotalsAndCommissions(salesArray) {
-    let totalsBySaleType = {};
-    let commissionsBySaleType = {};
-
-    salesArray.forEach(sale => {
-        Object.keys(sale.sale_types || {}).forEach(type => {
-            if (!totalsBySaleType[type]) {
-                totalsBySaleType[type] = 0;
-                commissionsBySaleType[type] = 0;
-            }
-            totalsBySaleType[type] += 1;
-            const commissionRate = findCommissionRate(type, totalsBySaleType[type]);
-            commissionsBySaleType[type] += commissionRate; // Calculate commission for each sale
-        });
-    });
-
-    return {totalsBySaleType, commissionsBySaleType};
-}
-
-function findCommissionRate(type, quantity) {
-    const brackets = commissionStructures[type] || [];
-    for (let {min, max, rate} of brackets) {
-        if (quantity >= min && quantity <= max) {
-            return rate;
-        }
-    }
-    return 0; // Default rate if no bracket fits
-}
 
 
 
