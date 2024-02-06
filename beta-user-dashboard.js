@@ -277,13 +277,12 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         }));
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-       
-       
+
         // Calculate both sales totals and commissions
         let {totalsBySaleType, commissionsBySaleType} = calculateSalesTotalsAndCommissions(salesArray);
         updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType); // Update to include commissions
 
-
+        // Sort based on timeSort filter
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
@@ -301,6 +300,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
+
 
 document.getElementById('applyFilters').addEventListener('click', () => {
     const timeFilter = document.getElementById('timeFilter').value;
