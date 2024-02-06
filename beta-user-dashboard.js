@@ -166,6 +166,22 @@ onAuthStateChanged(auth, (user) => {
 }); 
 
 
+// Apply filters including lead ID
+salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+
+// Calculate total sales points based on filters
+let totalSalesPoints = 0;
+salesArray.forEach(sale => {
+    // Assuming each sale has a 'points' property or you calculate points based on sale type
+    // For simplicity, we're adding 1 point per sale; replace this with actual logic to calculate points based on sale type
+    totalSalesPoints += sale.points || 0; // Make sure to define how points are calculated based on sale types
+});
+
+// Display total sales points
+document.getElementById('totalSalesPoints').textContent = `Total Sales Points: ${totalSalesPoints}`;
+
+// Sort sales based on timeSort value
+// (Sorting code remains unchanged)
 
 
 
