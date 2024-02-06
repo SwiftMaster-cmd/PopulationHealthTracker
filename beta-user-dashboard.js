@@ -197,21 +197,21 @@ function updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType) {
 }
 
 const commissionStructures = {
-    "Billable HRA": [
+    "billable HRA": [
         { min: 0, max: 9, rate: 1.0 },
         { min: 10, max: 29, rate: 1.25 },
         { min: 20, max: 44, rate: 1.5 },
         { min: 45, max: 64, rate: 1.75 },
         { min: 65, max: Infinity, rate: 2.0 }
     ],
-    "Transfer/Schedule": [
+    "Transfer": [
         { min: 0, max: 9, rate: 3.0 },
         { min: 10, max: 14, rate: 3.5 },
         { min: 15, max: 34, rate: 4.0 },
         { min: 35, max: 54, rate: 4.5 },
         { min: 55, max: Infinity, rate: 5.0 }
     ],
-    "Select RX & MMP": [
+    "Select RX": [
         { min: 0, max: 14, rate: 4.0 },
         { min: 15, max: 24, rate: 7.0 },
         { min: 25, max: 84, rate: 10.0 },
