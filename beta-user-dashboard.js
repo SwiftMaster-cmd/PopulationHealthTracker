@@ -302,6 +302,172 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
+
+
+// Commission data structure (same as before)
+const CommissionData = {
+    commissionStructures: [
+      {
+        category: "Billable HRA",
+        rates: [
+          [0, 9, 1.0],
+          [10, 29, 1.25],
+          [20, 44, 1.5],
+          [45, 64, 1.75],
+          [65, Infinity, 2.0],
+        ],
+      },
+      {
+        category: "Transfer/Schedule",
+        rates: [
+          [0, 9, 3.0],
+          [10, 14, 3.5],
+          [15, 34, 4.0],
+          [35, 54, 4.5],
+          [55, Infinity, 5.0],
+        ],
+      },
+      {
+        category: "Select RX & MMP",
+        rates: [
+          [0, 14, 4.0],
+          [15, 24, 7.0],
+          [25, 84, 10.0],
+          [85, 154, 13.0],
+          [155, Infinity, 16.0],
+        ],
+      },
+    ],
+  };
+  
+  // Function to calculate commission for a sale
+  function calculateSaleCommission(sale) {
+    let totalCommission = 0;
+  
+    for (const structure of CommissionData.commissionStructures) {
+      for (const rate of structure.rates) {
+        const [minSales, maxSales, commissionRate] = rate;
+        const saleTypes = sale.sale_types || {};
+        const saleType = structure.category;
+  
+        if (
+          saleTypes[saleType] &&
+          sale.total_sales >= minSales &&
+          sale.total_sales <= maxSales
+        ) {
+          totalCommission += sale.total_sales * commissionRate;
+        }
+      }
+    }
+  
+    return totalCommission;
+  }
+  
+  // Function to update the UI with total commission for each sale type
+  function updateCommissionTotalsUI(salesArray) {
+    const commissionTotalsElement = document.getElementById('commissionTotals');
+    commissionTotalsElement.innerHTML = '<h4>Commission Totals by Sale Type:</h4>';
+  
+    const commissionTotals = {};
+  
+    salesArray.forEach((sale) => {
+      const commission = calculateSaleCommission(sale);
+      const saleType = sale.sale_types || {};
+      
+      for (const category in saleType) {
+        if (saleType[category]) {
+          commissionTotals[category] = (commissionTotals[category] || 0) + commission;
+        }
+      }
+    });
+  
+    for (const category in commissionTotals) {
+      const entry = document.createElement('div');
+      entry.textContent = `${category}: $${commissionTotals[category].toFixed(2)}`;
+      commissionTotalsElement.appendChild(entry);
+    }
+  }
+  
+  // Update the calculate button event listener
+  document.getElementById('applyFilters').addEventListener('click', () => {
+    // ... (existing filter logic)
+    
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
+    updateCommissionTotalsUI(salesArray); // Calculate and display commission totals
+  });
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Global variable to store the current sale data, including timestamp
 let currentSaleData;
 
