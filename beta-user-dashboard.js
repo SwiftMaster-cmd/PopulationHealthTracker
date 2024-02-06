@@ -236,8 +236,9 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         }));
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-        let totalsBySaleType = calculateSalesTotals(salesArray);
+        let {totalsBySaleType, commissionsBySaleType} = calculateSalesTotalsAndCommissions(salesArray);
         updateSalesTotalsUI(totalsBySaleType);
+        updateCommissionTotalsUI(commissionsBySaleType); // Add this line to update commission totals
 
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -290,112 +291,86 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
 
 
 
+const commissionStructures = {
+    "Billable HRA": [{min: 0, max: 9, rate: 1.0}, {min: 10, max: 29, rate: 1.25}, {min: 20, max: 44, rate: 1.5}, {min: 45, max: 64, rate: 1.75}, {min: 65, max: Infinity, rate: 2.0}],
+    "Transfer/Schedule": [{min: 0, max: 9, rate: 3.0}, {min: 10, max: 14, rate: 3.5}, {min: 15, max: 34, rate: 4.0}, {min: 35, max: 54, rate: 4.5}, {min: 55, max: Infinity, rate: 5.0}],
+    "Select RX & MMP": [{min: 0, max: 14, rate: 4.0}, {min: 15, max: 24, rate: 7.0}, {min: 25, max: 84, rate: 10.0}, {min: 85, max: 154, rate: 13.0}, {min: 155, max: Infinity, rate: 16.0}]
+};
 
+function calculateSalesTotalsAndCommissions(salesArray) {
+    let totalsBySaleType = {};
+    let commissionsBySaleType = {};
 
-
-
-
-
-
-
-
-
-
-
-
-
-// Commission data structure (same as before)
-const CommissionData = {
-    commissionStructures: [
-      {
-        category: "Billable HRA",
-        rates: [
-          [0, 9, 1.0],
-          [10, 29, 1.25],
-          [20, 44, 1.5],
-          [45, 64, 1.75],
-          [65, Infinity, 2.0],
-        ],
-      },
-      {
-        category: "Transfer/Schedule",
-        rates: [
-          [0, 9, 3.0],
-          [10, 14, 3.5],
-          [15, 34, 4.0],
-          [35, 54, 4.5],
-          [55, Infinity, 5.0],
-        ],
-      },
-      {
-        category: "Select RX & MMP",
-        rates: [
-          [0, 14, 4.0],
-          [15, 24, 7.0],
-          [25, 84, 10.0],
-          [85, 154, 13.0],
-          [155, Infinity, 16.0],
-        ],
-      },
-    ],
-  };
-  
-  // Function to calculate commission for a sale
-  function calculateSaleCommission(sale) {
-    let totalCommission = 0;
-  
-    for (const structure of CommissionData.commissionStructures) {
-      for (const rate of structure.rates) {
-        const [minSales, maxSales, commissionRate] = rate;
-        const saleTypes = sale.sale_types || {};
-        const saleType = structure.category;
-  
-        if (
-          saleTypes[saleType] &&
-          sale.total_sales >= minSales &&
-          sale.total_sales <= maxSales
-        ) {
-          totalCommission += sale.total_sales * commissionRate;
-        }
-      }
-    }
-  
-    return totalCommission;
-  }
-  
-  // Function to update the UI with total commission for each sale type
-  function updateCommissionTotalsUI(salesArray) {
-    const commissionTotalsElement = document.getElementById('commissionTotals');
-    commissionTotalsElement.innerHTML = '<h4>Commission Totals by Sale Type:</h4>';
-  
-    const commissionTotals = {};
-  
-    salesArray.forEach((sale) => {
-      const commission = calculateSaleCommission(sale);
-      const saleType = sale.sale_types || {};
-      
-      for (const category in saleType) {
-        if (saleType[category]) {
-          commissionTotals[category] = (commissionTotals[category] || 0) + commission;
-        }
-      }
+    salesArray.forEach(sale => {
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            if (!totalsBySaleType[type]) {
+                totalsBySaleType[type] = 0;
+                commissionsBySaleType[type] = 0;
+            }
+            totalsBySaleType[type] += 1;
+            const commissionRate = findCommissionRate(type, totalsBySaleType[type]);
+            commissionsBySaleType[type] += commissionRate; // Calculate commission for each sale
+        });
     });
-  
-    for (const category in commissionTotals) {
-      const entry = document.createElement('div');
-      entry.textContent = `${category}: $${commissionTotals[category].toFixed(2)}`;
-      commissionTotalsElement.appendChild(entry);
+
+    return {totalsBySaleType, commissionsBySaleType};
+}
+
+function findCommissionRate(type, quantity) {
+    const brackets = commissionStructures[type] || [];
+    for (let {min, max, rate} of brackets) {
+        if (quantity >= min && quantity <= max) {
+            return rate;
+        }
     }
-  }
-  
-  // Update the calculate button event listener
-  document.getElementById('applyFilters').addEventListener('click', () => {
-    // ... (existing filter logic)
-    
-    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
-    updateCommissionTotalsUI(salesArray); // Calculate and display commission totals
-  });
-  
+    return 0; // Default rate if no bracket fits
+}
+
+function updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType) {
+    const salesTotalsElement = document.getElementById('salesTotals');
+    salesTotalsElement.innerHTML = '<h4>Sales Totals and Commissions by Type:</h4>';
+
+    Object.entries(totalsBySaleType).forEach(([type, total]) => {
+        const entry = document.createElement('div');
+        const commission = commissionsBySaleType[type];
+        entry.textContent = `${type}: ${total} Sales, $${commission.toFixed(2)} Commission`;
+        salesTotalsElement.appendChild(entry);
+    });
+
+    // Optionally, calculate and display the combined total commission
+    const totalCommission = Object.values(commissionsBySaleType).reduce((acc, curr) => acc + curr, 0);
+    const totalEntry = document.createElement('div');
+    totalEntry.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+    salesTotalsElement.appendChild(totalEntry);
+}
+
+function updateCommissionTotalsUI(commissionsBySaleType) {
+    const commissionTotalsElement = document.getElementById('commissionTotals');
+    commissionTotalsElement.innerHTML = '<h4>Commission Totals by Type:</h4>';
+
+    Object.entries(commissionsBySaleType).forEach(([type, commission]) => {
+        const entry = document.createElement('div');
+        entry.textContent = `${type}: $${commission.toFixed(2)} Commission`;
+        commissionTotalsElement.appendChild(entry);
+    });
+
+    // Optionally, calculate and display the combined total commission
+    const totalCommission = Object.values(commissionsBySaleType).reduce((acc, curr) => acc + curr, 0);
+    const totalEntry = document.createElement('div');
+    totalEntry.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
+    commissionTotalsElement.appendChild(totalEntry);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
