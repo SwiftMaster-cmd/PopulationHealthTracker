@@ -343,22 +343,6 @@ function updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType) {
     salesTotalsElement.appendChild(totalEntry);
 }
 
-function updateCommissionTotalsUI(commissionsBySaleType) {
-    const commissionTotalsElement = document.getElementById('commissionTotals');
-    commissionTotalsElement.innerHTML = '<h4>Commission Totals by Type:</h4>';
-
-    Object.entries(commissionsBySaleType).forEach(([type, commission]) => {
-        const entry = document.createElement('div');
-        entry.textContent = `${type}: $${commission.toFixed(2)} Commission`;
-        commissionTotalsElement.appendChild(entry);
-    });
-
-    // Optionally, calculate and display the combined total commission
-    const totalCommission = Object.values(commissionsBySaleType).reduce((acc, curr) => acc + curr, 0);
-    const totalEntry = document.createElement('div');
-    totalEntry.textContent = `Total Commission: $${totalCommission.toFixed(2)}`;
-    commissionTotalsElement.appendChild(totalEntry);
-}
 
 
 
