@@ -322,68 +322,51 @@ input:focus, textarea:focus {
 
 
 
-
-
-
-
-
-/* Style the container for sales totals and commissions */
-#salesTotalsAndCommissions {
-    max-width: 500px;
+/* General styling for the Sales Totals Section */
+#salesTotals {
+    width: 500px;
     margin: 20px auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    padding: 20px;
-    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 25px;
+    color: #FFFFFF;
     text-align: center;
     animation: fadeIn 1s ease-out;
 }
 
-/* Style the sales totals section */
-#salesTotals {
-    flex: 1; /* Occupy 50% of the container's width */
-    background: transparent; /* No background to keep it simple and clean */
-    margin: 0;
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease-in-out, transform 0.3s ease;
-}
-
-/* Style the commission totals section */
-#commissionTotals {
-    flex: 1; /* Occupy 50% of the container's width */
-    background: transparent; /* No background to keep it simple and clean */
-    margin: 0;
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease-in-out, transform 0.3s ease;
-}
-
-/* Enhance readability on hover for both sections */
-#salesTotals:hover, #commissionTotals:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Slightly highlight on hover */
-    cursor: pointer; /* Change cursor to indicate interactiveness */
-    transform: translateY(-2px); /* Lift the section a bit on hover */
-}
-
-/* Add a title style for the sales totals section */
+/* Title styling within the sales totals for clear hierarchy */
 #salesTotals h4 {
-    font-size: 24px;
-    margin-bottom: 10px; /* Adjust spacing between title and entries */
+    font-size: 22px;
     color: #FFEBCD;
+    margin-bottom: 20px;
+    text-transform: uppercase; /* Adds a bit of formality and emphasis */
 }
 
-/* Add a title style for the commission totals section */
-#commissionTotals h4 {
-    font-size: 24px;
-    margin-bottom: 10px; /* Adjust spacing between title and entries */
-    color: #FFEBCD;
+/* Styling for individual entries within the sales totals */
+#salesTotals div {
+    margin: 10px 0;
+    font-size: 18px;
+    padding: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2); /* Subtle border for definition without overwhelming */
+    border-radius: 8px; /* Soft rounded corners */
+    background-color: rgba(255, 255, 255, 0.1); /* Slight visibility to distinguish entries */
+    box-shadow: none; /* Removing inner shadow for a cleaner look */
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover effects for entries to improve interactivity */
+#salesTotals div:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Lighter highlight on hover */
+    border-color: rgba(255, 255, 255, 0.3); /* Slightly more visible border on hover */
+    transform: translateY(-3px); /* More pronounced lift effect */
+    cursor: pointer;
+}
+
+/* Apply consistent spacing and alignment for overall cleanliness */
+#salesTotals p {
+    margin: 5px 0; /* Ensure texts within divs are not too cramped */
+    line-height: 1.5; /* Improve readability */
 }
 
 
@@ -391,16 +374,9 @@ input:focus, textarea:focus {
 
 
 
-<div id="salesTotalsAndCommissions">
-    <div id="salesTotals">
-        <h4>Sales Totals:</h4>
-        <!-- Sales totals entries will be added here -->
-    </div>
-    <div id="commissionTotals">
-        <h4>Commission Totals:</h4>
-        <!-- Commission totals entries will be added here -->
-    </div>
-</div>
+
+
+
 
 
 
