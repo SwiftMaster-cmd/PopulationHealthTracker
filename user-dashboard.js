@@ -167,9 +167,6 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-
-
-// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -187,16 +184,15 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
-        // Convert sales object to an array for filtering
+        let salesCountByType = {};
+
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
         }));
 
-        // Apply filters including lead ID
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort sales based on timeSort value
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
@@ -204,14 +200,29 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         }
 
         salesArray.forEach(sale => {
-            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
-            const saleContainer = document.createElement('div');
-            saleContainer.className = 'sales-history-entry';
-            saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
-            salesHistoryElement.appendChild(saleContainer);
+            Object.keys(sale.sale_types || {}).forEach(type => {
+                if (sale.sale_types[type]) {
+                    salesCountByType[type] = (salesCountByType[type] || 0) + 1;
+                }
+            });
         });
+
+        // Now, salesCountByType contains the total counts for each sale type
+        // Example: { 'billable HRA': 5, 'Flex HRA': 3, ... }
+
+        // Update the HTML to display these totals
+        updateSalesCountsDisplay(salesCountByType);
+    });
+}
+
+function updateSalesCountsDisplay(salesCountByType) {
+    const salesCountsElement = document.getElementById('salesCounts');
+    salesCountsElement.innerHTML = '<h3>Total Sales by Type:</h3>'; // Reset content
+
+    Object.entries(salesCountByType).forEach(([type, count]) => {
+        const entry = document.createElement('div');
+        entry.textContent = `${type}: ${count}`;
+        salesCountsElement.appendChild(entry);
     });
 }
 
