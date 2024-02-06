@@ -245,11 +245,15 @@ function calculateCommission(type) {
     const brackets = commissionStructures[type] || [];
     let commission = 0;
 
-    brackets.forEach(({ min, max, rate }) => {
-        if (totalsBySaleType[type] >= min && (totalsBySaleType[type] <= max || max === Infinity)) {
-            commission = totalsBySaleType[type] * rate;
+    const totalSales = totalsBySaleType[type] || 0; // Get the total sales count for the current type
+
+    for (let i = 0; i < brackets.length; i++) {
+        const { min, max, rate } = brackets[i];
+        if (totalSales >= min && (totalSales <= max || max === Infinity)) {
+            commission = totalSales * rate;
+            break; // Exit the loop once a matching bracket is found
         }
-    });
+    }
 
     return commission;
 }
