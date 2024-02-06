@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="user-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="dashboard-container">
+         <!-- Add Sales Section -->
+            <h2>Welcome to the dashboard</h2>
+        <!-- Add Sales Section -->
+
+        <!-- Add Sales Section -->
+       <!-- Add Sales Section -->
+<div class="sales-container">
+    <h3>Add Sales</h3>
+    <form id="addSalesForm">
+        <!-- LEAD ID Section -->
+        <div class="input-group">
+            <label for="lead_id" class="label">Lead ID:</label>
+            <input type="text" id="lead_id" name="lead_id" class="input-field" required>
+        </div>
+        <!-- ESI Consent Section -->
+        <div class="input-group esi-consent">
+            <label class="label">E.S.I.:</label>
+            <div class="options">
+                <!-- Hidden radio buttons -->
+                <input type="radio" id="esi_yes" name="esi_content" value="Yes" style="display:none;">
+                <input type="radio" id="esi_no" name="esi_content" value="No" style="display:none;">
+                
+                <!-- Visible buttons -->
+                <button type="button" class="esi-btn" data-value="Yes">Yes</button>
+                <button type="button" class="esi-btn" data-value="No">No</button>
+            </div>
+        </div>
+        <!-- Sale Type Section -->
+        <div class="input-group sale-type">
+            <label class="label">Sale Type:</label>
+            <div class="sale-type-buttons">
+                <button type="button" class="sale-type-btn" data-value="billable HRA">Billable HRA</button>
+                <button type="button" class="sale-type-btn" data-value="Flex HRA">Flex HRA</button>
+                <button type="button" class="sale-type-btn" data-value="Select RX">Select RX</button>
+                <button type="button" class="sale-type-btn" data-value="Transfer">Transfer</button>
+            </div>
+        </div>
+        <!-- Notes Section -->
+        <div class="input-group">
+            <label for="notes" class="label">Notes:</label>
+            <textarea id="notes" name="notes" rows="4" cols="50" class="input-field" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn"><i class="fas fa-plus"></i> Add Sale</button>
+    </form>
+    <div id="confirmationMessage"></div>
+</div>
+
+<div id="editSaleModal" style="display:none;">
+    <form id="editSaleForm">
+        <input type="hidden" id="editSaleId">
+        <div>
+            <label for="editLeadId">Lead ID:</label>
+            <input type="text" id="editLeadId" name="lead_id" required>
+        </div>
+        <!-- ESI Consent Buttons -->
+        <div>
+            <label>ESI Consent:</label>
+            <button type="button" class="edit-esi-consent-btn" data-value="Yes">Yes</button>
+            <button type="button" class="edit-esi-consent-btn" data-value="No">No</button>
+        </div>
+        <!-- Sale Types Buttons -->
+        <div id="editSaleTypes">
+            <label>Sale Types:</label>
+            <button type="button" class="edit-sale-type-btn" data-value="billable HRA">Billable HRA</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Flex HRA">Flex HRA</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Select RX">Select RX</button>
+            <button type="button" class="edit-sale-type-btn" data-value="Transfer">Transfer</button>
+        </div>
+        <div>
+            <label for="editNotes">Notes:</label>
+            <textarea id="editNotes" name="notes" rows="4" cols="50" required></textarea>
+        </div>
+        <!-- Submit Button with ID for JavaScript targeting -->
+        <button type="submit" id="editSaleSubmitBtn">Save Changes</button>
+        <button type="button" id="cancelEditSale">Cancel</button>
+
+    </form>
+</div>
+
+
+
+
+
+
+<!-- Filter Section -->
+<div class="filters-container">
+    <h3>Filters</h3>
+    <div class="filter-group">
+        <label for="timeSortFilter">Sort By:</label>
+        <select id="timeSortFilter">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
+        <label for="timeFilter">Time Frame:</label>
+        <select id="timeFilter">
+            <option value="all">All</option>
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label for="saleTypeFilter">Sale Type:</label>
+        <select id="saleTypeFilter">
+            <option value="all">All</option>
+            <option value="billable HRA">Billable HRA</option>
+            <option value="Flex HRA">Flex HRA</option>
+            <option value="Select RX">Select RX</option>
+            <option value="Transfer">Transfer</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label for="esiFilter">ESI Consent:</label>
+        <select id="esiFilter">
+            <option value="all">All</option>
+            <option value="Yes">Yes</opztion>
+            <option value="No">No</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
+        <label for="lead_id">Search by Sale</label>
+        <input type="text" id="leadIdFilter" placeholder="Filter by Lead ID">
+        
+    </div>
+    <button id="applyFilters">Apply Filters</button>
+</div>
+
+
+
+
+  <!-- Sales History Section -->
+  <div class="sales-history-container">
+    <h3>Sales History</h3>
+    <div id="salesHistory" class="sales-history">
+        <!-- Sales history will be dynamically populated here -->
+    </div>
+</div>
+
+
+
+
+
+<script type="module" src="user-dashboard.js"></script>
+</body>
+</html>
