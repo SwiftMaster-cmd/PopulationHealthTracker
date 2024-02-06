@@ -233,24 +233,22 @@ function calculateSalesTotalsAndCommissions(salesArray) {
             totalsBySaleType[type] += 1;
 
             // Calculate commission for each sale based on the commission structure
-            const commissionRate = calculateCommission(type);
+            const commissionRate = calculateCommission(type, totalsBySaleType[type]);
             commissionsBySaleType[type] += commissionRate;
         });
     });
 
-    return { totalsBySaleType, commissionsBySaleType };
+    return {totalsBySaleType, commissionsBySaleType};
 }
 
-function calculateCommission(type) {
+function calculateCommission(type, quantity) {
     const brackets = commissionStructures[type] || [];
     let commission = 0;
 
-    const totalSales = totalsBySaleType[type] || 0; // Get the total sales count for the current type
-
     for (let i = 0; i < brackets.length; i++) {
         const { min, max, rate } = brackets[i];
-        if (totalSales >= min && (totalSales <= max || max === Infinity)) {
-            commission = totalSales * rate;
+        if (quantity >= min && (quantity <= max || max === Infinity)) {
+            commission = rate * quantity; // Calculate commission based on total sales quantity
             break; // Exit the loop once a matching bracket is found
         }
     }
