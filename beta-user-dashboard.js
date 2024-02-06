@@ -148,7 +148,6 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
-
 // Assuming Firebase has already been initialized elsewhere in your script
 
 // Placeholder for user's ID
@@ -165,25 +164,32 @@ onAuthStateChanged(auth, (user) => {
     }
 }); 
 
+function calculateSalesTotals(salesArray) {
+    let totalsBySaleType = {};
 
-// Apply filters including lead ID
-salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+    salesArray.forEach(sale => {
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            if (!totalsBySaleType[type]) {
+                totalsBySaleType[type] = 0;
+            }
+            // Increment the counter for this sale type by 1 or by the sale's points if available
+            totalsBySaleType[type] += sale.points ? sale.points[type] || 0 : 1;
+        });
+    });
 
-// Calculate total sales points based on filters
-let totalSalesPoints = 0;
-salesArray.forEach(sale => {
-    // Assuming each sale has a 'points' property or you calculate points based on sale type
-    // For simplicity, we're adding 1 point per sale; replace this with actual logic to calculate points based on sale type
-    totalSalesPoints += sale.points || 0; // Make sure to define how points are calculated based on sale types
-});
+    return totalsBySaleType;
+}
 
-// Display total sales points
-document.getElementById('totalSalesPoints').textContent = `Total Sales Points: ${totalSalesPoints}`;
+function updateSalesTotalsUI(totalsBySaleType) {
+    const salesTotalsElement = document.getElementById('salesTotals');
+    salesTotalsElement.innerHTML = '<h4>Sales Totals by Type:</h4>'; // Clear previous content and add header
 
-// Sort sales based on timeSort value
-// (Sorting code remains unchanged)
-
-
+    Object.entries(totalsBySaleType).forEach(([type, total]) => {
+        const entry = document.createElement('div');
+        entry.textContent = `${type}: ${total}`;
+        salesTotalsElement.appendChild(entry);
+    });
+}
 
 // Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
@@ -212,6 +218,10 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         // Apply filters including lead ID
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
+        // Calculate and display sales totals by type
+        let totalsBySaleType = calculateSalesTotals(salesArray);
+        updateSalesTotalsUI(totalsBySaleType);
+
         // Sort sales based on timeSort value
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -219,6 +229,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
+        // Display each sale entry
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
             const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
@@ -279,7 +290,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
         </div>
     `;
 }
-
 
 
 
