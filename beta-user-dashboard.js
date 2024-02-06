@@ -188,16 +188,18 @@ function calculateSalesTotals(salesArray) {
     return totalsBySaleType;
 }
 
-function updateSalesTotalsUI(totalsBySaleType) {
+function updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType) {
     const salesTotalsElement = document.getElementById('salesTotals');
-    salesTotalsElement.innerHTML = '<h4>Sales Totals:</h4>';
+    salesTotalsElement.innerHTML = '<h4>Sales Totals and Commissions:</h4>';
 
     Object.entries(totalsBySaleType).forEach(([type, total]) => {
         const entry = document.createElement('div');
-        entry.textContent = `${type}: ${total}`;
+        const commission = commissionsBySaleType[type] || 0;
+        entry.textContent = `${type}: ${total} Sales, $${commission.toFixed(2)} Commission`;
         salesTotalsElement.appendChild(entry);
     });
 }
+
 
 
 
@@ -300,6 +302,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
+
 
 
 document.getElementById('applyFilters').addEventListener('click', () => {
