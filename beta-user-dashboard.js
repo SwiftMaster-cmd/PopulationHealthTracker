@@ -257,29 +257,20 @@ function calculateCommission(type, quantity) {
 
 
 
+
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
-    const now = new Date();
     return salesArray.filter(sale => {
         const saleDate = new Date(sale.timestamp);
-        
-        // Existing filters
+        const now = new Date();
+        if (timeFilter === 'day' && saleDate.toDateString() !== now.toDateString()) return false;
+        if (timeFilter === 'week' && (now - saleDate) / (1000 * 60 * 60 * 24) > 7) return false;
         if (timeFilter === 'month' && (saleDate.getMonth() !== now.getMonth() || saleDate.getFullYear() !== now.getFullYear())) return false;
-        // Add additional conditions for other filters as necessary
-        
-        // Filter for the current month specifically, if needed
-        if (timeFilter === 'currentMonth' && (saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear())) {
-            return true; // Keep sales from the current month
-        }
-
-        // Other filters...
         if (saleTypeFilter !== 'all' && (!sale.sale_types || !sale.sale_types[saleTypeFilter])) return false;
         if (esiFilter !== 'all' && sale.esi_content !== esiFilter) return false;
         if (leadIdFilter && sale.lead_id !== leadIdFilter) return false;
-        
         return true;
     });
 }
-
 
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
