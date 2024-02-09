@@ -52,6 +52,7 @@ function calculateSalesTotals(salesArray) {
     return totalsBySaleType;
 }
 
+
 function updateSalesTotalsUI(totalsBySaleType) {
     const salesTotalsElement = document.getElementById('salesTotals');
     salesTotalsElement.innerHTML = '<h4>Sales Totals:</h4>';
@@ -64,6 +65,8 @@ function updateSalesTotalsUI(totalsBySaleType) {
 }
 
 
+
+f
 
 
 
