@@ -1,0 +1,89 @@
+/* Reset some basic elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Patrick Hand', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.dashboard-container, .sales-container, .filters-container, #salesTotalsAndCommissions, .sales-history-container {
+    background: #fff;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2, h3, h4 {
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-field, #timeSortFilter, #timeFilter, #saleTypeFilter, #esiFilter, #leadIdFilter, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.esi-btn, .sale-type-btn, .edit-esi-consent-btn, .edit-sale-type-btn, .submit-btn, #applyFilters, #editSaleSubmitBtn, #cancelEditSale {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.esi-btn:hover, .sale-type-btn:hover, .edit-esi-consent-btn:hover, .edit-sale-type-btn:hover, .submit-btn:hover, #applyFilters:hover, #editSaleSubmitBtn:hover, #cancelEditSale:hover {
+    background-color: #0056b3;
+}
+
+#confirmationMessage, #salesTotals, #commissionTotals {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+}
+
+.sales-history {
+    margin-top: 20px;
+}
+
+#editSaleModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    width: 80%;
+    max-width: 500px;
+    display: none; /* Adjust this with JavaScript */
+}
+
+/* This style is for the icon inside the Add Sale button */
+.fas {
+    margin-right: 5px;
+}
