@@ -52,17 +52,17 @@ function calculateSalesTotals(salesArray) {
     return totalsBySaleType;
 }
 
-function updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType) {
+function updateSalesTotalsUI(totalsBySaleType) {
     const salesTotalsElement = document.getElementById('salesTotals');
-    salesTotalsElement.innerHTML = '<h4>Sales Totals and Commissions:</h4>';
+    salesTotalsElement.innerHTML = '<h4>Sales Totals:</h4>';
 
     Object.entries(totalsBySaleType).forEach(([type, total]) => {
         const entry = document.createElement('div');
-        const commission = commissionsBySaleType[type] || 0;
-        entry.textContent = `${type}: ${total} Sales, $${commission.toFixed(2)} Commission`;
+        entry.textContent = `${type}: ${total} Sales`;
         salesTotalsElement.appendChild(entry);
     });
 }
+
 
 const commissionStructures = {
     "billable HRA": [
