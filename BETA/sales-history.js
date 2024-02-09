@@ -66,7 +66,6 @@ function updateSalesTotalsUI(totalsBySaleType) {
 
 
 
-f
 
 
 
