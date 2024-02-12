@@ -107,9 +107,8 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Calculate both sales totals and commissions
-        let {totalsBySaleType, commissionsBySaleType} = calculateSalesTotalsAndCommissions(salesArray);
-        updateSalesTotalsUI(totalsBySaleType, commissionsBySaleType); // Update to include commissions
+        // Calculate sales totals
+        let totalsBySaleType = calculateSalesTotals(salesArray);
 
         // Sort based on timeSort filter
         if (timeSort === 'newest') {
@@ -124,11 +123,12 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
+            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay, totalsBySaleType); // Pass totalsBySaleType
             salesHistoryElement.appendChild(saleContainer);
         });
     });
 }
+
 
 
 
@@ -142,12 +142,15 @@ document.getElementById('applyFilters').addEventListener('click', () => {
     fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
 });
 
-function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay, totalsBySaleType) {
+    // Construct a string with sale type counts
+    let saleTypeCounts = sale.sale_types ? Object.keys(sale.sale_types).map(type => `${type}: ${totalsBySaleType[type] || 0} Sales`).join(', ') : 'None';
+
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Sale Types: ${saleTypesDisplay} (${saleTypeCounts})</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -157,6 +160,3 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
         </div>
     `;
 }
-
-
-
