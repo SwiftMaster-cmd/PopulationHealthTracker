@@ -249,21 +249,23 @@ async function getSalesData(userId) {
     return snapshot.val() || {};
 }
 
-document.getElementById('cancelEditSale').addEventListener('click', function() {
-    // Clear selections and any input fields as needed
-    document.querySelectorAll('.edit-sale-type-btn.selected, .edit-esi-consent-btn.selected').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    // Clear global variables or reset them to their default states
-    selectedSaleTypes = {};
-    selectedEsiContent = null;
-    
-    // Optionally, clear input fields if necessary
-    document.getElementById('editSaleId').value = '';
-    document.getElementById('editLeadId').value = '';
-    document.getElementById('editNotes').value = '';
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay, totalsBySaleType) {
+    let saleTypesText = sale.sale_types ? Object.keys(sale.sale_types).map(type => {
+        // Assuming each sale contributes "1" to the type it belongs to
+        return `${type} (Contributes 1 to ${totalsBySaleType[type] || 0} Total Sales)`;
+    }).join(', ') : 'None';
 
-    // Hide the modal
-    document.getElementById('editSaleModal').style.display = 'none';
-});
+    return `
+        <div class="sale-info">
+            <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+            <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+            <div class="sale-data">Sale Types: ${saleTypesText}</div>
+            <div class="sale-data">Notes: ${sale.notes}</div>
+            <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+            <div class="sale-actions">
+                <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+            </div>
+        </div>
+    `;
+}
