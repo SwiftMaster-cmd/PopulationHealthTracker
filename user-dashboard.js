@@ -167,9 +167,8 @@ onAuthStateChanged(auth, (user) => {
 
 
 
+// Auth state change listener and other initialization code...
 
-
-// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -187,35 +186,56 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
-        // Convert sales object to an array for filtering
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
         }));
 
-        // Apply filters including lead ID
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort sales based on timeSort value
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
+        // Correctly placed sale type counts calculation
+        let saleTypeCounts = salesArray.reduce((acc, sale) => {
+            Object.keys(sale.sale_types || {}).forEach(type => {
+                acc[type] = (acc[type] || 0) + 1;
+            });
+            return acc;
+        }, {});
+
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, saleTypeCounts);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
+            saleContainer.innerHTML = saleContainerHTML;
             salesHistoryElement.appendChild(saleContainer);
         });
     });
 }
 
-// Listen to the apply filters button click, including lead ID filter
+// applyFilters, generateSaleEntryHTML, and other related functions...
+
+
+
+let saleTypeCounts = {};
+salesArray.forEach(sale => {
+    Object.keys(sale.sale_types || {}).forEach(type => {
+        if (!saleTypeCounts[type]) {
+            saleTypeCounts[type] = 1;
+        } else {
+            saleTypeCounts[type]++;
+        }
+    });
+});
+
+
+
 document.getElementById('applyFilters').addEventListener('click', () => {
     const timeFilter = document.getElementById('timeFilter').value;
     const saleTypeFilter = document.getElementById('saleTypeFilter').value;
@@ -248,12 +268,17 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
-function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypes, saleTypeCounts) {
+    // Create a display string with counts for each sale type
+    const saleTypesDisplayWithCounts = Object.keys(saleTypes || {})
+        .map(type => `${type} (${saleTypeCounts[type]})`)
+        .join(', ');
+
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Sale Types: ${saleTypesDisplayWithCounts || 'None'}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
