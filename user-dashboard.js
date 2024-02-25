@@ -167,8 +167,9 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-// Auth state change listener and other initialization code...
 
+
+// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -186,60 +187,35 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
+        // Convert sales object to an array for filtering
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
         }));
 
+        // Apply filters including lead ID
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort the array to start with the oldest for counting purposes
-        salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-        let cumulativeSaleTypeCounts = {};
-
-        // Calculate cumulative counts from oldest to newest
-        salesArray.forEach(sale => {
-            Object.keys(sale.sale_types || {}).forEach(type => {
-                cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
-            });
-        });
-
-        // If the sort order is newest first, reverse the array after counts are calculated
+        // Sort sales based on timeSort value
         if (timeSort === 'newest') {
-            salesArray.reverse();
+            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        } else if (timeSort === 'oldest') {
+            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Now generate the HTML for each sale using the reversed (or not) salesArray
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, cumulativeSaleTypeCounts);
+            const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = saleContainerHTML;
+            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
             salesHistoryElement.appendChild(saleContainer);
         });
     });
 }
 
-// applyFilters, generateSaleEntryHTML, and other related functions...
-
-
-
-let saleTypeCounts = {};
-salesArray.forEach(sale => {
-    Object.keys(sale.sale_types || {}).forEach(type => {
-        if (!saleTypeCounts[type]) {
-            saleTypeCounts[type] = 1;
-        } else {
-            saleTypeCounts[type]++;
-        }
-    });
-});
-
-
-
+// Listen to the apply filters button click, including lead ID filter
 document.getElementById('applyFilters').addEventListener('click', () => {
     const timeFilter = document.getElementById('timeFilter').value;
     const saleTypeFilter = document.getElementById('saleTypeFilter').value;
@@ -272,23 +248,12 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
-
-function generateSaleEntryHTML(sale, formattedTimestamp, saleTypes, cumulativeSaleTypeCounts) {
-    // Create a display string with cumulative counts for each sale type
-    const saleTypesDisplayWithCounts = Object.keys(saleTypes || {})
-        .map(type => {
-            // Subtract the count to get the number at the point of this sale
-            const countAtThisSale = cumulativeSaleTypeCounts[type] - (sale.sale_types[type] ? 1 : 0);
-            return `${type} (${countAtThisSale + 1})`; // Add 1 to include this sale
-        })
-        .join(', ');
-
-    // Return the HTML string with the correct counts
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplayWithCounts || 'None'}</div>
+            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -298,6 +263,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypes, cumulativeSa
         </div>
     `;
 }
+
 
 
 
