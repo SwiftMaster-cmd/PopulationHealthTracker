@@ -193,22 +193,26 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        if (timeSort === 'newest') {
-            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        } else if (timeSort === 'oldest') {
-            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        }
+        // Sort the array to start with the oldest for counting purposes
+        salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
         let cumulativeSaleTypeCounts = {};
 
+        // Calculate cumulative counts from oldest to newest
         salesArray.forEach(sale => {
-            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-
-            // Update cumulativeSaleTypeCounts for the current sale
             Object.keys(sale.sale_types || {}).forEach(type => {
                 cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
             });
+        });
 
+        // If the sort order is newest first, reverse the array after counts are calculated
+        if (timeSort === 'newest') {
+            salesArray.reverse();
+        }
+
+        // Now generate the HTML for each sale using the reversed (or not) salesArray
+        salesArray.forEach(sale => {
+            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
             const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, cumulativeSaleTypeCounts);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
@@ -218,7 +222,6 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
-
 
 // applyFilters, generateSaleEntryHTML, and other related functions...
 
@@ -271,10 +274,16 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
 
 
 function generateSaleEntryHTML(sale, formattedTimestamp, saleTypes, cumulativeSaleTypeCounts) {
+    // Create a display string with cumulative counts for each sale type
     const saleTypesDisplayWithCounts = Object.keys(saleTypes || {})
-        .map(type => `${type} (${cumulativeSaleTypeCounts[type]})`)
+        .map(type => {
+            // Subtract the count to get the number at the point of this sale
+            const countAtThisSale = cumulativeSaleTypeCounts[type] - (sale.sale_types[type] ? 1 : 0);
+            return `${type} (${countAtThisSale + 1})`; // Add 1 to include this sale
+        })
         .join(', ');
 
+    // Return the HTML string with the correct counts
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
