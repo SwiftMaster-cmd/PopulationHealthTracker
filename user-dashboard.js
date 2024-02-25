@@ -203,15 +203,32 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        salesArray.forEach(sale => {
-            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleTypesDisplay = sale.sale_types ? Object.keys(sale.sale_types).filter(type => sale.sale_types[type]).join(', ') : 'None';
-            const saleContainer = document.createElement('div');
-            saleContainer.className = 'sales-history-entry';
-            saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay);
-            salesHistoryElement.appendChild(saleContainer);
-        });
+        // Inside the forEach loop in fetchSalesHistory
+salesArray.forEach(sale => {
+    const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+    // Updated to include saleTypeCounts in the function call
+    const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, saleTypeCounts);
+    const saleContainer = document.createElement('div');
+    saleContainer.className = 'sales-history-entry';
+    saleContainer.setAttribute('data-sale-id', sale.id);
+    saleContainer.innerHTML = saleContainerHTML;
+    salesHistoryElement.appendChild(saleContainer);
+});
+
+        // Inside fetchSalesHistory function, after filtering salesArray
+
+// Calculate sale type counts
+let saleTypeCounts = {};
+salesArray.forEach(sale => {
+    Object.keys(sale.sale_types || {}).forEach(type => {
+        if (!saleTypeCounts[type]) {
+            saleTypeCounts[type] = 1;
+        } else {
+            saleTypeCounts[type]++;
+        }
+    });
+});
+
     });
 }
 
