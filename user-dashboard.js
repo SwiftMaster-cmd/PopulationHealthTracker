@@ -199,17 +199,17 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Correctly placed sale type counts calculation
-        let saleTypeCounts = salesArray.reduce((acc, sale) => {
-            Object.keys(sale.sale_types || {}).forEach(type => {
-                acc[type] = (acc[type] || 0) + 1;
-            });
-            return acc;
-        }, {});
+        let cumulativeSaleTypeCounts = {};
 
         salesArray.forEach(sale => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, saleTypeCounts);
+
+            // Update cumulativeSaleTypeCounts for the current sale
+            Object.keys(sale.sale_types || {}).forEach(type => {
+                cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
+            });
+
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, cumulativeSaleTypeCounts);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
@@ -218,6 +218,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
+
 
 // applyFilters, generateSaleEntryHTML, and other related functions...
 
@@ -268,10 +269,10 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
-function generateSaleEntryHTML(sale, formattedTimestamp, saleTypes, saleTypeCounts) {
-    // Create a display string with counts for each sale type
+
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypes, cumulativeSaleTypeCounts) {
     const saleTypesDisplayWithCounts = Object.keys(saleTypes || {})
-        .map(type => `${type} (${saleTypeCounts[type]})`)
+        .map(type => `${type} (${cumulativeSaleTypeCounts[type]})`)
         .join(', ');
 
     return `
@@ -288,7 +289,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypes, saleTypeCoun
         </div>
     `;
 }
-
 
 
 
