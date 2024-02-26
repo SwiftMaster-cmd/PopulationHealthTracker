@@ -287,11 +287,16 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 
-
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) { // Accept timeSort
+function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
     // Sort cumulative counts based on timeSort value
     const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-        .sort(([, countA], [, countB]) => timeSort === 'newest' ? countB - countA : countA - countB); // Sort based on timeSort
+        .sort(([, countA], [, countB]) => {
+            if (timeSort === 'newest') {
+                return countB - countA; // Sort in descending order
+            } else if (timeSort === 'oldest') {
+                return countA - countB; // Sort in ascending order
+            }
+        });
 
     let saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
         `${type}: ${count}`
@@ -311,6 +316,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
