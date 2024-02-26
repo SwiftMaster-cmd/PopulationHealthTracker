@@ -220,13 +220,12 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
         if (!cumulativeCounts[type]) {
-            cumulativeCounts[type] = -currentSaleTypes[type]; // Decrement the count for new sales
+            cumulativeCounts[type] = currentSaleTypes[type];
         } else {
-            cumulativeCounts[type] -= currentSaleTypes[type]; // Decrement the count for new sales
+            cumulativeCounts[type] += currentSaleTypes[type];
         }
     });
 }
-
 
 
 
@@ -299,10 +298,15 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
             return timeSort === 'newest' ? countB - countA : countA - countB;
         });
 
-    // Generate display string for sale types
+    // Generate display string for sale types in reverse order if sorting by newest first
+    if (timeSort === 'newest') {
+        sortedCumulativeCounts.reverse();
+    }
+    
     saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
         `${type}: ${count}`
     ).join(', ');
+    
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
@@ -317,6 +321,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
+
 
 
 
