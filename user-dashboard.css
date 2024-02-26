@@ -194,9 +194,16 @@ header {
 .sale-data {
     width: 200px; /* Set width to 200px */
     margin-bottom: 10px;
-    border-radius: 10px;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
+    border-radius: 5px;
+    padding: 8px;
 }
+
+.sale-data.lead-id,
+.sale-data.esi {
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
+}
+
 
 .sale-types {
     width: 500px; /* Set width to 500px */
