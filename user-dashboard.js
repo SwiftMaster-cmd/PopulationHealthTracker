@@ -199,16 +199,41 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
+        // Initialize an object to track cumulative sale type counts
+        let cumulativeSaleTypeCounts = {};
+
+        // If we are viewing the newest first, we will accumulate counts from the end
+        if (timeSort === 'newest') {
+            for (let i = salesArray.length - 1; i >= 0; i--) {
+                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
+                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+            }
+        } else {
+            // Accumulate counts from the beginning for oldest first
+            salesArray.forEach(sale => {
+                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
+                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+            });
+        }
+
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const soldSaleTypes = getSoldSaleTypes(sale.sale_types); // Retrieve sold sale types
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, soldSaleTypes);
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
             saleContainer.innerHTML = saleContainerHTML;
             salesHistoryElement.appendChild(saleContainer);
         });
+    });
+}
+function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
+    Object.keys(currentSaleTypes || {}).forEach(type => {
+        if (!cumulativeCounts[type]) {
+            cumulativeCounts[type] = currentSaleTypes[type];
+        } else {
+            cumulativeCounts[type] += currentSaleTypes[type];
+        }
     });
 }
 
