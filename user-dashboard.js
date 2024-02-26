@@ -307,7 +307,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
     // Generate display string for sale types with non-zero counts that are present in the current sale
     saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
-        `${type}: ${count}`
+        `<span class="sale-type-span">${type}: ${count}</span>`
     ).join(', ');
 
     // Check if any sale types are present before generating HTML
@@ -316,8 +316,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
             <div class="sale-info">
                 <div class="sale-data">Lead ID: ${sale.lead_id}</div>
                 <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-                <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
-                <div class="sale-data">Notes: ${sale.notes}</div>
+                <div class="sale-data sale-types">Sale Types: ${saleTypesDisplay}</div>
+                <div class="sale-note">${sale.notes}</div>
                 <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
                 <div class="sale-actions">
                     <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
@@ -330,6 +330,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         return '';
     }
 }
+
 
 
 
