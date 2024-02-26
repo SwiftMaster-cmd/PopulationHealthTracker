@@ -189,8 +189,11 @@ header {
 }
 
 .sale-info {
+    width: 250px; /* Set width to 250px */
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between; /* Distribute space between elements */
+    align-items: center;
 }
 
 .sale-info > div {
@@ -203,7 +206,7 @@ header {
 }
 
 .sale-note {
-    width: 500px;
+    max-width: 100%;
     height: 75px;
     overflow-y: auto;
     margin-top: 10px;
@@ -290,7 +293,6 @@ textarea:focus {
 .sales-history-entry .sale-note::-webkit-scrollbar-track {
     background: #f0f0f0;
 }
-
 
 
 
