@@ -207,7 +207,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             // Update cumulative counts for this sale
             updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
             // Generate HTML using the current state of cumulativeSaleTypeCounts
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts);
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
@@ -225,15 +225,7 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
             cumulativeCounts[type] += currentSaleTypes[type];
         }
     });
-
-    // If sorting by newest, reverse the cumulative counts
-    if (timeSort === 'newest') {
-        cumulativeCounts = Object.fromEntries(
-            Object.entries(cumulativeCounts).sort((a, b) => b[1] - a[1])
-        );
-    }
 }
-
 
 
 
@@ -296,10 +288,10 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
-    // Sort cumulative counts in descending order
+function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) { // Accept timeSort
+    // Sort cumulative counts based on timeSort value
     const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-        .sort(([, countA], [, countB]) => countB - countA);
+        .sort(([, countA], [, countB]) => timeSort === 'newest' ? countB - countA : countA - countB); // Sort based on timeSort
 
     let saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
         `${type}: ${count}`
@@ -319,6 +311,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
