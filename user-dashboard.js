@@ -300,36 +300,34 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
     let saleTypesDisplay = '';
 
-    // Filter out sale types with zero counts and not present in the current sale
     const nonZeroCounts = Object.entries(cumulativeSaleTypeCounts).filter(([type, count]) =>
         count > 0 && sale.sale_types && sale.sale_types[type] !== undefined
     );
 
-    // Generate display string for sale types with non-zero counts that are present in the current sale
+    // Generate display string for sale types as blocks
     saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
-        `<span class="sale-type-span">${type}: ${count}</span>`
-    ).join(', ');
+        `<div class="sale-type-block">${type}: ${count}</div>`
+    ).join('');
 
-    // Check if any sale types are present before generating HTML
-    if (saleTypesDisplay !== '') {
-        return `
-            <div class="sale-info">
+    return `
+        <div class="sale-info">
+            <div class="sale-header">
                 <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-                <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-                <div class="sale-data sale-types">Sale Types: ${saleTypesDisplay}</div>
-                <div class="sale-note">${sale.notes}</div>
-                <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+                <div class="sale-data esi-consent">ESI: ${sale.esi_content || 'N/A'}</div>
+            </div>
+            <div class="sale-types-container">${saleTypesDisplay}</div>
+            <div class="sale-note">${sale.notes}</div>
+            <div class="sale-footer">
+                <div class="sale-timestamp">Timestamp: ${formattedTimestamp}</div>
                 <div class="sale-actions">
                     <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
                     <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
                 </div>
             </div>
-        `;
-    } else {
-        // If no sale types are present, return an empty string
-        return '';
-    }
+        </div>
+    `;
 }
+
 
 
 
