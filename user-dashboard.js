@@ -308,15 +308,14 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
             return timeSort === 'newest' ? countB - countA : countA - countB;
         });
 
-    // Generate display string for sale types in reverse order if sorting by newest first
-    if (timeSort === 'newest') {
-        sortedCumulativeCounts.reverse();
-    }
-    
-    saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+    // Filter out sale types with zero counts
+    const nonZeroCounts = sortedCumulativeCounts.filter(([type, count]) => count > 0);
+
+    // Generate display string for sale types
+    saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
         `${type}: ${count}`
     ).join(', ');
-    
+
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
@@ -331,6 +330,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
