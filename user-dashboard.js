@@ -185,7 +185,6 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
-        // Convert sales object to an array for filtering
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
@@ -201,25 +200,20 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Cumulative sale type counts
+        // Recalculate cumulative counts after filtering and sorting
         let cumulativeSaleTypeCounts = {};
-
-        salesArray.forEach(sale => {
-            // Initialize or increment counts for each sale type
+        salesArray.forEach((sale, index) => {
             Object.keys(sale.sale_types || {}).forEach(type => {
                 cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
+                // Store the cumulative count at the point of this sale
+                sale.cumulativeCount = cumulativeSaleTypeCounts[type];
             });
-
-            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, cumulativeSaleTypeCounts);
-            const saleContainer = document.createElement('div');
-            saleContainer.className = 'sales-history-entry';
-            saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = saleContainerHTML;
-            salesHistoryElement.appendChild(saleContainer);
         });
+
+        displaySales(salesArray, salesHistoryElement, timeSort);
     });
 }
+
 // Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 
 
@@ -256,16 +250,31 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
-function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay, saleTypeCounts) {
-    let saleTypesCountsDisplay = Object.entries(saleTypesDisplay).map(([type, _]) => 
-        `${type}: ${saleTypeCounts[type] || 0}`
-    ).join(', ');
-    
+function displaySales(salesArray, salesHistoryElement, timeSort) {
+    // Depending on sort order, adjust how you display counts
+    let reverseIndex = salesArray.length;
+    salesArray.forEach(sale => {
+        const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+
+        // Adjust count based on sort order
+        let adjustedCount = timeSort === 'newest' ? sale.cumulativeCount : reverseIndex--;
+
+        const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, adjustedCount);
+        const saleContainer = document.createElement('div');
+        saleContainer.className = 'sales-history-entry';
+        saleContainer.setAttribute('data-sale-id', sale.id);
+        saleContainer.innerHTML = saleContainerHTML;
+        salesHistoryElement.appendChild(saleContainer);
+    });
+}
+
+
+function generateSaleEntryHTML(sale, formattedTimestamp, adjustedCount) {
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesCountsDisplay}</div>
+            <div class="sale-data">Sale Types Count: ${adjustedCount}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -275,8 +284,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay, saleT
         </div>
     `;
 }
-
-
 
 
 
