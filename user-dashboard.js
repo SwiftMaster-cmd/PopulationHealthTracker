@@ -202,23 +202,12 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         // Initialize an object to track cumulative sale type counts
         let cumulativeSaleTypeCounts = {};
 
-        // If we are viewing the newest first, we will accumulate counts from the end
-        if (timeSort === 'newest') {
-            for (let i = salesArray.length - 1; i >= 0; i--) {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
-                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
-            }
-        } else {
-            // Accumulate counts from the beginning for oldest first
-            salesArray.forEach(sale => {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
-            });
-        }
-
-        salesArray.forEach((sale) => {
+        salesArray.forEach((sale, index) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
+            // Update cumulative counts for this sale
+            updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
+            // Generate HTML using the current state of cumulativeSaleTypeCounts
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
@@ -227,6 +216,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
+
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
         if (!cumulativeCounts[type]) {
@@ -236,10 +226,6 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
         }
     });
 }
-
-
-
-
 
 
 
@@ -300,23 +286,27 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 }
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
+
+function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
     let saleTypesDisplay = '';
+    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
+        .sort((a, b) => {
+            // Extract counts for comparison
+            const countA = a[1];
+            const countB = b[1];
+            // Determine sort order based on timeSort parameter
+            return timeSort === 'newest' ? countB - countA : countA - countB;
+        });
 
-    // Filter out unsold sale types
-    const soldSaleTypes = getSoldSaleTypes(sale.sale_types);
-
-    // Generate display string for sold sale types with counts
-    saleTypesDisplay = Object.keys(soldSaleTypes)
-        .map(type => `${type}: ${soldSaleTypes[type]} (${cumulativeSaleTypeCounts[type] || 0})`) // Include count from cumulativeSaleTypeCounts
-        .filter(display => display.endsWith('(0)') || display.endsWith('(1)') || display.endsWith('(2)')) // Filter out sale types with zero count
-        .join(', ');
-
+    // Generate display string for sale types
+    saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+        `${type}: ${count}`
+    ).join(', ');
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Cumulative Sale Types: ${saleTypesDisplay}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -326,22 +316,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
-
-
-function getSoldSaleTypes(saleTypes) {
-    const soldSaleTypes = {};
-    Object.keys(saleTypes).forEach(type => {
-        if (saleTypes[type]) {
-            soldSaleTypes[type] = saleTypes[type];
-        }
-    });
-    return soldSaleTypes;
-}
-
-
-
-
-
 
 
 
