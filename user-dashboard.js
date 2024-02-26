@@ -299,19 +299,11 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
     let saleTypesDisplay = '';
-    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-        .sort((a, b) => {
-            // Extract counts for comparison
-            const countA = a[1];
-            const countB = b[1];
-            // Determine sort order based on timeSort parameter
-            return timeSort === 'newest' ? countB - countA : countA - countB;
-        });
 
     // Filter out sale types with zero counts
-    const nonZeroCounts = sortedCumulativeCounts.filter(([type, count]) => count > 0);
+    const nonZeroCounts = Object.entries(cumulativeSaleTypeCounts).filter(([type, count]) => count > 0);
 
-    // Generate display string for sale types
+    // Generate display string for sale types with non-zero counts
     saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
         `${type}: ${count}`
     ).join(', ');
@@ -330,6 +322,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
