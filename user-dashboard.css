@@ -206,8 +206,8 @@ header {
     background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
     border-radius: 15px; 
     padding: 15px;
-    box-shadow: none;
-    outline: none;
+    box-shadow: linear-gradient(to bottom, #FFB703, #FB8501);
+    outline: linear-gradient(to bottom, #FFB703, #FB8501);
 }
 
 
