@@ -302,13 +302,14 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
     let saleTypesDisplay = '';
-    
+
     // Filter out unsold sale types
     const soldSaleTypes = getSoldSaleTypes(sale.sale_types);
-    
-    // Generate display string for sold sale types
+
+    // Generate display string for sold sale types with counts
     saleTypesDisplay = Object.keys(soldSaleTypes)
-        .map(type => `${type}: ${soldSaleTypes[type]}`)
+        .map(type => `${type}: ${soldSaleTypes[type]} (${cumulativeSaleTypeCounts[type] || 0})`) // Include count from cumulativeSaleTypeCounts
+        .filter(display => display.endsWith('(0)') || display.endsWith('(1)') || display.endsWith('(2)')) // Filter out sale types with zero count
         .join(', ');
 
     return `
@@ -325,6 +326,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 function getSoldSaleTypes(saleTypes) {
     const soldSaleTypes = {};
