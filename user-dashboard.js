@@ -197,6 +197,8 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            // Reverse the array to ensure oldest sales appear first
+            salesArray.reverse();
         }
 
         // Initialize an object to track cumulative sale type counts
@@ -216,6 +218,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
+
 
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
