@@ -298,41 +298,20 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
-    let saleTypesDisplay = '';
-    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-        .sort((a, b) => {
-            // Extract counts for comparison
-            const countA = a[1];
-            const countB = b[1];
-            // Determine sort order based on timeSort parameter
-            return timeSort === 'newest' ? countB - countA : countA - countB;
-        });
-
-    // Generate display string for sale types in reverse order if sorting by newest first
-    if (timeSort === 'newest') {
-        sortedCumulativeCounts.reverse();
-    }
-    
-    saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
-        `${type}: ${count}`
-    ).join(', ');
-    
-    return `
-        <div class="sale-info">
-            <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-            <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Cumulative Sale Types: ${saleTypesDisplay}</div>
-            <div class="sale-data">Notes: ${sale.notes}</div>
-            <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
-            <div class="sale-actions">
-                <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+        return `
+            <div class="sale-info">
+                <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+                <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+                <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+                <div class="sale-data">Notes: ${sale.notes}</div>
+                <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+                <div class="sale-actions">
+                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                </div>
             </div>
-        </div>
-    `;
-}
-
-
+        `;
+    }
 
 
 
