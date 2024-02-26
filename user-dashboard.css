@@ -203,7 +203,7 @@ header {
 }
 
 .sale-note {
-    max-width: 100%;
+    width: 500px;
     height: 75px;
     overflow-y: auto;
     margin-top: 10px;
