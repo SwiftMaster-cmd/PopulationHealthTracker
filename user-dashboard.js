@@ -168,6 +168,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 
+
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -185,16 +186,13 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
-        // Convert sales object to array and include the sale ID
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
         }));
 
-        // Apply filters to the sales array
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort the filtered sales array based on the timeSort parameter
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
@@ -204,14 +202,10 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         // Initialize an object to track cumulative sale type counts
         let cumulativeSaleTypeCounts = {};
 
-        // Update cumulative sale type counts based on the filtered and sorted sales array
-        salesArray.forEach(sale => {
-            updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-        });
-
-        // Generate HTML for each sale in the filtered and sorted salesArray
-        salesArray.forEach((sale) => {
+        salesArray.forEach((sale, index) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            // Update cumulative counts for this sale
+            updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
             // Generate HTML using the current state of cumulativeSaleTypeCounts
             const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort);
             const saleContainer = document.createElement('div');
@@ -222,7 +216,6 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
-
 
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
@@ -341,10 +334,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
-
-
-
-
 
 
 
