@@ -199,34 +199,21 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        processAndDisplaySales(salesArray, timeSort);
-    });
-}
+        // Initialize an object to track cumulative sale type counts
+        let cumulativeSaleTypeCounts = {};
 
-function processAndDisplaySales(salesArray, sortDirection) {
-    let cumulativeSaleTypeCounts = {};
-
-    if (sortDirection === 'oldest') {
-        salesArray.forEach(sale => {
+        salesArray.forEach((sale, index) => {
+            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            // Update cumulative counts for this sale
             updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-            sale.cumulativeCounts = { ...cumulativeSaleTypeCounts };
+            // Generate HTML using the current state of cumulativeSaleTypeCounts
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts);
+            const saleContainer = document.createElement('div');
+            saleContainer.className = 'sales-history-entry';
+            saleContainer.setAttribute('data-sale-id', sale.id);
+            saleContainer.innerHTML = saleContainerHTML;
+            salesHistoryElement.appendChild(saleContainer);
         });
-    } else {
-        salesArray.reverse().forEach(sale => {
-            updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-            sale.cumulativeCounts = { ...cumulativeSaleTypeCounts };
-        });
-        salesArray.reverse();
-    }
-
-    salesArray.forEach(sale => {
-        const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-        const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeCounts);
-        const saleContainer = document.createElement('div');
-        saleContainer.className = 'sales-history-entry';
-        saleContainer.setAttribute('data-sale-id', sale.id);
-        saleContainer.innerHTML = saleContainerHTML;
-        salesHistoryElement.appendChild(saleContainer);
     });
 }
 
@@ -239,6 +226,7 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
         }
     });
 }
+
 
 // Listen to the apply filters button click, including lead ID filter
 document.getElementById('applyFilters').addEventListener('click', () => {
@@ -287,6 +275,7 @@ function calculateSaleTypeCounts(salesArray) {
     return saleTypeCounts;
 }
 
+
 function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
     let display = '';
     Object.keys(saleTypes || {}).forEach(type => {
@@ -295,10 +284,13 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
     return display.slice(0, -2); // Remove trailing comma and space
 }
 
+
+
+
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
     // Display cumulative count for each sale type in sorted order
     const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-        .sort(([, countA], [, countB]) => countB - countA); // Sort by count, descending
+        .sort(([, countA], [, countB]) => countA - countB); // Sort by count, ascending
 
     let saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
         `${type}: ${count}`
@@ -318,6 +310,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
