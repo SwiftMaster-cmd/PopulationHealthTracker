@@ -298,18 +298,28 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
     // Map the sorted counts to a displayable format
     let saleTypesDisplay = '';
-    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts);
+
+    // Create a copy of the cumulativeSaleTypeCounts object
+    const cumulativeCountsCopy = { ...cumulativeSaleTypeCounts };
 
     // Sort cumulative counts based on timeSort parameter
+    const sortedCumulativeCounts = Object.entries(cumulativeCountsCopy);
+
     if (timeSort === 'newest') {
-        sortedCumulativeCounts.sort((a, b) => b[1] - a[1]); // Sort descending by count
+        sortedCumulativeCounts.sort((a, b) => new Date(b[0]) - new Date(a[0])); // Sort descending by timestamp
     } else {
-        sortedCumulativeCounts.sort((a, b) => a[1] - b[1]); // Sort ascending by count
+        sortedCumulativeCounts.sort((a, b) => new Date(a[0]) - new Date(b[0])); // Sort ascending by timestamp
     }
 
-    // Generate displayable sale types with counts
-    saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
-        `${type}: ${count}`
+    // Calculate cumulative counts based on sorted counts
+    const cumulativeCounts = {};
+    sortedCumulativeCounts.forEach(([timestamp, count]) => {
+        cumulativeCounts[timestamp] = count;
+    });
+
+    // Generate displayable sale types with cumulative counts
+    saleTypesDisplay = sortedCumulativeCounts.map(([timestamp, count]) =>
+        `${timestamp}: ${count}`
     ).join(', ');
 
     return `
@@ -326,6 +336,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
