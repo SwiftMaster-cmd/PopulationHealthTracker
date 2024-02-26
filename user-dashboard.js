@@ -169,7 +169,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-// Modified fetchSalesHistory to include filtering, sorting, and sales type counts
+// Modified fetchSalesHistory to include filtering, sorting, and accumulated sales type counts
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -203,7 +203,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Calculate sale type counts
+        // Calculate and accumulate sale type counts
         let saleTypeCounts = calculateSaleTypeCounts(salesArray);
 
         // Inside the forEach loop in fetchSalesHistory
@@ -273,9 +273,9 @@ function calculateSaleTypeCounts(salesArray) {
     salesArray.forEach(sale => {
         Object.keys(sale.sale_types || {}).forEach(type => {
             if (!saleTypeCounts[type]) {
-                saleTypeCounts[type] = 1;
+                saleTypeCounts[type] = sale.sale_types[type];
             } else {
-                saleTypeCounts[type]++;
+                saleTypeCounts[type] += sale.sale_types[type];
             }
         });
     });
@@ -289,6 +289,7 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
     });
     return display.slice(0, -2); // Remove trailing comma and space
 }
+
 
 
 
