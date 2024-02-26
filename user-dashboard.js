@@ -273,7 +273,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, adjustedCount) {
     if (sale.sale_types && Object.keys(sale.sale_types).length > 0) {
         saleTypesString = Object.entries(sale.sale_types)
                                 .map(([type, count]) => `${type}: ${count}`)
-                                .join(', ');
+                                .join(', '); // This line combines each sale type with its count
     } else {
         saleTypesString = 'No sale types available';
     }
