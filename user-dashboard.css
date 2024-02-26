@@ -239,12 +239,14 @@ header {
     display: inline-block; /* Display as inline block for alignment */
     background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
     color: white; /* Text color for contrast */
-    padding: 5px 10px; /* Padding inside each "button" */
-    margin: 2px; /* Margin for spacing between buttons */
-    border-radius: 5px; /* Rounded corners for button-like appearance */
-    font-size: 16px; /* Font size for readability */
-    cursor: default; /* Default cursor to indicate non-interactivity */
-    user-select: none; /* Prevent text selection */
+    padding: 8px 12px; /* Slightly larger padding for prominence */
+    margin: 5px; /* Increased margin for better separation */
+    border-radius: 8px; /* Slightly larger radius for a bolder look */
+    font-size: 18px; /* Larger font size for impact */
+    font-weight: bold; /* Bold font weight for emphasis */
+    cursor: default;
+    user-select: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); /* Soft shadow for depth */
 }
 
 /* Input and textarea focus effects for any editable fields within modal or page */
