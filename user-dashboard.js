@@ -225,7 +225,15 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
             cumulativeCounts[type] += currentSaleTypes[type];
         }
     });
+
+    // If sorting by newest, reverse the cumulative counts
+    if (timeSort === 'newest') {
+        cumulativeCounts = Object.fromEntries(
+            Object.entries(cumulativeCounts).sort((a, b) => b[1] - a[1])
+        );
+    }
 }
+
 
 
 
