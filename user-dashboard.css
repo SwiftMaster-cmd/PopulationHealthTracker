@@ -206,11 +206,15 @@ header {
     background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
     border-radius: 15px; 
     padding: 15px;
-    box-shadow: linear-gradient(to bottom, #FFB703, #FB8501);
-    outline: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: none;
+    outline: none;
     color: white;
 }
 
+/* Accessibility: Add focus styles for interactive elements */
+.sale-data:focus, .sale-data.lead-id:focus, .sale-data.esi:focus {
+    box-shadow: 0px 0px 8px rgba(255, 174, 0, 0.8); /* Or any other visual cue */
+}
 
 .sale-types {
     width: 450px; /* Set width to 500px */
