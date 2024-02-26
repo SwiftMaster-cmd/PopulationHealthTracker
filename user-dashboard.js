@@ -297,21 +297,26 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
-        return `
-            <div class="sale-info">
-                <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-                <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-                <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
-                <div class="sale-data">Notes: ${sale.notes}</div>
-                <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
-                <div class="sale-actions">
-                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
-                </div>
+function generateSaleEntryHTML(sale, formattedTimestamp) {
+    // Assuming sale.types is an array of strings representing the types for this sale
+    let saleTypesDisplay = sale.types.join(', '); // This will join all sale types with a comma
+
+    return `
+        <div class="sale-info">
+            <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+            <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+            <div class="sale-data">Cumulative Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Notes: ${sale.notes}</div>
+            <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+            <div class="sale-actions">
+                <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
             </div>
-        `;
-    }
+        </div>
+    `;
+}
+
+
 
 
 
