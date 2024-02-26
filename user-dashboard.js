@@ -169,7 +169,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
+// Modified fetchSalesHistory to include filtering, sorting, and sales type counts
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -203,32 +203,19 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
+        // Calculate sale type counts
+        let saleTypeCounts = calculateSaleTypeCounts(salesArray);
+
         // Inside the forEach loop in fetchSalesHistory
-salesArray.forEach(sale => {
-    const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-    // Updated to include saleTypeCounts in the function call
-    const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, saleTypeCounts);
-    const saleContainer = document.createElement('div');
-    saleContainer.className = 'sales-history-entry';
-    saleContainer.setAttribute('data-sale-id', sale.id);
-    saleContainer.innerHTML = saleContainerHTML;
-    salesHistoryElement.appendChild(saleContainer);
-});
-
-        // Inside fetchSalesHistory function, after filtering salesArray
-
-// Calculate sale type counts
-let saleTypeCounts = {};
-salesArray.forEach(sale => {
-    Object.keys(sale.sale_types || {}).forEach(type => {
-        if (!saleTypeCounts[type]) {
-            saleTypeCounts[type] = 1;
-        } else {
-            saleTypeCounts[type]++;
-        }
-    });
-});
-
+        salesArray.forEach(sale => {
+            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, saleTypeCounts);
+            const saleContainer = document.createElement('div');
+            saleContainer.className = 'sales-history-entry';
+            saleContainer.setAttribute('data-sale-id', sale.id);
+            saleContainer.innerHTML = saleContainerHTML;
+            salesHistoryElement.appendChild(saleContainer);
+        });
     });
 }
 
@@ -265,12 +252,12 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
-function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypeCounts) {
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Sale Types: ${getSaleTypeDisplay(sale.sale_types, saleTypeCounts)}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -279,6 +266,28 @@ function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
             </div>
         </div>
     `;
+}
+
+function calculateSaleTypeCounts(salesArray) {
+    let saleTypeCounts = {};
+    salesArray.forEach(sale => {
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            if (!saleTypeCounts[type]) {
+                saleTypeCounts[type] = 1;
+            } else {
+                saleTypeCounts[type]++;
+            }
+        });
+    });
+    return saleTypeCounts;
+}
+
+function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
+    let display = '';
+    Object.keys(saleTypes || {}).forEach(type => {
+        display += `${type}: ${saleTypes[type]} (${saleTypeCounts[type] || 0}), `;
+    });
+    return display.slice(0, -2); // Remove trailing comma and space
 }
 
 
