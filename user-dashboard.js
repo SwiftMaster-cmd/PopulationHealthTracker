@@ -308,23 +308,26 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         `${type}: ${count}`
     ).join(', ');
 
-    return `
-        <div class="sale-info">
-            <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-            <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
-            <div class="sale-data">Notes: ${sale.notes}</div>
-            <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
-            <div class="sale-actions">
-                <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+    // Check if any sale types are present before generating HTML
+    if (saleTypesDisplay !== '') {
+        return `
+            <div class="sale-info">
+                <div class="sale-data">Lead ID: ${sale.lead_id}</div>
+                <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
+                <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+                <div class="sale-data">Notes: ${sale.notes}</div>
+                <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
+                <div class="sale-actions">
+                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    } else {
+        // If no sale types are present, return an empty string
+        return '';
+    }
 }
-
-
-
 
 
 
