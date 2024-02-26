@@ -288,38 +288,20 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
-    // Map the sorted counts to a displayable format
     let saleTypesDisplay = '';
-    if (timeSort === 'newest') {
-        // For 'newest', sort cumulative counts in descending order of sale timestamp
-        const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-            .sort((a, b) => {
-                // Extract counts for comparison
-                const countA = a[1];
-                const countB = b[1];
-                // Sort descending by count
-                return countB - countA;
-            });
+    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
+        .sort((a, b) => {
+            // Extract counts for comparison
+            const countA = a[1];
+            const countB = b[1];
+            // Determine sort order based on timeSort parameter
+            return timeSort === 'newest' ? countB - countA : countA - countB;
+        });
 
-        saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
-            `${type}: ${count}`
-        ).join(', ');
-    } else {
-        // For 'oldest', sort cumulative counts in ascending order of sale timestamp
-        const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-            .sort((a, b) => {
-                // Extract counts for comparison
-                const countA = a[1];
-                const countB = b[1];
-                // Sort ascending by count
-                return countA - countB;
-            });
-
-        saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
-            `${type}: ${count}`
-        ).join(', ');
-    }
-
+    // Generate display string for sale types
+    saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+        `${type}: ${count}`
+    ).join(', ');
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
