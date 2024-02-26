@@ -200,19 +200,33 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Recalculate cumulative counts after filtering and sorting
+        // Initialize cumulative counts for each sale type
         let cumulativeSaleTypeCounts = {};
-        salesArray.forEach((sale, index) => {
-            Object.keys(sale.sale_types || {}).forEach(type => {
-                cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
-                // Store the cumulative count at the point of this sale
-                sale.cumulativeCount = cumulativeSaleTypeCounts[type];
-            });
-        });
 
+        // Adjust counting logic based on sort order
+        if (timeSort === 'newest') {
+            salesArray.forEach(sale => {
+                Object.keys(sale.sale_types || {}).forEach(type => {
+                    cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
+                    sale.cumulativeCount = cumulativeSaleTypeCounts[type]; // Store cumulative count
+                });
+            });
+        } else {
+            // For 'oldest' sort, calculate counts in reverse then reverse array back
+            salesArray.reverse().forEach(sale => {
+                Object.keys(sale.sale_types || {}).forEach(type => {
+                    cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
+                    sale.cumulativeCount = cumulativeSaleTypeCounts[type]; // Temporarily store cumulative count in reverse
+                });
+            });
+            salesArray.reverse(); // Reverse array back to original 'oldest' order
+        }
+
+        // Display sales with correct cumulative counts
         displaySales(salesArray, salesHistoryElement, timeSort);
     });
 }
+
 
 // Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 
@@ -251,15 +265,10 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
 }
 
 function displaySales(salesArray, salesHistoryElement, timeSort) {
-    // Depending on sort order, adjust how you display counts
-    let reverseIndex = salesArray.length;
     salesArray.forEach(sale => {
         const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
 
-        // Adjust count based on sort order
-        let adjustedCount = timeSort === 'newest' ? sale.cumulativeCount : reverseIndex--;
-
-        const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, adjustedCount);
+        const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeCount);
         const saleContainer = document.createElement('div');
         saleContainer.className = 'sales-history-entry';
         saleContainer.setAttribute('data-sale-id', sale.id);
@@ -267,6 +276,7 @@ function displaySales(salesArray, salesHistoryElement, timeSort) {
         salesHistoryElement.appendChild(saleContainer);
     });
 }
+
 
 
 function generateSaleEntryHTML(sale, formattedTimestamp, adjustedCount) {
