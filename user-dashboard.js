@@ -213,16 +213,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
     });
 }
 
-// Function to filter out unsold sale types
-function getSoldSaleTypes(saleTypes) {
-    const soldSaleTypes = {};
-    Object.keys(saleTypes).forEach(type => {
-        if (saleTypes[type] > 0) {
-            soldSaleTypes[type] = saleTypes[type];
-        }
-    });
-    return soldSaleTypes;
-}
+
 
 
 
@@ -284,12 +275,15 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 }
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, soldSaleTypes) {
+function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
     let saleTypesDisplay = '';
-
+    
+    // Filter out unsold sale types
+    const soldSaleTypes = getSoldSaleTypes(sale.sale_types);
+    
     // Generate display string for sold sale types
-    saleTypesDisplay = Object.entries(soldSaleTypes)
-        .map(([type, count]) => `${type}: ${count}`)
+    saleTypesDisplay = Object.keys(soldSaleTypes)
+        .map(type => `${type}: ${soldSaleTypes[type]}`)
         .join(', ');
 
     return `
@@ -307,6 +301,15 @@ function generateSaleEntryHTML(sale, formattedTimestamp, soldSaleTypes) {
     `;
 }
 
+function getSoldSaleTypes(saleTypes) {
+    const soldSaleTypes = {};
+    Object.keys(saleTypes).forEach(type => {
+        if (saleTypes[type]) {
+            soldSaleTypes[type] = saleTypes[type];
+        }
+    });
+    return soldSaleTypes;
+}
 
 
 
