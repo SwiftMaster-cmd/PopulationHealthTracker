@@ -175,39 +175,55 @@ header {
 
 /* Set a maximum width for the contents inside the container */
 .sales-history-container > * {
-    max-width: 100%; /* Corrected to ensure contents do not exceed the container's width */
+    min-width: 100%; /* Allow contents to take the full width of the container */
 }
 
 .sales-history-entry {
-    background: #ffffff; /* Changed to improve readability */
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
     border-radius: 10px; /* Consistent rounded corners */
     padding: 15px; /* Padding around content */
     margin-bottom: 15px; /* Space between entries */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Added shadow for depth */
-    color: #333; /* Changed text color for better contrast on white background */
+    color: #ffffff; /* Text color for readability */
     transition: all 0.3s ease; /* Smooth transition for interactions */
 }
 
 .sales-history-entry:hover {
     transform: scale(1.03); /* Slight enlargement on hover */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15); /* Enhanced shadow on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 
-.sale-info div {
-    background: #f0f0f0; /* Lighter background for contrast */
-    font-size: 16px; /* Adjusted for consistency */
-    color: #333; /* Darker color for readability */
-    padding: 10px; /* Increased padding for better layout */
-    margin-bottom: 5px; /* Space between info blocks */
-    border-radius: 5px; /* Added for visual consistency */
+.sale-info {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sale-info > div {
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient matching the dashboard */
+    font-size: 18px; /* Slightly larger font size for improved readability */
+    color: #ffffff; /* Text color for contrast */
+    padding: 10px; /* Spacing for readability */
+    border-radius: 8px; /* Slightly larger radius for a bolder look */
+    margin: 5px; /* Increased margin for better separation */
+}
+
+.sale-note {
+    max-width: 100%; /* Ensure the note does not exceed the width of its container */
+    height: 75px; /* Set a maximum height to prevent excessively long notes from overflowing */
+    overflow-y: auto; /* Enable vertical scrolling for notes exceeding the max height */
+    margin-top: 10px; /* Provide some space around the note for readability */
+    padding: 8px; /* Padding inside the note for content separation from edges */
+    background: #f0f0f0; /* Optional: Different background to distinguish notes */
+    border-radius: 5px; /* Rounded corners for aesthetics */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* Optional: Inner shadow for depth */
+    color: #333; /* Text color for readability */
+    font-size: 14px; /* Adjust font size for note content */
+    line-height: 1.4; /* Adjust line height for better readability */
 }
 
 .sale-actions {
-    background: transparent; /* Ensure the container background is transparent */
-    padding: 10px; /* Add padding to separate buttons */
-    display: flex; /* Display buttons horizontally */
-    justify-content: center; /* Center the buttons */
-    width: 100%; /* Ensure full width to align with parent */
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
 }
 
 .sale-actions button {
@@ -215,7 +231,7 @@ header {
     color: white;
     font-weight: bold;
     padding: 10px 20px;
-    margin: 5px;
+    margin-left: 10px;
     border-radius: 15px;
     border: none;
     cursor: pointer;
@@ -234,63 +250,52 @@ header {
 }
 
 .sale-type-span {
-    display: inline-block;
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent with button styling */
-    color: white;
-    padding: 8px 12px;
-    margin: 5px;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: bold;
+    display: inline-block; /* Display as inline block for alignment */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
+    color: white; /* Text color for contrast */
+    padding: 8px 12px; /* Slightly larger padding for prominence */
+    margin: 5px; /* Increased margin for better separation */
+    border-radius: 8px; /* Slightly larger radius for a bolder look */
+    font-size: 18px; /* Larger font size for impact */
+    font-weight: bold; /* Bold font weight for emphasis */
     cursor: default;
     user-select: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); /* Soft shadow for depth */
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
     box-shadow: 0 0 10px #e6b081; /* Focus shadow */
     outline: none; /* Remove default focus outline */
 }
 
+/* Scrollbar customization for consistency */
 .sales-history-container::-webkit-scrollbar {
     width: 8px;
 }
 
 .sales-history-container::-webkit-scrollbar-thumb {
     background: #BBDEFB; /* Scrollbar color */
-    border-radius: 4px;
+    border-radius: 4px; /* Rounded scrollbar for a smoother look */
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: #f0f0f0; /* Adjusted to a neutral color for better visibility */
-}
-
-.sales-history-entry .sale-note {
-    max-width: 100%;
-    height: 75px;
-    overflow-y: auto;
-    margin: 10px 0;
-    padding: 8px;
-    background: #f0f0f0; /* Kept for note distinction */
-    border-radius: 5px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    color: #333;
-    font-size: 14px;
-    line-height: 1.4;
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Hover effect to match other buttons */
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar {
-    width: 6px;
+    width: 6px; /* Narrower scrollbar for space efficiency */
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 3px;
+    background: #888; /* Scrollbar color */
+    border-radius: 3px; /* Rounded scrollbar for a smoother look */
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: #f0f0f0; /* Match the note's background */
 }
+
 
 
 
