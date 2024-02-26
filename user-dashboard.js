@@ -195,27 +195,25 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         // Apply filters to the sales array
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort the array based on 'newest' or 'oldest' 
+        // Sort the filtered sales array based on the timeSort parameter
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Initialize cumulative sale type counts
-        let cumulativeSaleTypeCounts = {}; 
+        // Initialize an object to track cumulative sale type counts
+        let cumulativeSaleTypeCounts = {};
 
-        // Update cumulative sale type counts (in reverse if sorted by newest)
-        if (timeSort === 'newest') {
-            salesArray.reverse(); // Reverse for cumulative counts in descending order
-        }
-        salesArray.forEach((sale, index) => {
-            updateCumulativeSaleTypeCountsReverse(cumulativeSaleTypeCounts, sale.sale_types, salesArray.length - index - 1);
+        // Update cumulative sale type counts based on the filtered and sorted sales array
+        salesArray.forEach(sale => {
+            updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
         });
 
-        // Generate HTML for each sale
+        // Generate HTML for each sale in the filtered and sorted salesArray
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+            // Generate HTML using the current state of cumulativeSaleTypeCounts
             const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
@@ -300,35 +298,19 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
     // Map the sorted counts to a displayable format
     let saleTypesDisplay = '';
+    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts);
+
+    // Sort cumulative counts based on timeSort parameter
     if (timeSort === 'newest') {
-        // For 'newest', sort cumulative counts in descending order of sale timestamp
-        const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-            .sort((a, b) => {
-                // Extract counts for comparison
-                const countA = a[1];
-                const countB = b[1];
-                // Sort descending by count
-                return countB - countA;
-            });
-
-        saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
-            `${type}: ${count}`
-        ).join(', ');
+        sortedCumulativeCounts.sort((a, b) => b[1] - a[1]); // Sort descending by count
     } else {
-        // For 'oldest', sort cumulative counts in ascending order of sale timestamp
-        const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-            .sort((a, b) => {
-                // Extract counts for comparison
-                const countA = a[1];
-                const countB = b[1];
-                // Sort ascending by count
-                return countA - countB;
-            });
-
-        saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
-            `${type}: ${count}`
-        ).join(', ');
+        sortedCumulativeCounts.sort((a, b) => a[1] - b[1]); // Sort ascending by count
     }
+
+    // Generate displayable sale types with counts
+    saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+        `${type}: ${count}`
+    ).join(', ');
 
     return `
         <div class="sale-info">
@@ -344,6 +326,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
