@@ -195,25 +195,27 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         // Apply filters to the sales array
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort the filtered sales array based on the timeSort parameter
+        // Sort the array based on 'newest' or 'oldest' 
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Initialize an object to track cumulative sale type counts
-        let cumulativeSaleTypeCounts = {};
+        // Initialize cumulative sale type counts
+        let cumulativeSaleTypeCounts = {}; 
 
-        // Update cumulative sale type counts based on the filtered and sorted sales array
-        salesArray.forEach(sale => {
-            updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
+        // Update cumulative sale type counts (in reverse if sorted by newest)
+        if (timeSort === 'newest') {
+            salesArray.reverse(); // Reverse for cumulative counts in descending order
+        }
+        salesArray.forEach((sale, index) => {
+            updateCumulativeSaleTypeCountsReverse(cumulativeSaleTypeCounts, sale.sale_types, salesArray.length - index - 1);
         });
 
-        // Generate HTML for each sale in the filtered and sorted salesArray
+        // Generate HTML for each sale
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            // Generate HTML using the current state of cumulativeSaleTypeCounts
             const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
