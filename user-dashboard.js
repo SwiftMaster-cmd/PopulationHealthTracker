@@ -300,32 +300,37 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
     let saleTypesDisplay = '';
 
+    // Filter out sale types with zero counts and not present in the current sale
     const nonZeroCounts = Object.entries(cumulativeSaleTypeCounts).filter(([type, count]) =>
         count > 0 && sale.sale_types && sale.sale_types[type] !== undefined
     );
 
-    // Generate display string for sale types as blocks
+    // Generate display string for sale types with non-zero counts that are present in the current sale
     saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
-        `<div class="sale-type-block">${type}: ${count}</div>`
-    ).join('');
+        `<span class="sale-type-span">${type}: ${count}</span>`
+    ).join(''); // Removed the comma from the join function
 
-    return `
-        <div class="sale-info">
-            <div class="sale-header">
-                <div class="sale-data">Lead ID: ${sale.lead_id}</div>
-                <div class="sale-data esi-consent">ESI: ${sale.esi_content || 'N/A'}</div>
-            </div>
-            <div class="sale-types-container">${saleTypesDisplay}</div>
-            <div class="sale-note">${sale.notes}</div>
-            <div class="sale-footer">
-                <div class="sale-timestamp">Timestamp: ${formattedTimestamp}</div>
-                <div class="sale-actions">
-                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+    // Check if any sale types are present before generating HTML
+    if (saleTypesDisplay !== '') {
+        return `
+            <div class="sale-info">
+                <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
+                <div class="sale-data esi">ESI: ${sale.esi_content || 'N/A'}</div>
+                <div class="sale-types">${saleTypesDisplay}</div>
+                <div class="sale-note">${sale.notes}</div>
+                <div class="sale-footer">
+                    <div class="sale-timestamp">Timestamp: ${formattedTimestamp}</div>
+                    <div class="sale-actions">
+                        <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                        <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
+    } else {
+        // If no sale types are present, return an empty string
+        return '';
+    }
 }
 
 
