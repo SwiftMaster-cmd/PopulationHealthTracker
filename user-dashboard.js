@@ -267,22 +267,22 @@ function displaySales(salesArray, salesHistoryElement, timeSort) {
 }
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, adjustedCount) {
-    // Generate sale types string
+function generateSaleEntryHTML(sale, formattedTimestamp) {
+    // Generate sale types string with cumulative counts
     let saleTypesString = '';
-    if (sale.sale_types && Object.keys(sale.sale_types).length > 0) {
-        saleTypesString = Object.entries(sale.sale_types)
+    if (sale.adjustedSaleCounts && Object.keys(sale.adjustedSaleCounts).length > 0) {
+        saleTypesString = Object.entries(sale.adjustedSaleCounts)
                                 .map(([type, count]) => `${type}: ${count}`)
-                                .join(', '); // This line combines each sale type with its count
+                                .join(', ');
     } else {
-        saleTypesString = 'No sale types available';
+        saleTypesString = 'No sale types or counts available';
     }
 
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types and Counts: ${saleTypesString}</div>
+            <div class="sale-data">Sale Types and Cumulative Counts: ${saleTypesString}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
