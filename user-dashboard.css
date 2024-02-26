@@ -217,13 +217,14 @@ header {
 }
 
 .sale-types {
-    width: 450px; /* Set width to 500px */
+    width: 200px; /* Set width to 500px */
    
 
     margin: 0 auto; /* Center align the container */
 }
 
 .sale-type-span {
+
     display: inline-block;
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
