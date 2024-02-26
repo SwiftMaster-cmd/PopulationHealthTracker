@@ -319,7 +319,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
                 <div class="sale-types">${saleTypesDisplay}</div>
                 <div class="sale-note">${sale.notes}</div>
                 <div class="sale-footer">
-                    <div class="sale-timestamp">Timestamp: ${formattedTimestamp}</div>
+                    <div class="sale-timestamp">Time: ${formattedTimestamp}</div>
                     <div class="sale-actions">
                         <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
                         <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
