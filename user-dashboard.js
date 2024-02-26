@@ -228,6 +228,7 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
 }
 
 
+
 // Listen to the apply filters button click, including lead ID filter
 document.getElementById('applyFilters').addEventListener('click', () => {
     const timeFilter = document.getElementById('timeFilter').value;
@@ -288,9 +289,9 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
-    // Display cumulative count for each sale type in sorted order
+    // Sort cumulative counts in descending order
     const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-        .sort(([, countA], [, countB]) => countB - countA); // Sort by count, descending
+        .sort(([, countA], [, countB]) => countB - countA);
 
     let saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
         `${type}: ${count}`
@@ -310,6 +311,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
