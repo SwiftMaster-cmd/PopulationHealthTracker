@@ -147,7 +147,7 @@ header {
 
 .sales-history-container {
     width: auto;
-    max-width: 500px; /* Set maximum width to 500px */
+    max-width: 475px; /* Set maximum width to 500px */
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -237,7 +237,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 15px; /* Add 15px padding to the left and right */
+    width: calc(100% - 30px); /* Adjust width to account for padding */
 }
+
 
 .sale-timestamp {
     color: #888;
