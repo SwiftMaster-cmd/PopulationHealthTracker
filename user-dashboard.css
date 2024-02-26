@@ -148,7 +148,6 @@ header {
 
 
 
-
 .sales-history-container {
     width: auto;
     max-width: 500px; /* Set maximum width to 500px */
@@ -172,7 +171,7 @@ header {
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #219EBC, #023047);
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 15px;
@@ -223,10 +222,10 @@ header {
     overflow-y: auto;
     margin-top: 10px;
     padding: 8px;
-    background: #f0f0f0;
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
     border-radius: 5px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    color: #333;
+    color: #ffffff; /* Text color white */
     font-size: 14px;
     line-height: 1.4;
 }
@@ -247,7 +246,7 @@ header {
 }
 
 .sale-actions button {
-    background: #FFB703;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Blue gradient for buttons */
     color: white;
     font-weight: bold;
     padding: 10px 20px;
@@ -259,7 +258,7 @@ header {
 }
 
 .sale-actions button:hover {
-    background: #FB8501;
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient on hover */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
@@ -300,6 +299,7 @@ textarea:focus {
 .sales-history-entry .sale-note::-webkit-scrollbar-track {
     background: #f0f0f0;
 }
+
 
 
 
