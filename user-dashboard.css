@@ -192,11 +192,12 @@ header {
 .sale-data {
     width: 200px; /* Set width to 200px */
     margin-bottom: 10px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
 }
 
 .sale-types {
     width: 500px; /* Set width to 500px */
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
+   
 
     margin: 0 auto; /* Center align the container */
 }
