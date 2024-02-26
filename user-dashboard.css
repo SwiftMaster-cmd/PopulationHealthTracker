@@ -182,7 +182,7 @@ header {
 }
 
 .sale-info {
-    width: 100%; /* Occupy full width */
+    width: 90%; /* Occupy full width */
     border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
