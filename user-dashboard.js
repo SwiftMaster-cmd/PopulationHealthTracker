@@ -190,43 +190,32 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             id: key
         }));
 
+        // Initially sort sales by oldest to calculate cumulative counts correctly
+        salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+        // Calculate cumulative counts in chronological order
+        let cumulativeSaleTypeCounts = {};
+        salesArray.forEach(sale => {
+            Object.keys(sale.sale_types || {}).forEach(type => {
+                cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
+                sale.cumulativeCount = cumulativeSaleTypeCounts[type]; // Store the cumulative count at the point of this sale
+            });
+        });
+
         // Apply filters
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort sales
+        // Sort sales according to user preference
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
-            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            // Already sorted by oldest for cumulative counts, so no need to sort again if oldest is chosen
         }
 
-        // Initialize cumulative counts for each sale type in reverse logic
-        let cumulativeSaleTypeCounts = {};
-
-        // Adjust counting logic based on sort order, but reverse the increment logic
-        if (timeSort === 'oldest') {
-            // For 'oldest' sort, calculate counts normally
-            salesArray.forEach(sale => {
-                Object.keys(sale.sale_types || {}).forEach(type => {
-                    cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
-                    sale.cumulativeCount = cumulativeSaleTypeCounts[type];
-                });
-            });
-        } else {
-            // For 'newest' sort, calculate counts as if in reverse then keep array as is
-            salesArray.reverse().forEach(sale => {
-                Object.keys(sale.sale_types || {}).forEach(type => {
-                    cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
-                    sale.cumulativeCount = cumulativeSaleTypeCounts[type];
-                });
-            });
-            salesArray.reverse(); // Reverse array back to maintain 'newest' order
-        }
-
-        // Display sales with correct cumulative counts
         displaySales(salesArray, salesHistoryElement, timeSort);
     });
 }
+
 
 // Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 
@@ -268,7 +257,6 @@ function displaySales(salesArray, salesHistoryElement, timeSort) {
     salesArray.forEach(sale => {
         const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
 
-        // Adjust display based on previously calculated cumulativeCount
         const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeCount);
         const saleContainer = document.createElement('div');
         saleContainer.className = 'sales-history-entry';
@@ -279,12 +267,13 @@ function displaySales(salesArray, salesHistoryElement, timeSort) {
 }
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeCount) {
+
+function generateSaleEntryHTML(sale, formattedTimestamp, adjustedCount) {
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types Count: ${cumulativeCount}</div>
+            <div class="sale-data">Sale Types Count: ${adjustedCount}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -294,6 +283,10 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeCount) {
         </div>
     `;
 }
+
+
+
+
 
 
 
