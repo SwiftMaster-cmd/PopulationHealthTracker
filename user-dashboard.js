@@ -287,18 +287,17 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 
-
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
-    // Display sale type counts specific to this sale
-    let saleTypesDisplay = Object.keys(sale.sale_types || {}).map(type => 
-        `${type}: ${sale.sale_types[type]} (Cumulative: ${cumulativeSaleTypeCounts[type]})`
+    // Display cumulative count for each sale type
+    let saleTypesDisplay = Object.keys(cumulativeSaleTypeCounts).map(type =>
+        `${type}: ${cumulativeSaleTypeCounts[type]}`
     ).join(', ');
 
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Cumulative Sale Types: ${saleTypesDisplay}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
