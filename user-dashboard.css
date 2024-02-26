@@ -202,6 +202,8 @@ header {
 .sale-data.lead-id,
 .sale-data.esi {
     background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
+    border-radius: 15px; 
+    padding: 15px;
 }
 
 
