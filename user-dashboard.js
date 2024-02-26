@@ -298,10 +298,16 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
             return timeSort === 'newest' ? countB - countA : countA - countB;
         });
 
+    // Reverse the order if sorting by newest first
+    if (timeSort === 'newest') {
+        sortedCumulativeCounts.reverse();
+    }
+
     // Generate display string for sale types
     saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
         `${type}: ${count}`
     ).join(', ');
+
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
@@ -316,6 +322,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
