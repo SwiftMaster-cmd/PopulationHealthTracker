@@ -290,11 +290,11 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
     // Sort cumulative counts based on timeSort value
     const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
-        .sort(([, countB], [, countA]) => {
+        .sort(([, countA], [, countB]) => {
             if (timeSort === 'newest') {
                 return countB - countA; // Sort in descending order
             } else if (timeSort === 'oldest') {
-                return countB - countA; // Sort in ascending order
+                return countA - countB; // Sort in ascending order
             }
         });
 
