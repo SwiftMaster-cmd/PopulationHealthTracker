@@ -150,7 +150,6 @@ header {
 
 
 
-
 .sales-history-container {
     width: auto;
     max-width: 500px; /* Set maximum width to 500px */
@@ -196,7 +195,7 @@ header {
 }
 
 .sale-data {
-    width: 240px; /* Each box occupies 50% of the container width with some space between */
+    width: 200px; /* Set width to 200px */
     margin-bottom: 10px;
 }
 
