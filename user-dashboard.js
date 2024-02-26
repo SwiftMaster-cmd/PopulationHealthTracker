@@ -297,13 +297,15 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
+function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
     let saleTypesDisplay = '';
 
-    // Filter out sale types with zero counts
-    const nonZeroCounts = Object.entries(cumulativeSaleTypeCounts).filter(([type, count]) => count > 0);
+    // Filter out sale types with zero counts and not present in the current sale
+    const nonZeroCounts = Object.entries(cumulativeSaleTypeCounts).filter(([type, count]) =>
+        count > 0 && sale.sale_types && sale.sale_types[type] !== undefined
+    );
 
-    // Generate display string for sale types with non-zero counts
+    // Generate display string for sale types with non-zero counts that are present in the current sale
     saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
         `${type}: ${count}`
     ).join(', ');
