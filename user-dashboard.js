@@ -199,10 +199,9 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Iterate through each sale and filter out unsold sale types
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const soldSaleTypes = getSoldSaleTypes(sale.sale_types); // Filter out unsold sale types
+            const soldSaleTypes = getSoldSaleTypes(sale.sale_types); // Retrieve sold sale types
             const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, soldSaleTypes);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
@@ -212,6 +211,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
+
 
 
 
