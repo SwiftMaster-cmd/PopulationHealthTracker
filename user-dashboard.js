@@ -202,12 +202,23 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         // Initialize an object to track cumulative sale type counts
         let cumulativeSaleTypeCounts = {};
 
-        salesArray.forEach((sale, index) => {
+        // If we are viewing the newest first, we will accumulate counts from the end
+        if (timeSort === 'newest') {
+            for (let i = salesArray.length - 1; i >= 0; i--) {
+                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
+                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+            }
+        } else {
+            // Accumulate counts from the beginning for oldest first
+            salesArray.forEach(sale => {
+                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
+                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+            });
+        }
+
+        salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            // Update cumulative counts for this sale
-            updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-            // Generate HTML using the current state of cumulativeSaleTypeCounts
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort);
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
@@ -216,7 +227,6 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         });
     });
 }
-
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
         if (!cumulativeCounts[type]) {
@@ -298,15 +308,19 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
             return timeSort === 'newest' ? countB - countA : countA - countB;
         });
 
+    // Filter out sale types with zero counts
+    const nonZeroCounts = sortedCumulativeCounts.filter(([type, count]) => count > 0);
+
     // Generate display string for sale types
-    saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+    saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
         `${type}: ${count}`
     ).join(', ');
+
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Cumulative Sale Types: ${saleTypesDisplay}</div>
+            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -316,6 +330,9 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
+
+
 
 
 
