@@ -220,12 +220,13 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
         if (!cumulativeCounts[type]) {
-            cumulativeCounts[type] = currentSaleTypes[type];
+            cumulativeCounts[type] = -currentSaleTypes[type]; // Decrement the count for new sales
         } else {
-            cumulativeCounts[type] += currentSaleTypes[type];
+            cumulativeCounts[type] -= currentSaleTypes[type]; // Decrement the count for new sales
         }
     });
 }
+
 
 
 
