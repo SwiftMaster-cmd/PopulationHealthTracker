@@ -248,19 +248,25 @@ header {
     transform: translateY(-2px);
 }
 
+.sale-types {
+    width: 500px; /* Set width to 500px */
+    margin: 0 auto; /* Center align the container */
+}
+
 .sale-type-span {
     display: inline-block;
     background: linear-gradient(to bottom, #8ECAE6, #219EBC);
     color: white;
-    padding: 8px 12px;
+    padding: 12px 20px;
     margin: 5px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 18px;
     font-weight: bold;
     cursor: default;
     user-select: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
+
 
 input:focus,
 textarea:focus {
