@@ -208,6 +208,7 @@ header {
     padding: 15px;
     box-shadow: linear-gradient(to bottom, #FFB703, #FB8501);
     outline: linear-gradient(to bottom, #FFB703, #FB8501);
+    color: white;
 }
 
 
