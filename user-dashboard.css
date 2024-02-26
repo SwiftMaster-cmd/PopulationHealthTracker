@@ -218,7 +218,7 @@ header {
 
 .sale-types {
     width: 400; /* Set width to 500px */
-   
+   font-size: 30px;
 
     margin: 0 auto; /* Center align the container */
 }
