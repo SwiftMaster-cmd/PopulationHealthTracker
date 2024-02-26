@@ -168,7 +168,6 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -296,29 +295,37 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
-    // Initialize cumulative counts for this sale
-    let cumulativeCounts = {};
-    
-    // Iterate over cumulativeSaleTypeCounts to accumulate counts up to this sale
-    for (const [type, count] of Object.entries(cumulativeSaleTypeCounts)) {
-        cumulativeCounts[type] = cumulativeCounts[type] || 0; // Initialize if not present
-        cumulativeCounts[type] += count; // Add count to cumulative counts
+    // Map the sorted counts to a displayable format
+    let saleTypesDisplay = '';
+    if (timeSort === 'newest') {
+        // For 'newest', sort cumulative counts in descending order of sale timestamp
+        const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
+            .sort((a, b) => {
+                // Extract counts for comparison
+                const countA = a[1];
+                const countB = b[1];
+                // Sort descending by count
+                return countB - countA;
+            });
+
+        saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+            `${type}: ${count}`
+        ).join(', ');
+    } else {
+        // For 'oldest', sort cumulative counts in ascending order of sale timestamp
+        const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
+            .sort((a, b) => {
+                // Extract counts for comparison
+                const countA = a[1];
+                const countB = b[1];
+                // Sort ascending by count
+                return countA - countB;
+            });
+
+        saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+            `${type}: ${count}`
+        ).join(', ');
     }
-
-    // Extract sorted cumulative counts for display
-    const sortedCumulativeCounts = Object.entries(cumulativeCounts)
-        .sort((a, b) => {
-            // Extract counts for comparison
-            const countA = a[1];
-            const countB = b[1];
-            // Sort descending by count for 'newest' and ascending for 'oldest'
-            return timeSort === 'newest' ? countB - countA : countA - countB;
-        });
-
-    // Generate HTML for sale types with cumulative counts
-    const saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
-        `${type}: ${count}`
-    ).join(', ');
 
     return `
         <div class="sale-info">
