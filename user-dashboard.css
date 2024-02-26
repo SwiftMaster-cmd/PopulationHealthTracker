@@ -196,7 +196,7 @@ header {
 }
 
 .sale-data {
-    width: 245px; /* Each box occupies 50% of the container width with some space between */
+    width: 240px; /* Each box occupies 50% of the container width with some space between */
     margin-bottom: 10px;
 }
 
