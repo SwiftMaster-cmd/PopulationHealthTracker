@@ -168,6 +168,8 @@ onAuthStateChanged(auth, (user) => {
 
 
 
+
+// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -185,40 +187,50 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             return;
         }
 
+        // Convert sales object to an array for filtering
         let salesArray = Object.keys(sales).map(key => ({
             ...sales[key],
             id: key
         }));
 
-        // Initially sort sales by oldest to calculate cumulative counts correctly
-        salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-        // Calculate cumulative counts in chronological order
-        let cumulativeSaleTypeCounts = {};
-        salesArray.forEach(sale => {
-            Object.keys(sale.sale_types || {}).forEach(type => {
-                cumulativeSaleTypeCounts[type] = (cumulativeSaleTypeCounts[type] || 0) + 1;
-                sale.cumulativeCount = cumulativeSaleTypeCounts[type]; // Store the cumulative count at the point of this sale
-            });
-        });
-
-        // Apply filters
+        // Apply filters including lead ID
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort sales according to user preference
+        // Sort sales based on timeSort value
         if (timeSort === 'newest') {
             salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         } else if (timeSort === 'oldest') {
-            // Already sorted by oldest for cumulative counts, so no need to sort again if oldest is chosen
+            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        displaySales(salesArray, salesHistoryElement, timeSort);
+        // Inside the forEach loop in fetchSalesHistory
+salesArray.forEach(sale => {
+    const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+    // Updated to include saleTypeCounts in the function call
+    const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.sale_types, saleTypeCounts);
+    const saleContainer = document.createElement('div');
+    saleContainer.className = 'sales-history-entry';
+    saleContainer.setAttribute('data-sale-id', sale.id);
+    saleContainer.innerHTML = saleContainerHTML;
+    salesHistoryElement.appendChild(saleContainer);
+});
+
+        // Inside fetchSalesHistory function, after filtering salesArray
+
+// Calculate sale type counts
+let saleTypeCounts = {};
+salesArray.forEach(sale => {
+    Object.keys(sale.sale_types || {}).forEach(type => {
+        if (!saleTypeCounts[type]) {
+            saleTypeCounts[type] = 1;
+        } else {
+            saleTypeCounts[type]++;
+        }
+    });
+});
+
     });
 }
-
-
-// Modified fetchSalesHistory to include filtering and sorting, now with lead ID filtering
-
 
 // Listen to the apply filters button click, including lead ID filter
 document.getElementById('applyFilters').addEventListener('click', () => {
@@ -253,36 +265,12 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
-function displaySales(salesArray, salesHistoryElement, timeSort) {
-    salesArray.forEach(sale => {
-        const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-
-        const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeCount);
-        const saleContainer = document.createElement('div');
-        saleContainer.className = 'sales-history-entry';
-        saleContainer.setAttribute('data-sale-id', sale.id);
-        saleContainer.innerHTML = saleContainerHTML;
-        salesHistoryElement.appendChild(saleContainer);
-    });
-}
-
-
-function generateSaleEntryHTML(sale, formattedTimestamp) {
-    // Generate sale types string with cumulative counts
-    let saleTypesString = '';
-    if (sale.adjustedSaleCounts && Object.keys(sale.adjustedSaleCounts).length > 0) {
-        saleTypesString = Object.entries(sale.adjustedSaleCounts)
-                                .map(([type, count]) => `${type}: ${count}`)
-                                .join(', ');
-    } else {
-        saleTypesString = 'No sale types or counts available';
-    }
-
+function generateSaleEntryHTML(sale, formattedTimestamp, saleTypesDisplay) {
     return `
         <div class="sale-info">
             <div class="sale-data">Lead ID: ${sale.lead_id}</div>
             <div class="sale-data">ESI: ${sale.esi_content || 'N/A'}</div>
-            <div class="sale-data">Sale Types and Cumulative Counts: ${saleTypesString}</div>
+            <div class="sale-data">Sale Types: ${saleTypesDisplay}</div>
             <div class="sale-data">Notes: ${sale.notes}</div>
             <div class="sale-data">Timestamp: ${formattedTimestamp}</div>
             <div class="sale-actions">
@@ -292,6 +280,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp) {
         </div>
     `;
 }
+
+
 
 
 
