@@ -154,84 +154,86 @@ header {
 
 
 
-
-
 .sales-history-container {
-    width: auto; /* Allow the container to adjust its width based on content */
-    min-width: 500px; /* Set a minimum width of 500px */
+    width: auto;
+    min-width: 500px;
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #f9f9f9; /* Light gray background */
     border-radius: 15px;
     padding: 20px;
-    display: flex; /* Added to enable flex properties */
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden; /* For border-radius effect */
-    max-height: 500px;
-    overflow-y: auto; /* Enable vertical scrolling */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     animation: fadeIn 1s ease-out;
 }
 
-/* Set a maximum width for the contents inside the container */
-.sales-history-container > * {
-    min-width: 100%; /* Allow contents to take the full width of the container */
+.sales-history-container h3 {
+    margin-bottom: 15px;
+    color: #333; /* Dark text color */
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    border-radius: 10px; /* Consistent rounded corners */
-    padding: 15px; /* Padding around content */
-    margin-bottom: 15px; /* Space between entries */
-    color: #ffffff; /* Text color for readability */
-    transition: all 0.3s ease; /* Smooth transition for interactions */
-}
-
-.sales-history-entry:hover {
-    transform: scale(1.03); /* Slight enlargement on hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+    background: #fff; /* White background */
+    border-radius: 10px;
+    padding: 20px; /* Increased padding for better spacing */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .sale-info {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between; /* Align items evenly */
+    align-items: center; /* Center align items */
 }
 
-.sale-info > div {
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient matching the dashboard */
-    font-size: 18px; /* Slightly larger font size for improved readability */
-    color: #ffffff; /* Text color for contrast */
-    padding: 10px; /* Spacing for readability */
-    border-radius: 8px; /* Slightly larger radius for a bolder look */
-    margin: 5px; /* Increased margin for better separation */
+.sale-data {
+    flex-basis: 48%; /* Adjust width of sale data */
+    margin-bottom: 10px;
+}
+
+.sale-types {
+    flex-basis: 100%;
+}
+
+.sale-type-span {
+    display: inline-block;
+    background: #FFB703; /* Orange background */
+    color: #fff;
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .sale-note {
-    max-width: 100%; /* Ensure the note does not exceed the width of its container */
-    height: 75px; /* Set a maximum height to prevent excessively long notes from overflowing */
-    overflow-y: auto; /* Enable vertical scrolling for notes exceeding the max height */
-    margin-top: 10px; /* Provide some space around the note for readability */
-    padding: 8px; /* Padding inside the note for content separation from edges */
-    background: #f0f0f0; /* Optional: Different background to distinguish notes */
-    border-radius: 5px; /* Rounded corners for aesthetics */
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* Optional: Inner shadow for depth */
-    color: #333; /* Text color for readability */
-    font-size: 14px; /* Adjust font size for note content */
-    line-height: 1.4; /* Adjust line height for better readability */
+    max-width: 100%;
+    height: 75px;
+    overflow-y: auto;
+    margin-top: 10px;
+    padding: 8px;
+    background: #f9f9f9; /* Light gray background */
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
-.sale-actions {
+.sale-footer {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sale-timestamp {
+    color: #888; /* Gray text color for timestamp */
 }
 
 .sale-actions button {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    background: #FFB703; /* Orange background */
     color: white;
     font-weight: bold;
     padding: 10px 20px;
-    margin-left: 10px;
     border-radius: 15px;
     border: none;
     cursor: pointer;
@@ -239,7 +241,7 @@ header {
 }
 
 .sale-actions button:hover {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    background: #FB8501; /* Lighter orange on hover */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
@@ -249,53 +251,37 @@ header {
     transform: translateY(-2px);
 }
 
-.sale-type-span {
-    display: inline-block; /* Display as inline block for alignment */
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Styling to match the "Add Sales" button */
-    color: white; /* Text color for contrast */
-    padding: 8px 12px; /* Slightly larger padding for prominence */
-    margin: 5px; /* Increased margin for better separation */
-    border-radius: 8px; /* Slightly larger radius for a bolder look */
-    font-size: 18px; /* Larger font size for impact */
-    font-weight: bold; /* Bold font weight for emphasis */
-    cursor: default;
-    user-select: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); /* Soft shadow for depth */
-}
-
 input:focus,
 textarea:focus {
-    box-shadow: 0 0 10px #e6b081; /* Focus shadow */
-    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 10px #e6b081;
+    outline: none;
 }
 
-/* Scrollbar customization for consistency */
 .sales-history-container::-webkit-scrollbar {
     width: 8px;
 }
 
 .sales-history-container::-webkit-scrollbar-thumb {
-    background: #BBDEFB; /* Scrollbar color */
-    border-radius: 4px; /* Rounded scrollbar for a smoother look */
+    background: #BBDEFB;
+    border-radius: 4px;
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Hover effect to match other buttons */
+    background: #f9f9f9;
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar {
-    width: 6px; /* Narrower scrollbar for space efficiency */
+    width: 6px;
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar-thumb {
-    background: #888; /* Scrollbar color */
-    border-radius: 3px; /* Rounded scrollbar for a smoother look */
+    background: #888;
+    border-radius: 3px;
 }
 
 .sales-history-entry .sale-note::-webkit-scrollbar-track {
-    background: #f0f0f0; /* Match the note's background */
+    background: #f9f9f9;
 }
-
 
 
 
