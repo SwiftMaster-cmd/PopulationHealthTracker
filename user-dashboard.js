@@ -296,16 +296,20 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 }
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
+function generateSaleEntryHTML(sale, formattedTimestamp) {
     let saleTypesDisplay = '';
 
-    // Filter out sale types with zero counts
-    const nonZeroCounts = Object.entries(cumulativeSaleTypeCounts).filter(([type, count]) => count > 0);
+    // Iterate through the sale types available in the system
+    Object.keys(sale.sale_types).forEach(type => {
+        // Check if the sale type was selected for this sale
+        if (sale.sale_types[type]) {
+            // Append the sale type to the display string
+            saleTypesDisplay += `${type}: ${sale.sale_types[type]}, `;
+        }
+    });
 
-    // Generate display string for sale types
-    saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
-        `${type}: ${count}`
-    ).join(', ');
+    // Remove the trailing comma and space
+    saleTypesDisplay = saleTypesDisplay.slice(0, -2);
 
     return `
         <div class="sale-info">
@@ -321,6 +325,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
