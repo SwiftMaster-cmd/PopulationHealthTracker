@@ -286,22 +286,15 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
-    // Display cumulative count for each sale type based on the sorting order
-    let saleTypesDisplay = '';
-    if (timeSort === 'newest') {
-        saleTypesDisplay = Object.keys(cumulativeSaleTypeCounts).map(type =>
-            `${type}: ${cumulativeSaleTypeCounts[type]}`
-        ).join(', ');
-    } else if (timeSort === 'oldest') {
-        let reversedCounts = { ...cumulativeSaleTypeCounts }; // Create a copy of cumulative counts
-        // Reverse the order of cumulative counts for oldest first display
-        Object.keys(reversedCounts).reverse().forEach(type => {
-            saleTypesDisplay += `${type}: ${reversedCounts[type]}, `;
-        });
-        // Remove trailing comma and space
-        saleTypesDisplay = saleTypesDisplay.slice(0, -2);
-    }
+
+function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
+    // Display cumulative count for each sale type in sorted order
+    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
+        .sort(([, countA], [, countB]) => countB - countA); // Sort by count, descending
+
+    let saleTypesDisplay = sortedCumulativeCounts.map(([type, count]) =>
+        `${type}: ${count}`
+    ).join(', ');
 
     return `
         <div class="sale-info">
@@ -317,7 +310,6 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
-
 
 
 
