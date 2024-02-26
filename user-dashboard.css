@@ -153,7 +153,7 @@ header {
 
 .sales-history-container {
     width: auto;
-    min-width: 500px;
+    max-width: 500px; /* Set maximum width to 500px */
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -188,7 +188,7 @@ header {
 }
 
 .sale-info {
-    width: 250px;
+    width: 100%; /* Occupy full width */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -196,13 +196,13 @@ header {
 }
 
 .sale-data {
-    width: 48%;
+    width: calc(50% - 10px); /* Each box occupies 50% of the container width with some space between */
     margin-bottom: 10px;
 }
 
 .sale-types {
-    width: 500px;
-    margin: 0 auto;
+    width: 500px; /* Set width to 500px */
+    margin: 0 auto; /* Center align the container */
 }
 
 .sale-type-span {
@@ -220,7 +220,7 @@ header {
 }
 
 .sale-note {
-    max-width: 100%;
+    width: 500px;
     height: 75px;
     overflow-y: auto;
     margin-top: 10px;
