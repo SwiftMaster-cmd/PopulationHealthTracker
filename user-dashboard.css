@@ -188,7 +188,7 @@ header {
 }
 
 .sale-info {
-    width: 200px; /* Occupy full width */
+    width: 100%; /* Occupy full width */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
