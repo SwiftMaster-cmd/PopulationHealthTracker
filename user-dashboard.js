@@ -296,8 +296,17 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
 
 
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts, timeSort) {
-    // Sort cumulative counts based on timeSort parameter
-    const sortedCumulativeCounts = Object.entries(cumulativeSaleTypeCounts)
+    // Initialize cumulative counts for this sale
+    let cumulativeCounts = {};
+    
+    // Iterate over cumulativeSaleTypeCounts to accumulate counts up to this sale
+    for (const [type, count] of Object.entries(cumulativeSaleTypeCounts)) {
+        cumulativeCounts[type] = cumulativeCounts[type] || 0; // Initialize if not present
+        cumulativeCounts[type] += count; // Add count to cumulative counts
+    }
+
+    // Extract sorted cumulative counts for display
+    const sortedCumulativeCounts = Object.entries(cumulativeCounts)
         .sort((a, b) => {
             // Extract counts for comparison
             const countA = a[1];
@@ -325,6 +334,7 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
         </div>
     `;
 }
+
 
 
 
