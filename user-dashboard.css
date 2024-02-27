@@ -351,11 +351,9 @@ textarea:focus {
 
 
 
-
-
 /* Chart container */
-#salesChartContainer {
-    width: 100%; /* Fix typo: remove '%' */
+.chart-container {
+    width: 100%;
     max-width: 500px; /* Set maximum width */
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
@@ -373,22 +371,30 @@ textarea:focus {
 }
 
 /* Chart title */
-#salesChart .chartjs-render-monitor {
-    font-size: 30px; /* Increase font size */
-    color: white; /* Font color */
+.chart-title {
+    font-size: 24px;
+    color: white;
+    text-align: center;
+    margin-top: 10px;
 }
 
 /* Chart data labels */
-#salesChart .chartjs-render-monitor .chartjs-data-labels {
-    font-size: 30px; /* Increase font size */
-    color: white; /* Font color */
+.chart-data-labels {
+    font-size: 16px;
+    color: white;
+    text-align: center;
 }
 
 /* Chart bars */
-#salesChart .chartjs-render-monitor .chartjs-bar {
+.chart-bar {
     background-color: #219EBC; /* Blue color */
+    border-radius: 5px;
 }
 
+/* Optional: Add padding to the chart container */
+.chart-container {
+    padding: 20px;
+}
 
 
 
