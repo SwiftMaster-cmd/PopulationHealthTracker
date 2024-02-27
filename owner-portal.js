@@ -41,7 +41,7 @@ function validateOwner() {
 
 // Load and display all active users
 function loadActiveUsers() {
-    const activeUsersRef = ref(database, 'users/');
+    const activeUsersRef = ref(database, 'sales/');
     onValue(activeUsersRef, snapshot => {
         const users = snapshot.val();
         if (users) {
