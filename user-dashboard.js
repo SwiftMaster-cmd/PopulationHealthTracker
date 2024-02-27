@@ -386,7 +386,7 @@ function renderSalesChart(data) {
                         color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
                     },
                     ticks: {
-                        maxTicksLimit: 5 // Limit to 5 ticks
+                        maxTicksLimit: 5 // Attempt to limit to 5 ticks
                     }
                 },
                 x: {
@@ -405,18 +405,10 @@ function renderSalesChart(data) {
                 easing: 'easeInOutQuart' // Smooth animation curve
             },
             responsive: true,
-            maintainAspectRatio: false, // Allow chart to resize
-            hover: {
-                mode: 'nearest',
-                intersect: true
-            },
-            onHover: (event, chartElement) => {
-                event.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
-            }
+            maintainAspectRatio: false // Allow chart to resize
         }
     });
 }
-
 
 
 
