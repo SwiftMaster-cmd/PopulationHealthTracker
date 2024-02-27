@@ -371,7 +371,7 @@ textarea:focus {
 
 /* Chart title */
 .chart-title {
-    font-size: 24px;
+    font-size: 30px;
     color: white;
     text-align: center;
     margin-top: 10px;
@@ -379,7 +379,7 @@ textarea:focus {
 
 /* Chart data labels */
 .chart-data-labels {
-    font-size: 16px;
+    font-size: 30px;
     color: white;
     text-align: center;
 }
