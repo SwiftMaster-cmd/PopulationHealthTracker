@@ -45,7 +45,7 @@ function validateOwner() {
     onAuthStateChanged(auth, user => {
         if (user) {
             // Assuming the UID of the owner is known and stored securely
-            const OWNER_UID = 'your-owner-uid-here';
+            const OWNER_UID = 'wNpqlW2HCWR1awF1x95hUUp3ryw1';
             if (user.uid === OWNER_UID) {
                 loadActiveUsers();
             } else {
