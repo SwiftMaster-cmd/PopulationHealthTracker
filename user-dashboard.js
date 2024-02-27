@@ -235,6 +235,8 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
             cumulativeCounts[type] += currentSaleTypes[type];
         }
     });
+    const chartData = generateChartData(salesArray);
+    renderSalesChart(chartData);
 }
 
 
@@ -337,6 +339,48 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
+
+
+
+
+
+
+function generateChartData(salesArray) {
+    let saleTypeCounts = calculateSaleTypeCounts(salesArray);
+    let labels = Object.keys(saleTypeCounts);
+    let data = Object.values(saleTypeCounts);
+
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Sale Type Counts',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            data: data,
+        }]
+    };
+}
+let salesChart;
+
+function renderSalesChart(data) {
+    if (salesChart) {
+        salesChart.destroy(); // Destroy the previous chart instance if it exists
+    }
+
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    salesChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
 
 
 
