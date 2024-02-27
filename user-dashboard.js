@@ -464,21 +464,16 @@ function renderSalesChart(data) {
 
 
 
-
-
-
-
-
 // Function to send a message to ChatGPT API and handle the response
 async function sendMessageToChatGPT(message) {
     const response = await fetch('https://api.openai.com/v1/completions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': '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', // Replace with your ChatGPT API key
+            'Authorization': 'Bearer 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', // Updated with your provided API key
         },
         body: JSON.stringify({
-            model: 'text-davinci-003', // ChatGPT model
+            model: 'text-davinci-004', // Updated to a newer model, if available
             prompt: message,
             max_tokens: 150,
             temperature: 0.7,
@@ -511,11 +506,6 @@ function displayChatMessage(sender, message) {
 // Example usage: Handle user input and send it to ChatGPT
 const userInput = 'What are the sales trends for this month?';
 handleUserMessage(userInput);
-
-
-
-
-
 
 
 
