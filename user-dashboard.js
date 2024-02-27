@@ -362,13 +362,14 @@ function generateChartData(salesArray) {
         labels: labels,
         datasets: [{
             label: 'Sale Type Counts',
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            backgroundColor: 'rgba(54, 162, 235, 1)', // Change opacity to 1
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
             data: data,
         }]
     };
 }
+
 let salesChart;
 
 function renderSalesChart(data) {
