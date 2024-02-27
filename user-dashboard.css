@@ -373,9 +373,21 @@ textarea:focus {
     border-radius: 15px;
 }
 
-/* Optional: Add padding to the chart container */
-#salesChartContainer .chart-container {
-    padding: 20px;
+/* Chart title */
+#salesChart .chartjs-render-monitor {
+    font-size: 20px; /* Increase font size */
+    color: white; /* Font color */
+}
+
+/* Chart data labels */
+#salesChart .chartjs-render-monitor .chartjs-data-labels {
+    font-size: 16px; /* Increase font size */
+    color: white; /* Font color */
+}
+
+/* Chart bars */
+#salesChart .chartjs-render-monitor .chartjs-bar {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Blue linear gradient */
 }
 
 
