@@ -20,23 +20,6 @@ initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-// Function to load owner-specific data
-function loadOwnerData(ownerUid) {
-    const ownerRef = ref(database, `owners/${ownerUid}`);
-    onValue(ownerRef, (snapshot) => {
-        const ownerData = snapshot.val();
-        // Handle owner data, update UI, etc.
-    });
-}
-
-// Function to perform owner-specific actions
-function performOwnerAction(actionData) {
-    // Example action: Update owner's profile
-    const ownerUid = auth.currentUser.uid;
-    const ownerRef = ref(database, `owners/${ownerUid}`);
-    // Perform the necessary database operation, such as updating the owner's profile
-}
-
 // Function to check if the user is authenticated and redirect if not the owner
 function validateOwner() {
     onAuthStateChanged(auth, user => {
@@ -54,20 +37,24 @@ function validateOwner() {
             window.location.href = 'index.html';
         }
     });
-    
-    // Load and display all active users
-    function loadActiveUsers() {
-        const activeUsersRef = ref(database, 'users/'); // Assuming you have a users node
-        onValue(activeUsersRef, snapshot => {
-            const users = snapshot.val();
-            const activeUsers = Object.values(users).filter(user => user.isActive); // Assuming an isActive flag indicates active users
-            displayActiveUsers(activeUsers);
-        });
-    }
+}
+
+// Load and display all active users
+function loadActiveUsers() {
+    const activeUsersRef = ref(database, 'users/');
+    onValue(activeUsersRef, snapshot => {
+        const users = snapshot.val();
+        if (users) {
+            const usersContainer = document.getElementById('ownerDataContainer');
+            usersContainer.innerHTML = ''; // Clear existing content
+            Object.values(users).forEach(user => {
+                const userElement = document.createElement('div');
+                userElement.textContent = `Email: ${user.email}, IsActive: ${user.isActive}`;
+                usersContainer.appendChild(userElement);
+            });
+        }
+    });
 }
 
 // Call the validateOwner function when the page loads to ensure authentication
 validateOwner();
-
-// Export functions for use in other modules
-export { loadOwnerData, performOwnerAction };
