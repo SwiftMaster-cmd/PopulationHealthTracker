@@ -225,6 +225,15 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             saleContainer.innerHTML = saleContainerHTML;
             salesHistoryElement.appendChild(saleContainer);
         });
+
+         // After fetching the sales history and rendering the sales entries, generate and render the chart
+         const chartData = generateChartData(salesArray);
+         renderSalesChart(chartData);
+ 
+         // Execute the callback if provided
+         if (callback && typeof callback === 'function') {
+             callback();
+         }
     });
 }
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
@@ -235,8 +244,7 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
             cumulativeCounts[type] += currentSaleTypes[type];
         }
     });
-    const chartData = generateChartData(salesArray);
-    renderSalesChart(chartData);
+ 
 }
 
 
