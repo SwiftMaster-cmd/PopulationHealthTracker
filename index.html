@@ -32,10 +32,17 @@
                 const user = result.user;
 
                 // Fetch the user's role from Firebase Realtime Database
-              
+                const roleRef = ref(database, `users/${user.uid}/role`);
+                get(roleRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const role = snapshot.val();
+                        // Redirect user based on their role
+                        if (role === 'manager') {
+                            window.location.href = 'owner-portal.html';
+                        } else {
                             // Default to user dashboard if role is 'user' or not specified
                             window.location.href = 'user-dashboard.html';
-                        
+                        }
                     } else {
                         console.log('Role not found, redirecting to user dashboard.');
                         window.location.href = 'user-dashboard.html'; // Redirect if no role is found
@@ -64,4 +71,3 @@
     </div>
 </body>
 </html>
-
