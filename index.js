@@ -19,6 +19,7 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
+
 // User Registration Function
 async function registerUser(email, password, additionalData) {
     try {
@@ -44,7 +45,6 @@ async function loginUser(email, password) {
 }
 
 // Google Sign-In Function
-// Google Sign-In Function
 async function googleSignIn() {
     try {
         const result = await signInWithPopup(auth, provider);
@@ -57,9 +57,9 @@ async function googleSignIn() {
                 const role = snapshot.val();
                 // Redirect based on role
                 if (role === 'manager') {
-                    window.location.href = 'manager-portal.html';
+                    window.location.href = 'manager-dashboard.html';
                 } else if (role === 'owner') {
-                    window.location.href = 'owner-portal.html'; // Redirect to owner dashboard
+                    window.location.href = 'owner-dashboard.html'; // Redirect to owner dashboard
                 } else {
                     window.location.href = 'user-dashboard.html';
                 }
@@ -73,22 +73,5 @@ async function googleSignIn() {
     }
 }
 
-
-// Add Sale Function
-async function addSale(saleData) {
-    try {
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-            throw new Error('User not authenticated');
-        }
-
-        const newSaleRef = push(ref(database, `sales/${currentUser.uid}`));
-        await set(newSaleRef, saleData);
-        console.log('Sale added successfully:', newSaleRef.key);
-    } catch (error) {
-        console.error('Error adding sale:', error);
-    }
-}
-
 // Export the functions for use in other modules
-export { registerUser, loginUser, addSale, googleSignIn };
+export { registerUser, loginUser, googleSignIn };
