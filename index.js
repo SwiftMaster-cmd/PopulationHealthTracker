@@ -57,9 +57,9 @@ async function googleSignIn() {
                 const role = snapshot.val();
                 // Redirect based on role
                 if (role === 'manager') {
-                    window.location.href = 'manager-dashboard.html';
+                    window.location.href = 'manager-portal.html';
                 } else if (role === 'owner') {
-                    window.location.href = 'owner-dashboard.html'; // Redirect to owner dashboard
+                    window.location.href = 'owner-portal.html'; // Redirect to owner dashboard
                 } else {
                     window.location.href = 'user-dashboard.html';
                 }
