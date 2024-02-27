@@ -252,42 +252,6 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const timeFilter = document.getElementById('timeFilter');
-    const saleTypeFilter = document.getElementById('saleTypeFilter');
-
-    // Example function to update saleTypeFilter options based on timeFilter selection
-    function updateSaleTypeOptions() {
-        const timeFrame = timeFilter.value;
-        saleTypeFilter.innerHTML = ''; // Clear current options
-
-        // Logic to determine what options to show based on the selected time frame
-        let options = [];
-        if (timeFrame === 'day') {
-            options = ['Option 1 for Day', 'Option 2 for Day'];
-        } else if (timeFrame === 'week') {
-            options = ['Option 1 for Week', 'Option 2 for Week'];
-        } else if (timeFrame === 'month') {
-            options = ['Option 1 for Month', 'Option 2 for Month'];
-        } else {
-            options = ['Default Option 1', 'Default Option 2'];
-        }
-
-        // Populate the saleTypeFilter with new options
-        options.forEach(option => {
-            const opt = document.createElement('option');
-            opt.value = option;
-            opt.innerHTML = option;
-            saleTypeFilter.appendChild(opt);
-        });
-    }
-
-    // Listen for changes on the timeFilter to update the saleTypeFilter
-    timeFilter.addEventListener('change', updateSaleTypeOptions);
-
-    // Initial update on page load
-    updateSaleTypeOptions();
-});
 
 
 
