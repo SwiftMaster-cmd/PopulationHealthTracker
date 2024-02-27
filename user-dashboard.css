@@ -354,6 +354,70 @@ textarea:focus {
 
 
 
+/* Chart container */
+#salesChartContainer {
+    width: 100%;
+    max-width: 500px; /* Set maximum width */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Chart canvas */
+#salesChart {
+    width: 100%;
+    max-height: 400px; /* Adjust height as needed */
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+/* Optional: Add padding to the chart container */
+#salesChartContainer .chart-container {
+    padding: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* General styling for sale data to mimic input/label appearance */
