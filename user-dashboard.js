@@ -471,7 +471,7 @@ async function sendMessageToChatGPT(message) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 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',
+                'Authorization': 'Bearer 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',
             },
             body: JSON.stringify({
                 model: 'text-davinci-004', // Ensure this model is available to you
