@@ -34,46 +34,14 @@ async function registerUser(email, password, additionalData) {
 }
 
 // User Login Function
-// User Login Function
 async function loginUser(email, password) {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log('User logged in:', userCredential.user);
-        
-        // Set user status to active
-        await updateUserStatus(userCredential.user.uid, 'active');
     } catch (error) {
         console.error('Login error:', error);
     }
 }
-
-// User Logout Function
-async function logoutUser() {
-    try {
-        await auth.signOut();
-        console.log('User logged out.');
-        
-        // Set user status to inactive
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-            await updateUserStatus(currentUser.uid, 'inactive');
-        }
-    } catch (error) {
-        console.error('Logout error:', error);
-    }
-}
-
-// Function to update user status
-async function updateUserStatus(userId, status) {
-    try {
-        const userStatusRef = ref(database, `userStatus/${userId}`);
-        await set(userStatusRef, { status });
-        console.log('User status updated:', status);
-    } catch (error) {
-        console.error('Error updating user status:', error);
-    }
-}
-
 
 // Google Sign-In Function
 // Google Sign-In Function
@@ -89,9 +57,9 @@ async function googleSignIn() {
                 const role = snapshot.val();
                 // Redirect based on role
                 if (role === 'manager') {
-                    window.location.href = 'manager-portal.html';
+                    window.location.href = 'manager-dashboard.html';
                 } else if (role === 'owner') {
-                    window.location.href = 'owner-portal.html'; // Redirect to owner dashboard
+                    window.location.href = 'owner-dashboard.html'; // Redirect to owner dashboard
                 } else {
                     window.location.href = 'user-dashboard.html';
                 }
