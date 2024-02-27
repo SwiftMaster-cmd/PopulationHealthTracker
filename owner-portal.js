@@ -40,21 +40,38 @@ function validateOwner() {
 }
 
 // Load and display all active users
+// Load and display all active users under the "sales" node
+// Load and display all active users under the "sales" node
 function loadActiveUsers() {
-    const activeUsersRef = ref(database, 'sales/');
-    onValue(activeUsersRef, snapshot => {
-        const users = snapshot.val();
-        if (users) {
+    const salesRef = ref(database, 'sales/');
+    onValue(salesRef, snapshot => {
+        const sales = snapshot.val();
+        if (sales) {
             const usersContainer = document.getElementById('ownerDataContainer');
             usersContainer.innerHTML = ''; // Clear existing content
-            Object.values(users).forEach(user => {
-                const userElement = document.createElement('div');
-                userElement.textContent = `Email: ${user.email}, IsActive: ${user.isActive}`;
-                usersContainer.appendChild(userElement);
+            Object.values(sales).forEach(sale => {
+                const user_id = sale.user_id;
+                if (user_id) {
+                    // Assuming you have a separate "users" node where user information is stored
+                    const userRef = ref(database, `users/${user_id}`);
+                    // Fetch user information
+                    get(userRef).then(userSnapshot => {
+                        const userData = userSnapshot.val();
+                        if (userData) {
+                            const userElement = document.createElement('div');
+                            userElement.textContent = `Email: ${userData.email}, IsActive: ${userData.isActive}`;
+                            usersContainer.appendChild(userElement);
+                        }
+                    }).catch(error => {
+                        console.error("Error fetching user data:", error);
+                    });
+                }
             });
         }
     });
 }
+
+
 
 // Call the validateOwner function when the page loads to ensure authentication
 validateOwner();
