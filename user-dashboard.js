@@ -383,7 +383,10 @@ function renderSalesChart(data) {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)' // Light gray grid lines
+                        color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
+                    },
+                    ticks: {
+                        maxTicksLimit: 5 // Attempt to limit to 5 ticks
                     }
                 },
                 x: {
@@ -406,6 +409,7 @@ function renderSalesChart(data) {
         }
     });
 }
+
 
 
 
