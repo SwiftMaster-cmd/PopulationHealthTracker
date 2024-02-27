@@ -356,7 +356,7 @@ textarea:focus {
 
 /* Chart container */
 #salesChartContainer {
-    width: 100%;
+    width: 500px%;
     max-width: 500px; /* Set maximum width */
     margin: 20px auto;
     background: linear-gradient(to bottom, #FFB703, #FB8501);
