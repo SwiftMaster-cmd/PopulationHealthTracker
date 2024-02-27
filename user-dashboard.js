@@ -369,6 +369,7 @@ function generateChartData(salesArray) {
 
 let salesChart;
 
+
 function renderSalesChart(data) {
     if (salesChart) {
         salesChart.destroy();
@@ -386,7 +387,7 @@ function renderSalesChart(data) {
                         color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
                     },
                     ticks: {
-                        maxTicksLimit: 5 // Attempt to limit to 5 ticks
+                        maxTicksLimit: 5 // Limit to 5 ticks
                     }
                 },
                 x: {
@@ -410,8 +411,38 @@ function renderSalesChart(data) {
     });
 }
 
+// Add event listener to the filter control
+document.getElementById('filter').addEventListener('change', function() {
+    const selectedFilter = this.value;
+    let filteredData;
+
+    // Apply the selected filter to the data
+    if (selectedFilter === 'all') {
+        filteredData = originalData; // Use the original data if 'All' is selected
+    } else {
+        filteredData = originalData.filter(item => item.type === selectedFilter); // Filter data based on type
+    }
+
+    // Render the chart with the filtered data
+    renderSalesChart(generateChartData(filteredData));
+});
 
 
+// Add event listener to the filter control
+document.getElementById('filter').addEventListener('change', function() {
+    const selectedFilter = this.value;
+    let filteredData;
+
+    // Apply the selected filter to the data
+    if (selectedFilter === 'all') {
+        filteredData = originalData; // Use the original data if 'All' is selected
+    } else {
+        filteredData = originalData.filter(item => item.type === selectedFilter); // Filter data based on type
+    }
+
+    // Render the chart with the filtered data
+    renderSalesChart(generateChartData(filteredData));
+});
 
 
 
