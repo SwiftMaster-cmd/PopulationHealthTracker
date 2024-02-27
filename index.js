@@ -44,6 +44,7 @@ async function loginUser(email, password) {
 }
 
 // Google Sign-In Function
+// Google Sign-In Function
 async function googleSignIn() {
     try {
         const result = await signInWithPopup(auth, provider);
@@ -57,6 +58,8 @@ async function googleSignIn() {
                 // Redirect based on role
                 if (role === 'manager') {
                     window.location.href = 'manager-dashboard.html';
+                } else if (role === 'owner') {
+                    window.location.href = 'owner-dashboard.html'; // Redirect to owner dashboard
                 } else {
                     window.location.href = 'user-dashboard.html';
                 }
@@ -69,6 +72,7 @@ async function googleSignIn() {
         console.error('Error during Google sign-in:', error);
     }
 }
+
 
 // Add Sale Function
 async function addSale(saleData) {

@@ -61,7 +61,8 @@ function approveManagerAccess(userId) {
 // Ensure the owner is authenticated
 onAuthStateChanged(auth, (user) => {
     if (user && user.uid === OWNER_UID) {
-        loadRequests();
+        // Redirect the owner to the owner dashboard page
+        window.location.href = 'owner-portal.html'; // Replace 'owner-dashboard.html' with the actual URL of your owner dashboard page
     } else {
         // Redirect to login page or show an error if not the owner
         console.error('Access denied. User is not the owner.');
