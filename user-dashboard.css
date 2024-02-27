@@ -386,8 +386,9 @@ textarea:focus {
 }
 
 /* Chart bars */
+/* Chart bars */
 #salesChart .chartjs-render-monitor .chartjs-bar {
-    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Blue linear gradient */
+    background-color: #219EBC; /* Blue color */
 }
 
 
