@@ -1,7 +1,7 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 // Your app's Firebase project configuration
 const firebaseConfig = {
@@ -15,13 +15,10 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-
-
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
-
 
 // Function to load owner-specific data
 function loadOwnerData(ownerUid) {
