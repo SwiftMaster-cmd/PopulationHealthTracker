@@ -411,6 +411,146 @@ function renderSalesChart(data) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Function to send a message to ChatGPT API and handle the response
+async function sendMessageToChatGPT(message) {
+    const response = await fetch('https://api.openai.com/v1/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': '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', // Replace with your ChatGPT API key
+        },
+        body: JSON.stringify({
+            model: 'text-davinci-003', // ChatGPT model
+            prompt: message,
+            max_tokens: 150,
+            temperature: 0.7,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            stop: ['\n']
+        })
+    });
+
+    const responseData = await response.json();
+    return responseData.choices[0].text.trim();
+}
+
+// Function to handle user messages and ChatGPT responses
+async function handleUserMessage(message) {
+    // Send user message to ChatGPT
+    const response = await sendMessageToChatGPT(message);
+
+    // Display ChatGPT response
+    displayChatMessage('Bot', response);
+}
+
+// Function to display chat messages in the UI
+function displayChatMessage(sender, message) {
+    // Code to display the message in your chat UI
+    // For example, you can append the message to a chat container
+}
+
+// Example usage: Handle user input and send it to ChatGPT
+const userInput = 'What are the sales trends for this month?';
+handleUserMessage(userInput);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Global variable to store the current sale data, including timestamp
 let currentSaleData;
 
