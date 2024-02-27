@@ -179,45 +179,7 @@
 </div>
 
 
-<!-- Sales History Chat Container -->
-<div class="chat-container">
-    <h3>Sales History Chat</h3>
-    <div id="salesHistoryChat" class="chat-messages">
-        <!-- Chat messages will be dynamically added here -->
-    </div>
-    <input type="text" id="chatInput" placeholder="Type a message...">
-    <button onclick="sendMessage()">Send</button>
-</div>
 
-<script>
-    // Function to send message to ChatGPT API
-    async function sendMessage() {
-        const messageInput = document.getElementById('chatInput').value;
-        if (!messageInput.trim()) return;
-
-        // Display user message in the chat interface
-        displayChatMessage('User', messageInput);
-
-        // Send user message to ChatGPT
-        const response = await sendMessageToChatGPT(messageInput);
-
-        // Display ChatGPT response in the chat interface
-        displayChatMessage('ChatGPT', response);
-
-        // Clear the input field after sending the message
-        document.getElementById('chatInput').value = '';
-    }
-
-    // Function to display chat messages in the interface
-    function displayChatMessage(sender, message) {
-        const chatContainer = document.getElementById('salesHistoryChat');
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        messageElement.innerHTML = `<strong>${sender}: </strong>${message}`;
-        chatContainer.appendChild(messageElement);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-</script>
 
 
 
