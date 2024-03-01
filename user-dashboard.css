@@ -350,7 +350,6 @@ textarea:focus {
 
 
 
-
 /* Chart container */
 .chart-container {
     width: 500px;
@@ -359,11 +358,16 @@ textarea:focus {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     overflow: hidden;
+    transition: transform 0.3s; /* Apply transition for scaling */
+}
+
+.chart-container:hover {
+    transform: scale(1.05); /* Scale up by 5% on hover */
 }
 
 /* Chart canvas */
 #salesChart {
-    width:75%;
+    width: 75%;
     max-height: 400px; /* Adjust height as needed */
     overflow: hidden;
     border-radius: 15px;
@@ -375,6 +379,7 @@ textarea:focus {
     color: white;
     text-align: center;
     margin-top: 10px;
+    transition: font-size 0.3s; /* Apply transition for font size */
 }
 
 /* Chart data labels */
@@ -382,17 +387,19 @@ textarea:focus {
     font-size: 30px;
     color: white;
     text-align: center;
+    transition: font-size 0.3s; /* Apply transition for font size */
 }
 
 /* Chart bars */
 .chart-bar {
     background-color: #219EBC; /* Blue color */
     border-radius: 5px;
+    transition: transform 0.3s, background-color 0.3s; /* Apply transition for scaling and color */
 }
 
-/* Optional: Add padding to the chart container */
-.chart-container {
-    padding: 20px;
+.chart-bar:hover {
+    transform: scale(1.05); /* Scale up by 5% on hover */
+    background-color: #0d6efd; /* Darker blue color on hover */
 }
 
 
