@@ -1,0 +1,265 @@
+html, body {
+    margin: 0; /* Removes the default margin */
+    padding: 0; /* Removes the default padding */
+    min-height: 100vh; /* Ensure at least viewport height */
+    background: linear-gradient(to bottom, #219EBC, #023047); /* Apply background here to cover entire page */
+    font-family: 'Arial', sans-serif; /* Use a professional font like Arial */
+    font-weight: bold; /* Make the text bold */
+    color: #ffffff;
+    text-align: center; /* Center align text for the whole document */
+}
+
+/* Reset some default styles to start with a clean slate */
+body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; /* Use a professional font like Arial */
+    font-weight: bold; /* Make the text bold */
+    color: #ffffff;
+    
+}
+
+/* Enhance font sizes and styles for better visual appeal */
+body {
+    background: linear-gradient(to bottom, #219EBC, #023047);
+    font-size: 18px; /* Slightly larger for improved readability */
+    text-align: center; /* Center align text for the whole document */
+}
+
+header {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+        color: #ffffff;
+    border-radius: 15px;
+    text-align: center;
+    padding: 20px 0;
+    width: 300px; /* Set max-width for the header */
+    margin: 24 auto; /* Center the header horizontally */
+}
+
+
+.header-title, header h2, .input-group label, .submit-btn, .esi-btn, .sale-type-btn {
+    font-size: 26px; /* Unified font size for headers and buttons */
+}
+
+#lead_id, #notes {
+    font-size: 20px; /* Larger font size for input fields */
+}
+
+/* Style the main container with gradient */
+.dashboard-container, .sales-container, .sales-history-container {
+    max-width: 750px; /* Set max width for the containers holding the forms and history */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);  
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+.sales-container, .sales-history-container {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    max-width: 500px; /* Set max width for the sales and sales history containers */
+}
+
+/* Style inputs and labels */
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.input-gradient-container {
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    border-radius: 15px;
+    padding: 1px;
+}
+
+#lead_id, #notes {
+    width: 100%; /* Make input fields fluid */
+    max-width: 300px; /* Set max width for lead_id and notes */
+    margin: 0;
+    padding: 10px;
+    border-radius: 14px;
+    border: none;
+    font-weight: bold;
+    color: #ffffff;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    outline: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.input-group input:focus, .input-group textarea:focus, .glow-on-focus:focus {
+    box-shadow: 0 0 10px #e6b081;
+    outline: none;
+}
+
+.input-gradient-container:focus-within {
+    box-shadow: 0 0 0 2px #b37400;
+}
+
+#notes {
+    resize: none; /* Disable resizing for textarea */
+}
+
+/* Style buttons with gradients */
+.esi-btn, .sale-type-btn, .submit-btn {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+
+.esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.esi-btn:focus, .sale-type-btn:focus, .submit-btn:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+.esi-btn.selected, .sale-type-btn.selected {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    transform: scale(1.1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.scroll-animate-left {
+  animation: slideInFromLeft 1s ease-out;
+}
+
+.scroll-animate-right {
+  animation: slideInFromRight 1s ease-out;
+}
+
+a {
+    position: relative;
+    color: #007bff;
+    text-decoration: none;
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #007bff;
+    transition: all 0.3s;
+}
+
+a:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+
+
+
+
+
+
+
+/* Styles for navigation buttons */
+.navigation-buttons {
+    display: flex;
+    justify-content: center; /* Center align the buttons */
+    margin-top: 20px; /* Add some top margin for spacing */
+}
+
+.navigation-buttons button {
+    padding: 12px 24px; /* Adjust padding for button size */
+    margin: 0 10px; /* Add margin between buttons */
+    border-radius: 15px; /* Rounded corners */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Gradient background */
+    color: white; /* Text color */
+    border: none; /* No border */
+    cursor: pointer; /* Cursor to indicate clickability */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction feedback */
+}
+
+.navigation-buttons button:hover,
+.navigation-buttons button:focus {
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Adjust gradient on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
+    transform: translateY(-3px); /* Slight lift for interaction */
+}
