@@ -41,6 +41,23 @@ header {
     font-size: 20px; /* Larger font size for input fields */
 }
 
+.dashboard-container, .sales-container2, .sales-history-container {
+    max-width: 750px; /* Set max width for the containers holding the forms and history */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);  
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+.sales-container2, .sales-history-container {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    max-width: 500px; /* Set max width for the sales and sales history containers */
+}
+
 /* Style the main container with gradient */
 .sales-container {
     display: none;
