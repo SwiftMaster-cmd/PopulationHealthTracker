@@ -1038,3 +1038,35 @@ a:hover::after {
     width: 100%;
     left: 0;
 }
+
+
+
+
+
+
+
+
+/* Styles for navigation buttons */
+.navigation-buttons {
+    display: flex;
+    justify-content: center; /* Center align the buttons */
+    margin-top: 20px; /* Add some top margin for spacing */
+}
+
+.navigation-buttons button {
+    padding: 12px 24px; /* Adjust padding for button size */
+    margin: 0 10px; /* Add margin between buttons */
+    border-radius: 15px; /* Rounded corners */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Gradient background */
+    color: white; /* Text color */
+    border: none; /* No border */
+    cursor: pointer; /* Cursor to indicate clickability */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction feedback */
+}
+
+.navigation-buttons button:hover,
+.navigation-buttons button:focus {
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Adjust gradient on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
+    transform: translateY(-3px); /* Slight lift for interaction */
+}
