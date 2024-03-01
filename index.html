@@ -30,7 +30,7 @@
     try {
         const result = await signInWithPopup(auth, provider);
         // Directly redirect to user dashboard after successful sign-in
-        window.location.href = 'add-sales.html';
+        window.location.href = 'USER/add-sales.html';
     } catch (error) {
         console.error('Error during Google sign-in:', error);
     }
