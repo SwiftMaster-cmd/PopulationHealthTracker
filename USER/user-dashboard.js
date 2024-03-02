@@ -313,6 +313,7 @@ function calculateSaleTypeCounts(salesArray) {
 }
 
 
+
 function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
     let display = '';
     Object.keys(saleTypes || {}).forEach(type => {
@@ -529,6 +530,21 @@ function calculateTotalCommission(level, salesData) {
     return totalCommission;
 }
 
+// Example integration within fetchSalesHistory or its callback
+function onSalesDataFetchedAndFiltered(filteredSalesArray) {
+    const salesTypeCounts = calculateSaleTypeCounts(filteredSalesArray);
+    // Assume level is determined elsewhere in your application, e.g., from user input
+    const level = "1"; // Placeholder: Determine the actual level dynamically
+
+    const totalCommission = calculateTotalCommission(level, salesTypeCounts);
+    console.log(`Total Commission for Level ${level}: $${totalCommission.toFixed(2)}`);
+    
+    // Optionally, update the UI with the total commission
+    document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
+}
+
+// You may need to ensure this integration is placed where you have access to the filtered sales data
+// and where the level is defined or selected by the user.
 
 
 const totalCommission = calculateTotalCommission(level, salesData);
