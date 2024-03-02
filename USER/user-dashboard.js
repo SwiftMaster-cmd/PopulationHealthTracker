@@ -534,6 +534,22 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
     calculateAndDisplayCommission(currentLevel, filteredSalesData);
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Load the saved commission level when the page loads
+    const savedCommissionLevel = localStorage.getItem('commissionLevel');
+    if (savedCommissionLevel) {
+        document.getElementById('commissionLevel').value = savedCommissionLevel;
+    }
+
+    // Save the commission level when the settings form is submitted
+    document.getElementById('settingsForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting in the traditional way
+        const commissionLevel = document.getElementById('commissionLevel').value;
+        localStorage.setItem('commissionLevel', commissionLevel);
+        alert('Settings saved successfully!'); // Provide feedback to the user
+    });
+});
+
 
 
 // Function to find the appropriate rate based on sales count and level
