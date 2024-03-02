@@ -542,12 +542,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Save the commission level when the settings form is submitted
-    document.getElementById('settingsForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the form from submitting in the traditional way
+    document.getElementById('settingsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
         const commissionLevel = document.getElementById('commissionLevel').value;
-        localStorage.setItem('commissionLevel', commissionLevel);
-        alert('Settings saved successfully!'); // Provide feedback to the user
+        saveSettings(commissionLevel); // Save the selected commission level
     });
+    document.getElementById('commissionLevel').addEventListener('change', function() {
+        const commissionLevel = this.value;
+        saveSettings(commissionLevel); // Save the selected commission level immediately on change
+    });
+    
 });
 
 
