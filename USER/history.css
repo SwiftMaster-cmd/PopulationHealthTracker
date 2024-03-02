@@ -612,6 +612,47 @@ textarea:focus {
     color: rgb(255, 255, 255); /* Set the placeholder text color to light gray */
 }
 
+/* Commission Calculator Styles */
+.commission-calculator-container {
+    width: 500px; /* Maintain consistent container width */
+    margin: 20px auto; /* Center the container */
+    padding: 10px 20px; /* Consistent padding */
+    border-radius: 15px; /* Rounded corners for consistency */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Matching gradient background */
+    color: white; /* Text color for contrast against the background */
+}
+
+/* Style for the commission result display */
+.commission-display {
+    text-align: center; /* Center-align the text */
+    padding: 10px 0; /* Vertical padding for separation */
+    font-size: 20px; /* Make the font size larger for emphasis */
+    margin-top: 15px; /* Space above the commission display */
+    background: #219EBC; /* Slightly different background to stand out */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/* Button for calculating commission */
+#calculateCommission {
+    width: 100%; /* Full width button for emphasis */
+    padding: 12px 0; /* Adequate vertical padding for touch targets */
+    font-weight: bold; /* Bold font for button text */
+    border-radius: 14px; /* Rounded corners */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Eye-catching gradient */
+    color: white; /* Text color for readability */
+    border: none; /* No border */
+    cursor: pointer; /* Cursor to indicate interactivity */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transition for feedback */
+    margin-top: 10px; /* Space from the last input */
+}
+
+#calculateCommission:hover, #calculateCommission:focus {
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Interactive state background */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    transform: translateY(-3px); /* Lift effect for interactivity */
+}
 
 
 

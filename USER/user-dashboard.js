@@ -432,6 +432,109 @@ function renderSalesChart(data) {
 
 
 
+// Commission structure for levels 1, 2, and 3
+const commissionRates = {
+    "1": {
+        "Billable HRAS": [
+            { min: 0, max: 29, rate: 1.00 },
+            { min: 30, max: 34, rate: 2.00 },
+            { min: 35, max: 59, rate: 3.00 },
+            { min: 60, max: 74, rate: 4.00 },
+            { min: 75, max: Infinity, rate: 5.00 }
+        ],
+        "Transfer": [
+            { min: 0, max: 9, rate: 11.00 },
+            { min: 10, max: 14, rate: 12.00 },
+            { min: 15, max: 24, rate: 13.00 },
+            { min: 25, max: 29, rate: 14.00 },
+            { min: 30, max: Infinity, rate: 15.00 }
+        ],
+        "Select RX": [
+            { min: 89, max: 104, rate: 16.00 },
+            { min: 105, max: 169, rate: 17.00 },
+            { min: 170, max: 199, rate: 18.00 },
+            { min: 200, max: Infinity, rate: 19.00 }
+        ]
+    },
+    "2": {
+        "Billable HRAS": [
+            { min: 0, max: 19, rate: 1.00 },
+            { min: 20, max: 29, rate: 1.75 },
+            { min: 30, max: 54, rate: 2.50 },
+            { min: 55, max: 69, rate: 3.25 },
+            { min: 70, max: Infinity, rate: 4.00 }
+        ],
+        "Transfer": [
+            { min: 0, max: 4, rate: 9.00 },
+            { min: 5, max: 9, rate: 9.75 },
+            { min: 10, max: 19, rate: 10.50 },
+            { min: 20, max: 24, rate: 11.25 },
+            { min: 25, max: Infinity, rate: 12.00 }
+        ],
+        "Select RX": [
+            { min: 0, max: 29, rate: 14.00 },
+            { min: 30, max: 59, rate: 14.75 },
+            { min: 60, max: 104, rate: 15.50 },
+            { min: 105, max: 124, rate: 16.25 },
+            { min: 125, max: Infinity, rate: 17.00 }
+        ]
+    },
+    "3": {
+        "Billable HRAS": [
+            { min: 0, max: 14, rate: 1.00 },
+            { min: 15, max: 24, rate: 1.50 },
+            { min: 25, max: 49, rate: 2.00 },
+            { min: 50, max: 59, rate: 2.50 },
+            { min: 60, max: Infinity, rate: 3.00 }
+        ],
+        "Transfer": [
+            // Assuming missing values, filled with example rates for demonstration
+            { min: 0, max: 1, rate: 8.00 },
+            { min: 2, max: 4, rate: 8.50 },
+            { min: 5, max: 6, rate: 9.00 },
+            { min: 7, max: 9, rate: 9.50 },
+            { min: 10, max: Infinity, rate: 10.00 }
+        ],
+        "Select RX": [
+            { min: 0, max: 9, rate: 13.00 },
+            { min: 10, max: 14, rate: 13.50 },
+            { min: 15, max: 39, rate: 14.00 },
+           { min: 40, max: 54, rate: 14.50 },
+            { min: 55, max: Infinity, rate: 15.00 }
+        ]
+    }
+};
+
+// Function to find the appropriate rate based on sales count and level
+function findRate(salesCount, rates) {
+    for (const rate of rates) {
+        if (salesCount >= rate.min && salesCount <= rate.max) {
+            return rate.rate;
+        }
+    }
+    return 0; // Default rate if no matching range is found
+}
+
+// Function to calculate the total commission for a given level and sales data
+function calculateTotalCommission(level, salesData) {
+    let totalCommission = 0;
+    // salesData should be an object like: { 'Billable HRAS': 30, 'Transfer': 15, 'Select RX': 90 }
+    for (const [category, count] of Object.entries(salesData)) {
+        const rates = commissionRates[level][category];
+        if (rates) {
+            const rate = findRate(count, rates);
+            totalCommission += count * rate;
+        }
+    }
+    return totalCommission;
+}
+
+
+
+const totalCommission = calculateTotalCommission(level, salesData);
+console.log(`Total Commission for Level ${level}: $${totalCommission.toFixed(2)}`);
+
+
 
 
 
