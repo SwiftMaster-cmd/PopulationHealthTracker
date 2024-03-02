@@ -637,6 +637,36 @@ function calculateTotalCommission(level, salesData) {
     return totalCommission;
 }
 
+function updateCommissionAndSaleTypeCounts() {
+    const level = document.getElementById('commissionLevel').value;
+    const salesData = getCurrentSalesData(); // Hypothetical; implement based on your app
+    const totalCommission = calculateTotalCommission(level, salesData);
+    const saleTypeCounts = getSaleTypeCounts(salesData); // Implement this
+
+    // Update commission display
+    document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
+
+    // Update sale type counts display
+    const saleTypeCountsElement = document.getElementById('saleTypeCounts');
+    saleTypeCountsElement.innerHTML = ''; // Clear previous counts
+    Object.entries(saleTypeCounts).forEach(([type, count]) => {
+        const p = document.createElement('p');
+        p.textContent = `${type}: ${count}`;
+        saleTypeCountsElement.appendChild(p);
+    });
+}
+
+// Example implementation of getSaleTypeCounts (placeholder)
+function getSaleTypeCounts(salesData) {
+    // Your logic here to calculate counts per sale type based on the sales data
+    return {
+        "Billable HRAS": 10,
+        "Transfer": 5,
+        "Select RX": 7
+        // etc.
+    };
+}
+
 
 
 // Example integration within fetchSalesHistory or its callback
