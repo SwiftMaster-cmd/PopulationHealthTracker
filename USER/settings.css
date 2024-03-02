@@ -1,0 +1,86 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #219EBC, #023047);
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+}
+
+body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+body {
+    font-size: 18px;
+}
+
+.settings-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+.settings-container h2 {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+input[type="text"], select {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.submit-btn {
+    padding: 12px 20px;
+    border-radius: 15px;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
