@@ -525,6 +525,15 @@ function calculateAndDisplayCommission(level) {
     document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
 }
 
+document.getElementById('commissionLevel').addEventListener('change', () => {
+    // When the level changes, fetch or access the current filtered sales data
+    const currentLevel = document.getElementById('commissionLevel').value;
+    const filteredSalesData = getFilteredSalesData(); // Ensure this function returns the current filtered sales data
+    
+    // Calculate and display the commission for the new level
+    calculateAndDisplayCommission(currentLevel, filteredSalesData);
+});
+
 function getFilteredSalesData() {
     return currentFilteredSalesData;
 }
