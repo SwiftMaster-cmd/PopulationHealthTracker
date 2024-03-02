@@ -513,11 +513,10 @@ document.getElementById('calculateCommission').addEventListener('click', () => {
     calculateAndDisplayCommission(level);
 });
 
-function calculateAndDisplayCommission(level) {
-    // This is where you'll need to access the filtered sales data.
-    // For simplicity, let's say we have a function 'getFilteredSalesData' that returns the necessary data.
-    const salesData = getFilteredSalesData(); // Implement this based on your app's logic
-    const totalCommission = calculateTotalCommission(level, salesData);
+function calculateAndDisplayCommission(commissionLevel) {
+    // Hypothetical function to get current sales data
+    const salesData = getCurrentSalesData(); // You need to implement this based on your app
+    const totalCommission = calculateTotalCommission(commissionLevel, salesData);
     document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
 }
 
@@ -540,7 +539,9 @@ function initializeCommissionSettings() {
     document.getElementById('commissionLevel').addEventListener('change', function() {
         const commissionLevel = this.value;
         saveSettings(commissionLevel);
+        calculateAndDisplayCommission(commissionLevel); // Ensure this function uses current sales data
     });
+    
 }
 
 // Call initializeCommissionSettings when the DOM is fully loaded
