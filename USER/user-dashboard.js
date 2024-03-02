@@ -226,11 +226,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
-         // Calculate total commission after fetching and filtering sales data
-         const level = document.getElementById('commissionLevel').value; // Ensure you have a mechanism to set/get this
-         const totalCommission = calculateTotalCommission(level, cumulativeSaleTypeCounts);
-         document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
+        
          const chartData = generateChartData(salesArray);
          renderSalesChart(chartData);
  
@@ -525,34 +521,33 @@ function calculateAndDisplayCommission(level) {
     document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
 }
 
-document.getElementById('commissionLevel').addEventListener('change', () => {
-    // When the level changes, fetch or access the current filtered sales data
-    const currentLevel = document.getElementById('commissionLevel').value;
-    const filteredSalesData = getFilteredSalesData(); // Ensure this function returns the current filtered sales data
-    
-    // Calculate and display the commission for the new level
-    calculateAndDisplayCommission(currentLevel, filteredSalesData);
-});
 
-document.addEventListener('DOMContentLoaded', function() {
+function initializeCommissionSettings() {
     // Load the saved commission level when the page loads
     const savedCommissionLevel = localStorage.getItem('commissionLevel');
     if (savedCommissionLevel) {
         document.getElementById('commissionLevel').value = savedCommissionLevel;
     }
 
-    // Save the commission level when the settings form is submitted
+    // Listen for form submission to save commission level
     document.getElementById('settingsForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const commissionLevel = document.getElementById('commissionLevel').value;
-        saveSettings(commissionLevel); // Save the selected commission level
+        saveSettings(commissionLevel);
     });
+
+    // Listen for direct changes to the commission level selector
     document.getElementById('commissionLevel').addEventListener('change', function() {
         const commissionLevel = this.value;
-        saveSettings(commissionLevel); // Save the selected commission level immediately on change
+        saveSettings(commissionLevel);
     });
+}
+
+// Call initializeCommissionSettings when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initializeCommissionSettings);
+
     
-});
+
 
 
 
