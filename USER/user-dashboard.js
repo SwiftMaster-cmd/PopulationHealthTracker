@@ -575,41 +575,30 @@ async function saveSettings(settings) {
 
 // Function to load settings from Firebase Realtime Database
 async function loadSettings() {
-    // Ensure the user is authenticated
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // User is signed in, now you can retrieve their settings
             const uid = user.uid;
-            // Define the path to the user's settings in your database
             const settingsRef = ref(database, `users/${uid}/settings`);
-
-            try {
-                // Use the get() function to fetch the user's settings
-                const snapshot = await get(settingsRef);
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    // Assuming the settings object contains a commissionLevel property
-                    const commissionLevel = data.commissionLevel;
-
-                    // Update the UI with the loaded settings
-                    const commissionLevelSelect = document.getElementById('commissionLevel');
-                    if (commissionLevelSelect) {
-                        commissionLevelSelect.value = commissionLevel;
-                    }
-
-                    console.log('Settings loaded successfully');
-                } else {
-                    console.log('No settings found for this user.');
+            const snapshot = await get(settingsRef);
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                // Assuming the settings object contains a commissionLevel property
+                const commissionLevelSelect = document.getElementById('commissionLevel');
+                if (commissionLevelSelect) {
+                    commissionLevelSelect.value = data.commissionLevel;
                 }
-            } catch (error) {
-                console.error('Failed to load settings:', error);
+            } else {
+                console.log('No settings found for this user.');
             }
         } else {
-            // User is not signed in, handle according to your application's logic
             console.log('User is not signed in.');
         }
     });
 }
+
+// Call loadSettings to set the commission level when the page loads
+document.addEventListener('DOMContentLoaded', loadSettings);
+
 
 
 // Define a function to calculate total commission based on level and sales data
