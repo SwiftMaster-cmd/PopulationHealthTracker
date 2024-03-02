@@ -226,7 +226,11 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
-        
+         // Calculate total commission after fetching and filtering sales data
+         const level = document.getElementById('commissionLevel').value; // Ensure you have a mechanism to set/get this
+         const totalCommission = calculateTotalCommission(level, cumulativeSaleTypeCounts);
+         document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
+         // After fetching the sales history and rendering the sales entries, generate and render the chart
          const chartData = generateChartData(salesArray);
          renderSalesChart(chartData);
  
@@ -513,42 +517,43 @@ document.getElementById('calculateCommission').addEventListener('click', () => {
     calculateAndDisplayCommission(level);
 });
 
-function calculateAndDisplayCommission(commissionLevel) {
-    // Hypothetical function to get current sales data
-    const salesData = getCurrentSalesData(); // You need to implement this based on your app
-    const totalCommission = calculateTotalCommission(commissionLevel, salesData);
+function calculateAndDisplayCommission(level) {
+    // This is where you'll need to access the filtered sales data.
+    // For simplicity, let's say we have a function 'getFilteredSalesData' that returns the necessary data.
+    const salesData = getFilteredSalesData(); // Implement this based on your app's logic
+    const totalCommission = calculateTotalCommission(level, salesData);
     document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
 }
 
+document.getElementById('commissionLevel').addEventListener('change', () => {
+    // When the level changes, fetch or access the current filtered sales data
+    const currentLevel = document.getElementById('commissionLevel').value;
+    const filteredSalesData = getFilteredSalesData(); // Ensure this function returns the current filtered sales data
+    
+    // Calculate and display the commission for the new level
+    calculateAndDisplayCommission(currentLevel, filteredSalesData);
+});
 
-function initializeCommissionSettings() {
+document.addEventListener('DOMContentLoaded', function() {
     // Load the saved commission level when the page loads
     const savedCommissionLevel = localStorage.getItem('commissionLevel');
     if (savedCommissionLevel) {
         document.getElementById('commissionLevel').value = savedCommissionLevel;
     }
 
-    // Listen for form submission to save commission level
+    // Save the commission level when the settings form is submitted
     document.getElementById('settingsForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const commissionLevel = document.getElementById('commissionLevel').value;
-        saveSettings(commissionLevel);
+        saveSettings(commissionLevel); // Save the selected commission level
     });
-
-    // Listen for direct changes to the commission level selector
     document.getElementById('commissionLevel').addEventListener('change', function() {
         const commissionLevel = this.value;
-        saveSettings(commissionLevel);
-        calculateAndDisplayCommission(commissionLevel); // Ensure this function uses current sales data
+        saveSettings(commissionLevel); // Save the selected commission level immediately on change
     });
     
-}
-
-// Call initializeCommissionSettings when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', initializeCommissionSettings);
-
     
-
+});
 
 
 
