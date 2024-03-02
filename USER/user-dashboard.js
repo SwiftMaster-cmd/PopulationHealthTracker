@@ -550,27 +550,29 @@ function findRate(salesCount, rates) {
 
 
 
-document.getElementById('settingsForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const commissionLevel = document.getElementById('commissionLevel').value;
-    saveSettings({ commissionLevel }); // Implement this function
-});
 
-async function saveSettings(settings) {
+
+async function saveSettings(commissionLevel) {
     if (!userId) {
         console.error('No user logged in.');
         return;
     }
-    // Define the path to save the user's settings
-    const settingsRef = ref(database, `users/${userId}/settings`);
+    // Define the path to save the user's settings, specifically their commission level
+    const settingsRef = ref(database, `users/${userId}/settings/commissionLevel`);
     try {
-        // Save the settings to Firebase
-        await set(settingsRef, settings);
-        console.log('Settings saved successfully');
+        // Save the commission level to Firebase
+        await set(settingsRef, { commissionLevel: commissionLevel });
+        console.log('Commission level settings saved successfully');
     } catch (error) {
-        console.error('Failed to save settings:', error);
+        console.error('Failed to save commission level settings:', error);
     }
 }
+
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const commissionLevel = document.getElementById('commissionLevel').value;
+    saveSettings(commissionLevel); // Save the selected commission level
+});
 
 
 // Function to load settings from Firebase Realtime Database
