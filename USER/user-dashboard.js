@@ -226,6 +226,10 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
+         // Calculate total commission after fetching and filtering sales data
+         const level = document.getElementById('commissionLevel').value; // Ensure you have a mechanism to set/get this
+         const totalCommission = calculateTotalCommission(level, cumulativeSaleTypeCounts);
+         document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
          // After fetching the sales history and rendering the sales entries, generate and render the chart
          const chartData = generateChartData(salesArray);
          renderSalesChart(chartData);
@@ -516,7 +520,7 @@ function findRate(salesCount, rates) {
     return 0; // Default rate if no matching range is found
 }
 
-// Function to calculate the total commission for a given level and sales data
+// Define a function to calculate total commission based on level and sales data
 function calculateTotalCommission(level, salesData) {
     let totalCommission = 0;
     // salesData should be an object like: { 'Billable HRAS': 30, 'Transfer': 15, 'Select RX': 90 }
