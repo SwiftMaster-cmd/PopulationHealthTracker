@@ -510,6 +510,22 @@ const commissionRates = {
     }
 };
 
+
+document.getElementById('calculateCommission').addEventListener('click', () => {
+    // Assuming 'level' is the selected commission level and 'filteredSalesData' is accessible
+    const level = document.getElementById('commissionLevel').value;
+    calculateAndDisplayCommission(level);
+});
+
+function calculateAndDisplayCommission(level) {
+    // This is where you'll need to access the filtered sales data.
+    // For simplicity, let's say we have a function 'getFilteredSalesData' that returns the necessary data.
+    const salesData = getFilteredSalesData(); // Implement this based on your app's logic
+    const totalCommission = calculateTotalCommission(level, salesData);
+    document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
+}
+
+
 // Function to find the appropriate rate based on sales count and level
 function findRate(salesCount, rates) {
     for (const rate of rates) {
