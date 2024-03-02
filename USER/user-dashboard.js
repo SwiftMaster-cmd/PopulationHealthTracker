@@ -525,6 +525,10 @@ function calculateAndDisplayCommission(level) {
     document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
 }
 
+function getFilteredSalesData() {
+    return currentFilteredSalesData;
+}
+
 
 // Function to find the appropriate rate based on sales count and level
 function findRate(salesCount, rates) {
