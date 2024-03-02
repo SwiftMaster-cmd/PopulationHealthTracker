@@ -560,6 +560,16 @@ function calculateTotalCommission(level, salesData) {
     return totalCommission;
 }
 
+
+function getFilteredSalesData() {
+    // Simply return the currentFilteredSalesData
+    return currentFilteredSalesData;
+}
+
+
+
+
+
 // Example integration within fetchSalesHistory or its callback
 function onSalesDataFetchedAndFiltered(filteredSalesArray) {
     const salesTypeCounts = calculateSaleTypeCounts(filteredSalesArray);
