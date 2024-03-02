@@ -534,9 +534,6 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
     calculateAndDisplayCommission(currentLevel, filteredSalesData);
 });
 
-function getFilteredSalesData() {
-    return currentFilteredSalesData;
-}
 
 
 // Function to find the appropriate rate based on sales count and level
