@@ -546,10 +546,75 @@ function findRate(salesCount, rates) {
     return 0; // Default rate if no matching range is found
 }
 
+
+
+
+
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const commissionLevel = document.getElementById('commissionLevel').value;
+    saveSettings({ commissionLevel }); // Implement this function
+});
+
+async function saveSettings(settings) {
+    if (!userId) {
+        console.error('No user logged in.');
+        return;
+    }
+    // Define the path to save the user's settings
+    const settingsRef = ref(database, `users/${userId}/settings`);
+    try {
+        // Save the settings to Firebase
+        await set(settingsRef, settings);
+        console.log('Settings saved successfully');
+    } catch (error) {
+        console.error('Failed to save settings:', error);
+    }
+}
+
+
+// Function to load settings from Firebase Realtime Database
+async function loadSettings() {
+    // Ensure the user is authenticated
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // User is signed in, now you can retrieve their settings
+            const uid = user.uid;
+            // Define the path to the user's settings in your database
+            const settingsRef = ref(database, `users/${uid}/settings`);
+
+            try {
+                // Use the get() function to fetch the user's settings
+                const snapshot = await get(settingsRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    // Assuming the settings object contains a commissionLevel property
+                    const commissionLevel = data.commissionLevel;
+
+                    // Update the UI with the loaded settings
+                    const commissionLevelSelect = document.getElementById('commissionLevel');
+                    if (commissionLevelSelect) {
+                        commissionLevelSelect.value = commissionLevel;
+                    }
+
+                    console.log('Settings loaded successfully');
+                } else {
+                    console.log('No settings found for this user.');
+                }
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+            }
+        } else {
+            // User is not signed in, handle according to your application's logic
+            console.log('User is not signed in.');
+        }
+    });
+}
+
+
 // Define a function to calculate total commission based on level and sales data
 function calculateTotalCommission(level, salesData) {
     let totalCommission = 0;
-    // salesData should be an object like: { 'Billable HRAS': 30, 'Transfer': 15, 'Select RX': 90 }
     for (const [category, count] of Object.entries(salesData)) {
         const rates = commissionRates[level][category];
         if (rates) {
@@ -559,14 +624,6 @@ function calculateTotalCommission(level, salesData) {
     }
     return totalCommission;
 }
-
-
-function getFilteredSalesData() {
-    // Simply return the currentFilteredSalesData
-    return currentFilteredSalesData;
-}
-
-
 
 
 
