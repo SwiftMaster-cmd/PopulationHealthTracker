@@ -511,120 +511,6 @@ const commissionRates = {
 };
 
 
-document.getElementById('calculateCommission').addEventListener('click', () => {
-    // Assuming 'level' is the selected commission level and 'filteredSalesData' is accessible
-    const level = document.getElementById('commissionLevel').value;
-    calculateAndDisplayCommission(level);
-});
-
-function calculateAndDisplayCommission(level) {
-    // This is where you'll need to access the filtered sales data.
-    // For simplicity, let's say we have a function 'getFilteredSalesData' that returns the necessary data.
-    const salesData = getFilteredSalesData(); // Implement this based on your app's logic
-    const totalCommission = calculateTotalCommission(level, salesData);
-    document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
-}
-
-document.getElementById('commissionLevel').addEventListener('change', () => {
-    // When the level changes, fetch or access the current filtered sales data
-    const currentLevel = document.getElementById('commissionLevel').value;
-    const filteredSalesData = getFilteredSalesData(); // Ensure this function returns the current filtered sales data
-    
-    // Calculate and display the commission for the new level
-    calculateAndDisplayCommission(currentLevel, filteredSalesData);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Load the saved commission level when the page loads
-    const savedCommissionLevel = localStorage.getItem('commissionLevel');
-    if (savedCommissionLevel) {
-        document.getElementById('commissionLevel').value = savedCommissionLevel;
-    }
-
-    // Save the commission level when the settings form is submitted
-    document.getElementById('settingsForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const commissionLevel = document.getElementById('commissionLevel').value;
-        saveSettings(commissionLevel); // Save the selected commission level
-    });
-    document.getElementById('commissionLevel').addEventListener('change', function() {
-        const commissionLevel = this.value;
-        saveSettings(commissionLevel); // Save the selected commission level immediately on change
-    });
-    
-    
-});
-
-
-
-// Function to find the appropriate rate based on sales count and level
-function findRate(salesCount, rates) {
-    for (const rate of rates) {
-        if (salesCount >= rate.min && salesCount <= rate.max) {
-            return rate.rate;
-        }
-    }
-    return 0; // Default rate if no matching range is found
-}
-
-
-
-
-
-
-
-async function saveSettings(commissionLevel) {
-    if (!userId) {
-        console.error('No user logged in.');
-        return;
-    }
-    // Define the path to save the user's settings, specifically their commission level
-    const settingsRef = ref(database, `users/${userId}/settings/commissionLevel`);
-    try {
-        // Save the commission level to Firebase
-        await set(settingsRef, { commissionLevel: commissionLevel });
-        console.log('Commission level settings saved successfully');
-    } catch (error) {
-        console.error('Failed to save commission level settings:', error);
-    }
-}
-
-document.getElementById('settingsForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const commissionLevel = document.getElementById('commissionLevel').value;
-    saveSettings(commissionLevel); // Save the selected commission level
-});
-
-
-// Function to load settings from Firebase Realtime Database
-async function loadSettings() {
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const uid = user.uid;
-            const settingsRef = ref(database, `users/${uid}/settings`);
-            const snapshot = await get(settingsRef);
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                // Assuming the settings object contains a commissionLevel property
-                const commissionLevelSelect = document.getElementById('commissionLevel');
-                if (commissionLevelSelect) {
-                    commissionLevelSelect.value = data.commissionLevel;
-                }
-            } else {
-                console.log('No settings found for this user.');
-            }
-        } else {
-            console.log('User is not signed in.');
-        }
-    });
-}
-
-// Call loadSettings to set the commission level when the page loads
-document.addEventListener('DOMContentLoaded', loadSettings);
-
-
-
-// Define a function to calculate total commission based on level and sales data
 function calculateTotalCommission(level, salesData) {
     let totalCommission = 0;
     for (const [category, count] of Object.entries(salesData)) {
@@ -637,58 +523,84 @@ function calculateTotalCommission(level, salesData) {
     return totalCommission;
 }
 
-function updateCommissionAndSaleTypeCounts() {
-    const level = document.getElementById('commissionLevel').value;
-    const salesData = getCurrentSalesData(); // Hypothetical; implement based on your app
-    const totalCommission = calculateTotalCommission(level, salesData);
-    const saleTypeCounts = getSaleTypeCounts(salesData); // Implement this
+// Function to find the appropriate rate based on sales count and level
+function findRate(salesCount, rates) {
+    for (const rate of rates) {
+        if (salesCount >= rate.min && salesCount <= rate.max) {
+            return rate.rate;
+        }
+    }
+    return 0; // Default rate if no matching range is found
+}
 
-    // Update commission display
-    document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
+async function saveSettings(commissionLevel) {
+    if (!userId) {
+        console.error('No user logged in.');
+        return;
+    }
+    // Define the path to save the user's settings, specifically their commission level
+    const settingsRef = firebase.database().ref(`users/${userId}/settings/commissionLevel`);
+    try {
+        // Save the commission level to Firebase
+        await settingsRef.set({ commissionLevel: commissionLevel });
+        console.log('Commission level settings saved successfully');
+    } catch (error) {
+        console.error('Failed to save commission level settings:', error);
+    }
+}
 
-    // Update sale type counts display
-    const saleTypeCountsElement = document.getElementById('saleTypeCounts');
-    saleTypeCountsElement.innerHTML = ''; // Clear previous counts
-    Object.entries(saleTypeCounts).forEach(([type, count]) => {
-        const p = document.createElement('p');
-        p.textContent = `${type}: ${count}`;
-        saleTypeCountsElement.appendChild(p);
+// Function to load settings from Firebase Realtime Database
+async function loadSettings() {
+    firebase.auth().onAuthStateChanged(async (user) => {
+        if (user) {
+            userId = user.uid; // Update the global userId with the current user's ID
+            const settingsRef = firebase.database().ref(`users/${userId}/settings`);
+            const snapshot = await settingsRef.once('value');
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                // Assuming the settings object contains a commissionLevel property
+                document.getElementById('commissionLevel').value = data.commissionLevel;
+            } else {
+                console.log('No settings found for this user.');
+            }
+        } else {
+            console.log('User is not signed in.');
+        }
     });
 }
 
-// Example implementation of getSaleTypeCounts (placeholder)
-function getSaleTypeCounts(salesData) {
-    // Your logic here to calculate counts per sale type based on the sales data
-    return {
-        "Billable HRAS": 10,
-        "Transfer": 5,
-        "Select RX": 7
-        // etc.
-    };
-}
+// Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Load settings when the page loads
+    loadSettings();
 
+    // Load the saved commission level when the page loads
+    const savedCommissionLevel = localStorage.getItem('commissionLevel');
+    if (savedCommissionLevel) {
+        document.getElementById('commissionLevel').value = savedCommissionLevel;
+    }
 
+    document.getElementById('settingsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const commissionLevel = document.getElementById('commissionLevel').value;
+        saveSettings(commissionLevel); // Save the selected commission level
+    });
 
-// Example integration within fetchSalesHistory or its callback
-function onSalesDataFetchedAndFiltered(filteredSalesArray) {
-    const salesTypeCounts = calculateSaleTypeCounts(filteredSalesArray);
-    // Assume level is determined elsewhere in your application, e.g., from user input
-    const level = "1"; // Placeholder: Determine the actual level dynamically
+    document.getElementById('commissionLevel').addEventListener('change', function() {
+        const commissionLevel = this.value;
+        saveSettings(commissionLevel); // Save the selected commission level immediately on change
+    });
+});
 
-    const totalCommission = calculateTotalCommission(level, salesTypeCounts);
-    console.log(`Total Commission for Level ${level}: $${totalCommission.toFixed(2)}`);
-    
-    // Optionally, update the UI with the total commission
-    document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
-}
+document.getElementById('calculateCommission').addEventListener('click', () => {
+    const level = document.getElementById('commissionLevel').value;
+    // Implementation for calculateAndDisplayCommission needs the sales data logic
+});
 
-// You may need to ensure this integration is placed where you have access to the filtered sales data
-// and where the level is defined or selected by the user.
-
-
-const totalCommission = calculateTotalCommission(level, salesData);
-console.log(`Total Commission for Level ${level}: $${totalCommission.toFixed(2)}`);
-
+document.getElementById('commissionLevel').addEventListener('change', () => {
+    const currentLevel = document.getElementById('commissionLevel').value;
+    // Implementation for dynamic commission calculation needs the sales data logic
+});
 
 
 
