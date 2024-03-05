@@ -151,6 +151,50 @@ header {
 
 
 
+/* Dashboard navigation tabs */
+.dashboard-navigation .tabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #333;
+    height: 100vh;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+
+.tab-link {
+    background: linear-gradient(to right, #007BFF, #0056b3);
+    color: #fff;
+    padding: 10px 15px;
+    text-align: left;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.tab-link:hover, .tab-link.active {
+    background-color: #219EBC;
+}
+
+/* Profile container */
+.profile-container {
+    margin-left: 220px; /* Adjust based on the width of the tabs */
+    padding: 20px;
+}
+
+/* Tab content */
+.tab-content {
+    margin-left: 220px; /* Adjust based on the width of the tabs */
+    padding: 20px;
+    display: none; /* Hide by default */
+}
+
+/* Display the active tab */
+.tab-content.active {
+    display: block;
+}
 
 
 
