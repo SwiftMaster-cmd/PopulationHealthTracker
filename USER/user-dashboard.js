@@ -644,7 +644,6 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
 
 
 
-
 function openPage(pageName, element) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tab-content");
@@ -658,7 +657,7 @@ function openPage(pageName, element) {
     document.getElementById(pageName).style.display = "block";
     element.className += " active";
 }
-// Click the first tab link to open by default
+// Trigger the first tab to open by default
 document.getElementsByClassName("tab-link")[0].click();
 
 
