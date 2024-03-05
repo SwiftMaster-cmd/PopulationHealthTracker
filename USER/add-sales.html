@@ -9,22 +9,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 </head>
 <body>
+
+
+    <div class="top-navigation-bar">
+        <!-- Dashboard Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-link active" onclick="openPage('Sales', this)">Add Sales</button>
+            <button class="tab-link" onclick="openPage('History', this)">View Sales History</button>
+            <button class="tab-link" onclick="openPage('Settings', this)">Settings</button>
+        </div>
+        <!-- Profile Section to the right -->
+        <div class="profile-section">
+            <h3>Profile</h3>
+            <!-- Profile details -->
+        </div>
+    </div>
     <div class="dashboard-container">
         <h2>Welcome to the dashboard</h2>
 
-        <div class="top-navigation-bar">
-            <!-- Dashboard Navigation Tabs -->
-            <div class="tabs">
-                <button class="tab-link active" onclick="openPage('Sales', this)">Add Sales</button>
-                <button class="tab-link" onclick="openPage('History', this)">View Sales History</button>
-                <button class="tab-link" onclick="openPage('Settings', this)">Settings</button>
-            </div>
-            <!-- Profile Section to the right -->
-            <div class="profile-section">
-                <h3>Profile</h3>
-                <!-- Profile details -->
-            </div>
-        </div>
+      
 
 
         <div class="sales-container">
