@@ -511,9 +511,6 @@ const commissionRates = {
 };
 
 
-
-
-
 function calculateTotalCommission(level, salesData) {
     let totalCommission = 0;
     for (const [category, count] of Object.entries(salesData)) {
