@@ -511,6 +511,40 @@ const commissionRates = {
 };
 
 
+
+function calculateDetailedCommission(level, salesArray) {
+    let detailedCommission = {
+        totalCommission: 0,
+        byType: {}
+    };
+
+    salesArray.forEach(sale => {
+        Object.entries(sale.sale_types || {}).forEach(([type, count]) => {
+            const rates = commissionRates[level][type];
+            if (rates) {
+                const rate = findRate(count, rates);
+                const commission = count * rate;
+
+                if (!detailedCommission.byType[type]) {
+                    detailedCommission.byType[type] = {
+                        totalSales: 0,
+                        commission: 0
+                    };
+                }
+
+                detailedCommission.byType[type].totalSales += count;
+                detailedCommission.byType[type].commission += commission;
+                detailedCommission.totalCommission += commission;
+            }
+        });
+    });
+
+    return detailedCommission;
+}
+
+
+
+
 function calculateTotalCommission(level, salesData) {
     let totalCommission = 0;
     for (const [category, count] of Object.entries(salesData)) {
