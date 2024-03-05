@@ -512,62 +512,6 @@ const commissionRates = {
 
 
 
-function calculateDetailedCommission(level, salesArray) {
-    let detailedCommission = {
-        totalCommission: 0,
-        byType: {}
-    };
-
-    salesArray.forEach(sale => {
-        Object.entries(sale.sale_types || {}).forEach(([type, count]) => {
-            const rates = commissionRates[level][type];
-            if (rates) {
-                const rate = findRate(count, rates);
-                const commission = count * rate;
-
-                if (!detailedCommission.byType[type]) {
-                    detailedCommission.byType[type] = {
-                        totalSales: 0,
-                        commission: 0
-                    };
-                }
-
-                detailedCommission.byType[type].totalSales += count;
-                detailedCommission.byType[type].commission += commission;
-                detailedCommission.totalCommission += commission;
-            }
-        });
-    });
-
-    return detailedCommission;
-}
-function displayCommissionInfo(detailedCommission) {
-    // Update total commission display
-    document.getElementById('totalCommission').textContent = `$${detailedCommission.totalCommission.toFixed(2)}`;
-
-    // Get the container for commission details
-    const commissionDetailsElement = document.getElementById('commissionDetails');
-    commissionDetailsElement.innerHTML = ''; // Clear previous details
-
-    // Dynamically create and append detail elements for each sale type
-    Object.entries(detailedCommission.byType).forEach(([type, {totalSales, commission}]) => {
-        // Create a new div for this sale type's commission details
-        const detail = document.createElement('div');
-        detail.innerHTML = `<strong>${type}:</strong> Total Sales - ${totalSales}, Commission - $${commission.toFixed(2)}`;
-        commissionDetailsElement.appendChild(detail);
-    });
-}
-
-// Example button click event listener to calculate and display commission
-document.getElementById('calculateCommission').addEventListener('click', () => {
-    const level = document.getElementById('commissionLevel').value;
-    const salesArray = getSalesArray(); // This function needs to return the structured array of sales
-    const detailedCommission = calculateDetailedCommission(level, salesArray);
-    displayCommissionInfo(detailedCommission);
-});
-
-
-
 
 
 function calculateTotalCommission(level, salesData) {
