@@ -280,27 +280,41 @@ document.getElementById('applyFilters').addEventListener('click', () => {
     fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
 });
 
-function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
-    const now = new Date();
-    return salesArray.filter(sale => {
-        // Time filter
-        const saleDate = new Date(sale.timestamp);
-        if (timeFilter === 'day' && saleDate.toDateString() !== now.toDateString()) return false;
-        if (timeFilter === 'week' && (now - saleDate) / (1000 * 60 * 60 * 24) > 7) return false;
-        if (timeFilter === 'month' && (saleDate.getMonth() !== now.getMonth() || saleDate.getFullYear() !== now.getFullYear())) return false;
 
-        // Sale type filter
-        if (saleTypeFilter !== 'all' && (!sale.sale_types || !sale.sale_types[saleTypeFilter])) return false;
+// Attach event listeners to all filter elements to automatically fetch and update the sales history
+document.getElementById('timeFilter').addEventListener('change', updateSalesHistory);
+document.getElementById('saleTypeFilter').addEventListener('change', updateSalesHistory);
+document.getElementById('esiFilter').addEventListener('change', updateSalesHistory);
+document.getElementById('timeSortFilter').addEventListener('change', updateSalesHistory);
+document.getElementById('leadIdFilter').addEventListener('input', updateSalesHistory); // For an input field, you might want to debounce this
 
-        // ESI filter
-        if (esiFilter !== 'all' && sale.esi_content !== esiFilter) return false;
+// The function to call fetchSalesHistory with current filter values
+function updateSalesHistory() {
+    const timeFilter = document.getElementById('timeFilter').value;
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+    const timeSort = document.getElementById('timeSortFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim();
 
-        // Lead ID filter
-        if (leadIdFilter && sale.lead_id !== leadIdFilter) return false;
-
-        return true; // Include sale if all filters match
-    });
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
 }
+
+// Optional: Debounce function for leadIdFilter to limit how often it updates as you type
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Apply debounce to the leadIdFilter input event
+document.getElementById('leadIdFilter').addEventListener('input', debounce(updateSalesHistory, 500));
+
 
 function calculateSaleTypeCounts(salesArray) {
     let saleTypeCounts = {};
@@ -650,40 +664,6 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
 
 
 
-
-// Attach event listeners to all filter elements to automatically fetch and update the sales history
-document.getElementById('timeFilter').addEventListener('change', updateSalesHistory);
-document.getElementById('saleTypeFilter').addEventListener('change', updateSalesHistory);
-document.getElementById('esiFilter').addEventListener('change', updateSalesHistory);
-document.getElementById('timeSortFilter').addEventListener('change', updateSalesHistory);
-document.getElementById('leadIdFilter').addEventListener('input', updateSalesHistory); // For an input field, you might want to debounce this
-
-// The function to call fetchSalesHistory with current filter values
-function updateSalesHistory() {
-    const timeFilter = document.getElementById('timeFilter').value;
-    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
-    const esiFilter = document.getElementById('esiFilter').value;
-    const timeSort = document.getElementById('timeSortFilter').value;
-    const leadIdFilter = document.getElementById('leadIdFilter').value.trim();
-
-    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
-}
-
-// Optional: Debounce function for leadIdFilter to limit how often it updates as you type
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Apply debounce to the leadIdFilter input event
-document.getElementById('leadIdFilter').addEventListener('input', debounce(updateSalesHistory, 500));
 
 
 
