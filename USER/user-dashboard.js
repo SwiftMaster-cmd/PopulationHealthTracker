@@ -534,13 +534,17 @@ function calculateDetailedCommission(level, salesArray) {
 
                 detailedCommission.byType[type].totalSales += count;
                 detailedCommission.byType[type].commission += commission;
-                detailedCommission.totalCommission += commission;
             }
         });
     });
 
+    // Calculate total commission separately
+    detailedCommission.totalCommission = Object.values(detailedCommission.byType)
+        .reduce((total, typeCommission) => total + typeCommission.commission, 0);
+
     return detailedCommission;
 }
+
 
 
 
