@@ -167,8 +167,6 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-
-
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -226,20 +224,22 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
-         // Calculate total commission after fetching and filtering sales data
-         const level = document.getElementById('commissionLevel').value; // Ensure you have a mechanism to set/get this
-         const totalCommission = calculateTotalCommission(level, cumulativeSaleTypeCounts);
-         document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
-         const chartData = generateChartData(salesArray);
-         renderSalesChart(chartData);
- 
-         // Execute the callback if provided
-         if (callback && typeof callback === 'function') {
-             callback();
-         }
+        // Calculate total commission after fetching and filtering sales data
+        const level = document.getElementById('commissionLevel').value; // Ensure you have a mechanism to set/get this
+        const totalCommission = calculateTotalCommission(level, cumulativeSaleTypeCounts);
+        document.getElementById('commissionAmount').textContent = `$${totalCommission.toFixed(2)}`;
+
+        // After fetching the sales history and rendering the sales entries, generate and render the chart
+        const chartData = generateChartData(salesArray);
+        renderSalesChart(chartData);
+
+        // Execute the callback if provided
+        if (callback && typeof callback === 'function') {
+            callback();
+        }
     });
 }
+
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
         if (!cumulativeCounts[type]) {
@@ -248,8 +248,8 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
             cumulativeCounts[type] += currentSaleTypes[type];
         }
     });
- 
 }
+
 
 
 
@@ -639,92 +639,6 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
     const currentLevel = document.getElementById('commissionLevel').value;
     // Implementation for dynamic commission calculation needs the sales data logic
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
