@@ -753,36 +753,35 @@ async function openEditModal(saleId) {
         return;
     }
 
-    const saleRef = ref(database, `sales/${userId}/${saleId}`);
-    get(saleRef)
-        .then((snapshot) => {
-            currentSaleData = snapshot.val();
+    try {
+        const saleSnapshot = await get(ref(database, `sales/${userId}/${saleId}`));
+        const saleData = saleSnapshot.val();
 
-            if (!currentSaleData) {
-                console.error("Sale data not found.");
-                return;
-            }
+        if (!saleData) {
+            console.error("Sale data not found.");
+            return;
+        }
 
-            // Setup modal fields
-            document.getElementById('editSaleId').value = saleId;
-            document.getElementById('editLeadId').value = currentSaleData.lead_id || '';
-            document.getElementById('editNotes').value = currentSaleData.notes || '';
+        // Setup modal fields
+        document.getElementById('editSaleId').value = saleId;
+        document.getElementById('editLeadId').value = saleData.lead_id || '';
+        document.getElementById('editNotes').value = saleData.notes || '';
 
-            // Call setup functions to set sale types and ESI content
-            setupEsiConsentButtons(currentSaleData.esi_content);
+        // Call setup functions to set sale types and ESI content
+        setupEsiConsentButtons(saleData.esi_content);
 
-            // Call setupPreSelectedSaleTypes to set selected sale types based on currentSaleData
-            setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
+        // Call setupPreSelectedSaleTypes to set selected sale types based on saleData
+        setupPreSelectedSaleTypes(saleData.sale_types || {});
 
-            document.getElementById('editSaleModal').style.display = 'block';
+        document.getElementById('editSaleModal').style.display = 'block';
 
-            // Enable or disable the submit button initially based on the pre-selected values
-            enableSubmitButton();
-        })
-        .catch((error) => {
-            console.error('Error fetching sale data:', error);
-        });
+        // Enable or disable the submit button initially based on the pre-selected values
+        enableSubmitButton();
+    } catch (error) {
+        console.error('Error fetching sale data:', error);
+    }
 }
+
 
 
 // Rest of the code remains the same
