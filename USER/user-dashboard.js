@@ -645,6 +645,10 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
 
 
 
+
+
+
+
 // Global variable to store the current sale data, including timestamp
 let currentSaleData;
 
@@ -831,11 +835,12 @@ function closeEditModal() {
 
 
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    const target = event.target;
+    if (event.target.classList.contains('delete-btn')) {
     if (!userId) {
         console.error('No user logged in.');
         return;
     }
+}
 
     const saleContainer = target.closest('.sales-history-entry');
     if (!saleContainer) return;
