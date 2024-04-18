@@ -645,11 +645,6 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
 
 
 
-// Assuming userId is defined in an outer scope
-const userId = getUserId(); // Example function to retrieve userId
-
-
-
 // Global variable to store the current sale data, including timestamp
 let currentSaleData;
 
