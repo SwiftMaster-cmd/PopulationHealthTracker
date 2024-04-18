@@ -665,28 +665,6 @@ function toggleButtonSelectedState() {
 
 
 
-document.querySelector('.sales-history-container').addEventListener('click', async (event) => {
-    const target = event.target; 
-    const saleContainer = target.closest('.sales-history-entry');
-
-    if (!saleContainer) return; // Not an edit/delete button click
-
-    const saleId = saleContainer.getAttribute('data-sale-id');
-
-    if (target.classList.contains('edit-btn')) {
-        openEditModal(saleId);
-    } else if (target.classList.contains('delete-btn')) {
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await deleteSale(saleId); 
-                saleContainer.remove(); // Remove the entry from the UI
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-                // Consider adding error feedback for the user
-            }
-        }
-    }
-});
 
 
 
@@ -861,7 +839,6 @@ function closeEditModal() {
 }
 
 
-
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
     const target = event.target;
     if (!userId) {
@@ -873,8 +850,9 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
     if (!saleContainer) return;
 
     const saleId = saleContainer.getAttribute('data-sale-id');
+
     if (target.classList.contains('edit-btn')) {
-        openEditModal(saleId);
+        openEditModal(saleId); 
     } else if (target.classList.contains('delete-btn')) {
         if (confirm('Are you sure you want to delete this sale?')) {
             try {
@@ -885,7 +863,8 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
             }
         }
     }
-});
+}); 
+
 
 // Updated function to check if the edited lead ID already exists in other sales, excluding the current sale
 function isLeadIdAlreadyExists(salesData, editedLeadId, currentSaleId) {
