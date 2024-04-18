@@ -645,6 +645,13 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
 
 
 
+// Assuming userId is defined in an outer scope
+const userId = getUserId(); // Example function to retrieve userId
+
+// Your event listener code here
+document.getElementById('salesHistory').addEventListener('click', async (event) => {
+    // Use userId within this event listener function
+});
 
 
 // Global variable to store the current sale data, including timestamp
@@ -783,25 +790,6 @@ async function openEditModal(saleId) {
             console.error('Error fetching sale data:', error);
         });
 }
-// Add an event listener to the "Edit" button
-document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    const target = event.target;
-    if (!userId) {
-        console.error('No user logged in.');
-        return;
-    }
-
-    const saleContainer = target.closest('.sales-history-entry');
-    if (!saleContainer) return;
-
-    const saleId = saleContainer.getAttribute('data-sale-id');
-    if (target.classList.contains('edit-btn')) {
-        openEditModal(saleId); // Call the openEditModal function with the sale ID
-    } else if (target.classList.contains('delete-btn')) {
-        // Handle delete button click
-        // ...
-    }
-});
 
 
 // Rest of the code remains the same
