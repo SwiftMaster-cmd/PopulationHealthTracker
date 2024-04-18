@@ -839,33 +839,24 @@ function closeEditModal() {
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('salesHistory').addEventListener('click', async (event) => {
-        console.log('Event listener triggered.'); // Add this line to check if the event listener is triggered
+document.addEventListener('click', async (event) => {
+    const target = event.target;
+    const saleContainer = target.closest('.sales-history-entry');
 
-        const target = event.target;
-        if (!userId) {
-            console.error('No user logged in.');
-            return;
-        }
-
-        const saleContainer = target.closest('.sales-history-entry');
-        if (!saleContainer) return;
-
+    if (target.classList.contains('edit-btn')) {
         const saleId = saleContainer.getAttribute('data-sale-id');
-        if (target.classList.contains('edit-btn')) {
-            openEditModal(saleId);
-        } else if (target.classList.contains('delete-btn')) {
-            if (confirm('Are you sure you want to delete this sale?')) {
-                try {
-                    await remove(ref(database, `sales/${userId}/${saleId}`));
-                    saleContainer.remove(); // Reflect deletion in UI
-                } catch (error) {
-                    console.error('Error deleting sale:', error);
-                }
+        openEditModal(saleId);
+    } else if (target.classList.contains('delete-btn')) {
+        const saleId = saleContainer.getAttribute('data-sale-id');
+        if (confirm('Are you sure you want to delete this sale?')) {
+            try {
+                await remove(ref(database, `sales/${userId}/${saleId}`));
+                saleContainer.remove(); // Reflect deletion in UI
+            } catch (error) {
+                console.error('Error deleting sale:', error);
             }
         }
-    });
+    }
 });
 
 
