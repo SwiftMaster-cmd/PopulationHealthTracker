@@ -709,36 +709,6 @@ document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
     });
 });
 
-
-
-document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    console.log('Event listener triggered.'); // Add this line to check if the event listener is triggered
-
-    const target = event.target;
-    if (!userId) {
-        console.error('No user logged in.');
-        return;
-    }
-
-    const saleContainer = target.closest('.sales-history-entry');
-    if (!saleContainer) return;
-
-    const saleId = saleContainer.getAttribute('data-sale-id');
-    if (target.classList.contains('edit-btn')) {
-        openEditModal(saleId);
-    } else if (target.classList.contains('delete-btn')) {
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await remove(ref(database, `sales/${userId}/${saleId}`));
-                saleContainer.remove(); // Reflect deletion in UI
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-            }
-        }
-    }
-});
-
-
 // Function to enable or disable the submit button based on the selections
 function enableSubmitButton() {
     const submitButton = document.getElementById('editSaleSubmitBtn');
@@ -869,6 +839,32 @@ function closeEditModal() {
 }
 
 
+// Assuming salesHistory is the parent container of all sales entries
+document.getElementById('salesHistory').addEventListener('click', async (event) => {
+    console.log('Event listener triggered.');
+
+    const target = event.target;
+    const editBtn = target.closest('.edit-btn');
+    if (editBtn) {
+        const saleContainer = editBtn.closest('.sales-history-entry');
+        const saleId = saleContainer.getAttribute('data-sale-id');
+        openEditModal(saleId);
+    }
+
+    const deleteBtn = target.closest('.delete-btn');
+    if (deleteBtn) {
+        const saleContainer = deleteBtn.closest('.sales-history-entry');
+        const saleId = saleContainer.getAttribute('data-sale-id');
+        if (confirm('Are you sure you want to delete this sale?')) {
+            try {
+                await remove(ref(database, `sales/${userId}/${saleId}`));
+                saleContainer.remove(); // Reflect deletion in UI
+            } catch (error) {
+                console.error('Error deleting sale:', error);
+            }
+        }
+    }
+});
 
 
 // Updated function to check if the edited lead ID already exists in other sales, excluding the current sale
