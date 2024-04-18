@@ -839,7 +839,10 @@ function closeEditModal() {
 }
 
 
+
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
+    console.log('Event listener triggered.'); // Add this line to check if the event listener is triggered
+
     const target = event.target;
     if (!userId) {
         console.error('No user logged in.');
@@ -850,9 +853,8 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
     if (!saleContainer) return;
 
     const saleId = saleContainer.getAttribute('data-sale-id');
-
     if (target.classList.contains('edit-btn')) {
-        openEditModal(saleId); 
+        openEditModal(saleId);
     } else if (target.classList.contains('delete-btn')) {
         if (confirm('Are you sure you want to delete this sale?')) {
             try {
@@ -863,8 +865,7 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
             }
         }
     }
-}); 
-
+});
 
 // Updated function to check if the edited lead ID already exists in other sales, excluding the current sale
 function isLeadIdAlreadyExists(salesData, editedLeadId, currentSaleId) {
