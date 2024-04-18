@@ -756,41 +756,41 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
 }
 
 async function openEditModal(saleId) {
-    try {
-        if (!userId) {
-            console.error("No user logged in.");
-            return;
-        }
-
-        const saleRef = ref(database, `sales/${userId}/${saleId}`);
-        const snapshot = await get(saleRef);
-        const currentSaleData = snapshot.val();
-
-        if (!currentSaleData) {
-            console.error("Sale data not found.");
-            return;
-        }
-
-        // Setup modal fields
-        document.getElementById('editSaleId').value = saleId;
-        document.getElementById('editLeadId').value = currentSaleData.lead_id || '';
-        document.getElementById('editNotes').value = currentSaleData.notes || '';
-
-        // Call setup functions to set sale types and ESI content
-        setupEsiConsentButtons(currentSaleData.esi_content);
-
-        // Call setupPreSelectedSaleTypes to set selected sale types based on currentSaleData
-        setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
-
-        document.getElementById('editSaleModal').style.display = 'block';
-
-        // Enable or disable the submit button initially based on the pre-selected values
-        enableSubmitButton();
-    } catch (error) {
-        console.error('Error fetching or setting up sale data:', error);
+    if (!userId) {
+        console.error("No user logged in.");
+        return;
     }
-}
 
+    const saleRef = ref(database, `sales/${userId}/${saleId}`);
+    get(saleRef)
+        .then((snapshot) => {
+            currentSaleData = snapshot.val();
+
+            if (!currentSaleData) {
+                console.error("Sale data not found.");
+                return;
+            }
+
+            // Setup modal fields
+            document.getElementById('editSaleId').value = saleId;
+            document.getElementById('editLeadId').value = currentSaleData.lead_id || '';
+            document.getElementById('editNotes').value = currentSaleData.notes || '';
+
+            // Call setup functions to set sale types and ESI content
+            setupEsiConsentButtons(currentSaleData.esi_content);
+
+            // Call setupPreSelectedSaleTypes to set selected sale types based on currentSaleData
+            setupPreSelectedSaleTypes(currentSaleData.sale_types || {});
+
+            document.getElementById('editSaleModal').style.display = 'block';
+
+            // Enable or disable the submit button initially based on the pre-selected values
+            enableSubmitButton();
+        })
+        .catch((error) => {
+            console.error('Error fetching sale data:', error);
+        });
+}
 
 
 // Rest of the code remains the same
@@ -844,18 +844,14 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
     console.log('Event listener triggered.'); // Add this line to check if the event listener is triggered
 
     const target = event.target;
-    if (!userId) {
-        console.error('No user logged in.');
-        return;
-    }
-
     const saleContainer = target.closest('.sales-history-entry');
-    if (!saleContainer) return;
-
-    const saleId = saleContainer.getAttribute('data-sale-id');
+    
+    // Check if the clicked element is an edit or delete button
     if (target.classList.contains('edit-btn')) {
+        const saleId = saleContainer.getAttribute('data-sale-id');
         openEditModal(saleId);
     } else if (target.classList.contains('delete-btn')) {
+        const saleId = saleContainer.getAttribute('data-sale-id');
         if (confirm('Are you sure you want to delete this sale?')) {
             try {
                 await remove(ref(database, `sales/${userId}/${saleId}`));
@@ -866,6 +862,7 @@ document.getElementById('salesHistory').addEventListener('click', async (event) 
         }
     }
 });
+
 
 // Updated function to check if the edited lead ID already exists in other sales, excluding the current sale
 function isLeadIdAlreadyExists(salesData, editedLeadId, currentSaleId) {
