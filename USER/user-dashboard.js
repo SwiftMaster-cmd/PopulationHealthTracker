@@ -663,6 +663,34 @@ function toggleButtonSelectedState() {
     this.classList.toggle('selected');
 }
 
+
+
+document.querySelector('.sales-history-container').addEventListener('click', async (event) => {
+    const target = event.target; 
+    const saleContainer = target.closest('.sales-history-entry');
+
+    if (!saleContainer) return; // Not an edit/delete button click
+
+    const saleId = saleContainer.getAttribute('data-sale-id');
+
+    if (target.classList.contains('edit-btn')) {
+        openEditModal(saleId);
+    } else if (target.classList.contains('delete-btn')) {
+        if (confirm('Are you sure you want to delete this sale?')) {
+            try {
+                await deleteSale(saleId); 
+                saleContainer.remove(); // Remove the entry from the UI
+            } catch (error) {
+                console.error('Error deleting sale:', error);
+                // Consider adding error feedback for the user
+            }
+        }
+    }
+});
+
+
+
+
 // Event listeners for edit sale type buttons
 document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
     btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
@@ -835,12 +863,11 @@ function closeEditModal() {
 
 
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    if (event.target.classList.contains('delete-btn')) {
+    const target = event.target;
     if (!userId) {
         console.error('No user logged in.');
         return;
     }
-}
 
     const saleContainer = target.closest('.sales-history-entry');
     if (!saleContainer) return;
