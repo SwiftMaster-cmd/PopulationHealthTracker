@@ -839,32 +839,28 @@ function closeEditModal() {
 }
 
 
-// Assuming salesHistory is the parent container of all sales entries
-document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    console.log('Event listener triggered.');
-
-    const target = event.target;
-    const editBtn = target.closest('.edit-btn');
-    if (editBtn) {
-        const saleContainer = editBtn.closest('.sales-history-entry');
-        const saleId = saleContainer.getAttribute('data-sale-id');
-        openEditModal(saleId);
+// Define a function to handle editing a sale
+const handleEditSale = async (saleId) => {
+    if (!userId) {
+        console.error('No user logged in.');
+        return;
     }
 
-    const deleteBtn = target.closest('.delete-btn');
-    if (deleteBtn) {
-        const saleContainer = deleteBtn.closest('.sales-history-entry');
-        const saleId = saleContainer.getAttribute('data-sale-id');
-        if (confirm('Are you sure you want to delete this sale?')) {
-            try {
-                await remove(ref(database, `sales/${userId}/${saleId}`));
-                saleContainer.remove(); // Reflect deletion in UI
-            } catch (error) {
-                console.error('Error deleting sale:', error);
-            }
-        }
-    }
+    // Call the openEditModal function with the saleId
+    openEditModal(saleId);
+};
+
+// Get all edit buttons
+const editButtons = document.querySelectorAll('.edit-btn');
+
+// Attach click event listeners to each edit button
+editButtons.forEach(editButton => {
+    editButton.addEventListener('click', (event) => {
+        const saleId = event.currentTarget.getAttribute('data-sale-id');
+        handleEditSale(saleId);
+    });
 });
+
 
 
 // Updated function to check if the edited lead ID already exists in other sales, excluding the current sale
