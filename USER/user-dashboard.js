@@ -646,7 +646,6 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
 
 
 
-
 // Global variable to store the current sale data, including timestamp
 let currentSaleData;
 
@@ -684,6 +683,7 @@ document.querySelectorAll('.edit-sale-type-btn').forEach(btn => {
 
 // Event listeners for edit ESI consent buttons
 document.querySelectorAll('.edit-esi-consent-btn').forEach(btn => {
+    btn.removeEventListener('click', toggleButtonSelectedState); // Remove existing event listeners to prevent duplicates
     btn.addEventListener('click', function () {
         // First, remove 'selected' class from all ESI consent buttons
         document.querySelectorAll('.edit-esi-consent-btn').forEach(otherBtn => {
