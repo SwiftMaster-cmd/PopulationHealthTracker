@@ -648,10 +648,6 @@ document.getElementById('commissionLevel').addEventListener('change', () => {
 // Assuming userId is defined in an outer scope
 const userId = getUserId(); // Example function to retrieve userId
 
-// Your event listener code here
-document.getElementById('salesHistory').addEventListener('click', async (event) => {
-    // Use userId within this event listener function
-});
 
 
 // Global variable to store the current sale data, including timestamp
@@ -836,6 +832,8 @@ document.getElementById('editSaleForm').addEventListener('submit', async (event)
 function closeEditModal() {
     document.getElementById('editSaleModal').style.display = 'none';
 }
+
+
 
 document.getElementById('salesHistory').addEventListener('click', async (event) => {
     const target = event.target;
