@@ -755,7 +755,7 @@ function setupPreSelectedSaleTypes(saleTypesToSetup) {
     });
 }
 
-async function openEditModal(saleId) {
+ function openEditModal(saleId) {
     if (!userId) {
         console.error("No user logged in.");
         return;
