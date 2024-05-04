@@ -22,9 +22,6 @@ initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-// Assuming Firebase has already been initialized elsewhere in your script
-
-// Assuming Firebase has already been initialized elsewhere in your script
 
 // Helper functions for UI interactions
 function getSelectedESIContent() {
@@ -123,6 +120,9 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
     });
 });
 
+
+
+
 function getSaleTypesWithCommissionPoints() {
     const saleTypes = {};
     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
@@ -140,17 +140,6 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
-
-
-
-
-
-
-
-
-
-// Assuming Firebase has already been initialized elsewhere in your script
-
 // Placeholder for user's ID
 let userId;
 
@@ -164,6 +153,8 @@ onAuthStateChanged(auth, (user) => {
         userId = null; // Clear userId if no user is signed in
     }
 }); 
+
+
 
 
 
@@ -236,6 +227,10 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
          }
     });
 }
+
+
+
+
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
         if (!cumulativeCounts[type]) {
@@ -246,6 +241,11 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     });
  
 }
+
+
+
+
+
 
 
 
@@ -276,6 +276,10 @@ document.getElementById('applyFilters').addEventListener('click', () => {
     fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
 });
 
+
+
+
+
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
     const now = new Date();
     return salesArray.filter(sale => {
@@ -298,6 +302,14 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
+
+
+
+
+
+
+
+
 function calculateSaleTypeCounts(salesArray) {
     let saleTypeCounts = {};
     salesArray.forEach(sale => {
@@ -313,6 +325,12 @@ function calculateSaleTypeCounts(salesArray) {
 }
 
 
+
+
+
+
+
+
 function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
     let display = '';
     Object.keys(saleTypes || {}).forEach(type => {
@@ -320,6 +338,13 @@ function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
     });
     return display.slice(0, -2); // Remove trailing comma and space
 }
+
+
+
+
+
+
+
 
 
 
@@ -368,6 +393,12 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
+
+
+
+
+
+
 function generateChartData(salesArray) {
     const saleTypeCounts = calculateSaleTypeCounts(salesArray);
     const labels = Object.keys(saleTypeCounts);
@@ -382,6 +413,13 @@ function generateChartData(salesArray) {
         }]
     };
 }
+
+
+
+
+
+
+
 
 let salesChart;
 
@@ -425,59 +463,6 @@ function renderSalesChart(data) {
         }
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -664,7 +649,6 @@ function openEditModal(saleId) {
 }
 
 
-// Rest of the code remains the same
 
 // Apply numeric-only input rules to 'editLeadId'
 document.getElementById('editLeadId').addEventListener('input', function() {
@@ -741,12 +725,14 @@ function isLeadIdAlreadyExists(salesData, editedLeadId, currentSaleId) {
     });
 }
 
+
 // Function to retrieve sales data for the current user
 async function getSalesData(userId) {
     const salesRef = ref(database, `sales/${userId}`);
     const snapshot = await get(salesRef);
     return snapshot.val() || {};
 }
+
 
 document.getElementById('cancelEditSale').addEventListener('click', function() {
     // Clear selections and any input fields as needed
