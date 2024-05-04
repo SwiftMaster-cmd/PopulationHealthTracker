@@ -470,9 +470,55 @@ function renderSalesChart(data) {
 
 
 
+function calculateTotalSalesCounts(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
+    // Apply filters to the sales array
+    const filteredSales = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+    
+    // Initialize an object to store total sales counts
+    let totalSalesCounts = {};
+
+    // Iterate through filtered sales and accumulate counts for each sale type
+    filteredSales.forEach(sale => {
+        Object.keys(sale.sale_types || {}).forEach(type => {
+            if (sale.sale_types[type] > 0) {
+                totalSalesCounts[type] = (totalSalesCounts[type] || 0) + sale.sale_types[type];
+            }
+        });
+    });
+
+    return totalSalesCounts;
+}
 
 
 
+// Listen to the apply filters button click, including lead ID filter
+document.getElementById('applyFilters').addEventListener('click', () => {
+    const timeFilter = document.getElementById('timeFilter').value;
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+    const timeSort = document.getElementById('timeSortFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
+
+    // Fetch sales history and update total sales counts container
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
+    updateTotalSalesCounts(timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+});
+
+// Function to update the total sales counts container
+function updateTotalSalesCounts(timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
+    const totalSalesCounts = calculateTotalSalesCounts(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+    const totalSalesContainer = document.getElementById('totalSalesCounts');
+
+    // Clear existing content
+    totalSalesContainer.innerHTML = '';
+
+    // Create and append new content for each sale type with non-zero counts
+    Object.entries(totalSalesCounts).forEach(([type, count]) => {
+        const saleCountElement = document.createElement('div');
+        saleCountElement.textContent = `${type}: ${count}`;
+        totalSalesContainer.appendChild(saleCountElement);
+    });
+}
 
 
 
