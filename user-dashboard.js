@@ -470,24 +470,23 @@ function renderSalesChart(data) {
 
 
 
-function calculateTotalSalesCounts(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
-    // Apply filters to the sales array
-    const filteredSales = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-    
-    // Initialize an object to store total sales counts
-    let totalSalesCounts = {};
+function updateTotalSalesCounts(salesArray) {
+    const saleTypeCounts = calculateSaleTypeCounts(salesArray);
+    const totalSalesCountsElement = document.getElementById('totalSalesCounts');
+    totalSalesCountsElement.innerHTML = ''; // Clear existing content
 
-    // Iterate through filtered sales and accumulate counts for each sale type
-    filteredSales.forEach(sale => {
-        Object.keys(sale.sale_types || {}).forEach(type => {
-            if (sale.sale_types[type] > 0) {
-                totalSalesCounts[type] = (totalSalesCounts[type] || 0) + sale.sale_types[type];
-            }
-        });
+    // Loop through the sale type counts and add them to the container
+    Object.entries(saleTypeCounts).forEach(([saleType, count]) => {
+        if (count > 0) {
+            const div = document.createElement('div');
+            div.textContent = `${saleType}: ${count}`;
+            totalSalesCountsElement.appendChild(div);
+        }
     });
-
-    return totalSalesCounts;
 }
+
+// Call this function whenever the sales history is updated or filters are applied
+updateTotalSalesCounts(salesArray);
 
 
 
