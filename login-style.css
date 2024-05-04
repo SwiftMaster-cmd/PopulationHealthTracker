@@ -1,0 +1,83 @@
+/* Basic page styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #219EBC, #023047);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container for the login elements */
+.login-container {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    color: #ffffff;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-container:hover {
+    transform: scale(1.1); /* Increased scale on hover */
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+}
+
+h2 {
+    font-size: 28px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Additional styling for other text elements */
+p {
+    font-size: 20px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+span {
+    font-size: 22px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* Styling for buttons */
+button {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    padding: 20px 30px;
+    margin: 20px 0;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, perspective 0.3s ease; /* Added perspective transition */
+    perspective: 1000px; /* Added perspective for 3D effect */
+    transform-style: preserve-3d; /* Preserve 3D transformations */
+}
+
+button:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+    transform: translateY(-6px) scale(1.1); /* Increased translateY and scale on hover for 3D effect */
+}
+
+/* Animation for the login container */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

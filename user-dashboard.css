@@ -1,0 +1,1040 @@
+html, body {
+
+    margin: 0; /* Removes the default margin */
+    padding: 0; /* Removes the default padding */
+}
+
+
+/* Reset some default styles to start with a clean slate */
+body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; /* Use a professional font like Arial */
+    font-weight: bold; /* Make the text bold */
+    color: #ffffff;
+    
+}
+
+/* Enhance font sizes and styles for better visual appeal */
+body {
+    background: linear-gradient(to bottom, #219EBC, #023047);
+    font-size: 18px; /* Slightly larger for improved readability */
+    text-align: center; /* Center align text for the whole document */
+}
+
+header {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+        color: #ffffff;
+    border-radius: 15px;
+    text-align: center;
+    padding: 20px 0;
+    width: 300px; /* Set max-width for the header */
+    margin: 24 auto; /* Center the header horizontally */
+}
+
+
+.header-title, header h2, .input-group label, .submit-btn, .esi-btn, .sale-type-btn {
+    font-size: 26px; /* Unified font size for headers and buttons */
+}
+
+#lead_id, #notes {
+    font-size: 20px; /* Larger font size for input fields */
+}
+
+/* Style the main container with gradient */
+.dashboard-container, .sales-container, .sales-history-container {
+    max-width: 750px; /* Set max width for the containers holding the forms and history */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);  
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+.sales-container, .sales-history-container {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    max-width: 500px; /* Set max width for the sales and sales history containers */
+}
+
+/* Style inputs and labels */
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.input-gradient-container {
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    border-radius: 15px;
+    padding: 1px;
+}
+
+#lead_id, #notes {
+    width: 100%; /* Make input fields fluid */
+    max-width: 300px; /* Set max width for lead_id and notes */
+    margin: 0;
+    padding: 10px;
+    border-radius: 14px;
+    border: none;
+    font-weight: bold;
+    color: #ffffff;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    outline: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.input-group input:focus, .input-group textarea:focus, .glow-on-focus:focus {
+    box-shadow: 0 0 10px #e6b081;
+    outline: none;
+}
+
+.input-gradient-container:focus-within {
+    box-shadow: 0 0 0 2px #b37400;
+}
+
+#notes {
+    resize: none; /* Disable resizing for textarea */
+}
+
+/* Style buttons with gradients */
+.esi-btn, .sale-type-btn, .submit-btn {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+
+.esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.esi-btn:focus, .sale-type-btn:focus, .submit-btn:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+.esi-btn.selected, .sale-type-btn.selected {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    transform: scale(1.1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.sales-history-container {
+    width: auto;
+    max-width: 500px; /* Set maximum width to 500px */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+    animation: fadeIn 1s ease-out;
+    text-align: center;
+}
+
+.sales-history-container > * {
+    min-width: 100%;
+}
+
+.sales-history-entry {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.sales-history-entry:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.sale-info {
+    width: 100%; /* Occupy full width */
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    align-items: center;
+}
+
+.sale-data {
+    width: 200px; /* Set width to 200px */
+    margin-bottom: 10px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
+    border-radius: 5px;
+    padding: 8px;
+    box-shadow: none;
+    outline: none;
+}
+
+.sale-data.lead-id,
+.sale-data.esi {
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
+    border-radius: 15px; 
+    padding: 15px;
+    box-shadow: none;
+    outline: none;
+    font-size: 20px;
+    color: white;
+}
+
+/* Accessibility: Add focus styles for interactive elements */
+.sale-data:focus, .sale-data.lead-id:focus, .sale-data.esi:focus {
+    box-shadow: 0px 0px 8px rgba(255, 174, 0, 0.8); /* Or any other visual cue */
+}
+
+.sale-types {
+    width: 400; /* Set width to 500px */
+ 
+
+    margin: 0 auto; /* Center align the container */
+}
+
+.sale-type-span {
+    width: 175px;
+    display: inline-block;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: default; 
+    font-size: 20px;
+    user-select: none;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.sale-note {
+    width: 450px;
+    height: 75px;
+    overflow-y: auto;
+    margin-top: 10px;
+    padding: 8px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border-radius: 15px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    color: #ffffff; /* Text color white */
+    font-size: 20px; /* Increase font size */
+ 
+   
+}
+
+.sale-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px; /* Add 15px padding to the left and right */
+    width: calc(100% - 30px); /* Adjust width to account for padding */
+}
+
+
+.sale-timestamp {
+    color: #f7bf71;
+}
+
+.sale-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.sale-actions button {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Blue gradient for buttons */
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.sale-actions button:hover {
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.sale-actions button:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+input:focus,
+textarea:focus {
+   
+    outline: none;
+}
+
+.sales-history-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sales-history-container::-webkit-scrollbar-thumb {
+    background: #BBDEFB;
+    border-radius: 4px;
+}
+
+.sales-history-container::-webkit-scrollbar-track {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+}
+
+.sales-history-entry .sale-note::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sales-history-entry .sale-note::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.sales-history-entry .sale-note::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Chart container */
+.chart-container {
+    width: 500px;
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s; /* Apply transition for scaling */
+}
+
+.chart-container:hover {
+    transform: scale(1.05); /* Scale up by 5% on hover */
+}
+
+/* Chart canvas */
+#salesChart {
+    width: 75%;
+    max-height: 400px; /* Adjust height as needed */
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+/* Chart title */
+.chart-title {
+    font-size: 30px;
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+    transition: font-size 0.3s; /* Apply transition for font size */
+}
+
+/* Chart data labels */
+.chart-data-labels {
+    font-size: 30px;
+    color: white;
+    text-align: center;
+    transition: font-size 0.3s; /* Apply transition for font size */
+}
+
+/* Chart bars */
+.chart-bar {
+    background-color: #219EBC; /* Blue color */
+    border-radius: 5px;
+    transition: transform 0.3s, background-color 0.3s; /* Apply transition for scaling and color */
+}
+
+.chart-bar:hover {
+    transform: scale(1.05); /* Scale up by 5% on hover */
+    background-color: #0d6efd; /* Darker blue color on hover */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* General styling for sale data to mimic input/label appearance */
+.sale-data {
+    background: #E3F2FD; /* Light background color similar to input fields */
+    border: 1px solid #BBDEFB; /* Border to distinguish each sale data */
+    padding: 8px 12px; /* Padding inside each sale data block */
+    border-radius: 4px; /* Rounded corners to match input fields */
+    margin: 4px 0; /* Margin for spacing between each sale data */
+    display: block; /* Ensure each sale data is on its own line */
+    color: #023047; /* Text color to match the overall theme */
+    font-size: 16px; /* Font size to match input labels */
+}
+
+/* Specific styling adjustments for better visual hierarchy */
+.sale-data:first-child {
+    font-weight: bold; /* Make the first piece of data (Sale ID) more prominent */
+    color: #ffffff; /* Use a distinct color for ID to stand out */
+}
+
+.sale-actions {
+    margin-top: 12px; /* Add some space between the sale data and action buttons */
+}
+
+/* You might already have styles for .sale-actions button from previous adjustments */
+.sale-actions button {
+    /* Additional styles if needed based on your previous setup */
+    font-size: 14px; /* Adjust font size for buttons if necessary */
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Styles for the filter container */
+.filters-container {
+    width: 500px; /* Maintain container width */
+    margin: 20px auto; /* Center the container */
+    padding: 10px 20px; /* Adjusted padding */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: stretch; /* Stretch children to fill the width */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
+}
+
+/* Style adjustments for each filter group */
+.filter-group {
+    display: flex; /* Use flexbox */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Align items vertically */
+    width: 100%; /* Full width to utilize space */
+    margin: 10px 0; /* Adjusted margin for spacing */
+}
+
+/* Style adjustments for filter labels */
+.filter-group label {
+    text-align: left; /* Align text to the left */
+    font-size: 20px; /* Font size for readability */
+    color: #ffffff; /* Color for contrast */
+    flex: 1; /* Allow label to grow and fill available space */
+}
+/* Style adjustments for select elements */
+.filter-group select {
+    flex: 1;
+    width: 200px;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 18px;
+    border-radius: 14px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border: none;
+    color: white;
+    outline: none;
+    text-align: left;
+}
+
+/* Style adjustments for all options (selected and unselected) */
+.filter-group select option {
+    background: black; /* Change background color for all options to black */
+    color: white; /* Text color for all options */
+}
+
+/* Style adjustments for the selected option */
+.filter-group select option:checked {
+    background: black; /* Change background color to black for the selected option */
+    color: white;
+}
+
+
+
+/* Adjustments for the apply button to center it and set its width */
+#applyFilters {
+    width: 400px; /* Width of the button */
+    margin: 20px auto; /* Margin for auto-left and auto-right centers the button */
+    padding: 12px 0; /* Padding for height */
+    font-weight: bold; /* Bold font */
+    border-radius: 15px; /* Rounded corners */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Gradient background */
+    color: white; /* Text color */
+    border: none; /* No border */
+    cursor: pointer; /* Cursor to indicate clickability */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction feedback */
+}
+
+#applyFilters:hover, #applyFilters:focus {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
+    transform: translateY(-3px); /* Slight lift for interaction */
+}
+
+
+/* Style adjustments for the lead ID filter */
+.filter-group input[type="text"] {
+    flex: 1;
+    width: 200px;
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 18px;
+    border-radius: 14px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    border: none;
+    color: rgb(255, 255, 255); /* Set the initial text color to light gray */
+    outline: none;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s, color 0.3s; /* Add color transition */
+}
+
+/* Adjustments for the lead ID filter on hover and focus */
+.filter-group input[type="text"]:hover,
+.filter-group input[type="text"]:focus {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    color: white; /* Set the text color to white on hover and focus */
+}
+/* Style adjustments for the placeholder text */
+.filter-group input[type="text"]::placeholder {
+    color: rgb(255, 255, 255); /* Set the placeholder text color to light gray */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#editSaleModal {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width of the screen */
+    height: 100%; /* Full height of the screen */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Modal Content */
+#editSaleForm {
+    background: linear-gradient(to bottom, #FB8501, #FFB703);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: auto;
+    max-width: 500px;
+    margin: 150px auto 0; /* Bring the form down by 150 pixels */
+}
+
+
+
+/* Input and textarea styles */
+#editSaleForm input,
+#editSaleForm select,
+#editSaleForm button {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin: 8px auto;
+    border-radius: 20px; /* Rounded corners */
+    border: none;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
+    color: white; /* Text color */
+    display: block;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Textarea styles */
+#editSaleForm textarea {
+    width: 100%;
+    max-width: 300px;
+    height: auto; /* Allow the height to adjust based on content */
+    min-height: 100px; /* Minimum height to prevent resizing */
+    padding: 10px;
+    margin: 8px auto;
+    border-radius: 20px; /* Rounded corners */
+    border: none;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
+    color: white; /* Text color */
+    display: block;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    resize: none; /* Disable resizing */
+}
+
+/* Input labels */
+#editSaleForm label {
+    display: block;
+    margin-bottom: 5px;
+    color: white; /* Text color */
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Buttons */
+#editSaleForm button {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Hover effect for buttons */
+#editSaleForm button:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    transform: translateY(-3px);
+}
+
+/* Click effect for buttons */
+#editSaleForm button:active {
+    transform: scale(0.98);
+    background: linear-gradient(to bottom, #FF6314, #FF851B);
+}
+
+/* Close Button */
+#closeEditModalButton {
+    float: right;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #FB8501;
+    margin-bottom: 10px;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Hover effect for close button */
+#closeEditModalButton:hover {
+    color: #FF6314;
+}
+
+/* Selected Button (if needed) */
+#editSaleForm button.selected {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    color: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Commission Structure Styles */
+
+/* Reset some default styles to start with a clean slate */
+.commission-container, .commission-type, .commission-type-summary {
+    margin: 0;
+    padding: 0;
+    font-family: 'Patrick Hand', cursive; /* Apply Patrick Hand font */
+    color: #ffffff;
+}
+
+/* Enhance font sizes and styles for better visual appeal */
+.commission-container {
+    background: linear-gradient(to bottom, #E3F2FD, #BBDEFB);
+    font-size: 18px; /* Slightly larger for improved readability */
+    text-align: center; /* Center align text for the whole commission structure */
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.commission-type {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    color: #ffffff;
+    border-radius: 15px;
+    text-align: center;
+    padding: 20px 0;
+    width: 300px; /* Set max-width for the commission type */
+    margin: 24 auto; /* Center the commission type horizontally */
+    font-size: 26px; /* Unified font size for commission type headers */
+}
+
+.commission-type-summary {
+    font-size: 20px; /* Larger font size for commission type summary */
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    border-radius: 15px;
+    padding: 1px;
+    width: 100%; /* Make summary container fluid */
+    max-width: 500px; /* Set max width for summary container */
+    margin: 0 auto; /* Center the summary container horizontally */
+    font-weight: bold;
+    color: #ffffff;
+    outline: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Style buttons with gradients */
+.commission-type-btn {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.commission-type-btn:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.commission-type-btn:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.refresh-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding for size */
+    margin: 10px 0; /* Margin for spacing */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+    font-size: 16px; /* Text size */
+}
+
+.refresh-button:hover {
+    background-color: #45a049; /* Darker shade of green for hover effect */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Styles for the chart container */
+#salesChartContainer {
+    max-width: 750px; /* Set max width for the chart container */
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Style the chart canvas */
+#salesChart {
+    max-width: 100%; /* Make the chart responsive */
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.scroll-animate-left {
+  animation: slideInFromLeft 1s ease-out;
+}
+
+.scroll-animate-right {
+  animation: slideInFromRight 1s ease-out;
+}
+
+a {
+    position: relative;
+    color: #007bff;
+    text-decoration: none;
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #007bff;
+    transition: all 0.3s;
+}
+
+a:hover::after {
+    width: 100%;
+    left: 0;
+}
