@@ -490,49 +490,6 @@ updateTotalSalesCounts(salesArray);
 
 
 
-// Listen to the apply filters button click, including lead ID filter
-document.getElementById('applyFilters').addEventListener('click', () => {
-    const timeFilter = document.getElementById('timeFilter').value;
-    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
-    const esiFilter = document.getElementById('esiFilter').value;
-    const timeSort = document.getElementById('timeSortFilter').value;
-    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
-
-    // Fetch sales history and update total sales counts container
-    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
-    updateTotalSalesCounts(timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-});
-
-// Function to update the total sales counts container
-function updateTotalSalesCounts(timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
-    const totalSalesCounts = calculateTotalSalesCounts(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-    const totalSalesContainer = document.getElementById('totalSalesCounts');
-
-    // Clear existing content
-    totalSalesContainer.innerHTML = '';
-
-    // Create and append new content for each sale type with non-zero counts
-    Object.entries(totalSalesCounts).forEach(([type, count]) => {
-        const saleCountElement = document.createElement('div');
-        saleCountElement.textContent = `${type}: ${count}`;
-        totalSalesContainer.appendChild(saleCountElement);
-    });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
