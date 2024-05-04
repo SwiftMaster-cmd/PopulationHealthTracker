@@ -194,6 +194,9 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
+        // Sort sales in reverse chronological order
+        salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
             const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp);
@@ -210,6 +213,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         }
     });
 }
+
 
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
     const now = new Date();
