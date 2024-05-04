@@ -80,9 +80,7 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
 
     const esiContent = getSelectedESIContent();
     const saleTypes = getSaleTypesWithCommissionPoints();
-    // Remove the requirement for the notes field to be filled
-    // const notes = document.getElementById('notes').value.trim();
-    const notes = document.getElementById('notes').value; // Allow empty notes
+    const notes = document.getElementById('notes').value.trim();
 
     // Validate lead ID is not already used
     const existingSalesRef = ref(database, `sales/${userId}`);
@@ -124,7 +122,6 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
         console.error('Error fetching existing sales:', error);
     });
 });
-
 
 function getSaleTypesWithCommissionPoints() {
     const saleTypes = {};
