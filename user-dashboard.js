@@ -169,12 +169,12 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
+function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
     }
-
+    
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const salesHistoryElement = document.getElementById('salesHistory');
@@ -193,32 +193,12 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        if (timeSort === 'newest') {
-            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        } else if (timeSort === 'oldest') {
-            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        }
-
-        // Initialize an object to track cumulative sale type counts
-        let cumulativeSaleTypeCounts = {};
-
-        // If we are viewing the newest first, we will accumulate counts from the end
-        if (timeSort === 'newest') {
-            for (let i = salesArray.length - 1; i >= 0; i--) {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
-                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
-            }
-        } else {
-            // Accumulate counts from the beginning for oldest first
-            salesArray.forEach(sale => {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
-            });
-        }
+        // Sort sales in reverse chronological order
+        salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
@@ -226,16 +206,13 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
-         const chartData = generateChartData(salesArray);
-         renderSalesChart(chartData);
- 
-         // Execute the callback if provided
-         if (callback && typeof callback === 'function') {
-             callback();
-         }
+        // Execute the callback if provided
+        if (callback && typeof callback === 'function') {
+            callback();
+        }
     });
 }
+
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
     Object.keys(currentSaleTypes || {}).forEach(type => {
         if (!cumulativeCounts[type]) {
