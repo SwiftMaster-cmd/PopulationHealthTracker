@@ -146,8 +146,6 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
-
-
 // Placeholder for user's ID
 let userId;
 
@@ -155,7 +153,7 @@ let userId;
 onAuthStateChanged(auth, (user) => {
     if (user) {
         userId = user.uid; // Set the userId when the user is logged in
-        fetchSalesHistory(); // Fetch sales history for the logged-in user
+        fetchSalesHistory('day'); // Fetch sales history for the logged-in user with default time filter set to "day"
     } else {
         console.log("User is not logged in.");
         userId = null; // Clear userId if no user is signed in
@@ -177,7 +175,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
     }
-
+    
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const salesHistoryElement = document.getElementById('salesHistory');
