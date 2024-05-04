@@ -148,9 +148,6 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
-
-// Assuming Firebase has already been initialized elsewhere in your script
-
 // Placeholder for user's ID
 let userId;
 
@@ -163,13 +160,19 @@ onAuthStateChanged(auth, (user) => {
         console.log("User is not logged in.");
         userId = null; // Clear userId if no user is signed in
     }
-}); 
+});
 
+// Listen to the apply filters button click, including lead ID filter
+document.getElementById('applyFilters').addEventListener('click', () => {
+    const timeFilter = document.getElementById('timeFilter').value;
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
 
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+});
 
-
-
-function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
+function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
@@ -193,32 +196,9 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        if (timeSort === 'newest') {
-            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        } else if (timeSort === 'oldest') {
-            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        }
-
-        // Initialize an object to track cumulative sale type counts
-        let cumulativeSaleTypeCounts = {};
-
-        // If we are viewing the newest first, we will accumulate counts from the end
-        if (timeSort === 'newest') {
-            for (let i = salesArray.length - 1; i >= 0; i--) {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
-                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
-            }
-        } else {
-            // Accumulate counts from the beginning for oldest first
-            salesArray.forEach(sale => {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
-            });
-        }
-
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
+            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp);
             const saleContainer = document.createElement('div');
             saleContainer.className = 'sales-history-entry';
             saleContainer.setAttribute('data-sale-id', sale.id);
@@ -226,55 +206,12 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
-         const chartData = generateChartData(salesArray);
-         renderSalesChart(chartData);
- 
-         // Execute the callback if provided
-         if (callback && typeof callback === 'function') {
-             callback();
-         }
-    });
-}
-function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
-    Object.keys(currentSaleTypes || {}).forEach(type => {
-        if (!cumulativeCounts[type]) {
-            cumulativeCounts[type] = currentSaleTypes[type];
-        } else {
-            cumulativeCounts[type] += currentSaleTypes[type];
+        // Execute the callback if provided
+        if (callback && typeof callback === 'function') {
+            callback();
         }
     });
- 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Listen to the apply filters button click, including lead ID filter
-document.getElementById('applyFilters').addEventListener('click', () => {
-    const timeFilter = document.getElementById('timeFilter').value;
-    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
-    const esiFilter = document.getElementById('esiFilter').value;
-    const timeSort = document.getElementById('timeSortFilter').value;
-    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
-
-    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
-});
 
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
     const now = new Date();
@@ -298,67 +235,30 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
     });
 }
 
-function calculateSaleTypeCounts(salesArray) {
-    let saleTypeCounts = {};
-    salesArray.forEach(sale => {
-        Object.keys(sale.sale_types || {}).forEach(type => {
-            if (!saleTypeCounts[type]) {
-                saleTypeCounts[type] = sale.sale_types[type];
-            } else {
-                saleTypeCounts[type] += sale.sale_types[type];
-            }
-        });
-    });
-    return saleTypeCounts;
-}
-
-
-function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
-    let display = '';
-    Object.keys(saleTypes || {}).forEach(type => {
-        display += `${type}: ${saleTypes[type]} (${saleTypeCounts[type] || 0}), `;
-    });
-    return display.slice(0, -2); // Remove trailing comma and space
-}
-
-
-
-function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
+function generateSaleEntryHTML(sale, formattedTimestamp) {
     let saleTypesDisplay = '';
 
-    // Filter out sale types with zero counts and not present in the current sale
-    const nonZeroCounts = Object.entries(cumulativeSaleTypeCounts).filter(([type, count]) =>
-        count > 0 && sale.sale_types && sale.sale_types[type] !== undefined
-    );
+    // Generate display string for sale types
+    Object.keys(sale.sale_types || {}).forEach(type => {
+        saleTypesDisplay += `<span class="sale-type-span">${type}: ${sale.sale_types[type]}</span>`;
+    });
 
-    // Generate display string for sale types with non-zero counts that are present in the current sale
-    saleTypesDisplay = nonZeroCounts.map(([type, count]) =>
-        `<span class="sale-type-span">${type}: ${count}</span>`
-    ).join(''); // Removed the comma from the join function
-
-    // Check if any sale types are present before generating HTML
-    if (saleTypesDisplay !== '') {
-        return `
-            <div class="sale-info">
-                <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
-                <div class="sale-data esi">ESI: ${sale.esi_content || 'N/A'}</div>
-                <div class="sale-types">${saleTypesDisplay}</div>
-                <div class="sale-note">${sale.notes}</div>
-                <div class="sale-footer">
-                    <div class="sale-timestamp">Time: ${formattedTimestamp}</div>
-                    <div class="sale-actions">
-                        <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
-                        <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
-                    </div>
+    return `
+        <div class="sale-info">
+            <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
+            <div class="sale-data esi">ESI: ${sale.esi_content || 'N/A'}</div>
+            <div class="sale-types">${saleTypesDisplay}</div>
+            <div class="sale-note">${sale.notes}</div>
+            <div class="sale-footer">
+                <div class="sale-timestamp">Time: ${formattedTimestamp}</div>
+                <div class="sale-actions">
+                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
                 </div>
             </div>
-        `;
-    } else {
-        // If no sale types are present, return an empty string
-        return '';
-    }
+        </div>
+    `;
 }
-
 
 
 
