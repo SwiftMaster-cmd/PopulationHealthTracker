@@ -100,14 +100,24 @@
 
 
 
+
+
 <!-- Filter Section -->
 <div class="filters-container">
     <h3>Filters</h3>
     <div class="filter-group">
+        <label for="timeSortFilter">Sort By:</label>
+        <select id="timeSortFilter">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
         <label for="timeFilter">Time Frame:</label>
         <select id="timeFilter">
             <option value="all">All</option>
-            <option value="day" selected>Day</option>
+            <option value="day">Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
         </select>
@@ -130,9 +140,11 @@
             <option value="No">No</option>
         </select>
     </div>
+    
     <div class="filter-group">
         <label for="lead_id">Search by Sale</label>
         <input type="text" id="leadIdFilter" placeholder="Filter by Lead ID">
+        
     </div>
     <button id="applyFilters">Apply Filters</button>
 </div>
