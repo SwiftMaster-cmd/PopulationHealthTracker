@@ -175,8 +175,7 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
     }
-    // Rest of the function remains the same
-
+    
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const salesHistoryElement = document.getElementById('salesHistory');
