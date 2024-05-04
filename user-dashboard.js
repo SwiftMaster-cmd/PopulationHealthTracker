@@ -172,7 +172,7 @@ document.getElementById('applyFilters').addEventListener('click', () => {
     fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 });
 
-function fetchSalesHistory(timeFilter = 'Day', saleTypeFilter = 'all', esiFilter = 'all', leadIdFilter = '') {
+function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;

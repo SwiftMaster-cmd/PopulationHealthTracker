@@ -101,17 +101,22 @@
 
 
 <!-- Filter Section -->
+<!-- Filter Section -->
 <div class="filters-container">
     <h3>Filters</h3>
     <div class="filter-group">
         <label for="timeFilter">Time Frame:</label>
         <select id="timeFilter">
             <option value="all">All</option>
-            <option value="day">Day</option>
+            <option value="day" selected>Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
         </select>
     </div>
+    <!-- Remaining filter groups... -->
+    <button id="applyFilters">Apply Filters</button>
+</div>
+
     <div class="filter-group">
         <label for="saleTypeFilter">Sale Type:</label>
         <select id="saleTypeFilter">
