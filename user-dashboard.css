@@ -1,46 +1,72 @@
-/* Define variables for colors */
-:root {
-    --primary-color: #FFB703;
-    --secondary-color: #FB8501;
-    --accent-color: #007BFF;
-    --dark-blue: #219EBC;
-    --light-blue: #8ECAE6;
-  }
-  
-  /* Reset default styles */
-  html, body {
+/* Reset default styles */
+* {
     margin: 0;
     padding: 0;
-  }
-  
-  body, p, h1, h2, h3, h4, h5, h6, ul, ol, li {
+}
+
+/* Set common styles for body and text */
+html, body {
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
     font-weight: bold;
     color: #ffffff;
-  }
-  
-  /* Enhance font sizes and styles */
-  body {
-    background: var(--primary-color);
+}
+
+/* Background and text styles */
+body {
+    background: linear-gradient(to bottom, #219EBC, #023047);
     font-size: 18px;
     text-align: center;
-  }
-  
-  header {
-    background: linear-gradient(to bottom, var(--accent-color), var(--secondary-color));
+}
+
+/* Common styles for headers */
+header {
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
     color: #ffffff;
     border-radius: 15px;
     text-align: center;
     padding: 20px 0;
     width: 300px;
     margin: 24px auto;
-  }
-  
-  .header-title, header h2, .input-group label, .submit-btn, .esi-btn, .sale-type-btn {
-    font-size: 26px;
-  }
-  
-  /* Add more styles here... */
-  
+}
+
+/* Common styles for buttons */
+.button {
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.button:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.button:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+/* Common styles for containers */
+.container {
+    max-width: 750px;
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #FFB703, #FB8501);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
