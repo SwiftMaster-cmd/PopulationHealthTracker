@@ -65,8 +65,138 @@ header {
     animation: fadeIn 1s ease-out;
 }
 
+/* Individual container styles */
+.dashboard-container {
+    /* Additional styles specific to the dashboard container */
+}
+
+.sales-container {
+    /* Additional styles specific to the sales container */
+}
+
+.sales-history-container {
+    /* Additional styles specific to the sales history container */
+}
+
 /* Animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form styles */
+.form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Buttons inside form */
+.form .button {
+    width: auto;
+}
+
+/* Filters container */
+.filters-container {
+    margin-top: 20px;
+}
+
+.filter-group {
+    margin-bottom: 10px;
+}
+
+/* Sales history entry */
+.sales-history-entry {
+    background-color: #fff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sale-info {
+    margin-bottom: 10px;
+}
+
+.sale-data {
+    margin-bottom: 5px;
+}
+
+.sale-types {
+    margin-bottom: 5px;
+}
+
+.sale-type-span {
+    margin-right: 10px;
+}
+
+.sale-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sale-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* Chart container */
+.chart-container {
+    margin-top: 20px;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Animation for modal */
+@keyframes zoomIn {
+    from {transform: scale(0)} 
+    to {transform: scale(1)}
 }
