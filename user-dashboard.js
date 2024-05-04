@@ -175,7 +175,8 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         console.log("Attempted to fetch sales history without a valid user ID.");
         return;
     }
-    
+    // Rest of the function remains the same
+
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
         const salesHistoryElement = document.getElementById('salesHistory');
@@ -194,9 +195,6 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
 
         salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        // Sort sales in reverse chronological order
-        salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
         salesArray.forEach((sale) => {
             const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
             const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp);
@@ -213,7 +211,6 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         }
     });
 }
-
 
 function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
     const now = new Date();
