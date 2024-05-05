@@ -564,7 +564,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 function loadGoals() {
     if (!userId) return;  // Ensure there's a user ID before fetching
 
@@ -572,26 +571,27 @@ function loadGoals() {
     get(goalsRef).then((snapshot) => {
         if (snapshot.exists()) {
             const goals = snapshot.val();
+            // Set values in the form inputs
             document.getElementById('billableHRAGoal').value = goals.billableHRA || '';
             document.getElementById('flexHRAGoal').value = goals.flexHRA || '';
             document.getElementById('selectRXGoal').value = goals.selectRX || '';
             document.getElementById('transferGoal').value = goals.transfer || '';
 
-            // Update current goal displays
-            document.getElementById('currentBillableHRAGoal').textContent = "Current: " + (goals.billableHRA || '0');
-            document.getElementById('currentFlexHRAGoal').textContent = "Current: " + (goals.flexHRA || '0');
-            document.getElementById('currentSelectRXGoal').textContent = "Current: " + (goals.selectRX || '0');
-            document.getElementById('currentTransferGoal').textContent = "Current: " + (goals.transfer || '0');
+            // Update the current goals display
+            document.getElementById('displayBillableHRA').textContent = goals.billableHRA || '0';
+            document.getElementById('displayFlexHRA').textContent = goals.flexHRA || '0';
+            document.getElementById('displaySelectRX').textContent = goals.selectRX || '0';
+            document.getElementById('displayTransfer').textContent = goals.transfer || '0';
         } else {
             console.log('No goals found');
-            // Reset current goal displays
-            document.querySelectorAll('.current-goal').forEach(el => el.textContent = "Current: 0");
+            // Reset display areas if no goals exist
+            document.querySelectorAll('.current-goal').forEach(el => el.textContent = "0");
+            document.querySelectorAll('.current-goals-display span').forEach(span => span.textContent = "0");
         }
     }).catch((error) => {
         console.error('Failed to load goals:', error);
     });
 }
-
 
 
 
