@@ -532,18 +532,6 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-
-// Auth state change listener to handle user login and logout
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        userId = user.uid; // Set the userId when the user is logged in
-        fetchSalesHistory(); // Fetch sales history for the logged-in user
-    } else {
-        console.log("User is not logged in.");
-        userId = null; // Clear userId if no user is signed in
-    }
-}); 
-
 // Function to save monthly sales goal to Firebase
 function saveMonthlyGoal(monthlyGoal) {
     if (!userId) {
@@ -565,20 +553,6 @@ function saveMonthlyGoal(monthlyGoal) {
         console.error("Error saving monthly goal:", error);
     });
 }
-
-// Event listener for the save button
-document.getElementById('saveMonthlyGoalBtn').addEventListener('click', () => {
-    const monthlyGoal = document.getElementById('monthlyGoalInput').value.trim();
-
-    // Check if a valid monthly goal is entered
-    if (!monthlyGoal || isNaN(monthlyGoal)) {
-        alert('Please enter a valid monthly goal.');
-        return;
-    }
-
-    // Call the function to save the monthly goal
-    saveMonthlyGoal(parseInt(monthlyGoal)); // Parse the value as an integer
-});
 
 
 
