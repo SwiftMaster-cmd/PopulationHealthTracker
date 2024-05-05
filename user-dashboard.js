@@ -576,13 +576,19 @@ function saveGoals(userId) {
         selectRX: selectRXGoal,
         transfer: transferGoal
     }).then(() => {
-        alert('Monthly goals saved successfully!');
+        console.log('Monthly goals saved successfully!');
+        // Optional: Update the UI to reflect the success
+        updateStatusMessage('Goals saved successfully.', 'success');
         goalForm.reset();
     }).catch((error) => {
         console.error('Error saving monthly goals:', error);
-        alert('Failed to save monthly goals. Please try again.');
+        // Optional: Update the UI to reflect the failure
+        updateStatusMessage('Failed to save monthly goals. Please try again.', 'error');
     });
 }
+
+
+
 
 function setupRealTimeGoalUpdates(userId) {
     const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
@@ -619,12 +625,19 @@ function clearGoalsInputsAndDisplay() {
     });
 }
 
-goalForm.addEventListener('submit', function(event) {
-    console.log('Submit event triggered'); // Check how often this gets logged
-    event.preventDefault();
-    // Rest of your code
-});
-
+function updateStatusMessage(message, type) {
+    const statusMessageElement = document.getElementById('statusMessage');
+    statusMessageElement.textContent = message;
+    if (type === 'success') {
+        statusMessageElement.style.color = 'green';
+    } else if (type === 'error') {
+        statusMessageElement.style.color = 'red';
+    }
+    statusMessageElement.style.display = 'block';
+    setTimeout(() => {
+        statusMessageElement.style.display = 'none'; // Hide the message after 3 seconds
+    }, 3000);
+}
 
 
 
