@@ -141,9 +141,9 @@
         <label for="saleTypeFilter">Sale Type:</label>
         <select id="saleTypeFilter">
             <option value="all">All</option>
-            <option value="billable HRA">Billable HRA</option>
-            <option value="Flex HRA">Flex HRA</option>
-            <option value="Select RX">Select RX</option>
+            <option value="billable HRA">HRA</option>
+            <option value="Flex HRA">SPM</option>
+            <option value="Select RX">SRX</option>
             <option value="Transfer">Transfer</option>
         </select>
     </div>
@@ -169,7 +169,7 @@
         <h3>Set Monthly Goals</h3>
         <div class="goals-grid">
             <div class="goal-group">
-                <label for="billableHRAGoal">Billable HRA Goal:</label>
+                <label for="billableHRAGoal">HRA Goal:</label>
                 <input type="number" id="billableHRAGoal" name="billableHRAGoal" min="0">
                 <p>Current <span id="displayBillableHRA">0</span></p>
                 <!-- Progress Bar for Billable HRA -->
@@ -178,7 +178,7 @@
                 </div>
             </div>
             <div class="goal-group">
-                <label for="flexHRAGoal">Flex HRA Goal:</label>
+                <label for="flexHRAGoal">SPM Goal:</label>
                 <input type="number" id="flexHRAGoal" name="flexHRAGoal" min="0">
                 <p>Current <span id="displayFlexHRA">0</span></p>
                 <!-- Progress Bar for Flex HRA -->
@@ -187,7 +187,7 @@
                 </div>
             </div>
             <div class="goal-group">
-                <label for="selectRXGoal">Select RX Goal:</label>
+                <label for="selectRXGoal">SRX Goal:</label>
                 <input type="number" id="selectRXGoal" name="selectRXGoal" min="0">
                 <p>Current <span id="displaySelectRX">0</span></p>
                 <!-- Progress Bar for Select RX -->
