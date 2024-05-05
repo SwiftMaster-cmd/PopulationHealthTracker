@@ -538,15 +538,33 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         userId = user.uid; // Set the userId when the user is logged in
         fetchSalesHistory(); // Fetch sales history for the logged-in user
-
-        // Assuming userId is declared globally
-        // Fetch and display the user's monthly goal if available
-        fetchMonthlyGoal(userId);
     } else {
         console.log("User is not logged in.");
         userId = null; // Clear userId if no user is signed in
     }
-});
+}); 
+
+// Function to save monthly sales goal to Firebase
+function saveMonthlyGoal(monthlyGoal) {
+    if (!userId) {
+        console.error("No user logged in.");
+        return;
+    }
+
+    // Update the monthly goal in the user's settings
+    const userSettingsRef = ref(database, `settings/${userId}`);
+    
+    // Set the monthly goal value
+    set(userSettingsRef, {
+        monthlyGoal: monthlyGoal
+    })
+    .then(() => {
+        console.log("Monthly goal saved successfully.");
+    })
+    .catch((error) => {
+        console.error("Error saving monthly goal:", error);
+    });
+}
 
 // Event listener for the save button
 document.getElementById('saveMonthlyGoalBtn').addEventListener('click', () => {
@@ -559,10 +577,8 @@ document.getElementById('saveMonthlyGoalBtn').addEventListener('click', () => {
     }
 
     // Call the function to save the monthly goal
-    saveMonthlyGoal(userId, parseInt(monthlyGoal)); // Pass userId and parse the value as an integer
+    saveMonthlyGoal(parseInt(monthlyGoal)); // Parse the value as an integer
 });
-
-
 
 
 
