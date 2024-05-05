@@ -536,53 +536,41 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-// Function to save monthly sales goal setting
-function saveMonthlyGoal(goal) {
+
+// Auth state change listener to handle user login and logout
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        userId = user.uid; // Set the userId when the user is logged in
+        fetchSalesHistory(); // Fetch sales history for the logged-in user
+    } else {
+        console.log("User is not logged in.");
+        userId = null; // Clear userId if no user is signed in
+    }
+}); 
+
+// Function to save monthly sales goal to Firebase
+function saveMonthlyGoal(monthlyGoal) {
     if (!userId) {
         console.error('No user logged in.');
         return;
     }
-
-    const userSettingsRef = ref(database, `users/${userId}/settings/monthlyGoals`);
-    set(userSettingsRef, goal)
-        .then(() => {
-            console.log('Monthly goal saved successfully.');
-        })
-        .catch((error) => {
-            console.error('Error saving monthly goal:', error);
-        });
+    const userSettingsRef = ref(database, `users/${userId}/settings`);
+    
+    // Update the monthly goal in the user's settings
+    update(userSettingsRef, {
+        monthlyGoal: monthlyGoal
+    })
+    .then(() => {
+        console.log("Monthly goal saved successfully.");
+    })
+    .catch((error) => {
+        console.error("Error saving monthly goal:", error);
+    });
 }
 
-// Function to load monthly sales goal setting
-function loadMonthlyGoal() {
-    if (!userId) {
-        console.error('No user logged in.');
-        return;
-    }
-
-    const userSettingsRef = ref(database, `users/${userId}/settings/monthlyGoals`);
-    get(userSettingsRef)
-        .then((snapshot) => {
-            const goal = snapshot.val();
-            if (goal === null) {
-                // If the goal is not set yet, set it to the default value
-                saveMonthlyGoal(100);
-            } else {
-                console.log('Monthly goal:', goal);
-            }
-        })
-        .catch((error) => {
-            console.error('Error loading monthly goal:', error);
-        });
-}
-
-// Call the function to load the monthly goal upon application load
-loadMonthlyGoal();
-
-
-
-
-
+// Example usage: Save monthly goal for the logged-in user
+const monthlyGoal = 100; // Example monthly goal value
+saveMonthlyGoal(monthlyGoal);
 
 
 
