@@ -770,7 +770,6 @@ textarea:focus {
 
 
 
-
 .goals-container {
     width: 500px; /* Maintain container width */
     margin: 20px auto; /* Center the container */
@@ -780,8 +779,9 @@ textarea:focus {
     display: flex;
     flex-direction: column; /* Stack children vertically */
     align-items: stretch; /* Stretch children to fill the width */
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
+    background: linear-gradient(to bottom, #219EBC, #8ECAE6); /* Swap blue gradient to orange gradient */
 }
+
 
 
 
@@ -822,7 +822,7 @@ textarea:focus {
 }
 
 #monthlyGoalForm button {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Swap orange gradient to blue gradient */
     color: white;
     padding: 12px 20px;
     border: none;
@@ -830,6 +830,22 @@ textarea:focus {
     cursor: pointer;
     transition: background 0.3s, transform 0.3s;
 }
+
+#monthlyGoalForm button:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(to bottom, #FF851B, #FF6314); /* Swap blue gradient to orange gradient on hover */
+}
+
+/* Adjust input field to match the orange gradient */
+.goal-group input[type="number"] {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient */
+    color: #333;
+    margin-bottom: 10px;
+}
+
 
 #monthlyGoalForm button:hover {
     transform: translateY(-2px);
