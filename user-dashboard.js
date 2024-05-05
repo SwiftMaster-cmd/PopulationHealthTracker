@@ -656,58 +656,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function setupSalesProgressListener(userId) {
+    const salesRef = ref(database, 'sales/' + userId);
+    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
+
+    onValue(goalsRef, (goalSnapshot) => {
+        if (goalSnapshot.exists()) {
+            const goals = goalSnapshot.val();
+            onValue(salesRef, (salesSnapshot) => {
+                if (salesSnapshot.exists()) {
+                    updateProgressBars(salesSnapshot.val(), goals);
+                } else {
+                    console.log('No sales data found.');
+                }
+            });
+        } else {
+            console.log('No goals found');
+        }
+    });
+}
+
 function updateProgressBars(salesData, goals) {
-    // Initialize the totals based on the keys from the goals object
     const totals = {
-        "billable HRA": 0,
+        "Billable HRA": 0,
         "Flex HRA": 0,
         "Select RX": 0,
         "Transfer": 0
     };
 
-    // Debugging: Log incoming sales data and goals
-    console.log("Sales Data:", salesData);
-    console.log("Goals:", goals);
-
     // Aggregate sales data
     Object.values(salesData).forEach(sale => {
-        if (sale.sale_types) {
-            Object.entries(sale.sale_types).forEach(([type, count]) => {
-                // Ensure the type keys are properly formatted
-                const formattedType = formatSaleTypeKey(type);
-                if (totals[formattedType] !== undefined) {
-                    totals[formattedType] += count;
-                }
-            });
-        }
+        Object.entries(sale.sale_types).forEach(([type, count]) => {
+            if (totals[type] !== undefined) {
+                totals[type] += count;
+            }
+        });
     });
-
-    // Debugging: Log computed totals
-    console.log("Computed Totals:", totals);
 
     // Update progress for each goal type
     Object.keys(totals).forEach(type => {
         const current = totals[type];
-        const goal = goals[type.replace(" ", "").toLowerCase()]; // Ensure the key transformation matches goal structure
-        updateProgressBar(type, current, goal);
+        const goal = goals[type.toLowerCase().replace(' ', '')]; // e.g., "billableHRA" from "billable HRA"
+        updateProgressBar(type.replace(' ', ''), current, goal);
     });
 }
 
-// Helper function to format the sale type keys correctly
-function formatSaleTypeKey(type) {
-    type = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(); // Capitalize first letter, lowercase the rest
-    return type.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" "); // Format each word
-}
-
 function updateProgressBar(type, current, goal) {
-    const progressId = `progress${type.replace(/\s/g, '')}`; // Remove spaces for ID
+    const progressId = `progress${type.replace(' ', '')}`;
     const progressBar = document.getElementById(progressId);
     if (progressBar) {
-        const percentage = Math.min((current / goal) * 100, 100); // Calculate percentage
+        const percentage = Math.min((current / goal) * 100, 100);
         progressBar.style.width = `${percentage}%`;
-        progressBar.textContent = `${percentage.toFixed(0)}%`; // Update text
+        progressBar.textContent = `${percentage.toFixed(0)}%`;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
