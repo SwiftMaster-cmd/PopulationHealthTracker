@@ -528,8 +528,6 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js';
-
 document.addEventListener('DOMContentLoaded', function() {
     const db = getDatabase();
 
