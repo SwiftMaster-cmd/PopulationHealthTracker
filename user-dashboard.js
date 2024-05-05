@@ -529,39 +529,38 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 let goalForm; // Declare goalForm at a higher scope
 
-
-// Initialization and event listener setup
 document.addEventListener('DOMContentLoaded', () => {
     const auth = getAuth();
-    let isSubmitting = false; // Flag to prevent duplicate submissions
+    let isSubmitting = false;
+    let userId = null;
 
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            userId = user.uid;
-            setupRealTimeGoalUpdates(userId); // Pass userId to the function for real-time updates
+        userId = user ? user.uid : null;
+        if (userId) {
+            setupRealTimeGoalUpdates(userId);
         } else {
-            userId = null;
             console.log("User is not logged in.");
-            clearGoalsInputsAndDisplay(); // Clear UI when no user is logged in
+            clearGoalsInputsAndDisplay();
         }
     });
 
     const goalForm = document.getElementById('monthlyGoalForm');
-    goalForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        if (!userId) {
-            alert("Please log in to save goals.");
-            return;
-        }
-        if (isSubmitting) {
-            return; // Prevent multiple submissions
-        }
-        isSubmitting = true;
-        saveGoals(userId).finally(() => {
-            isSubmitting = false; // Reset submission flag
-        });
-    });
+    goalForm.addEventListener('submit', (event) => handleSubmit(event, userId, isSubmitting));
 });
+
+function handleSubmit(event, userId, isSubmitting) {
+    event.preventDefault();
+    if (!userId) {
+        alert("Please log in to save goals.");
+        return;
+    }
+    if (isSubmitting) return;
+    isSubmitting = true;
+
+    saveGoals(userId).finally(() => {
+        isSubmitting = false; // Reset submission flag after the promise settles
+    });
+}
 
 function saveGoals(userId) {
     const billableHRAGoal = document.getElementById('billableHRAGoal').value;
