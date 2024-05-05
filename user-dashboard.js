@@ -706,29 +706,6 @@ function updateGoalsDisplay(dailyGoals, adjustedDailyGoals) {
 
 
 
-function setupRealTimeGoalUpdates(userId) {
-    const today = new Date();
-    const totalWorkdays = calculateWorkdays(today.getFullYear(), today.getMonth() + 1);
-    const daysPassed = workdaysPassed(today.getFullYear(), today.getMonth() + 1, today.getDate());
-
-    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
-    onValue(goalsRef, (snapshot) => {
-        if (snapshot.exists()) {
-            const goals = snapshot.val();
-            const dailyGoals = calculateDailyGoals(goals, totalWorkdays);
-            const currentSales = getCurrentSales(); // Assume function to fetch current sales data
-            const adjustedDailyGoals = calculateAdjustedDailyGoals(currentSales, goals, daysPassed, totalWorkdays);
-            updateGoalsDisplay(dailyGoals, adjustedDailyGoals);
-        } else {
-            console.log('No goals found');
-            // Additional handling for no goals found
-        }
-    }, (error) => {
-        console.error('Failed to load goals:', error);
-    });
-}
-
-
 
 
 
