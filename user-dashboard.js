@@ -527,6 +527,7 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
+let goalForm; // Declare goalForm at a higher scope
 
 
 // Initialization and event listener setup
