@@ -649,6 +649,166 @@ function updateStatusMessage(message, type) {
 
 
 
+function calculateWorkdays(year, month) {
+    let workdays = 0;
+    const daysInMonth = new Date(year, month, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() !== 0 && date.getDay() !== 6) { // 0: Sunday, 6: Saturday
+            workdays++;
+        }
+    }
+    return workdays;
+}
+
+function workdaysPassed(year, month, currentDay) {
+    let passedDays = 0;
+    for (let day = 1; day <= currentDay; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() !== 0 && date.getDay() !== 6) {
+            passedDays++;
+        }
+    }
+    return passedDays;
+}
+
+function calculateDailyGoals(monthlyGoals, totalWorkdays) {
+    const dailyGoals = {};
+    for (const key in monthlyGoals) {
+        dailyGoals[key] = Math.ceil(monthlyGoals[key] / totalWorkdays);
+    }
+    return dailyGoals;
+}
+
+function calculateAdjustedDailyGoals(currentSales, monthlyGoals, daysPassed, totalWorkdays) {
+    const daysRemaining = totalWorkdays - daysPassed;
+    const adjustedDailyGoals = {};
+    for (const key in monthlyGoals) {
+        const remainingGoal = Math.max(monthlyGoals[key] - (currentSales[key] || 0), 0);
+        adjustedDailyGoals[key] = daysRemaining > 0 ? Math.ceil(remainingGoal / daysRemaining) : 0;
+    }
+    return adjustedDailyGoals;
+}
+
+function updateGoalsDisplay(dailyGoals, adjustedDailyGoals) {
+    // Assuming HTML elements with these IDs exist to display the goals
+    document.getElementById('displayDailyBillableHRA').textContent = dailyGoals.billableHRA || '0';
+    document.getElementById('displayDailyFlexHRA').textContent = dailyGoals.flexHRA || '0';
+    document.getElementById('displayDailySelectRX').textContent = dailyGoals.selectRX || '0';
+    document.getElementById('displayDailyTransfer').textContent = dailyGoals.transfer || '0';
+
+    document.getElementById('displayAdjustedDailyBillableHRA').textContent = adjustedDailyGoals.billableHRA || '0';
+    document.getElementById('displayAdjustedDailyFlexHRA').textContent = adjustedDailyGoals.flexHRA || '0';
+    document.getElementById('displayAdjustedDailySelectRX').textContent = adjustedDailyGoals.selectRX || '0';
+    document.getElementById('displayAdjustedDailyTransfer').textContent = adjustedDailyGoals.transfer || '0';
+}
+
+
+
+
+function setupRealTimeGoalUpdates(userId) {
+    const today = new Date();
+    const totalWorkdays = calculateWorkdays(today.getFullYear(), today.getMonth() + 1);
+    const daysPassed = workdaysPassed(today.getFullYear(), today.getMonth() + 1, today.getDate());
+
+    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
+    onValue(goalsRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const goals = snapshot.val();
+            const dailyGoals = calculateDailyGoals(goals, totalWorkdays);
+            const currentSales = getCurrentSales(); // Assume function to fetch current sales data
+            const adjustedDailyGoals = calculateAdjustedDailyGoals(currentSales, goals, daysPassed, totalWorkdays);
+            updateGoalsDisplay(dailyGoals, adjustedDailyGoals);
+        } else {
+            console.log('No goals found');
+            // Additional handling for no goals found
+        }
+    }, (error) => {
+        console.error('Failed to load goals:', error);
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
