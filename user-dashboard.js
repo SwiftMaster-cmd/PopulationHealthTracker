@@ -549,28 +549,19 @@ onAuthStateChanged(auth, (user) => {
 }); 
 
 // Function to save monthly sales goal to Firebase
-function saveMonthlyGoal(monthlyGoal) {
-    if (!userId) {
-        console.error('No user logged in.');
+// Event listener for the save button
+document.getElementById('saveMonthlyGoalBtn').addEventListener('click', () => {
+    const monthlyGoal = document.getElementById('monthlyGoalInput').value.trim();
+
+    // Check if a valid monthly goal is entered
+    if (!monthlyGoal || isNaN(monthlyGoal)) {
+        alert('Please enter a valid monthly goal.');
         return;
     }
-    const userSettingsRef = ref(database, `users/${userId}/settings`);
-    
-    // Update the monthly goal in the user's settings
-    update(userSettingsRef, {
-        monthlyGoal: monthlyGoal
-    })
-    .then(() => {
-        console.log("Monthly goal saved successfully.");
-    })
-    .catch((error) => {
-        console.error("Error saving monthly goal:", error);
-    });
-}
 
-// Example usage: Save monthly goal for the logged-in user
-const monthlyGoal = 100; // Example monthly goal value
-saveMonthlyGoal(monthlyGoal);
+    // Call the function to save the monthly goal
+    saveMonthlyGoal(parseInt(monthlyGoal)); // Parse the value as an integer
+});
 
 
 
