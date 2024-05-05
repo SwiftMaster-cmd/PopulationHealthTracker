@@ -599,10 +599,17 @@ function setupRealTimeGoalUpdates(userId) {
 }
 
 function updateGoalsFormAndDisplay(goals) {
+    // Update form inputs if needed (for editing purposes)
     document.getElementById('billableHRAGoal').value = goals.billableHRA || '0';
     document.getElementById('flexHRAGoal').value = goals.flexHRA || '0';
     document.getElementById('selectRXGoal').value = goals.selectRX || '0';
     document.getElementById('transferGoal').value = goals.transfer || '0';
+
+    // Directly update the current goals display
+    document.getElementById('displayBillableHRA').textContent = goals.billableHRA || '0';
+    document.getElementById('displayFlexHRA').textContent = goals.flexHRA || '0';
+    document.getElementById('displaySelectRX').textContent = goals.selectRX || '0';
+    document.getElementById('displayTransfer').textContent = goals.transfer || '0';
 }
 
 function clearGoalsInputsAndDisplay() {
@@ -610,6 +617,14 @@ function clearGoalsInputsAndDisplay() {
         document.getElementById(id).value = '0';
     });
 }
+
+
+
+
+
+
+
+
 
 
 
