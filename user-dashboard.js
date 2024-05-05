@@ -643,6 +643,74 @@ function updateStatusMessage(message, type) {
 
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const auth = getAuth();
+    let userId = null;
+
+    onAuthStateChanged(auth, (user) => {
+        userId = user ? user.uid : null;
+        if (userId) {
+            setupSalesProgressListener(userId);
+        } else {
+            console.log("User is not logged in.");
+        }
+    });
+});
+
+function setupSalesProgressListener(userId) {
+    const salesRef = ref(database, 'sales/' + userId);
+    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
+
+    onValue(goalsRef, (goalSnapshot) => {
+        if (goalSnapshot.exists()) {
+            const goals = goalSnapshot.val();
+            onValue(salesRef, (salesSnapshot) => {
+                if (salesSnapshot.exists()) {
+                    updateProgressBars(salesSnapshot.val(), goals);
+                } else {
+                    console.log('No sales data found.');
+                }
+            });
+        } else {
+            console.log('No goals found');
+        }
+    });
+}
+
+function updateProgressBars(salesData, goals) {
+    const totals = {
+        "billable HRA": 0,
+        "Flex HRA": 0,
+        "Select RX": 0,
+        "Transfer": 0
+    };
+
+    // Aggregate sales data
+    Object.values(salesData).forEach(sale => {
+        Object.entries(sale.sale_types).forEach(([type, count]) => {
+            if (totals[type] !== undefined) {
+                totals[type] += count;
+            }
+        });
+    });
+
+    // Update progress for each goal type
+    Object.keys(totals).forEach(type => {
+        const current = totals[type];
+        const goal = goals[type.toLowerCase().replace(' ', '')]; // e.g., "billableHRA" from "billable HRA"
+        updateProgressBar(type.replace(' ', ''), current, goal);
+    });
+}
+
+function updateProgressBar(type, current, goal) {
+    const progressId = `progress${type.replace(' ', '')}`;
+    const progressBar = document.getElementById(progressId);
+    if (progressBar) {
+        const percentage = Math.min((current / goal) * 100, 100);
+        progressBar.style.width = `${percentage}%`;
+        progressBar.textContent = `${percentage.toFixed(0)}%`;
+    }
+}
 
 
 
