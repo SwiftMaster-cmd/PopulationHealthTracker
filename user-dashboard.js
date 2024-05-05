@@ -619,6 +619,11 @@ function clearGoalsInputsAndDisplay() {
     });
 }
 
+goalForm.addEventListener('submit', function(event) {
+    console.log('Submit event triggered'); // Check how often this gets logged
+    event.preventDefault();
+    // Rest of your code
+});
 
 
 
