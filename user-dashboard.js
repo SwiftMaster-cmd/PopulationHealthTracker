@@ -529,19 +529,19 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-
-
 // Initialization and event listener setup
 document.addEventListener('DOMContentLoaded', () => {
     const auth = getAuth();
+    let isSubmitting = false; // Flag to prevent duplicate submissions
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             userId = user.uid;
-            setupRealTimeGoalUpdates(userId); // Pass userId to the function
+            setupRealTimeGoalUpdates(userId); // Pass userId to the function for real-time updates
         } else {
             userId = null;
             console.log("User is not logged in.");
-            clearGoalsInputsAndDisplay(); // Ensure UI is clear when no user is logged in
+            clearGoalsInputsAndDisplay(); // Clear UI when no user is logged in
         }
     });
 
@@ -552,7 +552,13 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Please log in to save goals.");
             return;
         }
-        saveGoals(userId); // Modularized save function
+        if (isSubmitting) {
+            return; // Prevent multiple submissions
+        }
+        isSubmitting = true;
+        saveGoals(userId).finally(() => {
+            isSubmitting = false; // Reset submission flag
+        });
     });
 });
 
@@ -563,7 +569,7 @@ function saveGoals(userId) {
     const transferGoal = document.getElementById('transferGoal').value;
     const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
 
-    set(goalsRef, {
+    return set(goalsRef, {
         billableHRA: billableHRAGoal,
         flexHRA: flexHRAGoal,
         selectRX: selectRXGoal,
@@ -585,7 +591,7 @@ function setupRealTimeGoalUpdates(userId) {
             updateGoalsFormAndDisplay(goals);
         } else {
             console.log('No goals found');
-            clearGoalsInputsAndDisplay();
+            clearGoalsInputsAndDisplay(); // Clear fields if no goals are found
         }
     }, (error) => {
         console.error('Failed to load goals:', error);
@@ -604,8 +610,6 @@ function clearGoalsInputsAndDisplay() {
         document.getElementById(id).value = '0';
     });
 }
-
-
 
 
 
