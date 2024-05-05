@@ -532,6 +532,44 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
+// Add your JavaScript code to handle user interactions and save goals here
+document.getElementById('saveGoalsBtn').addEventListener('click', saveGoals);
+
+function saveGoals() {
+    const goalsTextarea = document.getElementById('goalsTextarea');
+    const goals = goalsTextarea.value;
+
+    // Send goals data to the backend to save in the database
+    fetch('/save-goals', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ goals })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Goals saved successfully!');
+            // You can add additional logic here, such as updating the UI
+        } else {
+            alert('Failed to save goals.');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving goals:', error);
+        alert('An error occurred while saving goals.');
+    });
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
