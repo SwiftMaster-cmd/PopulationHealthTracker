@@ -160,6 +160,33 @@ onAuthStateChanged(auth, (user) => {
 
 
 
+
+
+
+document.getElementById('comparePreviousDay').addEventListener('click', () => {
+    // Get the selected filters
+    const timeFilter = 'day'; // Set time filter to 'day' for comparing previous day
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
+    
+    // Calculate the date for the previous day
+    const now = new Date();
+    const previousDay = new Date(now);
+    previousDay.setDate(now.getDate() - 1);
+    const previousDayString = previousDay.toDateString();
+
+    // Fetch sales history for both the current day and the previous day
+    fetchSalesHistory('day', saleTypeFilter, esiFilter, 'newest', leadIdFilter); // Current day
+    fetchSalesHistory('day', saleTypeFilter, esiFilter, 'newest', leadIdFilter, previousDayString); // Previous day
+});
+
+
+
+
+
+
+
 function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -217,17 +244,25 @@ function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
-         const chartData = generateChartData(salesArray);
-         renderSalesChart(chartData);
- 
-         // Execute the callback if provided
-         if (callback && typeof callback === 'function') {
-             callback();
-         }
+        // After fetching the sales history and rendering the sales entries, generate and render the chart
+        const chartData = generateChartData(salesArray);
+        renderSalesChart(chartData);
+
+        // Execute the callback if provided
+        if (callback && typeof callback === 'function') {
+            callback();
+        }
+    });
+
+    // Compare to previous day
+    document.getElementById('comparePreviousDay').addEventListener('click', () => {
+        const previousDay = new Date();
+        previousDay.setDate(previousDay.getDate() - 1);
+        const previousDayString = previousDay.toDateString();
+        
+        fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter, previousDayString);
     });
 }
-
 
 
 
@@ -788,51 +823,3 @@ document.getElementById('cancelEditSale').addEventListener('click', function() {
 
 
 
-// Event listener for the compare button
-document.getElementById('comparePreviousDay').addEventListener('click', () => {
-    // Get the selected filters
-    const timeFilter = 'day'; // Set time filter to 'day' for comparing previous day
-    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
-    const esiFilter = document.getElementById('esiFilter').value;
-    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
-    
-    // Calculate the date for the previous day
-    const now = new Date();
-    const previousDay = new Date(now);
-    previousDay.setDate(now.getDate() - 1);
-    const previousDayString = previousDay.toDateString();
-
-    // Fetch sales history for both the current day and the previous day
-    fetchSalesHistory('day', saleTypeFilter, esiFilter, 'newest', leadIdFilter); // Current day
-    fetchSalesHistory('day', saleTypeFilter, esiFilter, 'newest', leadIdFilter, previousDayString); // Previous day
-});
-
-// Function to fetch sales history for a specific day
-function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '', dateFilter = '') {
-    // ...
-    const salesRef = ref(database, `sales/${userId}`);
-    onValue(salesRef, (snapshot) => {
-        // ...
-        let salesArray = Object.keys(sales).map(key => ({
-            ...sales[key],
-            id: key
-        }));
-
-        // Apply filters and date filter
-        salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-
-        // Filter sales for the specified date if provided
-        if (dateFilter) {
-            salesArray = salesArray.filter(sale => {
-                const saleDate = new Date(sale.timestamp);
-                return saleDate.toDateString() === dateFilter;
-            });
-        }
-
-        // Sort sales array based on timeSort parameter
-
-        // Generate chart data for the filtered sales array
-        const chartData = generateChartData(salesArray);
-        renderSalesChart(chartData);
-    });
-}
