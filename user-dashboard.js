@@ -523,13 +523,13 @@ document.getElementById('toggleButton').addEventListener('click', function() {
         setTimeout(() => {
             goalsContainer.style.opacity = '1';
         }, 10);
-        this.textContent = 'Hide Container';
+        this.textContent = 'Hide Goals';
     } else {
         goalsContainer.style.opacity = '0';
         setTimeout(() => {
             goalsContainer.style.display = 'none';
         }, 500); // Adjust timing to match the CSS transition duration
-        this.textContent = 'Show Container';
+        this.textContent = 'Show Goals';
     }
 });
 
