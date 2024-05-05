@@ -157,7 +157,7 @@ header {
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-    max-height: 1500px;
+    max-height: 7500px;
     overflow-y: auto;
     animation: fadeIn 1s ease-out;
     text-align: center;
