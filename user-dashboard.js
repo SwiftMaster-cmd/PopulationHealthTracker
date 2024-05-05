@@ -516,14 +516,19 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
         this.textContent = 'Show Filters';
     }
 });
-
 document.getElementById('toggleButton').addEventListener('click', function() {
     const goalsContainer = document.querySelector('.goals-container');
-    if (goalsContainer.style.display === 'none') {
+    if (goalsContainer.style.opacity === '0') {
         goalsContainer.style.display = 'block';
+        setTimeout(() => {
+            goalsContainer.style.opacity = '1';
+        }, 10);
         this.textContent = 'Hide Container';
     } else {
-        goalsContainer.style.display = 'none';
+        goalsContainer.style.opacity = '0';
+        setTimeout(() => {
+            goalsContainer.style.display = 'none';
+        }, 500); // Adjust timing to match the CSS transition duration
         this.textContent = 'Show Container';
     }
 });
