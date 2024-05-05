@@ -772,14 +772,14 @@ textarea:focus {
 
 
 
-
-
 .goals-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange background */
 }
+
 
 .goals-grid {
     display: grid;
