@@ -778,3 +778,61 @@ document.getElementById('cancelEditSale').addEventListener('click', function() {
     // Hide the modal
     document.getElementById('editSaleModal').style.display = 'none';
 });
+
+
+
+
+
+
+
+
+
+
+// Event listener for the compare button
+document.getElementById('comparePreviousDay').addEventListener('click', () => {
+    // Get the selected filters
+    const timeFilter = 'day'; // Set time filter to 'day' for comparing previous day
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
+    
+    // Calculate the date for the previous day
+    const now = new Date();
+    const previousDay = new Date(now);
+    previousDay.setDate(now.getDate() - 1);
+    const previousDayString = previousDay.toDateString();
+
+    // Fetch sales history for both the current day and the previous day
+    fetchSalesHistory('day', saleTypeFilter, esiFilter, 'newest', leadIdFilter); // Current day
+    fetchSalesHistory('day', saleTypeFilter, esiFilter, 'newest', leadIdFilter, previousDayString); // Previous day
+});
+
+// Function to fetch sales history for a specific day
+function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '', dateFilter = '') {
+    // ...
+    const salesRef = ref(database, `sales/${userId}`);
+    onValue(salesRef, (snapshot) => {
+        // ...
+        let salesArray = Object.keys(sales).map(key => ({
+            ...sales[key],
+            id: key
+        }));
+
+        // Apply filters and date filter
+        salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+
+        // Filter sales for the specified date if provided
+        if (dateFilter) {
+            salesArray = salesArray.filter(sale => {
+                const saleDate = new Date(sale.timestamp);
+                return saleDate.toDateString() === dateFilter;
+            });
+        }
+
+        // Sort sales array based on timeSort parameter
+
+        // Generate chart data for the filtered sales array
+        const chartData = generateChartData(salesArray);
+        renderSalesChart(chartData);
+    });
+}
