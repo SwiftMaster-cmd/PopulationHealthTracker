@@ -1068,7 +1068,31 @@ textarea:focus {
     transform: translateY(-3px);
 }
 
-#toggleFilters:focus {
+#togglefilters:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+/* Toggle button styles */
+#toggleButtons {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+#toggleButtons:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+#togglebuttos:focus {
     box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
     transform: translateY(-2px);
 }
