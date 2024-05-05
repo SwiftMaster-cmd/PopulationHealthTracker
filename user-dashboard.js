@@ -532,39 +532,79 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-// Add your JavaScript code to handle user interactions and save goals here
-document.getElementById('saveGoalsBtn').addEventListener('click', saveGoals);
 
-function saveGoals() {
-    const goalsTextarea = document.getElementById('goalsTextarea');
-    const goals = goalsTextarea.value;
 
-    // Send goals data to the backend to save in the database
-    fetch('/save-goals', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ goals })
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Goals saved successfully!');
-            // You can add additional logic here, such as updating the UI
-        } else {
-            alert('Failed to save goals.');
-        }
-    })
-    .catch(error => {
-        console.error('Error saving goals:', error);
-        alert('An error occurred while saving goals.');
-    });
+
+
+
+// Function to save monthly goals to Firebase
+function saveMonthlyGoals(month, salesGoal, revenueGoal) {
+    const monthlyGoalsRef = ref(database, `goals/monthly/${month}`);
+    const goalsData = {
+        sales: salesGoal,
+        revenue: revenueGoal,
+    };
+    set(monthlyGoalsRef, goalsData)
+        .then(() => {
+            console.log("Monthly goals saved successfully.");
+        })
+        .catch(error => {
+            console.error("Error saving monthly goals:", error);
+        });
 }
 
+// Function to fetch monthly goals from Firebase
+function fetchMonthlyGoals(month) {
+    const monthlyGoalsRef = ref(database, `goals/monthly/${month}`);
+    return get(monthlyGoalsRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                return snapshot.val();
+            } else {
+                return null;
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching monthly goals:", error);
+            return null;
+        });
+}
 
+// Function to display monthly goals in the UI
+function displayMonthlyGoals(goals) {
+    if (goals) {
+        document.getElementById('salesGoal').value = goals.sales || '';
+        document.getElementById('revenueGoal').value = goals.revenue || '';
+    } else {
+        console.log("No monthly goals found for the current month.");
+    }
+}
 
+// Event listener for saving monthly goals
+document.getElementById('saveMonthlyGoals').addEventListener('click', () => {
+    const salesGoal = parseInt(document.getElementById('salesGoal').value);
+    const revenueGoal = parseInt(document.getElementById('revenueGoal').value);
+    const currentDate = new Date();
+    const currentMonth = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    saveMonthlyGoals(currentMonth, salesGoal, revenueGoal);
+});
 
-
+// Auth state change listener to handle user login and logout
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        userId = user.uid;
+        // Fetch and display monthly goals
+        const currentDate = new Date();
+        const currentMonth = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        fetchMonthlyGoals(currentMonth)
+            .then(goals => {
+                displayMonthlyGoals(goals);
+            });
+    } else {
+        console.log("User is not logged in.");
+        userId = null;
+    }
+});
 
 
 
