@@ -488,6 +488,22 @@ function renderSalesChart(data) {
 
 
 
+document.getElementById('toggleFilters').addEventListener('click', function() {
+    const filtersContainer = document.getElementById('filtersContainer');
+    if (filtersContainer.style.opacity === '0') {
+        filtersContainer.style.display = 'block';
+        setTimeout(() => {
+            filtersContainer.style.opacity = '1';
+        }, 10);
+        this.textContent = 'Hide Filters';
+    } else {
+        filtersContainer.style.opacity = '0';
+        setTimeout(() => {
+            filtersContainer.style.display = 'none';
+        }, 500); // Adjust timing to match the CSS transition duration
+        this.textContent = 'Show Filters';
+    }
+});
 
 
 
