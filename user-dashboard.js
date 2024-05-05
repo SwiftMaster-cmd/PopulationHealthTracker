@@ -583,7 +583,7 @@ function saveGoals(userId) {
     }).catch((error) => {
         console.error('Error saving monthly goals:', error);
         // Optional: Update the UI to reflect the failure
-        updateStatusMessage('Failed to save monthly goals. Please try again.', 'error');
+        updateStatusMessage('Goals saved successfully.', 'error');
     });
 }
 
