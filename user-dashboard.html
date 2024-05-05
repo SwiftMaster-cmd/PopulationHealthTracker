@@ -163,28 +163,30 @@
 
 
 
-
 <form id="monthlyGoalForm">
     <h3>Set Monthly Goals</h3>
-    <div>
-      <label for="billableHRAGoal">Billable HRA Goal:</label>
-      <input type="number" id="billableHRAGoal" name="billableHRAGoal" min="0">
+    <div class="goal-group">
+        <label for="billableHRAGoal">Billable HRA Goal:</label>
+        <input type="number" id="billableHRAGoal" name="billableHRAGoal" min="0">
+        <span id="currentBillableHRAGoal" class="current-goal"></span>
     </div>
-    <div>
-      <label for="flexHRAGoal">Flex HRA Goal:</label>
-      <input type="number" id="flexHRAGoal" name="flexHRAGoal" min="0">
+    <div class="goal-group">
+        <label for="flexHRAGoal">Flex HRA Goal:</label>
+        <input type="number" id="flexHRAGoal" name="flexHRAGoal" min="0">
+        <span id="currentFlexHRAGoal" class="current-goal"></span>
     </div>
-    <div>
-      <label for="selectRXGoal">Select RX Goal:</label>
-      <input type="number" id="selectRXGoal" name="selectRXGoal" min="0">
+    <div class="goal-group">
+        <label for="selectRXGoal">Select RX Goal:</label>
+        <input type="number" id="selectRXGoal" name="selectRXGoal" min="0">
+        <span id="currentSelectRXGoal" class="current-goal"></span>
     </div>
-    <div>
-      <label for="transferGoal">Transfer Goal:</label>
-      <input type="number" id="transferGoal" name="transferGoal" min="0">
+    <div class="goal-group">
+        <label for="transferGoal">Transfer Goal:</label>
+        <input type="number" id="transferGoal" name="transferGoal" min="0">
+        <span id="currentTransferGoal" class="current-goal"></span>
     </div>
     <button type="submit">Save Goals</button>
-  </form>
-  
+</form>
 
 
 

@@ -566,6 +566,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+function loadGoals() {
+    if (!userId) return;  // Ensure there's a user ID before fetching
+
+    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
+    get(goalsRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const goals = snapshot.val();
+            document.getElementById('billableHRAGoal').value = goals.billableHRA || '';
+            document.getElementById('flexHRAGoal').value = goals.flexHRA || '';
+            document.getElementById('selectRXGoal').value = goals.selectRX || '';
+            document.getElementById('transferGoal').value = goals.transfer || '';
+        } else {
+            console.log('No goals found');
+        }
+    }).catch((error) => {
+        console.error('Failed to load goals:', error);
+    });
+}
+
+function setGoalsLoadingState(isLoading) {
+    const loader = document.getElementById('goalsLoader');  // You need an HTML element with id 'goalsLoader'
+    if (isLoading) {
+        loader.style.display = 'block';
+    } else {
+        loader.style.display = 'none';
+    }
+}
+
+function loadGoals() {
+    setGoalsLoadingState(true);
+    if (!userId) {
+        setGoalsLoadingState(false);
+        return;  // Ensure there's a user ID before fetching
+    }
+
+    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
+    get(goalsRef).then((snapshot) => {
+        setGoalsLoadingState(false);
+        if (snapshot.exists()) {
+            const goals = snapshot.val();
+            document.getElementById('billableHRAGoal').value = goals.billableHRA || '';
+            document.getElementById('flexHRAGoal').value = goals.flexHRA || '';
+            document.getElementById('selectRXGoal').value = goals.selectRX || '';
+            document.getElementById('transferGoal').value = goals.transfer || '';
+        } else {
+            console.log('No goals found');
+        }
+    }).catch((error) => {
+        setGoalsLoadingState(false);
+        console.error('Failed to load goals:', error);
+    });
+}
+
 
 
 
