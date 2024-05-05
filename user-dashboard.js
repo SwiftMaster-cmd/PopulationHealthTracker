@@ -527,32 +527,53 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
+async function updateMonthlySalesGoals(userId, rxId, month, year, goal) {
+    try {
+        const userRef = ref(database, `users/${userId}`);
+        const snapshot = await get(userRef);
 
+        if (snapshot.exists()) {
+            const user = snapshot.val();
+            if (!user.settings || !user.settings.rxSalesGoals) {
+                // If the user settings or rxSalesGoals don't exist, create them
+                await set(ref(database, `users/${userId}/settings/rxSalesGoals`), {
+                    [rxId]: {
+                        [year]: {
+                            [month]: goal
+                        }
+                    }
+                });
+            } else if (!user.settings.rxSalesGoals[rxId]) {
+                // If the rxSalesGoals object doesn't contain the current RX ID, add it
+                await set(ref(database, `users/${userId}/settings/rxSalesGoals/${rxId}`), {
+                    [year]: {
+                        [month]: goal
+                    }
+                });
+            } else if (!user.settings.rxSalesGoals[rxId][year]) {
+                // If the rxSalesGoals object doesn't contain the current year, add it
+                await set(ref(database, `users/${userId}/settings/rxSalesGoals/${rxId}/${year}`), {
+                    [month]: goal
+                });
+            } else {
+                // If the rxSalesGoals object already contains the RX ID, year, and month, update the goal
+                await set(ref(database, `users/${userId}/settings/rxSalesGoals/${rxId}/${year}/${month}`), goal);
+            }
 
-
-
-
-// Function to save monthly sales goal to Firebase
-function saveMonthlyGoal(monthlyGoal) {
-    if (!userId) {
-        console.error("No user logged in.");
-        return;
+            console.log("Monthly sales goal updated successfully.");
+        } else {
+            console.error("User not found.");
+        }
+    } catch (error) {
+        console.error("Error updating monthly sales goal:", error);
     }
-
-    // Update the monthly goal in the user's settings
-    const userSettingsRef = ref(database, `settings/${userId}`);
-    
-    // Set the monthly goal value
-    set(userSettingsRef, {
-        monthlyGoal: monthlyGoal
-    })
-    .then(() => {
-        console.log("Monthly goal saved successfully.");
-    })
-    .catch((error) => {
-        console.error("Error saving monthly goal:", error);
-    });
 }
+
+
+
+
+
+
 
 
 
