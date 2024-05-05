@@ -595,29 +595,32 @@ function setGoalsLoadingState(isLoading) {
 }
 
 function loadGoals() {
-    setGoalsLoadingState(true);
-    if (!userId) {
-        setGoalsLoadingState(false);
-        return;  // Ensure there's a user ID before fetching
-    }
+    if (!userId) return;  // Ensure there's a user ID before fetching
 
     const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
     get(goalsRef).then((snapshot) => {
-        setGoalsLoadingState(false);
         if (snapshot.exists()) {
             const goals = snapshot.val();
             document.getElementById('billableHRAGoal').value = goals.billableHRA || '';
             document.getElementById('flexHRAGoal').value = goals.flexHRA || '';
             document.getElementById('selectRXGoal').value = goals.selectRX || '';
             document.getElementById('transferGoal').value = goals.transfer || '';
+
+            // Update current goal displays
+            document.getElementById('currentBillableHRAGoal').textContent = "Current: " + (goals.billableHRA || '0');
+            document.getElementById('currentFlexHRAGoal').textContent = "Current: " + (goals.flexHRA || '0');
+            document.getElementById('currentSelectRXGoal').textContent = "Current: " + (goals.selectRX || '0');
+            document.getElementById('currentTransferGoal').textContent = "Current: " + (goals.transfer || '0');
         } else {
             console.log('No goals found');
+            // Reset current goal displays
+            document.querySelectorAll('.current-goal').forEach(el => el.textContent = "Current: 0");
         }
     }).catch((error) => {
-        setGoalsLoadingState(false);
         console.error('Failed to load goals:', error);
     });
 }
+
 
 
 
