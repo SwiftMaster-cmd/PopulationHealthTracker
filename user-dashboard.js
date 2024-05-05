@@ -536,75 +536,49 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
+// Function to save monthly sales goal setting
+function saveMonthlyGoal(goal) {
+    if (!userId) {
+        console.error('No user logged in.');
+        return;
+    }
 
-// Function to save monthly goals to Firebase
-function saveMonthlyGoals(month, salesGoal, revenueGoal) {
-    const monthlyGoalsRef = ref(database, `goals/monthly/${month}`);
-    const goalsData = {
-        sales: salesGoal,
-        revenue: revenueGoal,
-    };
-    set(monthlyGoalsRef, goalsData)
+    const userSettingsRef = ref(database, `users/${userId}/settings/monthlyGoals`);
+    set(userSettingsRef, goal)
         .then(() => {
-            console.log("Monthly goals saved successfully.");
+            console.log('Monthly goal saved successfully.');
         })
-        .catch(error => {
-            console.error("Error saving monthly goals:", error);
+        .catch((error) => {
+            console.error('Error saving monthly goal:', error);
         });
 }
 
-// Function to fetch monthly goals from Firebase
-function fetchMonthlyGoals(month) {
-    const monthlyGoalsRef = ref(database, `goals/monthly/${month}`);
-    return get(monthlyGoalsRef)
+// Function to load monthly sales goal setting
+function loadMonthlyGoal() {
+    if (!userId) {
+        console.error('No user logged in.');
+        return;
+    }
+
+    const userSettingsRef = ref(database, `users/${userId}/settings/monthlyGoals`);
+    get(userSettingsRef)
         .then((snapshot) => {
-            if (snapshot.exists()) {
-                return snapshot.val();
+            const goal = snapshot.val();
+            if (goal === null) {
+                // If the goal is not set yet, set it to the default value
+                saveMonthlyGoal(100);
             } else {
-                return null;
+                console.log('Monthly goal:', goal);
             }
         })
-        .catch(error => {
-            console.error("Error fetching monthly goals:", error);
-            return null;
+        .catch((error) => {
+            console.error('Error loading monthly goal:', error);
         });
 }
 
-// Function to display monthly goals in the UI
-function displayMonthlyGoals(goals) {
-    if (goals) {
-        document.getElementById('salesGoal').value = goals.sales || '';
-        document.getElementById('revenueGoal').value = goals.revenue || '';
-    } else {
-        console.log("No monthly goals found for the current month.");
-    }
-}
+// Call the function to load the monthly goal upon application load
+loadMonthlyGoal();
 
-// Event listener for saving monthly goals
-document.getElementById('saveMonthlyGoals').addEventListener('click', () => {
-    const salesGoal = parseInt(document.getElementById('salesGoal').value);
-    const revenueGoal = parseInt(document.getElementById('revenueGoal').value);
-    const currentDate = new Date();
-    const currentMonth = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0');
-    saveMonthlyGoals(currentMonth, salesGoal, revenueGoal);
-});
-
-// Auth state change listener to handle user login and logout
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        userId = user.uid;
-        // Fetch and display monthly goals
-        const currentDate = new Date();
-        const currentMonth = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0');
-        fetchMonthlyGoals(currentMonth)
-            .then(goals => {
-                displayMonthlyGoals(goals);
-            });
-    } else {
-        console.log("User is not logged in.");
-        userId = null;
-    }
-});
 
 
 

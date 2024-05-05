@@ -160,20 +160,17 @@
     </div>
     <button id="applyFilters">Apply Filters</button>
 </div>
- 
+
 
 
 
 <body>
-    <h1>Monthly Goals</h1>
-    <label for="salesGoal">Sales Goal:</label>
-    <input type="number" id="salesGoal" placeholder="Enter sales goal">
-    <br>
-    <label for="revenueGoal">Revenue Goal:</label>
-    <input type="number" id="revenueGoal" placeholder="Enter revenue goal">
-    <br>
-    <button id="saveMonthlyGoals">Save Monthly Goals</button>
-
+    <h1>Monthly Sales Goal</h1>
+    <form id="monthlyGoalForm">
+        <label for="monthlyGoal">Enter Monthly Sales Goal:</label>
+        <input type="number" id="monthlyGoal" name="monthlyGoal" value="100" min="0">
+        <button type="submit">Save</button>
+    </form>
 </body>
 
 
