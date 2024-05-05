@@ -528,46 +528,42 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const db = getDatabase();
-
-    // This assumes you have a function or means to get the current user's ID
-    const userId = getCurrentUserId(); // You'll need to implement this function based on your auth setup
-
+// Handle form submission for setting monthly goals
+document.addEventListener('DOMContentLoaded', () => {
     const goalForm = document.getElementById('monthlyGoalForm');
-    if (goalForm) {
-        goalForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Retrieve the values from the form fields
-            const billableHRAGoal = document.getElementById('billableHRAGoal').value;
-            const flexHRAGoal = document.getElementById('flexHRAGoal').value;
-            const selectRXGoal = document.getElementById('selectRXGoal').value;
-            const transferGoal = document.getElementById('transferGoal').value;
-            
-            // Define the path where the goals should be stored for the current user
-            const goalsRef = ref(db, 'users/' + userId + '/monthlySalesGoals');
-            
-            // Set the goals in the database
-            set(goalsRef, {
-                billableHRA: billableHRAGoal,
-                flexHRA: flexHRAGoal,
-                selectRX: selectRXGoal,
-                transfer: transferGoal
-            }).then(() => {
-                alert('Monthly goals saved successfully!');
-            }).catch((error) => {
-                console.error('Error saving monthly goals:', error);
-                alert('Failed to save monthly goals.');
-            });
+    goalForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        if (!userId) {
+            alert("Please log in to save goals.");
+            return;
+        }
+
+        // Retrieve the values from the form fields
+        const billableHRAGoal = document.getElementById('billableHRAGoal').value;
+        const flexHRAGoal = document.getElementById('flexHRAGoal').value;
+        const selectRXGoal = document.getElementById('selectRXGoal').value;
+        const transferGoal = document.getElementById('transferGoal').value;
+
+        // Define the database reference path for the goals
+        const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
+
+        // Set the goals in the database
+        set(goalsRef, {
+            billableHRA: billableHRAGoal,
+            flexHRA: flexHRAGoal,
+            selectRX: selectRXGoal,
+            transfer: transferGoal
+        }).then(() => {
+            alert('Monthly goals saved successfully!');
+            goalForm.reset();  // Optionally reset the form after successful save
+        }).catch((error) => {
+            console.error('Error saving monthly goals:', error);
+            alert('Failed to save monthly goals. Please try again.');
         });
-    }
+    });
 });
 
-function getCurrentUserId() {
-    const user = firebase.auth().currentUser;
-    return user ? user.uid : null;
-}
 
 
 
