@@ -526,6 +526,10 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
+function getCurrentUserId() {
+    const user = firebase.auth().currentUser;
+    return user ? user.uid : null;
+}
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -564,11 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Function to get current user's ID - This needs to be defined based on how your authentication is set up
-function getCurrentUserId() {
-    // Implement how to get the user ID from your authentication system
-    return 'placeholder-user-id'; // Placeholder - replace with actual logic to retrieve user ID
-}
+
 
 
 
