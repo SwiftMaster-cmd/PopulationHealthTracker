@@ -965,6 +965,16 @@ textarea:focus {
 
 
 
+.filters-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.filters-container.show {
+    display: block;
+    opacity: 1;
+}
 
 
 

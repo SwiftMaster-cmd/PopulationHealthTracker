@@ -254,6 +254,25 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
 
 
 
+document.getElementById('toggleFilters').addEventListener('click', function() {
+    const filtersContainer = document.getElementById('filtersContainer');
+    filtersContainer.classList.toggle('show');
+    if (filtersContainer.classList.contains('show')) {
+        this.textContent = 'Hide Filters';
+    } else {
+        this.textContent = 'Show Filters';
+    }
+});
+
+
+
+
+
+
+
+
+
+
 
 
 
