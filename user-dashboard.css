@@ -358,7 +358,7 @@ textarea:focus {
     justify-content: space-between;
     align-items: flex-end;
     padding: 20px; /* Adjust padding as needed */
-    max-height: 400px; /* Set maximum height to 400 pixels */
+    max-height: 250px; /* Set maximum height to 400 pixels */
 }
 
 
