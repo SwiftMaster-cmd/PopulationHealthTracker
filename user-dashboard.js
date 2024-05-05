@@ -679,7 +679,7 @@ function setupSalesProgressListener(userId) {
 
 function updateProgressBars(salesData, goals) {
     const totals = {
-        "billable HRA": 0,
+        "Billable HRA": 0,
         "Flex HRA": 0,
         "Select RX": 0,
         "Transfer": 0
