@@ -349,8 +349,6 @@ textarea:focus {
 
 
 
-
-/* Chart container */
 .chart-container {
     width: 500px;
     margin: 20px auto;
@@ -358,8 +356,16 @@ textarea:focus {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     overflow: hidden;
-    transition: transform 0.3s; /* Apply transition for scaling */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 20px; /* Adjust padding as needed */
 }
+
+#toggleFilters {
+    padding: 10px; /* Adjust padding as needed */
+}
+
 
 .chart-container:hover {
     transform: scale(1.05); /* Scale up by 5% on hover */
