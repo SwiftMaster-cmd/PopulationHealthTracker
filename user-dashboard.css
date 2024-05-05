@@ -771,14 +771,18 @@ textarea:focus {
 
 
 
-
 .goals-container {
+    width: 500px; /* Maintain container width */
+    margin: 20px auto; /* Center the container */
+    padding: 10px 20px; /* Adjusted padding */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange background */
+    flex-direction: column; /* Stack children vertically */
+    align-items: stretch; /* Stretch children to fill the width */
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
 }
+
 
 
 .goals-grid {
