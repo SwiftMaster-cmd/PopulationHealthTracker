@@ -159,7 +159,6 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-
 function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -190,6 +189,17 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
+        // Filter sales for the current day
+        const currentDate = new Date();
+        const currentDay = currentDate.getDate();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        salesArray = salesArray.filter(sale => {
+            const saleDate = new Date(sale.timestamp);
+            return saleDate.getDate() === currentDay && saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+        });
+
         // Initialize an object to track cumulative sale type counts
         let cumulativeSaleTypeCounts = {};
 
@@ -197,13 +207,13 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
         if (timeSort === 'newest') {
             for (let i = salesArray.length - 1; i >= 0; i--) {
                 updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
-                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+                salesArray[i].cumulativeSaleTypes = { ...cumulativeSaleTypeCounts }; // Clone the current state for the sale
             }
         } else {
             // Accumulate counts from the beginning for oldest first
             salesArray.forEach(sale => {
                 updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+                sale.cumulativeSaleTypes = { ...cumulativeSaleTypeCounts }; // Clone the current state for the sale
             });
         }
 
@@ -217,29 +227,15 @@ function fetchSalesHistory(timeFilter = 'all', saleTypeFilter = 'all', esiFilter
             salesHistoryElement.appendChild(saleContainer);
         });
 
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
-         const chartData = generateChartData(salesArray);
-         renderSalesChart(chartData);
- 
-         // Execute the callback if provided
-         if (callback && typeof callback === 'function') {
-             callback();
-         }
-    });
-}
+        // After fetching the sales history and rendering the sales entries, generate and render the chart
+        const chartData = generateChartData(salesArray);
+        renderSalesChart(chartData);
 
-
-
-
-function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
-    Object.keys(currentSaleTypes || {}).forEach(type => {
-        if (!cumulativeCounts[type]) {
-            cumulativeCounts[type] = currentSaleTypes[type];
-        } else {
-            cumulativeCounts[type] += currentSaleTypes[type];
+        // Execute the callback if provided
+        if (callback && typeof callback === 'function') {
+            callback();
         }
     });
- 
 }
 
 
