@@ -526,10 +526,6 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-function getCurrentUserId() {
-    const user = firebase.auth().currentUser;
-    return user ? user.uid : null;
-}
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -568,12 +564,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 function getCurrentUserId() {
     const user = firebase.auth().currentUser;
     return user ? user.uid : null;
 }
-
 
 
 
