@@ -564,12 +564,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function setupRealTimeGoalUpdates() {
-    if (!userId) {
-        console.log("No user ID available for fetching goals.");
-        return;  // Ensure there's a user ID before fetching
-    }
 
+
+
+
+
+// Initialization and event listener setup
+document.addEventListener('DOMContentLoaded', () => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            userId = user.uid;
+            setupRealTimeGoalUpdates(userId); // Pass userId to the function
+        } else {
+            userId = null;
+            console.log("User is not logged in.");
+            clearGoalsInputsAndDisplay(); // Ensure UI is clear when no user is logged in
+        }
+    });
+
+    const goalForm = document.getElementById('monthlyGoalForm');
+    goalForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (!userId) {
+            alert("Please log in to save goals.");
+            return;
+        }
+        saveGoals(userId); // Modularized save function
+    });
+});
+
+function saveGoals(userId) {
+    const billableHRAGoal = document.getElementById('billableHRAGoal').value;
+    const flexHRAGoal = document.getElementById('flexHRAGoal').value;
+    const selectRXGoal = document.getElementById('selectRXGoal').value;
+    const transferGoal = document.getElementById('transferGoal').value;
+    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
+
+    set(goalsRef, {
+        billableHRA: billableHRAGoal,
+        flexHRA: flexHRAGoal,
+        selectRX: selectRXGoal,
+        transfer: transferGoal
+    }).then(() => {
+        alert('Monthly goals saved successfully!');
+        goalForm.reset();
+    }).catch((error) => {
+        console.error('Error saving monthly goals:', error);
+        alert('Failed to save monthly goals. Please try again.');
+    });
+}
+
+function setupRealTimeGoalUpdates(userId) {
     const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
     onValue(goalsRef, (snapshot) => {
         if (snapshot.exists()) {
@@ -577,7 +623,7 @@ function setupRealTimeGoalUpdates() {
             updateGoalsFormAndDisplay(goals);
         } else {
             console.log('No goals found');
-            clearGoalsInputsAndDisplay();  // Clear input fields and display if no goals are found
+            clearGoalsInputsAndDisplay();
         }
     }, (error) => {
         console.error('Failed to load goals:', error);
@@ -585,24 +631,15 @@ function setupRealTimeGoalUpdates() {
 }
 
 function updateGoalsFormAndDisplay(goals) {
-    // Update form inputs
     document.getElementById('billableHRAGoal').value = goals.billableHRA || '0';
     document.getElementById('flexHRAGoal').value = goals.flexHRA || '0';
     document.getElementById('selectRXGoal').value = goals.selectRX || '0';
     document.getElementById('transferGoal').value = goals.transfer || '0';
-
-    // Update display of current goals
-    document.getElementById('displayBillableHRA').textContent = goals.billableHRA || '0';
-    document.getElementById('displayFlexHRA').textContent = goals.flexHRA || '0';
-    document.getElementById('displaySelectRX').textContent = goals.selectRX || '0';
-    document.getElementById('displayTransfer').textContent = goals.transfer || '0';
 }
 
 function clearGoalsInputsAndDisplay() {
-    // Reset input fields and current goals display to '0' or empty
     ['billableHRAGoal', 'flexHRAGoal', 'selectRXGoal', 'transferGoal'].forEach(id => {
         document.getElementById(id).value = '0';
-        document.getElementById('display' + id.charAt(0).toUpperCase() + id.slice(1)).textContent = '0';
     });
 }
 
