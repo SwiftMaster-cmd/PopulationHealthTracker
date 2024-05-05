@@ -526,30 +526,51 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-// Update Monthly Goal Function
-async function updateMonthlyGoal(newGoal) {
-    try {
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-            throw new Error('User not authenticated');
-        }
 
-        // Reference to the user's settings node
-        const userSettingsRef = ref(database, `settings/${currentUser.uid}`);
 
-        // Update the monthly goal value
-        await update(userSettingsRef, { monthlyGoal: newGoal });
+import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js';
 
-        console.log('Monthly goal updated successfully');
-    } catch (error) {
-        console.error('Error updating monthly goal:', error);
+document.addEventListener('DOMContentLoaded', function() {
+    const db = getDatabase();
+
+    // This assumes you have a function or means to get the current user's ID
+    const userId = getCurrentUserId(); // You'll need to implement this function based on your auth setup
+
+    const goalForm = document.getElementById('monthlyGoalForm');
+    if (goalForm) {
+        goalForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Retrieve the values from the form fields
+            const billableHRAGoal = document.getElementById('billableHRAGoal').value;
+            const flexHRAGoal = document.getElementById('flexHRAGoal').value;
+            const selectRXGoal = document.getElementById('selectRXGoal').value;
+            const transferGoal = document.getElementById('transferGoal').value;
+            
+            // Define the path where the goals should be stored for the current user
+            const goalsRef = ref(db, 'users/' + userId + '/monthlySalesGoals');
+            
+            // Set the goals in the database
+            set(goalsRef, {
+                billableHRA: billableHRAGoal,
+                flexHRA: flexHRAGoal,
+                selectRX: selectRXGoal,
+                transfer: transferGoal
+            }).then(() => {
+                alert('Monthly goals saved successfully!');
+            }).catch((error) => {
+                console.error('Error saving monthly goals:', error);
+                alert('Failed to save monthly goals.');
+            });
+        });
     }
+});
+
+// Function to get current user's ID - This needs to be defined based on how your authentication is set up
+function getCurrentUserId() {
+    // Implement how to get the user ID from your authentication system
+    return 'placeholder-user-id'; // Placeholder - replace with actual logic to retrieve user ID
 }
-
-
-
-
-
 
 
 

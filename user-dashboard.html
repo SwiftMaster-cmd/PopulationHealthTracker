@@ -163,16 +163,28 @@
 
 
 
-<div class="monthly-goal-container">
-    <h1>Monthly Sales Goal</h1>
-    <form id="monthlyGoalForm">
-        <label for="monthlyGoal">Enter Monthly Sales Goal:</label>
-        <input type="number" id="monthlyGoal" name="monthlyGoal" value="100" min="0">
-        <button type="submit">Save</button>
-    </form>
-</div>
 
-
+<form id="monthlyGoalForm">
+    <h3>Set Monthly Goals</h3>
+    <div>
+      <label for="billableHRAGoal">Billable HRA Goal:</label>
+      <input type="number" id="billableHRAGoal" name="billableHRAGoal" min="0">
+    </div>
+    <div>
+      <label for="flexHRAGoal">Flex HRA Goal:</label>
+      <input type="number" id="flexHRAGoal" name="flexHRAGoal" min="0">
+    </div>
+    <div>
+      <label for="selectRXGoal">Select RX Goal:</label>
+      <input type="number" id="selectRXGoal" name="selectRXGoal" min="0">
+    </div>
+    <div>
+      <label for="transferGoal">Transfer Goal:</label>
+      <input type="number" id="transferGoal" name="transferGoal" min="0">
+    </div>
+    <button type="submit">Save Goals</button>
+  </form>
+  
 
 
 
