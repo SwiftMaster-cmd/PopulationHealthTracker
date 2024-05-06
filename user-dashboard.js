@@ -703,7 +703,7 @@ function updateProgressBars(salesData, goals) {
     // Aggregate sales data
     Object.values(salesData).forEach(sale => {
         Object.entries(sale.sale_types).forEach(([type, count]) => {
-            if (totals[type] !== undefined) {
+            if (totals.hasOwnProperty(type)) { // Ensure the type exists in the totals object
                 totals[type] += count;
             }
         });
@@ -712,16 +712,23 @@ function updateProgressBars(salesData, goals) {
     // Update progress for each goal type
     Object.keys(totals).forEach(type => {
         const current = totals[type];
-        const goal = goals[type.toLowerCase().replace(' ', '')]; // e.g., "billableHRA" from "billable HRA"
-        updateProgressBar(type.replace(' ', ''), current, goal);
+        const goalKey = type.toLowerCase(); // Assuming your goal keys are all lower case without spaces
+        const goal = goals[goalKey];
+        console.log(`Type: ${type}, Current: ${current}, Goal: ${goal}`); // Log the data to debug
+        updateProgressBar(type, current, goal);
     });
 }
 
 function updateProgressBar(type, current, goal) {
-    const progressId = `progress${type.replace(' ', '')}`;
+    if (goal === undefined || goal === null) {
+        console.error(`Goal for ${type} is not defined.`);
+        return; // Skip updating the progress bar if goal is not set
+    }
+
+    const progressId = `progress${type}`;
     const progressBar = document.getElementById(progressId);
     if (progressBar) {
-        const percentage = Math.min((current / goal) * 100, 100);
+        const percentage = current > 0 ? Math.min((current / goal) * 100, 100) : 0;
         progressBar.style.width = `${percentage}%`;
         progressBar.textContent = `${percentage.toFixed(0)}%`;
     }
