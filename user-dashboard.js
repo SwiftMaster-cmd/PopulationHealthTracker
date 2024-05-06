@@ -658,18 +658,6 @@ function updateStatusMessage(message, type) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const auth = getAuth();
     let userId = null;
