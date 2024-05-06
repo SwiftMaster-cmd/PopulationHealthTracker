@@ -539,6 +539,49 @@ document.getElementById('toggleButton').addEventListener('click', function() {
     }
 });
 
+const chartOptions = {
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: 'rgba(0, 0, 0, 0.1)',  // Light gray grid lines
+            },
+            ticks: {
+                maxTicksLimit: 5  // Limits the y-axis to a maximum of 5 ticks
+            }
+        },
+        x: {
+            grid: {
+                display: false  // Hides vertical grid lines for the x-axis
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: true,  // Shows the legend
+            position: 'top',  // Positions the legend at the top of the chart
+            labels: {
+                color: 'black',  // Sets the text color of the legend labels
+                font: {
+                    size: 12  // Sets the font size of the legend labels
+                }
+            }
+        }
+    },
+    animation: {
+        duration: 2000,  // Duration of the animation in milliseconds
+        easing: 'easeInOutQuart'  // Easing function for the animation
+    },
+    responsive: true,  // Makes the chart responsive to window changes
+    maintainAspectRatio: false  // Ensures that the chart does not maintain the aspect ratio
+};
+
+
+
+
+
+
+
 
 
 
