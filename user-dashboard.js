@@ -696,7 +696,7 @@ function updateProgressBars(salesData, goals) {
     const totals = {
         "Billable HRA": 0,
         "SPM": 0,
-        "SRX": 0,
+        "selectRX": 0,
         "Transfer": 0
     };
 
