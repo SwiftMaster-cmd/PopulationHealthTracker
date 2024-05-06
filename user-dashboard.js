@@ -690,6 +690,15 @@ function setupSalesProgressListener(userId) {
             console.log('No goals found');
         }
     });
+}
+
+function updateProgressBars(salesData, goals) {
+    const totals = {
+        "Billable HRA": 0,
+        "Flex HRA":1,
+        "Select RX": 2,
+        "Transfer": 3
+    };
 
     // Aggregate sales data
     Object.values(salesData).forEach(sale => {
