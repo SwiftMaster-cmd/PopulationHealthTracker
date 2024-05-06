@@ -372,7 +372,7 @@ textarea:focus {
 }
 
 /* Chart canvas */
-#salesChart {
+#dailySalesChart {
     width: 75%;
     max-height: 400px; /* Adjust height as needed */
     overflow: hidden;
@@ -1020,7 +1020,7 @@ textarea:focus {
 }
 
 /* Style the chart canvas */
-#salesChart {
+#dailySalesChart {
     max-width: 100%; /* Make the chart responsive */
     height: auto;
     border-radius: 15px;

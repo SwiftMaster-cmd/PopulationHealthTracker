@@ -433,57 +433,17 @@ function generateChartDataForTimeFrame(salesArray, timeFrame) {
         }]
     };
 }
+
 function applyTimeFrameFilter(salesArray, timeFrame) {
     const now = new Date();
-    console.log("Applying time frame filter:", timeFrame); // Debugging output
     return salesArray.filter(sale => {
         const saleDate = new Date(sale.timestamp);
-        switch(timeFrame) {
-            case 'daily':
-                return saleDate.toDateString() === now.toDateString();
-            case 'weekly':
-                return (now - saleDate) / (1000 * 60 * 60 * 24) <= 7;
-            case 'monthly':
-                return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
-            default:
-                return true;
-        }
+        if (timeFrame === 'daily') return saleDate.toDateString() === now.toDateString();
+        if (timeFrame === 'weekly') return (now - saleDate) / (1000 * 60 * 60 * 24) <= 7;
+        if (timeFrame === 'monthly') return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
+        return true;
     });
 }
-
-function renderAllSalesCharts(salesArray) {
-    const dailyData = generateChartDataForTimeFrame(salesArray, 'daily');
-    const weeklyData = generateChartDataForTimeFrame(salesArray, 'weekly');
-    const monthlyData = generateChartDataForTimeFrame(salesArray, 'monthly');
-
-    renderSalesChart(dailyData, 'dailySalesChart');
-    renderSalesChart(weeklyData, 'weeklySalesChart');
-    renderSalesChart(monthlyData, 'monthlySalesChart');
-}
-function renderSalesChart(data, canvasId) {
-    console.log(`Rendering chart for ${canvasId}`, data); // Debugging output
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) {
-        console.error("Canvas not found:", canvasId);
-        return;
-    }
-    const ctx = canvas.getContext('2d');
-    if (window[canvasId]) {
-        window[canvasId].destroy();
-    }
-    window[canvasId] = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: chartOptions
-    });
-}
-
-// Example of how you might initialize this
-document.addEventListener('DOMContentLoaded', function() {
-    fetchSalesData().then(salesArray => {
-        renderAllSalesCharts(salesArray);
-    });
-});
 
 
 
