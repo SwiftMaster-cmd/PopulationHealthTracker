@@ -418,22 +418,25 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
-
 function generateChartDataForTimeFrame(salesArray, timeFrame) {
     const filteredSales = applyTimeFrameFilter(salesArray, timeFrame);
     const saleTypeCounts = calculateSaleTypeCounts(filteredSales);
     const labels = Object.keys(saleTypeCounts);
     const data = Object.values(saleTypeCounts);
 
+    // Calculate the total sales count
+    const totalSales = data.reduce((total, count) => total + count, 0);
+
     return {
-        labels: labels,
+        labels: [...labels, 'Total Sales'],
         datasets: [{
             label: `Sale Type Counts (${timeFrame})`,
-            backgroundColor: 'rgba(54, 162, 235, 0.8)',
-            data: data,
+            backgroundColor: [...new Array(labels.length).fill('rgba(54, 162, 235, 0.8)'), 'rgba(255, 99, 132, 0.8)'],
+            data: [...data, totalSales],
         }]
     };
 }
+
 
 function applyTimeFrameFilter(salesArray, timeFrame) {
     const now = new Date();
@@ -467,6 +470,48 @@ function renderSalesChart(data, canvasId) {
         options: chartOptions
     });
 }
+
+
+const chartOptions = {
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: 'rgba(0, 0, 0, 0.1)',  // Light gray grid lines
+            },
+            ticks: {
+                maxTicksLimit: 5  // Limits the y-axis to a maximum of 5 ticks
+            }
+        },
+        x: {
+            grid: {
+                display: false  // Hides vertical grid lines for the x-axis
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: true,  // Shows the legend
+            position: 'top',  // Positions the legend at the top of the chart
+            labels: {
+                color: 'black',  // Sets the text color of the legend labels
+                font: {
+                    size: 12  // Sets the font size of the legend labels
+                }
+            }
+        }
+    },
+    animation: {
+        duration: 2000,  // Duration of the animation in milliseconds
+        easing: 'easeInOutQuart'  // Easing function for the animation
+    },
+    responsive: true,  // Makes the chart responsive to window changes
+    maintainAspectRatio: false  // Ensures that the chart does not maintain the aspect ratio
+};
+
+
+
+
 
 
 
@@ -538,47 +583,6 @@ document.getElementById('toggleButton').addEventListener('click', function() {
         this.textContent = 'Show Goals';
     }
 });
-
-const chartOptions = {
-    scales: {
-        y: {
-            beginAtZero: true,
-            grid: {
-                color: 'rgba(0, 0, 0, 0.1)',  // Light gray grid lines
-            },
-            ticks: {
-                maxTicksLimit: 5  // Limits the y-axis to a maximum of 5 ticks
-            }
-        },
-        x: {
-            grid: {
-                display: false  // Hides vertical grid lines for the x-axis
-            }
-        }
-    },
-    plugins: {
-        legend: {
-            display: true,  // Shows the legend
-            position: 'top',  // Positions the legend at the top of the chart
-            labels: {
-                color: 'black',  // Sets the text color of the legend labels
-                font: {
-                    size: 12  // Sets the font size of the legend labels
-                }
-            }
-        }
-    },
-    animation: {
-        duration: 2000,  // Duration of the animation in milliseconds
-        easing: 'easeInOutQuart'  // Easing function for the animation
-    },
-    responsive: true,  // Makes the chart responsive to window changes
-    maintainAspectRatio: false  // Ensures that the chart does not maintain the aspect ratio
-};
-
-
-
-
 
 
 
