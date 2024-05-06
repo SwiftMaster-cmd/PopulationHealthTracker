@@ -419,25 +419,8 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
-function filterSalesByTimeFrame(salesArray, timeFrame) {
-    const now = new Date();
-    return salesArray.filter(sale => {
-        const saleDate = new Date(sale.timestamp);
-        switch(timeFrame) {
-            case 'daily':
-                return saleDate.toDateString() === now.toDateString();
-            case 'weekly':
-                return (now - saleDate) / (1000 * 60 * 60 * 24) <= 7;
-            case 'monthly':
-                return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
-            default:
-                return false;
-        }
-    });
-}
-
 function generateChartDataForTimeFrame(salesArray, timeFrame) {
-    const filteredSales = filterSalesByTimeFrame(salesArray, timeFrame);
+    const filteredSales = applyTimeFrameFilter(salesArray, timeFrame);
     const saleTypeCounts = calculateSaleTypeCounts(filteredSales);
     const labels = Object.keys(saleTypeCounts);
     const data = Object.values(saleTypeCounts);
@@ -446,13 +429,24 @@ function generateChartDataForTimeFrame(salesArray, timeFrame) {
         labels: labels,
         datasets: [{
             label: `Sale Type Counts (${timeFrame})`,
-            backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color with opacity
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
             data: data,
         }]
     };
 }
 
-function renderSalesCharts(salesArray) {
+function applyTimeFrameFilter(salesArray, timeFrame) {
+    const now = new Date();
+    return salesArray.filter(sale => {
+        const saleDate = new Date(sale.timestamp);
+        if (timeFrame === 'daily') return saleDate.toDateString() === now.toDateString();
+        if (timeFrame === 'weekly') return (now - saleDate) / (1000 * 60 * 60 * 24) <= 7;
+        if (timeFrame === 'monthly') return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
+        return true;
+    });
+}
+
+function renderAllSalesCharts(salesArray) {
     const dailyData = generateChartDataForTimeFrame(salesArray, 'daily');
     const weeklyData = generateChartDataForTimeFrame(salesArray, 'weekly');
     const monthlyData = generateChartDataForTimeFrame(salesArray, 'monthly');
@@ -464,40 +458,40 @@ function renderSalesCharts(salesArray) {
 
 function renderSalesChart(data, canvasId) {
     const ctx = document.getElementById(canvasId).getContext('2d');
-    new Chart(ctx, {
+    if (window[canvasId]) {
+        window[canvasId].destroy();
+    }
+    window[canvasId] = new Chart(ctx, {
         type: 'bar',
         data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
-                    },
-                    ticks: {
-                        maxTicksLimit: 5 // Limit to 5 ticks
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false // Hide vertical grid lines
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true // Show legend
-                }
-            },
-            animation: {
-                duration: 2000, // Animates the chart over 2 seconds
-                easing: 'easeInOutQuart' // Smooth animation curve
-            },
-            responsive: true,
-            maintainAspectRatio: false // Allow chart to resize
-        }
+        options: chartOptions
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
