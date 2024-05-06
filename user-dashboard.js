@@ -692,7 +692,6 @@ function setupSalesProgressListener(userId) {
     });
 }
 
-
 function updateProgressBars(salesData, goals) {
     const totals = {
         "HRA": 0,
@@ -701,14 +700,10 @@ function updateProgressBars(salesData, goals) {
         "Transfer": 0
     };
 
-    // Debug: Log incoming sales data and goals
-    console.log("Sales Data:", JSON.stringify(salesData));
-    console.log("Goals:", JSON.stringify(goals));
-
     // Aggregate sales data
     Object.values(salesData).forEach(sale => {
         Object.entries(sale.sale_types).forEach(([type, count]) => {
-            if (totals.hasOwnProperty(type)) { // Check if type exists in totals
+            if (totals.hasOwnProperty(type)) { // Ensuring proper type name
                 totals[type] += count;
             } else {
                 console.error(`Unexpected sale type: ${type}`);
@@ -719,9 +714,9 @@ function updateProgressBars(salesData, goals) {
     // Update progress for each goal type
     Object.keys(totals).forEach(type => {
         const current = totals[type];
-        const goalKey = type.toLowerCase().replace(/\s+/g, ''); // Removing spaces and converting to lower case
+        const goalKey = type.toLowerCase(); // Simplified, make sure this matches HTML IDs
         const goal = goals[goalKey];
-        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`); // Debugging output
+        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`);
         if (goal !== undefined) {
             updateProgressBar(type, current, goal);
         } else {
@@ -729,9 +724,8 @@ function updateProgressBars(salesData, goals) {
         }
     });
 }
-
 function updateProgressBar(type, current, goal) {
-    const progressId = `progress${type.replace(/\s+/g, '')}`;
+    const progressId = `progress${type.replace(/\s+/g, '')}`; // Removes spaces, adapt as necessary
     const progressBar = document.getElementById(progressId);
     if (progressBar) {
         const percentage = Math.min((current / goal) * 100, 100);
@@ -741,10 +735,6 @@ function updateProgressBar(type, current, goal) {
         console.error(`Progress bar not found for type: ${type}`);
     }
 }
-
-
-
-
 
 
 
