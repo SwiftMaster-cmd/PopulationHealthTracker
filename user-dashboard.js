@@ -691,6 +691,8 @@ function setupSalesProgressListener(userId) {
         }
     });
 }
+
+
 function updateProgressBars(salesData, goals) {
     const totals = {
         "HRA": 0,
