@@ -418,25 +418,22 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
+
 function generateChartDataForTimeFrame(salesArray, timeFrame) {
     const filteredSales = applyTimeFrameFilter(salesArray, timeFrame);
     const saleTypeCounts = calculateSaleTypeCounts(filteredSales);
     const labels = Object.keys(saleTypeCounts);
     const data = Object.values(saleTypeCounts);
 
-    // Calculate the total sales count
-    const totalSales = data.reduce((total, count) => total + count, 0);
-
     return {
-        labels: [...labels, 'Total Sales'],
+        labels: labels,
         datasets: [{
             label: `Sale Type Counts (${timeFrame})`,
-            backgroundColor: [...new Array(labels.length).fill('rgba(54, 162, 235, 0.8)'), 'rgba(255, 99, 132, 0.8)'],
-            data: [...data, totalSales],
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+            data: data,
         }]
     };
 }
-
 
 function applyTimeFrameFilter(salesArray, timeFrame) {
     const now = new Date();
@@ -547,10 +544,6 @@ const chartOptions = {
 
 
 
-
-
-
-
 document.getElementById('toggleFilters').addEventListener('click', function() {
     const filtersContainer = document.getElementById('filtersContainer');
     if (filtersContainer.style.opacity === '0') {
@@ -583,6 +576,9 @@ document.getElementById('toggleButton').addEventListener('click', function() {
         this.textContent = 'Show Goals';
     }
 });
+
+
+
 
 
 
