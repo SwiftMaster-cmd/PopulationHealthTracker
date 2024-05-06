@@ -419,39 +419,52 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
+function filterSalesByTimeFrame(salesArray, timeFrame) {
+    const now = new Date();
+    return salesArray.filter(sale => {
+        const saleDate = new Date(sale.timestamp);
+        switch(timeFrame) {
+            case 'daily':
+                return saleDate.toDateString() === now.toDateString();
+            case 'weekly':
+                return (now - saleDate) / (1000 * 60 * 60 * 24) <= 7;
+            case 'monthly':
+                return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
+            default:
+                return false;
+        }
+    });
+}
 
-
-function generateChartData(salesArray) {
-    const saleTypeCounts = calculateSaleTypeCounts(salesArray);
+function generateChartDataForTimeFrame(salesArray, timeFrame) {
+    const filteredSales = filterSalesByTimeFrame(salesArray, timeFrame);
+    const saleTypeCounts = calculateSaleTypeCounts(filteredSales);
     const labels = Object.keys(saleTypeCounts);
     const data = Object.values(saleTypeCounts);
 
     return {
         labels: labels,
         datasets: [{
-            label: 'Sale Type Counts',
+            label: `Sale Type Counts (${timeFrame})`,
             backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color with opacity
             data: data,
         }]
     };
 }
 
+function renderSalesCharts(salesArray) {
+    const dailyData = generateChartDataForTimeFrame(salesArray, 'daily');
+    const weeklyData = generateChartDataForTimeFrame(salesArray, 'weekly');
+    const monthlyData = generateChartDataForTimeFrame(salesArray, 'monthly');
 
+    renderSalesChart(dailyData, 'dailySalesChart');
+    renderSalesChart(weeklyData, 'weeklySalesChart');
+    renderSalesChart(monthlyData, 'monthlySalesChart');
+}
 
-
-
-
-
-
-let salesChart;
-
-function renderSalesChart(data) {
-    if (salesChart) {
-        salesChart.destroy();
-    }
-
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    salesChart = new Chart(ctx, {
+function renderSalesChart(data, canvasId) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
         type: 'bar',
         data: data,
         options: {
@@ -462,7 +475,7 @@ function renderSalesChart(data) {
                         color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
                     },
                     ticks: {
-                        maxTicksLimit: 5 // Attempt to limit to 5 ticks
+                        maxTicksLimit: 5 // Limit to 5 ticks
                     }
                 },
                 x: {
@@ -473,7 +486,7 @@ function renderSalesChart(data) {
             },
             plugins: {
                 legend: {
-                    display: false // Hide legend
+                    display: true // Show legend
                 }
             },
             animation: {
@@ -485,7 +498,6 @@ function renderSalesChart(data) {
         }
     });
 }
-
 
 
 
