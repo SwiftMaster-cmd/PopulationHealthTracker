@@ -692,8 +692,8 @@ function setupSalesProgressListener(userId) {
     });
 }
 
-function calculateSaleTypeCounts(salesArray) {
-    let saleTypeCounts = {
+function updateProgressBars(salesData, goals) {
+    const totals = {
         "HRA": 0,
         "SPM": 0,
         "SRX": 0,
@@ -701,17 +701,13 @@ function calculateSaleTypeCounts(salesArray) {
     };
 
     // Aggregate sales data
-    salesArray.forEach(sale => {
-        Object.entries(sale.sale_types || {}).forEach(([type, count]) => {
-            if (saleTypeCounts[type] !== undefined) {
-                saleTypeCounts[type] += count;
+    Object.values(salesData).forEach(sale => {
+        Object.entries(sale.sale_types).forEach(([type, count]) => {
+            if (totals[type] !== undefined) {
+                totals[type] += count;
             }
         });
     });
-
-    return saleTypeCounts;
-}
-
 
     // Update progress for each goal type
     Object.keys(totals).forEach(type => {
