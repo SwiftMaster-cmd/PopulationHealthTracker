@@ -645,7 +645,7 @@ function updateStatusMessage(message, type) {
     if (type === 'success') {
         statusMessageElement.style.color = 'green';
     } else if (type === 'error') {
-        statusMessageElement.style.color = 'red';
+        statusMessageElement.style.color = 'green';
     }
     statusMessageElement.style.display = 'block';
     setTimeout(() => {
@@ -692,8 +692,8 @@ function setupSalesProgressListener(userId) {
     });
 }
 
-function updateProgressBars(salesData, goals) {
-    const totals = {
+function calculateSaleTypeCounts(salesArray) {
+    let saleTypeCounts = {
         "HRA": 0,
         "SPM": 0,
         "SRX": 0,
@@ -701,13 +701,17 @@ function updateProgressBars(salesData, goals) {
     };
 
     // Aggregate sales data
-    Object.values(salesData).forEach(sale => {
-        Object.entries(sale.sale_types).forEach(([type, count]) => {
-            if (totals[type] !== undefined) {
-                totals[type] += count;
+    salesArray.forEach(sale => {
+        Object.entries(sale.sale_types || {}).forEach(([type, count]) => {
+            if (saleTypeCounts[type] !== undefined) {
+                saleTypeCounts[type] += count;
             }
         });
     });
+
+    return saleTypeCounts;
+}
+
 
     // Update progress for each goal type
     Object.keys(totals).forEach(type => {
