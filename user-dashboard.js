@@ -418,30 +418,71 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
-function generateChartDataForTimeFrame(salesArray, timeFrame) {
-    const filteredSales = applyTimeFrameFilter(salesArray, timeFrame);
-    const saleTypeCounts = calculateSaleTypeCounts(filteredSales);
+
+
+
+function generateChartData(salesArray) {
+    const saleTypeCounts = calculateSaleTypeCounts(salesArray);
     const labels = Object.keys(saleTypeCounts);
     const data = Object.values(saleTypeCounts);
 
     return {
         labels: labels,
         datasets: [{
-            label: `Sale Type Counts (${timeFrame})`,
+            label: 'Sale Type Counts',
             backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color with opacity
             data: data,
         }]
     };
 }
 
-function applyTimeFrameFilter(salesArray, timeFrame) {
-    const now = new Date();
-    return salesArray.filter(sale => {
-        const saleDate = new Date(sale.timestamp);
-        if (timeFrame === 'daily') return saleDate.toDateString() === now.toDateString();
-        if (timeFrame === 'weekly') return (now - saleDate) / (1000 * 60 * 60 * 24) <= 7;
-        if (timeFrame === 'monthly') return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
-        return true;
+
+
+
+
+
+
+
+let salesChart;
+
+function renderSalesChart(data) {
+    if (salesChart) {
+        salesChart.destroy();
+    }
+
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    salesChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
+                    },
+                    ticks: {
+                        maxTicksLimit: 5 // Attempt to limit to 5 ticks
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false // Hide vertical grid lines
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Hide legend
+                }
+            },
+            animation: {
+                duration: 2000, // Animates the chart over 2 seconds
+                easing: 'easeInOutQuart' // Smooth animation curve
+            },
+            responsive: true,
+            maintainAspectRatio: false // Allow chart to resize
+        }
     });
 }
 
