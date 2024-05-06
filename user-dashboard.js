@@ -691,17 +691,14 @@ function setupSalesProgressListener(userId) {
         }
     });
 }
-function updateProgressBar(type, current, goal) {
-    const progressId = `progress${type.replace(' ', '')}`;
-    const progressBar = document.getElementById(progressId);
-    if (progressBar) {
-        const percentage = Math.min((current / goal) * 100, 100);
-        progressBar.style.width = `${percentage}%`;
-        progressBar.textContent = `${percentage.toFixed(0)}%`;
-    }
-}
 
-
+function updateProgressBars(salesData, goals) {
+    const totals = {
+        "HRA": 0,
+        "SPM": 0,
+        "SRX": 0,
+        "Transfer": 0
+    };
 
     // Aggregate sales data
     Object.values(salesData).forEach(sale => {
@@ -715,9 +712,8 @@ function updateProgressBar(type, current, goal) {
     // Update progress for each goal type
     Object.keys(totals).forEach(type => {
         const current = totals[type];
-        const goalKey = type.toLowerCase().replace(' ', ''); // Get the corresponding goal key
-        const goal = goals[goalKey] || 0; // Ensure goal is defined, default to 0 if not set
-        updateProgressBar(type, current, goal);
+        const goal = goals[type.toLowerCase().replace(' ', '')]; // e.g., "billableHRA" from "billable HRA"
+        updateProgressBar(type.replace(' ', ''), current, goal);
     });
 }
 
