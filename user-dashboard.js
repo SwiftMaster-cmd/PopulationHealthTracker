@@ -694,10 +694,10 @@ function setupSalesProgressListener(userId) {
 
 function updateProgressBars(salesData, goals) {
     const totals = {
-        "Billable HRA": 0,
-        "Flex HRA":1,
-        "Select RX": 2,
-        "Transfer": 3
+        "BillableHRA": 0,
+        "FlexHRA":0,
+        "SelectRX": 0,
+        "Transfer": 0
     };
 
     // Aggregate sales data
