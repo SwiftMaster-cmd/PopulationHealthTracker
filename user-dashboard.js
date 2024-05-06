@@ -691,7 +691,6 @@ function setupSalesProgressListener(userId) {
         }
     });
 }
-
 function updateProgressBars(salesData, goals) {
     const totals = {
         "HRA": 0,
@@ -700,11 +699,17 @@ function updateProgressBars(salesData, goals) {
         "Transfer": 0
     };
 
+    // Debug: Log incoming sales data and goals
+    console.log("Sales Data:", JSON.stringify(salesData));
+    console.log("Goals:", JSON.stringify(goals));
+
     // Aggregate sales data
     Object.values(salesData).forEach(sale => {
         Object.entries(sale.sale_types).forEach(([type, count]) => {
-            if (totals.hasOwnProperty(type)) { // Ensure the type exists in the totals object
+            if (totals.hasOwnProperty(type)) { // Check if type exists in totals
                 totals[type] += count;
+            } else {
+                console.error(`Unexpected sale type: ${type}`);
             }
         });
     });
@@ -712,27 +717,29 @@ function updateProgressBars(salesData, goals) {
     // Update progress for each goal type
     Object.keys(totals).forEach(type => {
         const current = totals[type];
-        const goalKey = type.toLowerCase(); // Assuming your goal keys are all lower case without spaces
+        const goalKey = type.toLowerCase().replace(/\s+/g, ''); // Removing spaces and converting to lower case
         const goal = goals[goalKey];
-        console.log(`Type: ${type}, Current: ${current}, Goal: ${goal}`); // Log the data to debug
-        updateProgressBar(type, current, goal);
+        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`); // Debugging output
+        if (goal !== undefined) {
+            updateProgressBar(type, current, goal);
+        } else {
+            console.error(`Goal not found for type: ${type}`);
+        }
     });
 }
 
 function updateProgressBar(type, current, goal) {
-    if (goal === undefined || goal === null) {
-        console.error(`Goal for ${type} is not defined.`);
-        return; // Skip updating the progress bar if goal is not set
-    }
-
-    const progressId = `progress${type}`;
+    const progressId = `progress${type.replace(/\s+/g, '')}`;
     const progressBar = document.getElementById(progressId);
     if (progressBar) {
-        const percentage = current > 0 ? Math.min((current / goal) * 100, 100) : 0;
+        const percentage = Math.min((current / goal) * 100, 100);
         progressBar.style.width = `${percentage}%`;
         progressBar.textContent = `${percentage.toFixed(0)}%`;
+    } else {
+        console.error(`Progress bar not found for type: ${type}`);
     }
 }
+
 
 
 
