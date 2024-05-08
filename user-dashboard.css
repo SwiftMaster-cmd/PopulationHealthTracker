@@ -390,70 +390,61 @@ button#refreshChart:hover {
 
 
 
-
-
+/* Styling for the chart container with consistent gradient and interaction effects */
 .chart-container {
     width: 500px;
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
+    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Warm gradient */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* More pronounced shadow for depth */
+    border-radius: 15px; /* Rounded corners for a smoother look */
     overflow: hidden;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 20px; /* Adjust padding as needed */
-    max-height: 250px; /* Set maximum height to 400 pixels */
+    justify-content: center; /* Centering content inside the container */
+    align-items: center; /* Align items in the middle vertically */
+    padding: 20px;
+    max-height: 400px; /* Adjusted maximum height */
+    transition: transform 0.3s ease; /* Smooth transition for transform */
 }
-
-
-#toggleFilters {
-    padding: 20px; /* Adjust padding as needed */
-}
-
 
 .chart-container:hover {
-    transform: scale(1.05); /* Scale up by 5% on hover */
+    transform: scale(1.05); /* Slight enlargement on hover for interactive feel */
 }
 
-/* Chart canvas */
+/* Styling for the chart canvas within the chart container */
 #dailySalesChart {
-    width: 75%;
-    max-height: 400px; /* Adjust height as needed */
-    overflow: hidden;
-    border-radius: 15px;
+    width: 100%; /* Use full width of the container */
+    max-height: 100%; /* Use maximum height available */
+    border-radius: 15px; /* Rounded corners for the chart canvas */
 }
 
-/* Chart title */
+/* Chart title styling for consistency */
 .chart-title {
-    font-size: 30px;
-    color: white;
-    text-align: center;
-    margin-top: 10px;
-    transition: font-size 0.3s; /* Apply transition for font size */
+    font-size: 24px; /* Adjusted for better readability */
+    color: white; /* White color for visibility against the gradient */
+    text-align: center; /* Center-align the title */
+    margin: 10px 0; /* Space above and below the title */
+    transition: font-size 0.3s ease; /* Smooth font size transition */
 }
 
-/* Chart data labels */
+/* Styling for chart data labels to be visually consistent */
 .chart-data-labels {
-    font-size: 30px;
-    color: white;
-    text-align: center;
-    transition: font-size 0.3s; /* Apply transition for font size */
+    font-size: 18px; /* Smaller font size for data labels */
+    color: white; /* White color for clarity */
+    text-align: center; /* Center alignment for labels */
+    transition: font-size 0.3s ease; /* Smooth transition for resizing */
 }
 
-/* Chart bars */
+/* Consistent styling for chart bars */
 .chart-bar {
-    background-color: #219EBC; /* Blue color */
-    border-radius: 5px;
-    transition: transform 0.3s, background-color 0.3s; /* Apply transition for scaling and color */
+    background-color: #219EBC; /* Light blue color for bars */
+    border-radius: 5px; /* Rounded corners for bars */
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Transitions for interactive effects */
 }
 
 .chart-bar:hover {
-    transform: scale(1.05); /* Scale up by 5% on hover */
-    background-color: #0d6efd; /* Darker blue color on hover */
+    transform: scale(1.05); /* Enlarge on hover */
+    background-color: #0d6efd; /* Darker blue on hover for contrast */
 }
-
-
 
 
 
