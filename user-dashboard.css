@@ -388,62 +388,61 @@ button#refreshChart:hover {
     box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Deeper shadow for 3D effect */
 }
 
-
-
-/* Styling for the chart container with consistent gradient and interaction effects */
+/* Enhanced styling for the chart container with a more dynamic gradient and shadow */
 .chart-container {
     width: 500px;
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Warm gradient */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* More pronounced shadow for depth */
-    border-radius: 15px; /* Rounded corners for a smoother look */
+    background: linear-gradient(to right, #0083B0, #00B4DB); /* Brighter blue gradient for vibrancy */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Stronger shadow for more depth */
+    border-radius: 15px; /* Smooth rounded corners */
     overflow: hidden;
     display: flex;
-    justify-content: center; /* Centering content inside the container */
-    align-items: center; /* Align items in the middle vertically */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Align items vertically in the center */
     padding: 20px;
-    max-height: 400px; /* Adjusted maximum height */
-    transition: transform 0.3s ease; /* Smooth transition for transform */
+    max-height: 400px; /* Consistent height with the content */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for interactions */
 }
 
 .chart-container:hover {
-    transform: scale(1.05); /* Slight enlargement on hover for interactive feel */
+    transform: scale(1.1); /* More noticeable scale increase on hover */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.75); /* Deeper shadow on hover for a popping effect */
 }
 
-/* Styling for the chart canvas within the chart container */
+/* Styling for the chart canvas within the container */
 #dailySalesChart {
-    width: 100%; /* Use full width of the container */
-    max-height: 100%; /* Use maximum height available */
-    border-radius: 15px; /* Rounded corners for the chart canvas */
+    width: 100%; /* Full width of the container */
+    height: 100%; /* Full height based on parent container */
+    border-radius: 15px; /* Consistent rounded corners */
 }
 
-/* Chart title styling for consistency */
+/* Eye-catching chart title styling */
 .chart-title {
-    font-size: 24px; /* Adjusted for better readability */
-    color: white; /* White color for visibility against the gradient */
-    text-align: center; /* Center-align the title */
-    margin: 10px 0; /* Space above and below the title */
+    font-size: 26px; /* Larger font size for prominence */
+    color: #ffffff; /* Bright white for high contrast */
+    text-align: center;
+    margin-top: 5px; /* Reduced margin for tight layout */
     transition: font-size 0.3s ease; /* Smooth font size transition */
 }
 
-/* Styling for chart data labels to be visually consistent */
+/* Dynamic styling for chart data labels */
 .chart-data-labels {
-    font-size: 18px; /* Smaller font size for data labels */
-    color: white; /* White color for clarity */
-    text-align: center; /* Center alignment for labels */
-    transition: font-size 0.3s ease; /* Smooth transition for resizing */
+    font-size: 20px; /* Larger font size for better visibility */
+    color: #ffffff; /* White for clarity */
+    text-align: center;
+    transition: all 0.3s ease; /* General transition for all properties */
 }
 
-/* Consistent styling for chart bars */
+/* Enhanced visual appeal for chart bars */
 .chart-bar {
-    background-color: #219EBC; /* Light blue color for bars */
-    border-radius: 5px; /* Rounded corners for bars */
-    transition: transform 0.3s ease, background-color 0.3s ease; /* Transitions for interactive effects */
+    background-color: #0294A5; /* Cyan-blue color for a refreshing look */
+    border-radius: 10px; /* Rounded for a smoother appearance */
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Responsive transitions for interactive feedback */
 }
 
 .chart-bar:hover {
-    transform: scale(1.05); /* Enlarge on hover */
-    background-color: #0d6efd; /* Darker blue on hover for contrast */
+    transform: scale(1.1); /* More significant enlargement on hover */
+    background-color: #03A9F4; /* Brighter blue on hover for extra pop */
 }
 
 
