@@ -272,9 +272,6 @@ textarea:focus {
 
 
 
-
-
-
 /* Container for the controls, centered with fixed width */
 #controls {
     width: 500px; /* Fixed width for the controls */
@@ -288,12 +285,12 @@ textarea:focus {
     align-items: center; /* Align children to the center */
 }
 
-/* Styling for the select dropdown */
+/* Styling for the select dropdown to fit the dark theme */
 #timeFilterChart {
     width: 100%; /* Full width within the container */
     padding: 10px;
     margin: 10px 0; /* Margin for spacing between elements */
-    background: linear-gradient(to right, #FFB703, #FB8501); /* Gradient background */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient */
     border: none;
     border-radius: 5px; /* Slightly rounded corners */
     color: #ffffff; /* White text for readability */
@@ -305,7 +302,7 @@ textarea:focus {
 button#refreshChart {
     width: 100%; /* Full width to match the select element */
     padding: 10px;
-    background: linear-gradient(to right, #8ECAE6, #219EBC); /* Blue gradient */
+    background: linear-gradient(to right, #0353A4, #0D8EFD); /* Blue gradient */
     color: white;
     border: none;
     border-radius: 5px; /* Consistent rounded corners */
@@ -316,12 +313,10 @@ button#refreshChart {
 }
 
 button#refreshChart:hover {
-    background: linear-gradient(to right, #FFB703, #FB8501); /* Change gradient on hover */
+    background: linear-gradient(to right, #0466C8, #0D8EFD); /* Slightly lighter blue gradient on hover */
     transform: translateY(-2px); /* Raise button slightly on hover */
     box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Deeper shadow for 3D effect */
 }
-
-
 
 /* Styling for the chart container with a dark, sophisticated theme */
 .chart-container {
@@ -375,9 +370,6 @@ button#refreshChart:hover {
     background-color: #0466C8; /* Brighter blue on hover for visual interest */
     box-shadow: 0 5px 20px rgba(255, 255, 255, 0.5); /* Bright white glow effect on hover */
 }
-
-
-
 
 
 
