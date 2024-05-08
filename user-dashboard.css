@@ -290,7 +290,7 @@ textarea:focus {
     width: 100%; /* Full width within the container */
     padding: 10px;
     margin: 10px 0; /* Margin for spacing between elements */
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
+    background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient to match the chart container */
     border: none;
     border-radius: 5px; /* Slightly rounded corners */
     color: #ffffff; /* White text for readability */
@@ -302,7 +302,7 @@ textarea:focus {
 button#refreshChart {
     width: 100%; /* Full width to match the select element */
     padding: 10px;
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
+    background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient to match the chart container */
     color: white;
     border: none;
     border-radius: 5px; /* Consistent rounded corners */
