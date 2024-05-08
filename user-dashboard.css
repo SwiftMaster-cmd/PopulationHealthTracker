@@ -387,13 +387,12 @@ button#refreshChart:hover {
     transform: translateY(-2px); /* Raise button slightly on hover */
     box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Deeper shadow for 3D effect */
 }
-
-/* Enhanced styling for the chart container with a more dynamic gradient and shadow */
+/* Styling for the chart container with a dark theme */
 .chart-container {
     width: 500px;
     margin: 20px auto;
-    background: linear-gradient(to right, #0083B0, #00B4DB); /* Brighter blue gradient for vibrancy */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Stronger shadow for more depth */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); /* Enhanced shadow for more depth */
     border-radius: 15px; /* Smooth rounded corners */
     overflow: hidden;
     display: flex;
@@ -406,7 +405,7 @@ button#refreshChart:hover {
 
 .chart-container:hover {
     transform: scale(1.1); /* More noticeable scale increase on hover */
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.75); /* Deeper shadow on hover for a popping effect */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.8); /* Deeper shadow on hover for a popping effect */
 }
 
 /* Styling for the chart canvas within the container */
@@ -418,7 +417,7 @@ button#refreshChart:hover {
 
 /* Eye-catching chart title styling */
 .chart-title {
-    font-size: 26px; /* Larger font size for prominence */
+    font-size: 28px; /* Increased font size for prominence */
     color: #ffffff; /* Bright white for high contrast */
     text-align: center;
     margin-top: 5px; /* Reduced margin for tight layout */
@@ -427,7 +426,7 @@ button#refreshChart:hover {
 
 /* Dynamic styling for chart data labels */
 .chart-data-labels {
-    font-size: 20px; /* Larger font size for better visibility */
+    font-size: 22px; /* Larger font size for better visibility */
     color: #ffffff; /* White for clarity */
     text-align: center;
     transition: all 0.3s ease; /* General transition for all properties */
@@ -435,14 +434,14 @@ button#refreshChart:hover {
 
 /* Enhanced visual appeal for chart bars */
 .chart-bar {
-    background-color: #0294A5; /* Cyan-blue color for a refreshing look */
+    background-color: #0353A4; /* Darker blue, less vibrant than previous to match the theme */
     border-radius: 10px; /* Rounded for a smoother appearance */
     transition: transform 0.3s ease, background-color 0.3s ease; /* Responsive transitions for interactive feedback */
 }
 
 .chart-bar:hover {
     transform: scale(1.1); /* More significant enlargement on hover */
-    background-color: #03A9F4; /* Brighter blue on hover for extra pop */
+    background-color: #0466C8; /* Slightly brighter blue on hover for contrast */
 }
 
 
