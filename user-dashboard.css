@@ -342,6 +342,51 @@ textarea:focus {
 
 
 
+/* Container for the controls, centered with fixed width */
+#controls {
+    width: 500px; /* Fixed width for the controls */
+    padding: 20px; /* Spacious padding for better interaction */
+    margin: 20px auto; /* Margin to center horizontally in the viewport */
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    border-radius: 10px; /* Rounded corners for a smooth look */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Shadow for a floating effect */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Align children to the center */
+}
+
+/* Styling for the select dropdown */
+#timeFilterChart {
+    width: 100%; /* Full width within the container */
+    padding: 10px;
+    margin: 10px 0; /* Margin for spacing between elements */
+    background: linear-gradient(to right, #FFB703, #FB8501); /* Gradient background */
+    border: none;
+    border-radius: 5px; /* Slightly rounded corners */
+    color: #ffffff; /* White text for readability */
+    font-size: 16px; /* Sufficient font size for clarity */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/* Button styling for a consistent look with the dropdown */
+button#refreshChart {
+    width: 100%; /* Full width to match the select element */
+    padding: 10px;
+    background: linear-gradient(to right, #8ECAE6, #219EBC); /* Blue gradient */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Consistent rounded corners */
+    cursor: pointer; /* Pointer to indicate it's clickable */
+    font-weight: bold; /* Bold text for emphasis */
+    margin-top: 10px; /* Space from the dropdown to the button */
+    transition: transform 0.2s ease, background 0.3s ease; /* Smooth transition for interaction */
+}
+
+button#refreshChart:hover {
+    background: linear-gradient(to right, #FFB703, #FB8501); /* Change gradient on hover */
+    transform: translateY(-2px); /* Raise button slightly on hover */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Deeper shadow for 3D effect */
+}
 
 
 
