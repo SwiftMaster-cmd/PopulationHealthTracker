@@ -4,76 +4,73 @@ html, body {
     font-family: 'Arial', sans-serif;
     font-weight: bold;
     color: #ffffff;
-    background: linear-gradient(to bottom, #023047, #011627); /* Enhanced dark blue gradient */
+    background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient */
     font-size: 18px;
     text-align: center;
-    height: 100vh; /* Ensure full viewport height */
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Center content vertically and horizontally */
 }
 
-/* Unified styling for headers and container elements with improved interactivity */
+/* Adding consistent header and input area styling with the dark theme */
 header, .dashboard-container, .sales-container, .sales-history-container {
-    background: linear-gradient(to right, #023047, #011627); /* Consistent dark blue gradient */
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.9); /* Stronger shadow for more depth */
-    color: #ffffff;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Strong shadow for depth */
+    color: #ffffff; /* Bright white for high contrast */
     border-radius: 15px;
     padding: 20px;
     margin: 20px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transitions for interactive hover effects */
 }
 
 header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history-container:hover {
-    transform: scale(1.05); /* Slight scale up on hover for more pop */
-    box-shadow: 0 0 30px rgba(0, 0, 0, 1); /* Increased shadow intensity on hover */
+    transform: scale(1.05); /* Slight scale up on hover for pop effect */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 1); /* Darker shadow on hover for added depth */
 }
 
 /* Enhanced input styling for a more engaging user experience */
 .input-group input, #lead_id, #notes {
-    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Gradient for visual depth */
+    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Subtle gradient for depth */
     color: #ffffff;
     border-radius: 15px;
     border: none;
     padding: 10px;
     margin: 10px 0;
-    transition: box-shadow 0.3s ease, background-color 0.3s; /* Responsive transitions */
+    transition: box-shadow 0.3s ease, background-color 0.3s; /* Smooth transitions */
 }
 
 .input-group input:focus, #lead_id:focus, #notes:focus {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); /* Brighter glow effect on focus for visibility */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* White glow effect on focus */
 }
 
-/* Unified button styling with enhanced hover and focus effects */
+/* Unified button styling with gradient and interactive hover effects */
 .esi-btn, .sale-type-btn, .submit-btn {
-    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Blue gradient for visual appeal */
+    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Blue gradient for consistency with the chart */
     color: white;
     padding: 12px 20px;
     margin: 10px;
     border-radius: 15px;
     border: none;
     cursor: pointer;
-    font-size: 18px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Uniform transition for all properties */
+    font-size: 18px; /* Slightly larger font size for readability */
+    transition: all 0.3s ease; /* Uniform transition for properties */
 }
 
 .esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
-    background: linear-gradient(to top, #0466C8, #0D8EFD); /* Lighter gradient on hover for interaction */
-    transform: translateY(-5px); /* Subtle lift to indicate action */
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5); /* Deeper shadow for a dynamic 3D effect */
+    background: linear-gradient(to top, #0466C8, #0D8EFD); /* Lighter gradient on hover */
+    transform: translateY(-5px); /* Move up slightly on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow for a 3D effect */
 }
 
 .esi-btn:focus, .sale-type-btn:focus, .submit-btn:focus {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.9); /* Enhanced glow on focus for attention */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* Glow effect on focus */
 }
 
 .esi-btn.selected, .sale-type-btn.selected {
-    background: linear-gradient(to top, #023047, #011627); /* Darker blue gradient for selected state */
-    transform: scale(1.1); /* Slight enlargement to denote selection */
+    background: linear-gradient(to top, #023047, #011627); /* Darker blue for selected state */
+    transform: scale(1.1); /* Enlarge selected button */
 }
+
 
 
 
