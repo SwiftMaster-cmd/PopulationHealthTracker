@@ -846,8 +846,7 @@ button#refreshChart:hover {
 }
 
 .commission-type {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    color: #ffffff;
-    border-radius: 15px;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 15px;
     text-align: center;
     padding: 20px 0;
     width: 300px; /* Set max-width for the commission type */
@@ -883,8 +882,7 @@ button#refreshChart:hover {
 }
 
 .commission-type-btn:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
 
@@ -953,8 +951,7 @@ button#refreshChart:hover {
 #salesChartContainer {
     max-width: 750px; /* Set max width for the chart container */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 15px;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -1045,8 +1042,7 @@ chart-container
 }
 
 #toggleFilters:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
 
@@ -1069,8 +1065,7 @@ chart-container
 }
 
 #toggleButton:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
 
@@ -1094,8 +1089,7 @@ chart-container
 }
 
 #toggleCharts:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
 
