@@ -1006,7 +1006,7 @@ button#refreshChart:hover {
 
 
 
-
+chart-container
 
 
 
@@ -1051,6 +1051,45 @@ button#refreshChart:hover {
 }
 
 
+
+
+.button-container {
+    width: 500px; /* Set the width of the container */
+    display: flex; /* Use flexbox to lay out child elements */
+    flex-wrap: wrap; /* Allow the elements to wrap as needed */
+    justify-content: space-between; /* Distribute space between the buttons */
+    margin: 20px auto; /* Center the container horizontally */
+    padding: 10px; /* Padding inside the container */
+    border-radius: 8px; /* Slightly rounded corners for the container */
+    background: #023047; /* Background color */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Shadow for depth */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 480px) {
+    .button-container {
+        flex-direction: column; /* Stack buttons vertically on small screens */
+        padding: 5px; /* Reduce padding */
+    }
+    .button-container button {
+        flex: 1 1 100%; /* Each button takes full width */
+        margin-bottom: 10px; /* Add margin to separate stacked buttons */
+    }
+    .button-container button:last-child {
+        margin-bottom: 0; /* Remove bottom margin for the last button */
+    }
+}
+
+/* Enhanced keyboard navigation visual feedback */
+.button-container button:focus-visible {
+    outline: 2px solid #FF851B; /* Orange outline to indicate focus */
+    outline-offset: 2px; /* Distance between outline and button edge */
+}
+
+/* Accessibility enhancements */
+.button-container button {
+    /* Assume appropriate aria-labels are added based on their function */
+}
 
 
 /* Toggle button styles */
@@ -1100,6 +1139,32 @@ button#refreshChart:hover {
     box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
     transform: translateY(-2px);
 }
+
+
+/* Toggle button styles */
+#toggleCharts {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+#toggleCharts:hover {
+    background: linear-gradient(to bottom, #FF851B, #FF6314);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+#toggleCharts:focus {
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+    transform: translateY(-2px);
+}
+
 
 
 
