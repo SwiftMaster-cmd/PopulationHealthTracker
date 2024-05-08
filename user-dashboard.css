@@ -1012,46 +1012,6 @@ chart-container
 
 
 
-.sales-history-container {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-.sales-history-container{
-    display: block;
-    opacity: 1;
-}
-
-
-
-.goals-container {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.goals-container.show {
-    display: block;
-    opacity: 1;
-}
-
-
-
-
-
-.filters-container {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.filters-container.show {
-    display: block;
-    opacity: 1;
-}
-
-
-
 
 .button-container {
     width: 500px; /* Set the width of the container */
