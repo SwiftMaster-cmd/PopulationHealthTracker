@@ -290,7 +290,7 @@ textarea:focus {
     width: 100%; /* Full width within the container */
     padding: 10px;
     margin: 10px 0; /* Margin for spacing between elements */
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
     border: none;
     border-radius: 5px; /* Slightly rounded corners */
     color: #ffffff; /* White text for readability */
@@ -298,18 +298,18 @@ textarea:focus {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
-/* Button styling for a consistent look with the dropdown */
+/* Button styling for a consistent look with the time filter dropdown and chart container */
 button#refreshChart {
     width: 100%; /* Full width to match the select element */
     padding: 10px;
-    background: linear-gradient(to right, #0353A4, #0D8EFD); /* Blue gradient */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
     color: white;
     border: none;
     border-radius: 5px; /* Consistent rounded corners */
     cursor: pointer; /* Pointer to indicate it's clickable */
     font-weight: bold; /* Bold text for emphasis */
     margin-top: 10px; /* Space from the dropdown to the button */
-    transition: transform 0.2s ease, background 0.3s ease; /* Smooth transition for interaction */
+    transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for interaction */
 }
 
 button#refreshChart:hover {
