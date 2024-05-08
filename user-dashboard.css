@@ -73,6 +73,34 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 
 
 
+/* Main Flex Container for holding sections side by side */
+.main-content {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+    justify-content: center; /* Centers items horizontally when there's extra space */
+    align-items: start; /* Aligns items at the top of the container */
+    gap: 20px; /* Space between child elements */
+    padding: 20px; /* Padding around the entire flex container */
+}
+
+/* Styling for individual sections to make them flexible */
+.dashboard-container, .sales-container, .sales-history-container {
+    flex: 1 1 300px; /* Each box can grow and shrink but start at 300px wide */
+    background: linear-gradient(to right, #023047, #011627);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px; /* Margin for vertical spacing when wrapped */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column; /* Stack vertically on smaller screens */
+    }
+}
 
 
 
