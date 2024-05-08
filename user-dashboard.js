@@ -415,106 +415,56 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
-function fetchChartData(timeFilter = 'day') {
-    if (!userId) {
-        console.log("Attempted to fetch chart data without a valid user ID.");
-        return;
-    }
 
-    const { start, end } = timeFilter === 'day' ? getTodayRange()
-                        : timeFilter === 'week' ? getThisWeekRange()
-                        : getThisMonthRange();
 
+
+
+function getStartOfToday() {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0); // Start of today
+    return start;
+}
+
+function getStartOfWeek() {
+    const start = new Date();
+    start.setDate(start.getDate() - start.getDay()); // Set to start of the week, Sunday
+    start.setHours(0, 0, 0, 0);
+    return start;
+}
+
+function getStartOfMonth() {
+    const start = new Date();
+    start.setDate(1); // Set to the first day of the month
+    start.setHours(0, 0, 0, 0);
+    return start;
+}
+
+function fetchChartData(timePeriod) {
+    const now = new Date();
+    const startOfPeriod = timePeriod === 'day' ? getStartOfToday()
+                      : timePeriod === 'week' ? getStartOfWeek()
+                      : getStartOfMonth();
+    
     const salesRef = ref(database, `sales/${userId}`);
     onValue(salesRef, (snapshot) => {
-        let sales = snapshot.val();
-        if (!sales) {
-            console.log('No sales data found for chart.');
-            return;
-        }
+        const salesData = snapshot.val() || {};
+        const filteredSales = Object.keys(salesData).map(key => {
+            const saleDate = new Date(salesData[key].timestamp);
+            return {
+                ...salesData[key],
+                id: key,
+                date: saleDate
+            };
+        }).filter(sale => sale.date >= startOfPeriod && sale.date <= now);
 
-        let filteredSales = Object.keys(sales).map(key => ({
-            ...sales[key],
-            id: key,
-            date: new Date(sales[key].timestamp)
-        })).filter(sale => sale.date >= start && sale.date < end);
-
-        // Optional: sort and other operations...
-
-        // Generate data for the chart from filteredSales
         const chartData = generateChartData(filteredSales);
         renderSalesChart(chartData);
     });
 }
 
-function generateChartData(salesArray) {
-    // Your logic to transform sales data into the format needed by Chart.js
-    // Example:
-    const labels = salesArray.map(sale => sale.date.toLocaleDateString());
-    const data = salesArray.map(sale => sale.amount); // assuming each sale has an 'amount' property
-
-    return {
-        labels,
-        datasets: [{
-            label: 'Sales Amount',
-            data: data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-        }]
-    };
-}
-
-
-
-
-
-
-
-
-
-
-let salesChart;
-
-function renderSalesChart(data) {
-    if (salesChart) {
-        salesChart.destroy();
-    }
-
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    salesChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
-                    },
-                    ticks: {
-                        maxTicksLimit: 5 // Attempt to limit to 5 ticks
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false // Hide vertical grid lines
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false // Hide legend
-                }
-            },
-            animation: {
-                duration: 2000, // Animates the chart over 2 seconds
-                easing: 'easeInOutQuart' // Smooth animation curve
-            },
-            responsive: true,
-            maintainAspectRatio: false // Allow chart to resize
-        }
-    });
+function updateChart() {
+    const selectedTimePeriod = document.getElementById('timePeriodSelect').value;
+    fetchChartData(selectedTimePeriod);
 }
 
 
