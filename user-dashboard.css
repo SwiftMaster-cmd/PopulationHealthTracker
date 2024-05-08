@@ -277,7 +277,7 @@ textarea:focus {
     width: 500px; /* Fixed width for the controls */
     padding: 20px; /* Spacious padding for better interaction */
     margin: 20px auto; /* Margin to center horizontally in the viewport */
-    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
     border-radius: 10px; /* Rounded corners for a smooth look */
     box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Shadow for a floating effect */
     display: flex;
