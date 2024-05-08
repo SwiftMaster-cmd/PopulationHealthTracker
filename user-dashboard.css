@@ -1012,7 +1012,15 @@ button#refreshChart:hover {
 
 
 
-
+.sales-history-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.sales-history-container{
+    display: block;
+    opacity: 1;
+}
 
 
 

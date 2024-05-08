@@ -552,24 +552,35 @@ document.getElementById('timeFilterChart').addEventListener('change', () => {
 
 
 
-
-
 document.getElementById('toggleFilters').addEventListener('click', function() {
     const filtersContainer = document.getElementById('filtersContainer');
+    const salesHistoryContainer = document.querySelector('.sales-history-container'); // Get the sales history container
+
     if (filtersContainer.style.opacity === '0') {
+        // Show both the filters container and the sales history container
         filtersContainer.style.display = 'block';
+        salesHistoryContainer.style.display = 'block'; // Display sales history
         setTimeout(() => {
             filtersContainer.style.opacity = '1';
+            salesHistoryContainer.style.opacity = '1'; // Set opacity to 1 for sales history
         }, 10);
-        this.textContent = 'Hide Filters';
+        this.textContent = 'Hide History';
     } else {
+        // Hide both the filters container and the sales history container
         filtersContainer.style.opacity = '0';
+        salesHistoryContainer.style.opacity = '0'; // Set opacity to 0 for sales history
         setTimeout(() => {
             filtersContainer.style.display = 'none';
+            salesHistoryContainer.style.display = 'none'; // Hide sales history
         }, 500); // Adjust timing to match the CSS transition duration
-        this.textContent = 'Show Filters';
+        this.textContent = 'Show History';
     }
 });
+
+
+
+
+
 document.getElementById('toggleButton').addEventListener('click', function() {
     const goalsContainer = document.querySelector('.goals-container');
     if (goalsContainer.style.opacity === '0') {
