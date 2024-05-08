@@ -578,6 +578,31 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 });
 
 
+document.getElementById('toggleCharts').addEventListener('click', function() {
+    const chartContainer = document.querySelector('.chart-container');
+    const chartControls = document.getElementById('controls');
+
+    if (chartContainer.style.opacity === '0') {
+        // Show both the chart and controls
+        chartContainer.style.display = 'block';
+        chartControls.style.display = 'block';
+        setTimeout(() => {
+            chartContainer.style.opacity = '1';
+            chartControls.style.opacity = '1';
+        }, 10);
+        this.textContent = 'Hide Charts';
+    } else {
+        // Hide both the chart and controls
+        chartContainer.style.opacity = '0';
+        chartControls.style.opacity = '0';
+        setTimeout(() => {
+            chartContainer.style.display = 'none';
+            chartControls.style.display = 'none';
+        }, 500); // Ensure the timing matches any CSS transitions
+        this.textContent = 'Show Charts';
+    }
+});
+
 
 
 
