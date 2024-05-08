@@ -458,13 +458,11 @@ document.getElementById('refreshChart').addEventListener('click', () => {
 });
 
 
-
-
+// Filters and generates chart data based on sales array and time filter
 function filterChartData(salesArray, timeFilter) {
     const now = new Date();
     return salesArray.filter(sale => {
         const saleDate = new Date(sale.timestamp);
-        
         switch (timeFilter) {
             case 'day':
                 return saleDate.toDateString() === now.toDateString();
@@ -474,15 +472,12 @@ function filterChartData(salesArray, timeFilter) {
             case 'month':
                 return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
             default:
-                return true; // No filter applied, show all data
+                return true; // Include all data if no specific filter is applied
         }
     });
 }
 
-
-
-
-
+// Generates data for rendering the sales chart
 function generateChartData(salesArray) {
     const saleTypeCounts = calculateSaleTypeCounts(salesArray);
     const labels = Object.keys(saleTypeCounts);
@@ -492,26 +487,18 @@ function generateChartData(salesArray) {
         labels: labels,
         datasets: [{
             label: 'Sale Type Counts',
-            backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color with opacity
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
             data: data,
         }]
     };
 }
 
-
-
-
-
-
-
-
+// Renders the sales chart in a canvas element
 let salesChart;
-
 function renderSalesChart(data) {
     if (salesChart) {
         salesChart.destroy();
     }
-
     const ctx = document.getElementById('salesChart').getContext('2d');
     salesChart = new Chart(ctx, {
         type: 'bar',
@@ -521,33 +508,38 @@ function renderSalesChart(data) {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)', // Light gray grid lines
+                        color: 'rgba(0, 0, 0, 0.1)',
                     },
                     ticks: {
-                        maxTicksLimit: 5 // Attempt to limit to 5 ticks
+                        maxTicksLimit: 5
                     }
                 },
                 x: {
                     grid: {
-                        display: false // Hide vertical grid lines
+                        display: false
                     }
                 }
             },
             plugins: {
                 legend: {
-                    display: false // Hide legend
+                    display: false
                 }
             },
             animation: {
-                duration: 2000, // Animates the chart over 2 seconds
-                easing: 'easeInOutQuart' // Smooth animation curve
+                duration: 2000,
+                easing: 'easeInOutQuart'
             },
             responsive: true,
-            maintainAspectRatio: false // Allow chart to resize
+            maintainAspectRatio: false
         }
     });
 }
 
+// Attaches an event listener to a UI control for changing the time filter of the chart
+document.getElementById('timeFilterChart').addEventListener('change', () => {
+    const timeFilter = document.getElementById('timeFilterChart').value;
+    fetchChartData(timeFilter);
+});
 
 
 
