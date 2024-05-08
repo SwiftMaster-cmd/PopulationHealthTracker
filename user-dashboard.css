@@ -82,8 +82,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
     width: auto;
     max-width: 500px; /* Set maximum width to 500px */
     margin: 20px auto;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 20px;
     display: flex;
@@ -101,8 +100,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    border-radius: 10px;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 10px;
     padding: 15px;
     margin-bottom: 15px;
     color: #ffffff;
@@ -120,8 +118,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    align-items: center;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    align-items: center;
 }
 
 .sale-data {
@@ -180,8 +177,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
     overflow-y: auto;
     margin-top: 10px;
     padding: 8px;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    border-radius: 15px;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 15px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     color: #ffffff; /* Text color white */
     font-size: 20px; /* Increase font size */
@@ -246,8 +242,7 @@ textarea:focus {
 }
 
 .sales-history-container::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-}
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */}
 
 .sales-history-entry .sale-note::-webkit-scrollbar {
     width: 6px;
@@ -507,8 +502,7 @@ button#refreshChart:hover {
     margin-left: 10px;
     font-size: 18px;
     border-radius: 14px;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    border: none;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border: none;
     color: white;
     outline: none;
     text-align: left;
@@ -556,8 +550,7 @@ button#refreshChart:hover {
     margin-left: 10px;
     font-size: 18px;
     border-radius: 14px;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    border: none;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border: none;
     color: rgb(255, 255, 255); /* Set the initial text color to light gray */
     outline: none;
     text-align: center;
@@ -567,8 +560,7 @@ button#refreshChart:hover {
 /* Adjustments for the lead ID filter on hover and focus */
 .filter-group input[type="text"]:hover,
 .filter-group input[type="text"]:focus {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
     color: white; /* Set the text color to white on hover and focus */
 }
@@ -717,8 +709,7 @@ button#refreshChart:hover {
 
 /* Selected Button (if needed) */
 #editSaleForm button.selected {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    color: white;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    color: white;
 }
 
 
@@ -757,8 +748,7 @@ button#refreshChart:hover {
 }
 
 .goal-group {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     color: white;
@@ -797,24 +787,21 @@ button#refreshChart:hover {
 
 #monthlyGoalForm button:hover {
     transform: translateY(-2px);
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Swap blue gradient to orange gradient on hover */
-}
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */}
 
 /* Adjust input field to match the orange gradient */
 .goal-group input[type="number"] {
     padding: 10px;
     border-radius: 10px;
     border: none;
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient */
-    color: #333;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    color: #333;
     margin-bottom: 10px;
 }
 
 
 #monthlyGoalForm button:hover {
     transform: translateY(-2px);
-    background: linear-gradient(to bottom, #FFB703, #FB8501);
-}
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */}
 
 
 
