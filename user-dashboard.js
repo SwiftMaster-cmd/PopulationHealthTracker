@@ -410,12 +410,74 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
+function fetchChartData(timeFilter = 'day') {
+    if (!userId) {
+        console.log("Attempted to fetch chart data without a valid user ID.");
+        return;
+    }
+
+    const salesRef = ref(database, `sales/${userId}`);
+    onValue(salesRef, (snapshot) => {
+        let sales = snapshot.val();
+        if (!sales) {
+            console.log("No sales data found.");
+            return;
+        }
+
+        let salesArray = Object.keys(sales).map(key => ({
+            ...sales[key],
+            id: key
+        }));
+
+        // Apply the date-based filter specifically for chart data
+        salesArray = filterChartData(salesArray, timeFilter);
+
+        // Generate and render the chart with the filtered data
+        const chartData = generateChartData(salesArray);
+        renderSalesChart(chartData);
+    });
+}
+
+// Event listener for chart-specific UI control, e.g., a dropdown to set the time filter
+document.getElementById('timeFilterChart').addEventListener('change', () => {
+    const timeFilter = document.getElementById('timeFilterChart').value;
+    fetchChartData(timeFilter);
+});
 
 
 
 
+// Add an event listener for a chart-specific UI control, e.g., a button to refresh the chart
+document.getElementById('refreshChart').addEventListener('click', () => {
+    const timeFilter = document.getElementById('timeFilter').value;
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
+
+    fetchChartData(timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+});
 
 
+
+
+function filterChartData(salesArray, timeFilter) {
+    const now = new Date();
+    return salesArray.filter(sale => {
+        const saleDate = new Date(sale.timestamp);
+        
+        switch (timeFilter) {
+            case 'day':
+                return saleDate.toDateString() === now.toDateString();
+            case 'week':
+                const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+                return saleDate >= oneWeekAgo && saleDate <= now;
+            case 'month':
+                return saleDate.getMonth() === now.getMonth() && saleDate.getFullYear() === now.getFullYear();
+            default:
+                return true; // No filter applied, show all data
+        }
+    });
+}
 
 
 
