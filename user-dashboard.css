@@ -45,7 +45,6 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 
 /* Unified button styling with gradient and interactive hover effects */
 .esi-btn, .sale-type-btn, .submit-btn {
-    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Blue gradient for consistency with the chart */
     color: white;
     padding: 12px 20px;
     margin: 10px;
