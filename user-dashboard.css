@@ -10,7 +10,7 @@ html, body {
 }
 
 /* Adding consistent header and input area styling with the dark theme */
-header, .input-group, .dashboard-container, .sales-container, .sales-history-container {
+header, .dashboard-container, .sales-container, .sales-history-container {
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Strong shadow for depth */
     color: #ffffff; /* Bright white for high contrast */
@@ -30,7 +30,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 
 /* Enhanced input styling for a more engaging user experience */
 .input-group input, #lead_id, #notes {
-  
+    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Subtle gradient for depth */
     color: #ffffff;
     border-radius: 15px;
     border: none;
