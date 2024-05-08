@@ -422,7 +422,7 @@ button#refreshChart:hover {
 
 /* Styling for chart data labels with improved visibility */
 .chart-data-labels {
-    font-size: 24px; /* Further increased font size for clarity */
+    font-size: 32px; /* Further increased font size for clarity */
     color: #ffffff; /* Bright white for clear readability */
     text-align: center;
     transition: all 0.3s ease; /* General transition for all properties */
