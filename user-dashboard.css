@@ -387,61 +387,59 @@ button#refreshChart:hover {
     transform: translateY(-2px); /* Raise button slightly on hover */
     box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Deeper shadow for 3D effect */
 }
-/* Styling for the chart container with a dark theme */
+
+
+
+
+/* Styling for the chart container with a dark, sophisticated theme */
 .chart-container {
     width: 500px;
     margin: 20px auto;
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); /* Enhanced shadow for more depth */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient for depth */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); /* Stronger shadow for pronounced depth */
     border-radius: 15px; /* Smooth rounded corners */
     overflow: hidden;
     display: flex;
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Align items vertically in the center */
     padding: 20px;
-    max-height: 400px; /* Consistent height with the content */
+    max-height: 400px; /* Adequate height to maintain content visibility */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for interactions */
 }
 
 .chart-container:hover {
     transform: scale(1.1); /* More noticeable scale increase on hover */
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.8); /* Deeper shadow on hover for a popping effect */
+    box-shadow: 0 0 35px rgba(0, 0, 0, 1); /* Even deeper shadow on hover for a popping effect */
 }
 
-/* Styling for the chart canvas within the container */
-#dailySalesChart {
-    width: 100%; /* Full width of the container */
-    height: 100%; /* Full height based on parent container */
-    border-radius: 15px; /* Consistent rounded corners */
-}
-
-/* Eye-catching chart title styling */
+/* Enhanced styling for the chart title */
 .chart-title {
-    font-size: 28px; /* Increased font size for prominence */
-    color: #ffffff; /* Bright white for high contrast */
+    font-size: 32px; /* Increased font size for more prominence */
+    color: #ffffff; /* "Pure" white for highest contrast */
     text-align: center;
     margin-top: 5px; /* Reduced margin for tight layout */
     transition: font-size 0.3s ease; /* Smooth font size transition */
 }
 
-/* Dynamic styling for chart data labels */
+/* Styling for chart data labels with improved visibility */
 .chart-data-labels {
-    font-size: 22px; /* Larger font size for better visibility */
-    color: #ffffff; /* White for clarity */
+    font-size: 24px; /* Further increased font size for clarity */
+    color: #ffffff; /* Bright white for clear readability */
     text-align: center;
     transition: all 0.3s ease; /* General transition for all properties */
 }
 
-/* Enhanced visual appeal for chart bars */
+/* 3D-like styling for chart bars */
 .chart-bar {
-    background-color: #0353A4; /* Darker blue, less vibrant than previous to match the theme */
+    background-color: #0353A4; /* Dark blue for a thematic match */
     border-radius: 10px; /* Rounded for a smoother appearance */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Shadow to create depth, making bars pop out */
     transition: transform 0.3s ease, background-color 0.3s ease; /* Responsive transitions for interactive feedback */
 }
 
 .chart-bar:hover {
     transform: scale(1.1); /* More significant enlargement on hover */
-    background-color: #0466C8; /* Slightly brighter blue on hover for contrast */
+    background-color: #0466C8; /* Brighter blue on hover for visual interest */
 }
 
 
