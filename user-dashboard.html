@@ -99,15 +99,19 @@
 
 
 
-
-<div id="salesChartContainer" class="chart-container">
-    <canvas id="salesChart"></canvas>
-
-
-
-
+<div id="controls">
+    <label for="timeFilterChart">Time Filter:</label>
+    <select id="timeFilterChart">
+        <option value="day">Day</option>
+        <option value="week">Week</option>
+        <option value="month">Month</option>
+    </select>
+    <button id="refreshChart">Refresh Chart</button>
 </div>
 
+<div class="chart-container">
+    <canvas id="salesChart"></canvas>
+</div>
  
 
 <button id="toggleFilters">Show Filters</button>
