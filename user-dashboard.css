@@ -310,6 +310,7 @@ button#refreshChart {
     font-weight: bold; /* Bold text for emphasis */
     margin-top: 10px; /* Space from the dropdown to the button */
     transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for interaction */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
 button#refreshChart:hover {
