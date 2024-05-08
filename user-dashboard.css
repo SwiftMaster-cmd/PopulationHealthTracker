@@ -270,8 +270,6 @@ textarea:focus {
 
 
 
-
-
 /* Container for the controls, centered with fixed width */
 #controls {
     width: 500px; /* Fixed width for the controls */
@@ -279,11 +277,18 @@ textarea:focus {
     margin: 20px auto; /* Margin to center horizontally in the viewport */
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
     border-radius: 10px; /* Rounded corners for a smooth look */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Shadow for a floating effect */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Initial shadow for a floating effect */
     display: flex;
     flex-direction: column; /* Stack children vertically */
     align-items: center; /* Align children to the center */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for hover effects */
 }
+
+#controls:hover {
+    transform: scale(1.05); /* Slightly enlarge the container on hover */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.7); /* Enhanced shadow for more depth and visibility on hover */
+}
+
 
 /* Styling for the select dropdown to fit the dark theme */
 #timeFilterChart {
