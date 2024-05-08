@@ -124,8 +124,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 .sale-data {
     width: 200px; /* Set width to 200px */
     margin-bottom: 10px;
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
-    border-radius: 5px;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 5px;
     padding: 8px;
     box-shadow: none;
     outline: none;
@@ -133,8 +132,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 
 .sale-data.lead-id,
 .sale-data.esi {
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Apply orange gradient */
-    border-radius: 15px; 
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 15px; 
     padding: 15px;
     box-shadow: none;
     outline: none;
@@ -216,8 +214,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 }
 
 .sale-actions button:hover {
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Orange gradient on hover */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
 
@@ -887,8 +884,7 @@ button#refreshChart:hover {
 }
 
 .commission-type-btn:focus {
-    box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
-    transform: translateY(-2px);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    transform: translateY(-2px);
 }
 
 
