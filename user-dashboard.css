@@ -475,8 +475,7 @@ button#refreshChart:hover {
     display: flex;
     flex-direction: column; /* Stack children vertically */
     align-items: stretch; /* Stretch children to fill the width */
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Gradient background */
-}
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */}
 
 /* Style adjustments for each filter group */
 .filter-group {
@@ -537,8 +536,7 @@ button#refreshChart:hover {
 }
 
 #applyFilters:hover, #applyFilters:focus {
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Depth with shadow */
-    transform: translateY(-3px); /* Slight lift for interaction */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    transform: translateY(-3px); /* Slight lift for interaction */
 }
 
 
@@ -617,8 +615,7 @@ button#refreshChart:hover {
 
 /* Modal Content */
 #editSaleForm {
-    background: linear-gradient(to bottom, #FB8501, #FFB703);
-    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: auto;
@@ -638,8 +635,7 @@ button#refreshChart:hover {
     margin: 8px auto;
     border-radius: 20px; /* Rounded corners */
     border: none;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
-    color: white; /* Text color */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    color: white; /* Text color */
     display: block;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
@@ -654,8 +650,7 @@ button#refreshChart:hover {
     margin: 8px auto;
     border-radius: 20px; /* Rounded corners */
     border: none;
-    background: linear-gradient(to bottom, #FFB703, #FB8501);    font-size: 18px;
-    color: white; /* Text color */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    color: white; /* Text color */
     display: block;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
     resize: none; /* Disable resizing */
@@ -680,15 +675,13 @@ button#refreshChart:hover {
 
 /* Hover effect for buttons */
 #editSaleForm button:hover {
-    background: linear-gradient(to bottom, #FF851B, #FF6314);
-    transform: translateY(-3px);
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    transform: translateY(-3px);
 }
 
 /* Click effect for buttons */
 #editSaleForm button:active {
     transform: scale(0.98);
-    background: linear-gradient(to bottom, #FF6314, #FF851B);
-}
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */}
 
 /* Close Button */
 #closeEditModalButton {
@@ -734,8 +727,7 @@ button#refreshChart:hover {
     display: flex;
     flex-direction: column; /* Stack children vertically */
     align-items: stretch; /* Stretch children to fill the width */
-    background: linear-gradient(to bottom, #FFB703, #FB8501); /* Swap blue gradient to orange gradient */
-}
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */}
 
 
 
