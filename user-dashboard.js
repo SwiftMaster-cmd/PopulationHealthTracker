@@ -415,26 +415,57 @@ function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCount
 
 
 
+function fetchChartData(timeFilter = 'day') {
+    if (!userId) {
+        console.log("Attempted to fetch chart data without a valid user ID.");
+        return;
+    }
 
+    const { start, end } = timeFilter === 'day' ? getTodayRange()
+                        : timeFilter === 'week' ? getThisWeekRange()
+                        : getThisMonthRange();
 
+    const salesRef = ref(database, `sales/${userId}`);
+    onValue(salesRef, (snapshot) => {
+        let sales = snapshot.val();
+        if (!sales) {
+            console.log('No sales data found for chart.');
+            return;
+        }
 
+        let filteredSales = Object.keys(sales).map(key => ({
+            ...sales[key],
+            id: key,
+            date: new Date(sales[key].timestamp)
+        })).filter(sale => sale.date >= start && sale.date < end);
 
+        // Optional: sort and other operations...
 
+        // Generate data for the chart from filteredSales
+        const chartData = generateChartData(filteredSales);
+        renderSalesChart(chartData);
+    });
+}
 
 function generateChartData(salesArray) {
-    const saleTypeCounts = calculateSaleTypeCounts(salesArray);
-    const labels = Object.keys(saleTypeCounts);
-    const data = Object.values(saleTypeCounts);
+    // Your logic to transform sales data into the format needed by Chart.js
+    // Example:
+    const labels = salesArray.map(sale => sale.date.toLocaleDateString());
+    const data = salesArray.map(sale => sale.amount); // assuming each sale has an 'amount' property
 
     return {
-        labels: labels,
+        labels,
         datasets: [{
-            label: 'Sale Type Counts',
-            backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color with opacity
+            label: 'Sales Amount',
             data: data,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
         }]
     };
 }
+
+
 
 
 
@@ -651,89 +682,6 @@ function updateStatusMessage(message, type) {
     setTimeout(() => {
         statusMessageElement.style.display = 'none'; // Hide the message after 3 seconds
     }, 3000);
-}
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const auth = getAuth();
-    let userId = null;
-
-    onAuthStateChanged(auth, (user) => {
-        userId = user ? user.uid : null;
-        if (userId) {
-            setupSalesProgressListener(userId);
-        } else {
-            console.log("User is not logged in.");
-        }
-    });
-});
-
-function setupSalesProgressListener(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
-
-    onValue(goalsRef, (goalSnapshot) => {
-        if (goalSnapshot.exists()) {
-            const goals = goalSnapshot.val();
-            onValue(salesRef, (salesSnapshot) => {
-                if (salesSnapshot.exists()) {
-                    updateProgressBars(salesSnapshot.val(), goals);
-                } else {
-                    console.log('No sales data found.');
-                }
-            });
-        } else {
-            console.log('No goals found');
-        }
-    });
-}
-
-function updateProgressBars(salesData, goals) {
-    const totals = {
-        "Billable HRA": 0,
-        "Flex HRA":0,
-        "Select RX": 0,
-        "Transfer": 0
-    };
-
-    // Aggregate sales data
-    Object.values(salesData).forEach(sale => {
-        Object.entries(sale.sale_types).forEach(([type, count]) => {
-            if (totals.hasOwnProperty(type)) { // Ensuring proper type name
-                totals[type] += count;
-            } else {
-                console.error(`Unexpected sale type: ${type}`);
-            }
-        });
-    });
-
-    // Update progress for each goal type
-    Object.keys(totals).forEach(type => {
-        const current = totals[type];
-        const goalKey = type.toLowerCase(); // Simplified, make sure this matches HTML IDs
-        const goal = goals[goalKey];
-        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`);
-        if (goal !== undefined) {
-            updateProgressBar(type, current, goal);
-        } else {
-            console.error(`Goal not found for type: ${type}`);
-        }
-    });
-}
-function updateProgressBar(type, current, goal) {
-    const progressId = `progress${type.replace(/\s+/g, '')}`; // Removes spaces, adapt as necessary
-    const progressBar = document.getElementById(progressId);
-    if (progressBar) {
-        const percentage = Math.min((current / goal) * 100, 100);
-        progressBar.style.width = `${percentage}%`;
-        progressBar.textContent = `${percentage.toFixed(0)}%`;
-    } else {
-        console.error(`Progress bar not found for type: ${type}`);
-    }
 }
 
 
