@@ -1006,30 +1006,27 @@ button#refreshChart:hover {
 
 
 
-
-/* Styles for the chart container */
 #salesChartContainer {
-    max-width: 750px; /* Set max width for the chart container */
-    margin: 20px auto;
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 15px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: fadeIn 1s ease-out;
+    max-width: 500px; /* Maintains maximum width for the chart container */
+    margin: 20px auto; /* Centers the container horizontally with top and bottom margin */
+    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match other containers */
+    border-radius: 15px; /* Rounded corners for a consistent look */
+    padding: 20px; /* Adequate padding around the content */
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks children vertically */
+    align-items: center; /* Centers children horizontally */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
+    animation: fadeIn 1s ease-out; /* Animation for fade in effect */
 }
 
-/* Style the chart canvas */
+
 #dailySalesChart {
-    max-width: 100%; /* Make the chart responsive */
-    height: auto;
-    border-radius: 15px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s ease-out;
+    width: 100%; /* Responsive width to take up the full container width */
+    height: auto; /* Height set to auto to maintain aspect ratio based on content */
+    border-radius: 15px; /* Rounded corners to match the container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    animation: fadeIn 1s ease-out; /* Consistent fade-in animation */
 }
-
-
-
 
 
 
