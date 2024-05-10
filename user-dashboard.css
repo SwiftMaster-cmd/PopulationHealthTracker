@@ -72,19 +72,7 @@
 
 
 
-/* Specific adjustments for alignment and layout */
-.sales-history-container, .filters-container, .goals-container {
-    align-items: flex-start; /* Aligns children to the start of the flex container (right) */
-}
 
-/* Ensures all child elements within flex containers are aligned properly */
-.dashboard-container > *, .sales-container > *, .sales-history-container > *, .filters-container > *, .goals-container > * {
-    width: 100%; /* Each child takes full width of its parent */
-}
-
-* {
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
-}
 
 
 header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history-container:hover {
