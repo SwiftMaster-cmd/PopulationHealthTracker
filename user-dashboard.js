@@ -570,29 +570,6 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-document.getElementById('togglGoals').addEventListener('click', function() {
-    const filtersContainer = document.getElementById('.goals-container');
-    // Check if the container is currently visible by checking its opacity
-    if (filtersContainer.style.opacity === '0' || filtersContainer.style.display === 'none') {
-        filtersContainer.style.display = 'block';  // Make the container visible before fading in
-        setTimeout(() => {
-            filtersContainer.style.opacity = '1';  // Fade in
-        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
-        this.textContent = 'Hide Filters';  // Change button text to reflect action
-    } else {
-        filtersContainer.style.opacity = '0';  // Fade out
-        setTimeout(() => {
-            filtersContainer.style.display = 'none';  // Hide after transition
-        }, 500);  // Delay should match the CSS transition time
-        this.textContent = 'Show Filters';  // Change button text back
-    }
-});
-
-
-
-
-
-
 
 
 
@@ -804,6 +781,25 @@ function updateProgressBar(type, current, goal) {
 
 
 
+
+
+
+document.getElementById('toggleGoals').addEventListener('click', function() {
+    const goalsContainer = document.querySelector('.goals-container');
+    if (goalsContainer.style.opacity === '0' || goalsContainer.style.display === 'none') {
+        goalsContainer.style.display = 'block';  // Show the container
+        setTimeout(() => {
+            goalsContainer.style.opacity = '1';  // Start fade-in
+        }, 10);  // Delay to allow display change to take effect
+        this.textContent = 'Hide Goals';  // Change button text
+    } else {
+        goalsContainer.style.opacity = '0';  // Start fade-out
+        setTimeout(() => {
+            goalsContainer.style.display = 'none';  // Hide the container after fade-out
+        }, 500);  // Match the CSS transition time
+        this.textContent = 'Show Goals';  // Reset button text
+    }
+});
 
 
 
