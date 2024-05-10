@@ -110,19 +110,25 @@
 
 
 
+
 <div class="chartc-container">
     <div id="controls">
-        <label for="timeFilterChart">Filter By Time:</label>
+        <label for="timeFilterChart">Filter By Time</label>
         <select id="timeFilterChart">
             <option value="day">Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
         </select>
-        <button id="refreshChart">Refresh Chart</button>
+        <button id="refreshChart" style="display: none;" >Refresh Chart</button>
     </div>
-    <div class="chart-container">
-        <canvas id="salesChart"></canvas>
-    </div>
+
+<div class="chart-container container">
+
+
+    <canvas id="salesChart"></canvas>
+</div>
+    
+
 </div>
 
 
