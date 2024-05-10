@@ -70,7 +70,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 
 /* Enhanced input styling for a more engaging user experience */
 .input-group input, #lead_id, #notes {
-    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Subtle gradient for depth */
+    background:  #023047;
     color: #ffffff;
     border-radius: 15px;
     border: none;
@@ -85,7 +85,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 
 /* Unified button styling with gradient and interactive hover effects */
 .esi-btn, .sale-type-btn, .submit-btn {
-    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Blue gradient for consistency with the chart */
+    background:  #023047;
     color: white;
     padding: 12px 20px;
     margin: 10px;
@@ -97,7 +97,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 }
 
 .esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
-    background: linear-gradient(to top, #0466C8, #0D8EFD); /* Lighter gradient on hover */
+    background:  #023047;
     transform: translateY(-5px); /* Move up slightly on hover */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow for a 3D effect */
 }
@@ -921,7 +921,7 @@ button#refreshChart:hover {
 
 .commission-type-summary {
     font-size: 20px; /* Larger font size for commission type summary */
-    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    background: #023047;
     border-radius: 15px;
     padding: 1px;
     width: 100%; /* Make summary container fluid */
