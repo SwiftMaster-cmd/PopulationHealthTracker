@@ -1,0 +1,95 @@
+/* Basic styles for the whole page */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+    background: linear-gradient(to bottom, #023047, #011627);
+    font-size: 18px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* General container styles applied to all main containers */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Button styling across the site */
+.button, .esi-btn, .sale-type-btn, .submit-btn {
+    background: linear-gradient(to top, #0353A4, #0D8EFD);
+    color: white;
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover, .esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
+    background: linear-gradient(to top, #0466C8, #0D8EFD);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Input styling */
+.input-group input, #lead_id, #notes {
+    background: linear-gradient(to top, #0353A4, #0D8EFD);
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.input-group input:focus, #lead_id:focus, #notes:focus {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+/* Container for various UI elements */
+.sales-history-container, .filters-container, .goals-container, #controls {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrolling and overflow management */
+.sales-history-container {
+    overflow-y: auto;
+    max-height: 750px;
+}
+
+.sales-history-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sales-history-container::-webkit-scrollbar-thumb {
+    background: #BBDEFB;
+    border-radius: 4px;
+}
+
+/* Animation for interactive elements */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
