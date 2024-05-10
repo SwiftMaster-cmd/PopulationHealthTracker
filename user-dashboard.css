@@ -48,7 +48,7 @@
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the right */
-    width: 100%; /* Takes full width of the parent */
+    width: 90%; /* Takes full width of the parent */
     max-width: 500px; /* Maximum width set to 500px */
     margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
     padding: 20px; /* Adds spacing inside the container */
@@ -61,36 +61,20 @@
 
 
 .chart-container, #controls {
-    max-width: 500px; /* Ensures controls and chart containers also have max-width of 500px */
-    width: 90%; /* Takes full width of the parent up to max width */
-    margin: 0px auto; /* Centering horizontally */
-    padding: 0px; /* Padding for internal spacing */
-    background: linear-gradient(to right, #023047, #011627); /* Background color */
-    border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+    max-width: 500px; /* Maximum width */
+    width: 90%; /* Relative width to the parent container */
+    margin: 20px auto; /* Vertical margin added for spacing, centers horizontally */
+    padding: 20px; /* Adjust padding as necessary for internal spacing */
+    background: linear-gradient(to right, #023047, #011627); /* Stylish background gradient */
+    border-radius: 15px; /* Aesthetic rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-direction: column; /* Stack children vertically */
 }
 
 
-@media (max-width: 500px) {
-    #salesChartContainer, .sales-container, .sales-history-container, .filters-container, .goals-container {
-        width: 100%; /* Takes full width of the parent */
-        max-width: 100%; /* Removes max-width constraint */
-        margin: 10px 0; /* Reduces margin for more space */
-        padding: 10px; /* Reduces padding to increase space efficiency */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Optionally, adjust shadow for subtlety */
-    }
-
-    #dailySalesChart {
-        /* If the chart is responsive, it might not need changes. If issues persist:
-        Adjust specific chart settings here if the chart library allows dynamic resizing. */
-    }
-
-    /* Additional adjustments for any specific text sizes or other elements that might need resizing */
-    .dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
-        flex-direction: column; /* Ensures vertical stacking remains if not already set */
-        align-items: center; /* Centers content within each container */
-    }
-}
 
 
 
