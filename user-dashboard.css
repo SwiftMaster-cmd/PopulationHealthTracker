@@ -44,7 +44,7 @@
 
 
 /* General container styling with flexbox */
-.sales-container, .sales-history-container, .filters-container, .goals-container {
+.sales-container,.chartc-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the right */
