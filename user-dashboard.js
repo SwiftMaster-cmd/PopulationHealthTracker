@@ -573,29 +573,27 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 
 
 
-document.getElementById('toggleGoals').addEventListener('click', function() {
-    const chartContainer = document.querySelector('.goals-container');
-
-    if (chartContainer.style.opacity === '0') {
-        // Show both the chart and controls
-        chartContainer.style.display = 'block';
-        chartControls.style.display = 'block';
+document.getElementById('togglGoals').addEventListener('click', function() {
+    const filtersContainer = document.getElementById('.goals-container');
+    // Check if the container is currently visible by checking its opacity
+    if (filtersContainer.style.opacity === '0' || filtersContainer.style.display === 'none') {
+        filtersContainer.style.display = 'block';  // Make the container visible before fading in
         setTimeout(() => {
-            chartContainer.style.opacity = '1';
-            chartControls.style.opacity = '1';
-        }, 10);
-        this.textContent = 'Hide Goals';
+            filtersContainer.style.opacity = '1';  // Fade in
+        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
+        this.textContent = 'Hide Filters';  // Change button text to reflect action
     } else {
-        // Hide both the chart and controls
-        chartContainer.style.opacity = '0';
-        chartControls.style.opacity = '0';
+        filtersContainer.style.opacity = '0';  // Fade out
         setTimeout(() => {
-            chartContainer.style.display = 'none';
-            chartControls.style.display = 'none';
-        }, 500); // Ensure the timing matches any CSS transitions
-        this.textContent = 'Show Goals';
+            filtersContainer.style.display = 'none';  // Hide after transition
+        }, 500);  // Delay should match the CSS transition time
+        this.textContent = 'Show Filters';  // Change button text back
     }
 });
+
+
+
+
 
 
 

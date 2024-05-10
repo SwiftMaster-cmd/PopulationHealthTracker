@@ -889,15 +889,15 @@ button:hover {
 
 
     .goals-container {
-        display: show;  /* Initially hidden */
-        opacity: 1;     /* Start fully transparent */
+        display: none;  /* Initially hidden */
+        opacity: 0;     /* Start fully transparent */
         transition: opacity 0.5s ease;  /* Smooth transition for the opacity */
     }
     
 
     #filtersContainer {
-        display: show;
-        opacity: 1;
+        display: none;
+        opacity: 0;
         transition: opacity 0.5s ease-out;
     }
     
