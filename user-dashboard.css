@@ -44,7 +44,7 @@ html, body {
  .sales-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
-    align-items: flex-end; /* Aligns children to the right */
+    align-items: flex-start; /* Aligns children to the right */
     width: 100%; /* Takes full width of the parent */
     max-width: 500px; /* Maximum width set to 500px */
     margin: 20px; /* Centers the container with margin */
@@ -70,7 +70,7 @@ html, body {
 
 /* Specific adjustments for alignment and layout */
 .sales-history-container, .filters-container, .goals-container {
-    align-items: flex-start; /* Aligns children to the start of the flex container (right) */
+    align-items: flex-end; /* Aligns children to the start of the flex container (right) */
 }
 
 /* Ensures all child elements within flex containers are aligned properly */
