@@ -596,22 +596,20 @@ document.getElementById('toggleCharts').addEventListener('click', function() {
 
 
 
-
 document.getElementById('toggleButton').addEventListener('click', function() {
-    const goalsContainer = document.getElementById('goalsContainer');
-    // Check if the container is currently visible by checking its opacity
+    const goalsContainer = document.querySelector('.goals-container');
     if (goalsContainer.style.opacity === '0' || goalsContainer.style.display === 'none') {
-        goalsContainer.style.display = 'block';  // Make the container visible before fading in
+        goalsContainer.style.display = 'block';  // Ensure the element is displayed before fading in
         setTimeout(() => {
-            goalsContainer.style.opacity = '1';  // Fade in
-        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
-        this.textContent = 'Hide Goals';  // Change button text to reflect action
+            goalsContainer.style.opacity = '1';  // Gradually increase the opacity to 1
+        }, 10);  // Short delay to ensure the display style is applied first
+        this.textContent = 'Hide Goals';  // Update the button text to reflect the action
     } else {
-        goalsContainer.style.opacity = '0';  // Fade out
+        goalsContainer.style.opacity = '0';  // Fade out by setting opacity to 0
         setTimeout(() => {
-            goalsContainer.style.display = 'none';  // Hide after transition
-        }, 500);  // Delay should match the CSS transition time
-        this.textContent = 'Show Goals';  // Change button text back
+            goalsContainer.style.display = 'none';  // Fully hide the element after the transition
+        }, 500);  // Delay should match the duration of the fade-out effect
+        this.textContent = 'Show Goals';  // Change the button text back
     }
 });
 
