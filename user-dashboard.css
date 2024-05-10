@@ -413,7 +413,7 @@ button#refreshChart:hover {
 }
 
 .chart-container:hover {
-    transform: scale(0.3); /* More noticeable scale increase on hover */
+    transform: scale(1.05); /* More noticeable scale increase on hover */
     box-shadow: 0 0 35px rgba(0, 0, 0, 1); /* Even deeper shadow on hover for a popping effect */
 }
 
@@ -436,7 +436,7 @@ button#refreshChart:hover {
 
 /* 3D-like styling for chart bars */
 .chart-bar {
-    background-color: #0353A4; /* Dark blue for a thematic match */
+    background-color:linear-gradient(to top, #032c54, #022649); /* Gradient for visual depth */
     background-image: linear-gradient(to top, #083059, #031d35); /* Gradient for visual depth */
     border-radius: 10px; /* Rounded for a smoother appearance */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); /* Shadow to create depth, making bars pop out */
@@ -445,7 +445,7 @@ button#refreshChart:hover {
 
 .chart-bar:hover {
     transform: scale(1.15); /* More significant enlargement on hover */
-    background-color: #0466C8; /* Brighter blue on hover for visual interest */
+    background-color: linear-gradient(to top, #144372, #033a6e); /* Gradient for visual depth */
     box-shadow: 0 5px 20px rgba(255, 255, 255, 0.5); /* Bright white glow effect on hover */
 }
 
