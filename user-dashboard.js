@@ -597,7 +597,7 @@ document.getElementById('toggleCharts').addEventListener('click', function() {
 
 
 
-document.getElementById('togglButtons').addEventListener('click', function() {
+document.getElementById('togglGoals').addEventListener('click', function() {
     const filtersContainer = document.getElementById('goals-container');
     // Check if the container is currently visible by checking its opacity
     if (filtersContainer.style.opacity === '0' || filtersContainer.style.display === 'none') {
