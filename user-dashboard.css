@@ -367,6 +367,8 @@ button#refreshChart:hover {
     border-radius: 15px; /* Aesthetic rounded corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
     display: flex;
+    height: 100%;
+    max-height: 500px;
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     flex-direction: column; /* Stack children vertically */
