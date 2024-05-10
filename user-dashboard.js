@@ -551,35 +551,27 @@ document.getElementById('timeFilterChart').addEventListener('change', () => {
 
 
 
-
 document.getElementById('toggleFilters').addEventListener('click', function() {
     const filtersContainer = document.getElementById('filtersContainer');
-
-    if (filtersContainer.style.opacity === '0') {
-        // Show both the filters container and the sales history container
-        filtersContainer.style.display = 'block';
-        salesHistoryContainer.style.display = 'block'; // Display sales history
+    // Check if the container is currently visible by checking its opacity
+    if (filtersContainer.style.opacity === '0' || filtersContainer.style.display === 'none') {
+        filtersContainer.style.display = 'block';  // Make the container visible before fading in
         setTimeout(() => {
-            filtersContainer.style.opacity = '1';
-            salesHistoryContainer.style.opacity = '1'; // Set opacity to 1 for sales history
-        }, 10);
-        this.textContent = 'Hide History';
+            filtersContainer.style.opacity = '1';  // Fade in
+        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
+        this.textContent = 'Hide Filters';  // Change button text to reflect action
     } else {
-        // Hide both the filters container and the sales history container
-        filtersContainer.style.opacity = '0';
-        salesHistoryContainer.style.opacity = '0'; // Set opacity to 0 for sales history
+        filtersContainer.style.opacity = '0';  // Fade out
         setTimeout(() => {
-            filtersContainer.style.display = 'none';
-            salesHistoryContainer.style.display = 'none'; // Hide sales history
-        }, 500); // Adjust timing to match the CSS transition duration
-        this.textContent = 'Show History';
+            filtersContainer.style.display = 'none';  // Hide after transition
+        }, 500);  // Delay should match the CSS transition time
+        this.textContent = 'Show Filters';  // Change button text back
     }
 });
 
 
 document.getElementById('toggleCharts').addEventListener('click', function() {
     const chartContainer = document.querySelector('.chart-container');
-    const chartControls = document.getElementById('controls');
 
     if (chartContainer.style.opacity === '0') {
         // Show both the chart and controls
