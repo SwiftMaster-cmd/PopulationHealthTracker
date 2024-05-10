@@ -13,16 +13,20 @@ html, body {
 }
 
 /* Adding consistent header and input area styling with the dark theme */
-header, .dashboard-container, .sales-container, .sales-history-container {
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Strong shadow for depth */
-    color: #ffffff; /* Bright white for high contrast */
-    border-radius: 15px;
-    padding: 20px;
-    margin: 20px auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+
+/* General container styling with flexbox */
+.dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks child elements vertically */
+    align-items: flex-end; /* Aligns children to the right */
+    width: 100%; /* Takes full width of the parent */
+    max-width: 1200px; /* Maximum width to ensure content does not stretch too far */
+    margin: 0 auto; /* Centers the container */
+    padding: 20px; /* Adds spacing inside the container */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
+    border-radius: 15px; /* Rounds the corners */
+    background: linear-gradient(to right, #023047, #011627); /* Background gradient */
+    color: #ffffff; /* Text color */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transitions for interactive hover effects */
 }
 
