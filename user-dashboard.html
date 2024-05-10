@@ -132,105 +132,20 @@
 
 
 
-<div class="filters-container container" id="filtersContainer" ">
-    <!-- Filter Section -->
-    <h3>Filters</h3>
-    <div class="filter-group">
-        <label for="timeSortFilter">Sort By:</label>
-        <select id="timeSortFilter">
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-        </select>
-    </div>
-    
-    <div class="filter-group">
-        <label for="timeFilter">Time Frame:</label>
-        <select id="timeFilter">
-            <option value="all">All</option>
-            <option value="day" selected >Day</option>
-            <option value="week">Week</option>
-            <option value="month">Month</option>
-        </select>
-    </div>
-    <div class="filter-group">
-        <label for="saleTypeFilter">Sale Type:</label>
-        <select id="saleTypeFilter">
-            <option value="all">All</option>
-            <option value="billable HRA">HRA</option>
-            <option value="Flex HRA">SPM</option>
-            <option value="Select RX">SRX</option>
-            <option value="Transfer">Transfer</option>
-        </select>
-    </div>
-    <div class="filter-group">
-        <label for="esiFilter">ESI Consent:</label>
-        <select id="esiFilter">
-            <option value="all">All</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
-    </div>
-    
-    <div class="filter-group">
-        <label for="lead_id">Search by Sale</label>
-        <input type="text" id="leadIdFilter" placeholder="Filter by Lead ID">
-        
-    </div>
-    <button id="applyFilters">Apply Filters</button>
-</div>
-
-
-
-
-
-
-
-
-<div class="goals-container container"" >
-    <form id="monthlyGoalForm">
-        <h3>Set Monthly Goals</h3>
-        <div class="goals-grid">
-            <div class="goal-group">
-                <label for="billableHRAGoal">HRA Goal:</label>
-                <input type="number" id="billableHRAGoal" name="billableHRAGoal" min="0">
-                <p>Current <span id="displayBillableHRA">0</span></p>
-                <!-- Progress Bar for Billable HRA -->
-               
-            </div>
-            <div class="goal-group">
-                <label for="flexHRAGoal">SPM Goal:</label>
-                <input type="number" id="flexHRAGoal" name="flexHRAGoal" min="0">
-                <p>Current <span id="displayFlexHRA">0</span></p>
-                <!-- Progress Bar for Flex HRA -->
-           
-            </div>
-            <div class="goal-group">
-                <label for="selectRXGoal">SRX Goal:</label>
-                <input type="number" id="selectRXGoal" name="selectRXGoal" min="0">
-                <p>Current <span id="displaySelectRX">0</span></p>
-                <!-- Progress Bar for Select RX -->
-           
-            </div>
-            <div class="goal-group">
-                <label for="transferGoal">Transfer Goal:</label>
-                <input type="number" id="transferGoal" name="transferGoal" min="0">
-                <p>Current <span id="displayTransfer">0</span></p>
-                <!-- Progress Bar for Transfer -->
-            
-            </div>
-        </div>
-        <button type="submit">Save Goals</button>
-    </form>
-</div>
-
-
-
-
 
 
 
 
 <div class="sales-history-container container"">
+
+
+
+
+
+
+
+
+
     <div class="history-header">
         <h3>Sales History</h3>
         <div class="buttons-container">
@@ -239,6 +154,114 @@
         </div>
     </div>
     
+
+
+
+
+
+
+
+    <div class="filters-container container" id="filtersContainer" ">
+        <!-- Filter Section -->
+        <h3>Filters</h3>
+        <div class="filter-group">
+            <label for="timeSortFilter">Sort By:</label>
+            <select id="timeSortFilter">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="timeFilter">Time Frame:</label>
+            <select id="timeFilter">
+                <option value="all">All</option>
+                <option value="day" selected >Day</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="saleTypeFilter">Sale Type:</label>
+            <select id="saleTypeFilter">
+                <option value="all">All</option>
+                <option value="billable HRA">HRA</option>
+                <option value="Flex HRA">SPM</option>
+                <option value="Select RX">SRX</option>
+                <option value="Transfer">Transfer</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="esiFilter">ESI Consent:</label>
+            <select id="esiFilter">
+                <option value="all">All</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="lead_id">Search by Sale</label>
+            <input type="text" id="leadIdFilter" placeholder="Filter by Lead ID">
+            
+        </div>
+        <button id="applyFilters">Apply Filters</button>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="goals-container container"" >
+        <form id="monthlyGoalForm">
+            <h3>Set Monthly Goals</h3>
+            <div class="goals-grid">
+                <div class="goal-group">
+                    <label for="billableHRAGoal">HRA Goal:</label>
+                    <input type="number" id="billableHRAGoal" name="billableHRAGoal" min="0">
+                    <p>Current <span id="displayBillableHRA">0</span></p>
+                    <!-- Progress Bar for Billable HRA -->
+                   
+                </div>
+                <div class="goal-group">
+                    <label for="flexHRAGoal">SPM Goal:</label>
+                    <input type="number" id="flexHRAGoal" name="flexHRAGoal" min="0">
+                    <p>Current <span id="displayFlexHRA">0</span></p>
+                    <!-- Progress Bar for Flex HRA -->
+               
+                </div>
+                <div class="goal-group">
+                    <label for="selectRXGoal">SRX Goal:</label>
+                    <input type="number" id="selectRXGoal" name="selectRXGoal" min="0">
+                    <p>Current <span id="displaySelectRX">0</span></p>
+                    <!-- Progress Bar for Select RX -->
+               
+                </div>
+                <div class="goal-group">
+                    <label for="transferGoal">Transfer Goal:</label>
+                    <input type="number" id="transferGoal" name="transferGoal" min="0">
+                    <p>Current <span id="displayTransfer">0</span></p>
+                    <!-- Progress Bar for Transfer -->
+                
+                </div>
+            </div>
+            <button type="submit">Save Goals</button>
+        </form>
+    </div>
+    
+    
+    
+    
+    
+
+
+
+
+
+
     <div id="salesHistory" class="sales-history">
         <!-- Sales history will be dynamically populated here -->
         <!-- Sample sale entry -->
