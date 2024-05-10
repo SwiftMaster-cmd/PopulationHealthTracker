@@ -156,7 +156,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 }
 
 .sales-history-entry {
-    background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 10px;
+    background: linear-gradient(to right, #0353A4, #0D8EFD); /* Lighter blue gradient */
     padding: 15px;
     margin-bottom: 15px;
     color: #ffffff;
@@ -180,7 +180,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 .sale-data {
     width: 200px; /* Set width to 200px */
     margin-bottom: 10px;
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    border-radius: 5px;
+    background: linear-gradient(to right, #0353A4, #0D8EFD); /* Lighter blue gradient */
     padding: 8px;
     box-shadow: none;
     outline: none;
