@@ -358,6 +358,28 @@ button#refreshChart:hover {
 /* Styling for the chart container with a modern and visually striking theme */
 
 
+
+
+
+
+
+
+
+.chartc-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px; /* Ensure consistency in maximum width */
+    margin: 20px auto; /* Centering horizontally */
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+
+
 #controls {
     max-width: 500px; /* Maximum width */
     width: 90%; /* Relative width to the parent container */
@@ -373,7 +395,8 @@ button#refreshChart:hover {
 }
 
 .chart-container {
-    width: 500px;
+    max-width: 500px; /* Maximum width */
+    width: 90%; /* Relative width to the parent container */
     margin: 20px auto;
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient for depth */
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); /* Stronger shadow for pronounced depth */
@@ -498,26 +521,6 @@ button#refreshChart:hover {
 
 
 
-
-
-
-
-
-
-
-
-.chartc-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px; /* Ensure consistency in maximum width */
-    margin: 20px auto; /* Centering horizontally */
-    padding: 20px;
-    background: linear-gradient(to right, #023047, #011627);
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-}
 
 
 
