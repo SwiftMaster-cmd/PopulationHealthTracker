@@ -8,24 +8,24 @@
     gap: 20px; /* Adds space between the containers */
 }
 
-html, body {
-    margin: 0;
-    padding: 20;
-    font-family: 'Arial', sans-serif;
-    font-weight: bold;
-    display: flex; /* Enables flexbox for the parent */
-    justify-content: center; /* Centers horizontally */
-    align-items: center; /* Centers vertically */
-    color: #ffffff;
-    background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient */
-    font-size: 18px;
-    text-align: center;
-    min-height: 100vh; /* Minimum full viewport height */
-    flex-direction: column; 
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
 
-}
-
+    html, body {
+        margin: 0;
+        padding: 20px; /* Ensure units are specified */
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        display: flex;
+        justify-content: center; /* Centers horizontally */
+        align-items: center; /* Centers vertically */
+        color: #ffffff;
+        background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient */
+        font-size: 18px;
+        text-align: center;
+        min-height: 100vh; /* Ensures at least the full height of the viewport */
+        flex-direction: column;
+        box-sizing: border-box; /* Padding and border included in width/height */
+    }
+    
 /* Adding consistent header and input area styling with the dark theme */
 
 
