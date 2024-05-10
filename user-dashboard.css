@@ -13,27 +13,29 @@ html, body {
     padding: 0;
     font-family: 'Arial', sans-serif;
     font-weight: bold;
+    display: flex; /* Enables flexbox for the parent */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
     color: #ffffff;
     background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient */
     font-size: 18px;
     text-align: center;
     height: 100%; /* Ensures the body takes full viewport height */
-    display: flex; /* Establishes a flex context for the body */
-    flex-direction: column; /
+    flex-direction: column; 
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+
 }
 
 /* Adding consistent header and input area styling with the dark theme */
 
 
 
-/* General container styling with flexbox */
-.dashboard-container{
+.dashboard-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
-    justify-content: center; /* Center aligns children vertically */
-    align-items: center; /* Aligns children to the right */
-    width: 90%; /* Takes full width of the parent */
-    margin: 20px; /* Centers the container with margin */
+    align-items: center; /* Aligns children to the center horizontally */
+    width: 90%; /* Takes 90% of the parent's width */
+    max-width: 1200px; /* Optional: sets a max-width for larger screens */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
     border-radius: 15px; /* Rounds the corners */
@@ -41,11 +43,11 @@ html, body {
     color: #ffffff; /* Text color */
 }
 
+
 /* General container styling with flexbox */
 .sales-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
-    justify-content: center; /* Center aligns children vertically */
     align-items: center; /* Aligns children to the right */
     width: 100%; /* Takes full width of the parent */
     max-width: 500px; /* Maximum width set to 500px */
