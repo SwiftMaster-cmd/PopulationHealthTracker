@@ -35,7 +35,6 @@ html, body {
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center horizontally */
     width: 90%; /* Takes 90% of the parent's width */
-    max-width: 1200px; /* Optional: sets a max-width for larger screens */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
     border-radius: 15px; /* Rounds the corners */
