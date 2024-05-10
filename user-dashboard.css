@@ -455,6 +455,36 @@ button#refreshChart:hover {
 
 
 
+.history-header {
+    display: flex;  /* Enables flexbox */
+    justify-content: space-between;  /* Space between items */
+    align-items: center;  /* Align items vertically */
+    width: 100%;  /* Full width of the container */
+}
+
+.buttons-container {
+    display: flex;  /* Enables flexbox for button grouping */
+    gap: 10px;  /* Space between buttons */
+}
+
+h3 {
+    margin: 0;  /* Remove default margin to align properly */
+    padding-right: 20px;  /* Optional: Adds some space if needed */
+}
+
+button {
+    padding: 8px 16px;  /* Padding inside the buttons */
+    font-size: 16px;  /* Optional: Adjust font size for better visibility */
+    background-color: #0353A4;  /* Background color of buttons */
+    color: white;  /* Text color */
+    border: none;  /* Removes border */
+    border-radius: 5px;  /* Rounded corners */
+    cursor: pointer;  /* Indicates the button is clickable */
+}
+
+button:hover {
+    background-color: #023047;  /* Darker color on hover */
+}
 
 
 
