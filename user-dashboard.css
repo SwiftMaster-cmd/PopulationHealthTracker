@@ -28,7 +28,9 @@ html, body {
 
 /* General container styling with flexbox */
 .dashboard-container{
-
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks child elements vertically */
+    align-items: center; /* Aligns children to the right */
     width: 90%; /* Takes full width of the parent */
     margin: 20px; /* Centers the container with margin */
     padding: 20px; /* Adds spacing inside the container */
@@ -39,19 +41,20 @@ html, body {
 }
 
 /* General container styling with flexbox */
- .sales-container, .sales-history-container, .filters-container, .goals-container {
+.sales-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
-    align-items: flex-end; /* Aligns children to the right */
+    align-items: center; /* Aligns children to the right */
     width: 100%; /* Takes full width of the parent */
     max-width: 500px; /* Maximum width set to 500px */
-    margin: 20px; /* Centers the container with margin */
+    margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
     border-radius: 15px; /* Rounds the corners */
     background: linear-gradient(to right, #023047, #011627); /* Background gradient */
     color: #ffffff; /* Text color */
 }
+
 
 
 .chart-container, #controls {
