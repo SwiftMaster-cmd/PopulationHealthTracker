@@ -7,6 +7,9 @@ html, body {
     background: linear-gradient(to bottom, #023047, #011627); /* Dark blue gradient */
     font-size: 18px;
     text-align: center;
+    height: 100%; /* Ensures the body takes full viewport height */
+    display: flex; /* Establishes a flex context for the body */
+    flex-direction: column; /
 }
 
 /* Adding consistent header and input area styling with the dark theme */
