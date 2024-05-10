@@ -515,43 +515,6 @@ button#refreshChart:hover {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
-#controls {
-    width: 100%; /* Full width to align with the container */
-    padding: 10px 0; /* Padding for top and bottom only */
-    display: flex;
-    justify-content: center; /* Ensure controls are centered */
-    align-items: center;
-    flex-direction: row; /* Horizontal layout for controls */
-    gap: 10px; /* Space between elements */
-}
-
-.chart-container {
-    width: 100%; /* Full width to contain the chart correctly */
-    max-width: 500px;
-    padding: 20px;
-    margin: 0 auto; /* Centering the container */
-    background: linear-gradient(to right, #023047, #011627);
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Hides any overflow, adjust if necessary */
-    box-sizing: border-box; /* Includes padding in width calculation */
-}
-
-#salesChart {
-    width: 90%; /* Ensures the chart does not exceed the container's width */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 500px;
-    border-radius: 15px;
-}
-
-
-
-
 
 
 
