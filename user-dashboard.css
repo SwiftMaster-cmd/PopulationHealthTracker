@@ -1144,7 +1144,7 @@ button:hover {
 }
 
 /* Toggle button styles */
-#toggleButton {
+#toggleGoals {
     background: #023047;
     color: white;
     font-weight: bold;
@@ -1156,12 +1156,12 @@ button:hover {
     transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
-#toggleButton:hover {
+#toggleGoals:hover {
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-3px);
 }
 
-#togglebutton:focus {
+#toggleGoals:focus {
     box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
     transform: translateY(-2px);
 }
