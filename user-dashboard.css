@@ -1,19 +1,13 @@
-/* Basic styles for the whole page */
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    font-weight: bold;
-    color: #ffffff;
-    background: linear-gradient(to bottom, #023047, #011627);
-    font-size: 18px;
-    text-align: center;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+.containers-wrapper {
+    display: flex; /* Enables flexbox layout */
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    justify-content: flex-start; /* Aligns children to the start of the flex line */
+    gap: 20px; /* Adds space between the containers */
 }
 
-/* General container styles applied to all main containers */
+
+
+/* General container styling for all boxes with flexbox */
 .container {
     display: flex;
     flex-direction: column;
@@ -23,73 +17,814 @@ html, body {
     margin: 20px auto;
     padding: 20px;
     background: linear-gradient(to right, #023047, #011627);
+    color: #ffffff;
     border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
-/* Button styling across the site */
-.button, .esi-btn, .sale-type-btn, .submit-btn {
-    background: linear-gradient(to right, #023047, #011627);
-    color: white;
-    padding: 12px 20px;
-    margin: 10px;
+/* General container styling with flexbox */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+    margin: 20px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
     border-radius: 15px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.button:hover, .esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
     background: linear-gradient(to right, #023047, #011627);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
 }
-
-/* Input styling */
-.input-group input, #lead_id, #notes {
-    background: linear-gradient(to right, #023047, #011627);
-    color: white;
-    border-radius: 15px;
-    border: none;
-    padding: 10px;
-    margin: 10px 0;
-}
-
-.input-group input:focus, #lead_id:focus, #notes:focus {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-}
-
-/* Container for various UI elements */
-.sales-history-container, .filters-container, .goals-container, #controls {
+/* Styling for specific container types */
+.sales-container, .sales-history-container, .filters-container, .goals-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     width: 100%;
     max-width: 500px;
+    margin: 20px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    background: linear-gradient(to right, #023047, #011627);
+    color: #ffffff;
+}
+
+.chart-container {
+    max-width: 500px;
+    width: 100%;
     margin: 20px auto;
     padding: 20px;
     background: linear-gradient(to right, #023047, #011627);
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+#controls {
+    width: 500px;
+    padding: 20px;
+    margin: 20px auto;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
-/* Scrolling and overflow management */
+.goals-container {
+    width: 500px;
+    margin: 20px auto;
+    padding: 10px 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background: linear-gradient(to right, #023047, #011627);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.label {
+    color: #ffffff; /* White color for labels for better readability against dark backgrounds */
+    margin-bottom: 5px; /* Space between label and input field */
+    font-weight: bold; /* Makes text bold */
+}
+
+.input-field {
+    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Subtle gradient for depth */
+    color: #ffffff;
+    border-radius: 15px;
+    border: none;
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%; /* Ensures full width to fit parent */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* Subtle glow for focus state */
+}
+
+.input-field:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* Intensifies shadow on focus */
+}
+
+.esi-btn {
+    background: linear-gradient(to top, #0353A4, #0D8EFD); /* Blue gradient for consistency */
+    color: white;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px; /* Slightly larger font size for readability */
+    transition: background 0.3s ease; /* Smooth background color transition */
+}
+
+.esi-btn:hover, .esi-btn:focus {
+    background: linear-gradient(to top, #0466C8, #0D8EFD); /* Lighter gradient on hover/focus */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4); /* Adds depth on hover */
+}
+
+.esi-btn.selected {
+    background: linear-gradient(to right, #023047, #011627); /* Darker blue for selected state */
+}
+
+
+.sale-type-btn {
+    background: linear-gradient(to bottom, #0353A4, #0D8EFD);
+    color: white;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease; /* Uniform transition for properties */
+}
+
+.sale-type-btn:hover, .sale-type-btn:focus {
+    background: linear-gradient(to top, #0466C8, #0D8EFD);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.sale-type-btn.selected {
+    background: linear-gradient(to right, #023047, #011627);
+    transform: scale(1.1);
+}
+
+
+.submit-btn {
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 10px;
+    width: 100%; /* Full width to match input fields */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to right, #023047, #011627);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+textarea.input-field {
+    height: 100px; /* Fixed height */
+    resize: none; /* Disable resizing */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#editSaleModal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    z-index: 1000; /* Ensures it sits on top of other content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#editSaleForm {
+    background: linear-gradient(to right, #023047, #011627);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: auto;
+    max-width: 500px;
+}
+
+
+
+#editSaleForm label {
+    color: #ffffff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+#editSaleForm input[type="text"],
+#editSaleForm textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+    background: linear-gradient(to right, #023047, #011627);
+    color: #ffffff;
+    outline: none;
+}
+
+#editSaleForm textarea {
+    height: 120px; /* Adequate height for notes */
+    resize: none; /* Disables resizing of the textarea */
+}
+
+
+
+#editSaleForm .edit-esi-consent-btn,
+#editSaleForm .edit-sale-type-btn,
+#editSaleForm #editSaleSubmitBtn,
+#editSaleForm #cancelEditSale {
+    padding: 10px 20px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+#editSaleForm .edit-esi-consent-btn:hover,
+#editSaleForm .edit-sale-type-btn:hover,
+#editSaleForm #editSaleSubmitBtn:hover,
+#editSaleForm #cancelEditSale:hover {
+    background: linear-gradient(to right, #023047, #011627);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+}
+
+#editSaleForm .edit-esi-consent-btn.selected,
+#editSaleForm .edit-sale-type-btn.selected {
+    background: linear-gradient(to right, #0466C8, #0D8EFD);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+
+#editSaleSubmitBtn {
+    background: #4CAF50; /* Green background for Save button */
+    color: white;
+}
+
+#cancelEditSale {
+    background: #f44336; /* Red background for Cancel button */
+}
+
+#editSaleSubmitBtn:hover,
+#cancelEditSale:hover {
+    transform: scale(1.05); /* Slightly enlarges buttons on hover */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.button-container {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space buttons evenly */
+    padding: 10px; /* Padding inside the container */
+    background: linear-gradient(to right, #023047, #011627); /* Background gradient */
+    border-radius: 8px; /* Rounded corners for aesthetics */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Shadow for depth */
+    margin: 20px 0; /* Vertical margin for spacing between other elements */
+}
+
+
+
+.button-container button {
+    padding: 12px 20px; /* Adequate padding for touch targets */
+    color: white; /* Text color */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent blue gradient */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor indicates button */
+    font-size: 16px; /* Readable font size */
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for hover effects */
+}
+
+.button-container button:hover {
+    background: linear-gradient(to right, #023047, #011627); /* Darker gradient on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow for 3D effect */
+    transform: translateY(-3px); /* Lift button slightly to indicate interaction */
+}
+
+.button-container button:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8); /* White glow for focus indication */
+}
+
+
+@media (max-width: 480px) {
+    .button-container {
+        flex-direction: column; /* Stack buttons vertically on smaller screens */
+        align-items: center; /* Center-align buttons for better usability */
+    }
+
+    .button-container button {
+        width: 100%; /* Full width buttons for easier access on mobile */
+        margin-bottom: 10px; /* Space between stacked buttons */
+    }
+
+    .button-container button:last-child {
+        margin-bottom: 0; /* Remove bottom margin for the last button to avoid extra space */
+    }
+}
+
+.button-container button:focus-visible {
+    outline: 2px solid #FF851B; /* Orange outline for better focus visibility, adhering to WCAG guidelines */
+    outline-offset: 2px; /* Space between the button edge and the outline */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Align children to stretch full width */
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0; /* Space above and below the container */
+}
+
+#controls {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center-align children */
+    padding: 10px;
+}
+
+#controls label {
+    color: #ffffff; /* White text color for visibility */
+    margin-bottom: 10px; /* Space below label */
+}
+
+#controls select {
+    width: 100%; /* Full width to fit container */
+    padding: 10px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 5px;
+    border: none;
+    color: #ffffff; /* White text for readability */
+    margin-bottom: 10px; /* Space below the select box */
+    cursor: pointer; /* Indicates the dropdown can be interacted with */
+}
+
+#controls button {
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: none; /* Initially hidden as per your HTML */
+}
+
+#controls button:hover {
+    background: linear-gradient(to right, #023047, #011627);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+
+
+
+
+.chart-container {
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    margin: 20px 0; /* Space above and below the chart container */
+    display: flex;
+    justify-content: center; /* Center the canvas horizontally */
+    align-items: center; /* Center the canvas vertically */
+}
+
+#salesChart {
+    width: 100%; /* Responsive width */
+    max-width: 800px; /* Maximum width of the canvas */
+    height: auto; /* Adjust height automatically */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.filters-container {
+    display: flex; /* Only display when toggled, hidden by default */
+    flex-direction: column;
+    align-items: stretch; /* Align children to stretch full width */
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0; /* Vertical spacing */
+    display: none; /* Initially hidden */
+}
+
+.filters-container h3 {
+    color: #ffffff; /* White text for headers for visibility */
+    margin-bottom: 20px; /* Spacing below the header */
+}
+
+.filter-group {
+    display: flex;
+    justify-content: space-between; /* Distribute space between label and select/input */
+    align-items: center;
+    margin-bottom: 10px; /* Spacing between filter groups */
+}
+
+.filter-group label {
+    color: #ffffff;
+    flex: 1; /* Allow label to take necessary space */
+    margin-right: 10px; /* Spacing between label and select/input */
+}
+
+.filter-group select,
+.filter-group input {
+    flex: 3; /* Selects and inputs take up more space than labels */
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: linear-gradient(to right, #023047, #011627);
+    color: #ffffff;
+    outline: none;
+}
+
+.filter-group input {
+    width: 100%; /* Full width for inputs */
+    background: linear-gradient(to right, #0353A4, #0D8EFD); /* Different gradient for inputs */
+}
+
+.filter-group select {
+    cursor: pointer;
+}
+
+
+#applyFilters {
+    padding: 10px 20px;
+    margin-top: 10px; /* Space above the button */
+    width: 100%; /* Full width for button */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC);
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+#applyFilters:hover {
+    background: linear-gradient(to right, #023047, #011627);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.goals-container {
+    display: none; /* Hidden by default, shown programmatically */
+    flex-direction: column;
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.goals-container h3 {
+    color: #ffffff; /* White color for headers */
+    margin-bottom: 20px;
+}
+
+
+
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid layout */
+    gap: 20px; /* Space between grid items */
+}
+
+.goal-group {
+    background: linear-gradient(to right, #0353A4, #0D8EFD); /* Light blue gradient for visibility */
+    padding: 20px;
+    border-radius: 10px;
+    color: #ffffff;
+}
+
+.goal-group label {
+    font-size: 16px; /* Readable font size */
+    margin-bottom: 10px; /* Space below labels */
+}
+
+.goal-group input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #ffffff; /* White background for inputs */
+    color: #023047; /* Dark text for contrast */
+    outline: none;
+}
+
+.goal-group p {
+    margin-top: 10px; /* Space above the current goal paragraph */
+    font-size: 14px; /* Smaller text for current goal display */
+}
+
+
+
+
+#monthlyGoalForm button {
+    padding: 12px 20px;
+    margin-top: 20px; /* Space above the button */
+    width: 100%; /* Full width of its container */
+    background: linear-gradient(to bottom, #8ECAE6, #219EBC); /* Consistent blue gradient */
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+#monthlyGoalForm button:hover {
+    background: linear-gradient(to right, #023047, #011627);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sales-history-container {
-    overflow-y: auto;
-    max-height: 750px;
+    display: none; /* Hidden by default, shown programmatically */
+    flex-direction: column;
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    overflow: hidden; /* Ensures no overflow outside the rounded borders */
 }
 
-.sales-history-container::-webkit-scrollbar {
-    width: 8px;
+.sales-history-container h3 {
+    color: #ffffff; /* White color for visibility */
+    margin-bottom: 20px;
 }
 
-.sales-history-container::-webkit-scrollbar-thumb {
-    background: #BBDEFB;
-    border-radius: 4px;
+
+.sales-history {
+    overflow-y: auto; /* Allow scrolling for multiple entries */
+    max-height: 500px; /* Limit the height and allow scrolling */
 }
 
-/* Animation for interactive elements */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.sales-history-entry {
+    background: #011627; /* Dark background for each entry */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    color: #ffffff; /* Text color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sales-history-entry:hover {
+    background: #023047; /* Slightly lighter background on hover */
+    transform: scale(1.02); /* Slightly scale up for interactive feedback */
+}
+
+
+.sale-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.sale-data {
+    margin: 5px 0; /* Spacing between data points */
+}
+
+.sale-types {
+    display: flex;
+    flex-wrap: wrap; /* Allow types to wrap on smaller screens */
+    gap: 5px; /* Spacing between types */
+}
+
+.sale-type-span {
+    background: #0353A4; /* Slightly different background to distinguish types */
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.sale-note {
+    background: #011627; /* Dark background for notes */
+    padding: 5px;
+    border-radius: 5px;
+    font-style: italic; /* Styling for notes */
+}
+
+
+.sale-footer {
+    display: flex;
+    justify-content: space-between; /* Space between timestamp and actions */
+    align-items: center;
+}
+
+.sale-timestamp {
+    color: #8ECAE6; /* Light blue color for timestamp for visibility */
+}
+
+.sale-actions button {
+    padding: 5px 10px;
+    margin: 5px;
+    background: #8ECAE6; /* Consistent button background */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #023047; /* Dark text for contrast */
+    transition: background 0.3s;
+}
+
+.sale-actions button:hover {
+    background: #0466C8; /* Slightly darker on hover */
 }
