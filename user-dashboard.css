@@ -890,14 +890,14 @@ button:hover {
 
     .goals-container {
         display: show;  /* Initially hidden */
-        opacity: 0;     /* Start fully transparent */
+        opacity: 1;     /* Start fully transparent */
         transition: opacity 0.5s ease;  /* Smooth transition for the opacity */
     }
     
 
     #filtersContainer {
         display: show;
-        opacity: 0;
+        opacity: 1;
         transition: opacity 0.5s ease-out;
     }
     
