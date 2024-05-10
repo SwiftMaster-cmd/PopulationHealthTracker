@@ -596,23 +596,24 @@ document.getElementById('toggleCharts').addEventListener('click', function() {
 
 
 
-document.getElementById('toggleButton').addEventListener('click', function() {
-    const goalsContainer = document.querySelector('.goals-container');
-    if (goalsContainer.style.opacity === '0' || goalsContainer.style.display === 'none') {
-        goalsContainer.style.display = 'block';  // Ensure the element is displayed before fading in
+
+document.getElementById('togglButtons').addEventListener('click', function() {
+    const filtersContainer = document.getElementById('goals-container');
+    // Check if the container is currently visible by checking its opacity
+    if (filtersContainer.style.opacity === '0' || filtersContainer.style.display === 'none') {
+        filtersContainer.style.display = 'block';  // Make the container visible before fading in
         setTimeout(() => {
-            goalsContainer.style.opacity = '1';  // Gradually increase the opacity to 1
-        }, 10);  // Short delay to ensure the display style is applied first
-        this.textContent = 'Hide Goals';  // Update the button text to reflect the action
+            filtersContainer.style.opacity = '1';  // Fade in
+        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
+        this.textContent = 'Hide Filters';  // Change button text to reflect action
     } else {
-        goalsContainer.style.opacity = '0';  // Fade out by setting opacity to 0
+        filtersContainer.style.opacity = '0';  // Fade out
         setTimeout(() => {
-            goalsContainer.style.display = 'none';  // Fully hide the element after the transition
-        }, 500);  // Delay should match the duration of the fade-out effect
-        this.textContent = 'Show Goals';  // Change the button text back
+            filtersContainer.style.display = 'none';  // Hide after transition
+        }, 500);  // Delay should match the CSS transition time
+        this.textContent = 'Show Filters';  // Change button text back
     }
 });
-
 
 
 
