@@ -20,15 +20,43 @@ html, body {
     flex-direction: column; /* Stacks child elements vertically */
     align-items: flex-end; /* Aligns children to the right */
     width: 100%; /* Takes full width of the parent */
-    max-width: 1200px; /* Maximum width to ensure content does not stretch too far */
-    margin: 0 auto; /* Centers the container */
+    max-width: 500px; /* Maximum width set to 500px */
+    margin: 20px; /* Centers the container with margin */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
     border-radius: 15px; /* Rounds the corners */
     background: linear-gradient(to right, #023047, #011627); /* Background gradient */
     color: #ffffff; /* Text color */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transitions for interactive hover effects */
 }
+
+
+/* General container styling with flexbox */
+.dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks child elements vertically */
+    align-items: flex-end; /* Aligns children to the right */
+    width: 100%; /* Takes full width of the parent */
+    max-width: 500px; /* Maximum width set to 500px */
+    margin: 20px; /* Centers the container with margin */
+    padding: 20px; /* Adds spacing inside the container */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
+    border-radius: 15px; /* Rounds the corners */
+    background: linear-gradient(to right, #023047, #011627); /* Background gradient */
+    color: #ffffff; /* Text color */
+}
+
+
+.chart-container, #controls {
+    max-width: 500px; /* Ensures controls and chart containers also have max-width of 500px */
+    width: 100%; /* Takes full width of the parent up to max width */
+    margin: 20px auto; /* Centering horizontally */
+    padding: 20px; /* Padding for internal spacing */
+    background: linear-gradient(to right, #023047, #011627); /* Background color */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+}
+
+
 
 /* Specific adjustments for alignment and layout */
 .sales-history-container, .filters-container, .goals-container {
@@ -39,6 +67,11 @@ html, body {
 .dashboard-container > *, .sales-container > *, .sales-history-container > *, .filters-container > *, .goals-container > * {
     width: 100%; /* Each child takes full width of its parent */
 }
+
+* {
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
 
 header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history-container:hover {
     transform: scale(1.05); /* Slight scale up on hover for pop effect */
