@@ -71,6 +71,26 @@
 }
 
 
+@media (max-width: 500px) {
+    #salesChartContainer, .sales-container, .sales-history-container, .filters-container, .goals-container {
+        width: 100%; /* Takes full width of the parent */
+        max-width: 100%; /* Removes max-width constraint */
+        margin: 10px 0; /* Reduces margin for more space */
+        padding: 10px; /* Reduces padding to increase space efficiency */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Optionally, adjust shadow for subtlety */
+    }
+
+    #dailySalesChart {
+        /* If the chart is responsive, it might not need changes. If issues persist:
+        Adjust specific chart settings here if the chart library allows dynamic resizing. */
+    }
+
+    /* Additional adjustments for any specific text sizes or other elements that might need resizing */
+    .dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
+        flex-direction: column; /* Ensures vertical stacking remains if not already set */
+        align-items: center; /* Centers content within each container */
+    }
+}
 
 
 
