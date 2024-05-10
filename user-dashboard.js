@@ -598,19 +598,20 @@ document.getElementById('toggleCharts').addEventListener('click', function() {
 
 
 document.getElementById('toggleButton').addEventListener('click', function() {
-    const goalsContainer = document.querySelector('.goals-container');
-    if (goalsContainer.style.opacity === '0') {
-        goalsContainer.style.display = 'block';
+    const goalsContainer = document.getElementById('goalsContainer');
+    // Check if the container is currently visible by checking its opacity
+    if (goalsContainer.style.opacity === '0' || goalsContainer.style.display === 'none') {
+        goalsContainer.style.display = 'block';  // Make the container visible before fading in
         setTimeout(() => {
-            goalsContainer.style.opacity = '1';
-        }, 10);
-        this.textContent = 'Hide Goals';
+            goalsContainer.style.opacity = '1';  // Fade in
+        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
+        this.textContent = 'Hide Goals';  // Change button text to reflect action
     } else {
-        goalsContainer.style.opacity = '0';
+        goalsContainer.style.opacity = '0';  // Fade out
         setTimeout(() => {
-            goalsContainer.style.display = 'none';
-        }, 500); // Adjust timing to match the CSS transition duration
-        this.textContent = 'Show Goals';
+            goalsContainer.style.display = 'none';  // Hide after transition
+        }, 500);  // Delay should match the CSS transition time
+        this.textContent = 'Show Goals';  // Change button text back
     }
 });
 

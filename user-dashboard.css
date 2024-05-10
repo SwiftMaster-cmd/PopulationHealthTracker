@@ -888,9 +888,19 @@ button:hover {
 
 
 
+    .goals-container {
+        display: none;  /* Initially hidden */
+        opacity: 0;     /* Start fully transparent */
+        transition: opacity 0.5s ease;  /* Smooth transition for the opacity */
+    }
+    
 
-
-
+    #filtersContainer {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
+    
 
 
 
