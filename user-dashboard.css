@@ -508,6 +508,47 @@ button#refreshChart:hover {
 
 
 
+.chartc-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px; /* Ensure consistency in maximum width */
+    margin: 20px auto; /* Centering horizontally */
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+#controls {
+    width: 100%; /* Full width to align with the container */
+    padding: 10px 0; /* Padding for top and bottom only */
+    display: flex;
+    justify-content: center; /* Ensure controls are centered */
+    align-items: center;
+    flex-direction: row; /* Horizontal layout for controls */
+    gap: 10px; /* Space between elements */
+}
+
+.chart-container {
+    width: 100%; /* Ensure it takes the full width of its parent */
+    max-width: 500px; /* Consistent with the outer container */
+    padding: 20px;
+    background: linear-gradient(to right, #023047, #011627);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#salesChart {
+    width: 100%; /* Full responsive width */
+    max-height: 400px; /* Set a max-height for visual consistency */
+    border-radius: 15px;
+}
 
 
 
