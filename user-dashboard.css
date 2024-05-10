@@ -1,26 +1,20 @@
-.dashboard-container{
-    display: flex; /* Enables flexbox */
+/* General container styling for all boxes with flexbox */
+.container {
+    display: flex; /* Enables flexbox for layout */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: flex-end; /* Aligns children to the right */
-    width: 100%; /* Takes full width of the parent */
-    margin: 20px; /* Centers the container with margin */
-    padding: 20px; /* Adds spacing inside the container */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
-    border-radius: 15px; /* Rounds the corners */
-    background: linear-gradient(to right, #023047, #011627); /* Background gradient */
-    color: #ffffff; /* Text color */
+    width: 100%; /* Container takes full width of its parent */
+    max-width: 500px; /* Sets the maximum width to 500px */
+    margin: 20px auto; /* Centers the container and adds vertical spacing */
+    padding: 20px; /* Adds padding inside the container */
+    background: linear-gradient(to right, #023047, #011627); /* Stylish background gradient */
+    color: #ffffff; /* Text color set to white for contrast */
+    border-radius: 15px; /* Rounded corners for a softer look */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Shadow for depth and focus */
 }
 
-.sales-container, .sales-history-container, .filters-container, .goals-container {
-    display: flex; /* Enables flexbox */
-    flex-direction: column; /* Stacks child elements vertically */
-    align-items: flex-end; /* Aligns children to the right */
-    width: 100%; /* Takes full width of the parent */
-    max-width: 500px; /* Maximum width set to 500px */
-    margin: 20px; /* Centers the container with margin */
-    padding: 20px; /* Adds spacing inside the container */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
-    border-radius: 15px; /* Rounds the corners */
-    background: linear-gradient(to right, #023047, #011627); /* Background gradient */
-    color: #ffffff; /* Text color */
-}
+/* Example usage in HTML:
+<div class="container">
+    <!-- Content goes here -->
+</div>
+*/
