@@ -25,18 +25,17 @@ html, body {
 /* Adding consistent header and input area styling with the dark theme */
 
 
-
-/* General container styling with flexbox */
-.dashboard-container{
-
+.dashboard-container {
     width: 100%; /* Takes full width of the parent */
-    margin: 20px; /* Centers the container with margin */
+    margin: 20px; /* Adds margin to center the container, potentially adjust or remove if still overflowing */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
     border-radius: 15px; /* Rounds the corners */
     background: linear-gradient(to right, #023047, #011627); /* Background gradient */
     color: #ffffff; /* Text color */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
 }
+
 
 /* General container styling with flexbox */
  .sales-container, .sales-history-container, .filters-container, .goals-container {
