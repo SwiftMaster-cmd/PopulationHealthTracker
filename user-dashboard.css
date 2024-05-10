@@ -195,8 +195,8 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 .sale-type-span {
     width: 175px;
     display: inline-block;
-    background: linear-gradient(to top, #0e457d, #031d35);
-    color: white;
+    background: linear-gradient(to right, #023047, #011627);
+        color: white;
     padding: 12px 20px;
     margin: 5px;
     border-radius: 10px;
@@ -242,8 +242,8 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 }
 
 .sale-actions button {
-    background: linear-gradient(to top, #0e457d, #031d35); /* Blue gradient for buttons */
-    color: white;
+    background: linear-gradient(to right, #023047, #011627);
+        color: white;
     font-weight: bold;
     padding: 10px 20px;
     margin: 0 5px;
@@ -593,8 +593,8 @@ button#refreshChart:hover {
     padding: 12px 0; /* Padding for height */
     font-weight: bold; /* Bold font */
     border-radius: 15px; /* Rounded corners */
-    background: linear-gradient(to top, #0e457d, #031d35); /* Gradient background */
-    color: white; /* Text color */
+    background: linear-gradient(to right, #023047, #011627);
+        color: white; /* Text color */
     border: none; /* No border */
     cursor: pointer; /* Cursor to indicate clickability */
     transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions for interaction feedback */
@@ -732,8 +732,8 @@ button#refreshChart:hover {
 
 /* Buttons */
 #editSaleForm button {
-    background: linear-gradient(to top, #0e457d, #031d35);
-    color: white;
+    background: linear-gradient(to right, #023047, #011627);
+        color: white;
     cursor: pointer;
     transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
@@ -833,8 +833,8 @@ button#refreshChart:hover {
 }
 
 #monthlyGoalForm button {
-    background: linear-gradient(to top, #0e457d, #031d35);/* Swap orange gradient to blue gradient */
-    color: white;
+    background: linear-gradient(to right, #023047, #011627);
+        color: white;
     padding: 12px 20px;
     border: none;
     border-radius: 15px;
@@ -935,8 +935,8 @@ button#refreshChart:hover {
 
 /* Style buttons with gradients */
 .commission-type-btn {
-    background: linear-gradient(to top, #0e457d, #031d35);
-    color: white;
+    background: linear-gradient(to right, #023047, #011627);
+        color: white;
     font-weight: bold;
     padding: 12px 20px;
     margin: 5px;
@@ -1086,8 +1086,8 @@ button#refreshChart:hover {
 
 /* Toggle button styles */
 #toggleFilters {
-    background: linear-gradient(to top, #0e457d, #031d35);
-    color: white;
+    background: linear-gradient(to right, #023047, #011627);
+        color: white;
     font-weight: bold;
     padding: 12px 20px;
     margin: 5px;
@@ -1109,8 +1109,8 @@ button#refreshChart:hover {
 
 /* Toggle button styles */
 #toggleButton {
-    background: linear-gradient(to top, #0e457d, #031d35);
-    color: white;
+    background: linear-gradient(to right, #023047, #011627);
+        color: white;
     font-weight: bold;
     padding: 12px 20px;
     margin: 5px;
@@ -1133,7 +1133,7 @@ button#refreshChart:hover {
 
 /* Toggle button styles */
 #toggleCharts {
-    background: linear-gradient(to top, #0e457d, #031d35);
+    background: linear-gradient(to right, #023047, #011627);
     color: white;
     font-weight: bold;
     padding: 12px 20px;
