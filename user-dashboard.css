@@ -1053,7 +1053,7 @@ button#refreshChart:hover {
     margin: 20px auto; /* Center the container horizontally */
     padding: 10px; /* Padding inside the container */
     border-radius: 8px; /* Slightly rounded corners for the container */
-    background: #023047; /* Background color */
+    background: linear-gradient(to right, #023047, #011627); ; /* Background color */
     box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Shadow for depth */
 }
 
