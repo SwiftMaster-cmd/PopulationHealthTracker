@@ -554,7 +554,6 @@ document.getElementById('timeFilterChart').addEventListener('change', () => {
 
 document.getElementById('toggleFilters').addEventListener('click', function() {
     const filtersContainer = document.getElementById('filtersContainer');
-    const salesHistoryContainer = document.querySelector('.sales-history-container'); // Get the sales history container
 
     if (filtersContainer.style.opacity === '0') {
         // Show both the filters container and the sales history container
