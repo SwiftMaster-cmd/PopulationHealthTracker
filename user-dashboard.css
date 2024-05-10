@@ -11,18 +11,17 @@
     color: #ffffff; /* Text color */
 }
 
-/* General container styling for all boxes with flexbox */
-.container {
-    display: flex; /* Enables flexbox for layout */
+.sales-container {
+    display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: flex-end; /* Aligns children to the right */
     width: 100%; /* Container takes full width of its parent */
-    max-width: 500px; /* Sets the maximum width to 500px */
-    margin: 20px auto; /* Centers the container and adds vertical spacing */
+    max-width: 500px; /* Limits the maximum width to 500px */
+    margin: 20px auto; /* Centers the container horizontally and adds vertical spacing */
     padding: 20px; /* Adds padding inside the container */
     background: linear-gradient(to right, #023047, #011627); /* Stylish background gradient */
     color: #ffffff; /* Text color set to white for contrast */
-    border-radius: 15px; /* Rounded corners for a softer look */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Shadow for depth and focus */
+    border-radius: 15px; /* Rounded corners for a smoother appearance */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Shadow for depth and aesthetic enhancement */
 }
 
