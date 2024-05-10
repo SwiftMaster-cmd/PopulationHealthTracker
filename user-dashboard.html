@@ -106,23 +106,32 @@
     <button id="toggleCharts">Hide Charts</button>
 </div>
 
-<div class="button-container container">
-<div id="controls">
-    <label for="timeFilterChart">Filter By Time</label>
-    <select id="timeFilterChart">
-        <option value="day">Day</option>
-        <option value="week">Week</option>
-        <option value="month">Month</option>
-    </select>
-    <button id="refreshChart" style="display: none;" >Refresh Chart</button>
-</div>
-</div>
+
+<div class="button-container container"></div>
+
+
+
+
 
 <div class="chart-container container">
+
+
+<div class="button-container container">
+    <div id="controls">
+        <label for="timeFilterChart">Filter By Time</label>
+        <select id="timeFilterChart">
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+        </select>
+        <button id="refreshChart" style="display: none;" >Refresh Chart</button>
+    </div>
+    </div>
+    
     
     <canvas id="salesChart"></canvas>
 </div>
- 
+</div>
 
 
 
