@@ -570,8 +570,11 @@ document.getElementById('toggleFilters').addEventListener('click', function() {
 });
 
 
-document.getElementById('toggleCharts').addEventListener('click', function() {
-    const chartContainer = document.querySelector('.chart-container');
+
+
+
+document.getElementById('toggleGoals').addEventListener('click', function() {
+    const chartContainer = document.querySelector('.goals-container');
 
     if (chartContainer.style.opacity === '0') {
         // Show both the chart and controls
@@ -581,7 +584,7 @@ document.getElementById('toggleCharts').addEventListener('click', function() {
             chartContainer.style.opacity = '1';
             chartControls.style.opacity = '1';
         }, 10);
-        this.textContent = 'Hide Charts';
+        this.textContent = 'Hide Goals';
     } else {
         // Hide both the chart and controls
         chartContainer.style.opacity = '0';
@@ -590,34 +593,9 @@ document.getElementById('toggleCharts').addEventListener('click', function() {
             chartContainer.style.display = 'none';
             chartControls.style.display = 'none';
         }, 500); // Ensure the timing matches any CSS transitions
-        this.textContent = 'Show Charts';
+        this.textContent = 'Show Goals';
     }
 });
-
-
-
-
-document.getElementById('togglGoals').addEventListener('click', function() {
-    const filtersContainer = document.getElementById('goals-container');
-    // Check if the container is currently visible by checking its opacity
-    if (filtersContainer.style.opacity === '0' || filtersContainer.style.display === 'none') {
-        filtersContainer.style.display = 'block';  // Make the container visible before fading in
-        setTimeout(() => {
-            filtersContainer.style.opacity = '1';  // Fade in
-        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
-        this.textContent = 'Hide Filters';  // Change button text to reflect action
-    } else {
-        filtersContainer.style.opacity = '0';  // Fade out
-        setTimeout(() => {
-            filtersContainer.style.display = 'none';  // Hide after transition
-        }, 500);  // Delay should match the CSS transition time
-        this.textContent = 'Show Filters';  // Change button text back
-    }
-});
-
-
-
-
 
 
 
