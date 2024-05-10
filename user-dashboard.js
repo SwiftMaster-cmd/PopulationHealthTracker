@@ -549,23 +549,20 @@ document.getElementById('timeFilterChart').addEventListener('change', () => {
 
 
 
-
-
 document.getElementById('toggleFilters').addEventListener('click', function() {
     const filtersContainer = document.getElementById('filtersContainer');
-    // Check if the container is currently visible by checking its opacity
     if (filtersContainer.style.opacity === '0' || filtersContainer.style.display === 'none') {
-        filtersContainer.style.display = 'block';  // Make the container visible before fading in
+        filtersContainer.style.display = 'block';  // Make the container visible
         setTimeout(() => {
             filtersContainer.style.opacity = '1';  // Fade in
-        }, 10);  // Timeout allows the display change to take effect before beginning the opacity transition
-        this.textContent = 'Hide Filters';  // Change button text to reflect action
+        }, 10);  // Allow display: block to take effect before starting the opacity transition
+        this.textContent = 'Hide Filters';  // Change the button text to reflect the action
     } else {
         filtersContainer.style.opacity = '0';  // Fade out
         setTimeout(() => {
-            filtersContainer.style.display = 'none';  // Hide after transition
-        }, 500);  // Delay should match the CSS transition time
-        this.textContent = 'Show Filters';  // Change button text back
+            filtersContainer.style.display = 'none';  // Hide completely after the fade out
+        }, 500);  // Ensure the timing matches the CSS transition
+        this.textContent = 'Show Filters';  // Change the button text back
     }
 });
 
