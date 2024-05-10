@@ -30,6 +30,7 @@ html, body {
 .dashboard-container{
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
+    justify-content: center; /* Center aligns children vertically */
     align-items: center; /* Aligns children to the right */
     width: 90%; /* Takes full width of the parent */
     margin: 20px; /* Centers the container with margin */
@@ -44,6 +45,7 @@ html, body {
 .sales-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
+    justify-content: center; /* Center aligns children vertically */
     align-items: center; /* Aligns children to the right */
     width: 100%; /* Takes full width of the parent */
     max-width: 500px; /* Maximum width set to 500px */
