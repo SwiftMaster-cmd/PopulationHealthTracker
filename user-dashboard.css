@@ -397,6 +397,8 @@ button#refreshChart:hover {
 .chart-container {
     max-width: 500px; /* Maximum width */
     width: 90%; /* Relative width to the parent container */
+    max-height: 500px; /* Maximum width */
+    height: 90%; /* Relative width to the parent container */
     margin: 20px auto;
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient for depth */
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); /* Stronger shadow for pronounced depth */
