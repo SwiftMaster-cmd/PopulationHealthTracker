@@ -28,9 +28,7 @@ html, body {
 
 /* General container styling with flexbox */
 .dashboard-container{
-    display: flex; /* Enables flexbox */
-    flex-direction: column; /* Stacks child elements vertically */
-    align-items: flex-end; /* Aligns children to the right */
+
     width: 100%; /* Takes full width of the parent */
     margin: 20px; /* Centers the container with margin */
     padding: 20px; /* Adds spacing inside the container */
