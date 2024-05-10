@@ -46,6 +46,8 @@ html, body {
     align-items: flex-end; /* Aligns children to the right */
     width: 100%; /* Takes full width of the parent */
     max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
+    max-height: 500px; /* Maximum width set to 500px */
     margin: 20px; /* Centers the container with margin */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
