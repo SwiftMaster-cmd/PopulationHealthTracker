@@ -29,7 +29,7 @@ html, body {
 
 /* Button styling across the site */
 .button, .esi-btn, .sale-type-btn, .submit-btn {
-    background: linear-gradient(to top, #0353A4, #0D8EFD);
+    background: linear-gradient(to right, #023047, #011627);
     color: white;
     padding: 12px 20px;
     margin: 10px;
@@ -41,14 +41,14 @@ html, body {
 }
 
 .button:hover, .esi-btn:hover, .sale-type-btn:hover, .submit-btn:hover {
-    background: linear-gradient(to top, #0466C8, #0D8EFD);
+    background: linear-gradient(to right, #023047, #011627);
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Input styling */
 .input-group input, #lead_id, #notes {
-    background: linear-gradient(to top, #0353A4, #0D8EFD);
+    background: linear-gradient(to right, #023047, #011627);
     color: white;
     border-radius: 15px;
     border: none;
