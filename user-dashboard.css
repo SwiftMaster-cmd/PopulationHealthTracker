@@ -60,6 +60,8 @@ html, body {
 .chart-container, #controls {
     max-width: 500px; /* Ensures controls and chart containers also have max-width of 500px */
     width: 100%; /* Takes full width of the parent up to max width */
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     margin: 20px auto; /* Centering horizontally */
     padding: 20px; /* Padding for internal spacing */
     background: linear-gradient(to right, #023047, #011627); /* Background color */
@@ -76,6 +78,8 @@ html, body {
 
 /* Ensures all child elements within flex containers are aligned properly */
 .dashboard-container > *, .sales-container > *, .sales-history-container > *, .filters-container > *, .goals-container > * {
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     width: 100%; /* Each child takes full width of its parent */
 }
 
@@ -150,13 +154,16 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-    max-height: 750px;
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     overflow-y: auto;
     animation: fadeIn 1s ease-out;
     text-align: center;
 }
 
 .sales-history-container > * {
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     min-width: 100%;
 }
 
@@ -207,8 +214,9 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
 }
 
 .sale-types {
-    width: 400; /* Set width to 500px */
- 
+    width: 500px; /* Set width to 500px */
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
 
     margin: 0 auto; /* Center align the container */
 }
@@ -326,6 +334,8 @@ textarea:focus {
 /* Container for the controls, centered with fixed width */
 #controls {
     width: 500px; /* Fixed width for the controls */
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     padding: 20px; /* Spacious padding for better interaction */
     margin: 20px auto; /* Margin to center horizontally in the viewport */
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
@@ -346,6 +356,8 @@ textarea:focus {
 /* Styling for the select dropdown to fit the dark theme */
 #timeFilterChart {
     width: 100%; /* Full width within the container */
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     padding: 10px;
     margin: 10px 0; /* Margin for spacing between elements */
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
@@ -359,6 +371,8 @@ textarea:focus {
 /* Button styling for a consistent look with the time filter dropdown and chart container */
 button#refreshChart {
     width: 100%; /* Full width to match the select element */
+    max-width: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     padding: 10px;
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */
     color: white;
@@ -379,7 +393,10 @@ button#refreshChart:hover {
 
 /* Styling for the chart container with a dark, sophisticated theme */
 .chart-container {
-    width: 500px;
+    width: 100%; /* Full width to match the select element */
+    max-width: 500px; /* Maximum width set to 500px */
+    max-height: 500px; /* Maximum width set to 500px */
+    height: 100%; /* Takes full width of the parent */
     margin: 20px auto;
     background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient for depth */
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); /* Stronger shadow for pronounced depth */
@@ -389,7 +406,7 @@ button#refreshChart:hover {
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Align items vertically in the center */
     padding: 20px;
-    max-height: 400px; /* Adequate height to maintain content visibility */
+
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for interactions */
 }
 
@@ -526,6 +543,10 @@ button#refreshChart:hover {
 /* Styles for the filter container */
 .filters-container {
     width: 500px; /* Maintain container width */
+    height: 500px; /* Maintain container width */
+    max-width: 100%;
+    max-height: 100%;
+
     margin: 20px auto; /* Center the container */
     padding: 10px 20px; /* Adjusted padding */
     border-radius: 15px; /* Rounded corners */
@@ -541,6 +562,8 @@ button#refreshChart:hover {
     justify-content: space-between; /* Space between items */
     align-items: center; /* Align items vertically */
     width: 100%; /* Full width to utilize space */
+    max-width: 100%;
+    max-height: 100%;
     margin: 10px 0; /* Adjusted margin for spacing */
 }
 
