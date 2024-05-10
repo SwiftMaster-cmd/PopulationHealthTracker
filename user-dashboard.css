@@ -17,7 +17,7 @@ html, body {
 
 
 /* General container styling with flexbox */
-.dashboard-container{
+.dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: flex-end; /* Aligns children to the right */
@@ -31,7 +31,7 @@ html, body {
 }
 
 /* General container styling with flexbox */
- .sales-container, .sales-history-container, .filters-container, .goals-container {
+.dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: flex-end; /* Aligns children to the right */
