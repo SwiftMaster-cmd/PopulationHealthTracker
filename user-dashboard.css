@@ -5,7 +5,7 @@
     display: flex; /* Enables flexbox layout */
     flex-wrap: wrap; /* Allows items to wrap to the next line */
     justify-content: flex-start; /* Aligns children to the start of the flex line */
-    gap: 20px; /* Adds space between the containers */
+    gap: 0px; /* Adds space between the containers */
 }
 
 html, body {
