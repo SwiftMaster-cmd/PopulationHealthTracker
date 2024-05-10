@@ -62,9 +62,9 @@
 
 .chart-container, #controls {
     max-width: 500px; /* Ensures controls and chart containers also have max-width of 500px */
-    width: 100%; /* Takes full width of the parent up to max width */
-    margin: 20px auto; /* Centering horizontally */
-    padding: 20px; /* Padding for internal spacing */
+    width: 90%; /* Takes full width of the parent up to max width */
+    margin: 0px auto; /* Centering horizontally */
+    padding: 0px; /* Padding for internal spacing */
     background: linear-gradient(to right, #023047, #011627); /* Background color */
     border-radius: 15px; /* Rounded corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow for depth */
