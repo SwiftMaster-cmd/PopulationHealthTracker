@@ -14,14 +14,13 @@ html, body {
 
 /* Adding consistent header and input area styling with the dark theme */
 
-
-
 /* General container styling with flexbox */
 .dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: flex-end; /* Aligns children to the right */
     width: 100%; /* Takes full width of the parent */
+    max-width: 500px; /* Maximum width set to 500px */
     margin: 20px; /* Centers the container with margin */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
@@ -29,6 +28,7 @@ html, body {
     background: linear-gradient(to right, #023047, #011627); /* Background gradient */
     color: #ffffff; /* Text color */
 }
+
 
 /* General container styling with flexbox */
 .dashboard-container, .sales-container, .sales-history-container, .filters-container, .goals-container {
@@ -66,10 +66,6 @@ html, body {
 /* Ensures all child elements within flex containers are aligned properly */
 .dashboard-container > *, .sales-container > *, .sales-history-container > *, .filters-container > *, .goals-container > * {
     width: 100%; /* Each child takes full width of its parent */
-}
-
-* {
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
 }
 
 
