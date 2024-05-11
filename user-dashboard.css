@@ -895,7 +895,7 @@ button:hover {
     padding: 10px;
     border-radius: 10px;
     border: none;
-    background: linear-gradient(to right, #023047, #011627); /* Dark blue gradient to match the chart container */    color: #333;
+    background: #023047; /* Dark blue gradient to match the chart container */    color: #333;
     margin-bottom: 10px;
 }
 
