@@ -346,20 +346,31 @@ function calculateSaleTypeCounts(salesArray) {
     return saleTypeCounts;
 }
 
+function displaySalesCounts() {
+    const salesRef = ref(database, `sales/${userId}`);
+    get(salesRef).then(snapshot => {
+        const salesData = snapshot.val();
+        let salesArray = Object.values(salesData || {});
+        const salesCounts = calculateSaleTypeCounts(salesArray);
 
+        const salesCountsContainer = document.getElementById('salesCountsContainer');
+        salesCountsContainer.innerHTML = ''; // Clear previous content
 
-
-
-
-
-
-function getSaleTypeDisplay(saleTypes, saleTypeCounts) {
-    let display = '';
-    Object.keys(saleTypes || {}).forEach(type => {
-        display += `${type}: ${saleTypes[type]} (${saleTypeCounts[type] || 0}), `;
+        Object.keys(salesCounts).forEach(type => {
+            const countElement = document.createElement('div');
+            countElement.textContent = `${type}: ${salesCounts[type]}`;
+            salesCountsContainer.appendChild(countElement);
+        });
+    }).catch(error => {
+        console.error('Failed to fetch sales data:', error);
     });
-    return display.slice(0, -2); // Remove trailing comma and space
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    displaySalesCounts(); // Display sales counts when the page loads
+});
+
 
 
 
