@@ -176,7 +176,7 @@ header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    background: #023047; /* Dark blue gradient to match the chart container */  
+    background: #011627; /* Dark blue gradient to match the chart container */  
       align-items: center;
 }
 
@@ -657,7 +657,7 @@ button:hover {
     padding: 12px 0; /* Padding for height */
     font-weight: bold; /* Bold font */
     border-radius: 15px; /* Rounded corners */
-    background: #023047; /* Gradient background */
+    background:  #011627; /* Gradient background */
     color: white; /* Text color */
     border: none; /* No border */
     cursor: pointer; /* Cursor to indicate clickability */
