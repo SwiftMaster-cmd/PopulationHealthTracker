@@ -842,6 +842,64 @@ document.getElementById('toggleGoals').addEventListener('click', function() {
 
 
 
+// Function to fetch current sales and goals, then update the UI with the progress
+function updateSalesProgressDisplay(userId) {
+    const salesRef = ref(database, `sales/${userId}`);
+    const goalsRef = ref(database, `users/${userId}/monthlySalesGoals`);
+
+    Promise.all([
+        get(salesRef),
+        get(goalsRef)
+    ]).then(([salesSnapshot, goalsSnapshot]) => {
+        if (!salesSnapshot.exists() || !goalsSnapshot.exists()) {
+            console.log("Sales data or goals data not found.");
+            return;
+        }
+
+        const salesData = salesSnapshot.val();
+        const goalsData = goalsSnapshot.val();
+
+        // Calculate sales counts
+        const salesCounts = calculateSaleTypeCounts(Object.values(salesData));
+        
+        // Display progress in the UI
+        displayProgress(salesCounts, goalsData);
+    }).catch(error => {
+        console.error('Failed to fetch sales or goals data:', error);
+    });
+}
+
+// Function to calculate and display the progress towards goals
+function displayProgress(salesCounts, goalsData) {
+    const progressContainer = document.getElementById('progressDisplay');
+    progressContainer.innerHTML = ''; // Clear previous content
+
+    Object.keys(goalsData).forEach(saleType => {
+        const goalAmount = goalsData[saleType];
+        const salesAmount = salesCounts[saleType] || 0;
+        const progressPercentage = ((salesAmount / goalAmount) * 100).toFixed(2);
+
+        // Create progress display elements
+        const progressElement = document.createElement('div');
+        progressElement.className = 'progress-bar';
+        progressElement.style.width = progressPercentage + '%';
+        progressElement.textContent = `${saleType}: ${progressPercentage}% (${salesAmount}/${goalAmount})`;
+
+        progressContainer.appendChild(progressElement);
+    });
+}
+
+// Add this function call to an appropriate place in your code, such as within an authentication listener or after data updates
+document.addEventListener('DOMContentLoaded', () => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            updateSalesProgressDisplay(user.uid); // Call this function with the current user's UID
+        } else {
+            console.log("User is not logged in.");
+        }
+    });
+});
 
 
 
