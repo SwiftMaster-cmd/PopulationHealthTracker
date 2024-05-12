@@ -356,6 +356,7 @@ onAuthStateChanged(auth, user => {
     }
 });
 
+
 function displaySalesCounts(userId) {
     if (!userId) {
         console.error("User ID is undefined or not set.");
@@ -363,15 +364,22 @@ function displaySalesCounts(userId) {
     }
 
     const salesRef = ref(database, `sales/${userId}`);
-    console.log(`Attempting to fetch data from: ${salesRef.toString()}`);
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
 
     get(salesRef).then(snapshot => {
         if (snapshot.exists()) {
             const salesData = snapshot.val();
-            console.log("Sales Data:", salesData); // Debug to check what data is being fetched
+            const salesArray = Object.values(salesData || {});
 
-            let salesArray = Object.values(salesData || {});
-            const salesCounts = calculateSaleTypeCounts(salesArray);
+            // Filter sales to include only those from the current month and year
+            const filteredSales = salesArray.filter(sale => {
+                const saleDate = new Date(sale.timestamp);
+                return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+            });
+
+            const salesCounts = calculateSaleTypeCounts(filteredSales);
             const salesCountsContainer = document.getElementById('salesCountsContainer');
             salesCountsContainer.innerHTML = ''; // Clear previous content
 
