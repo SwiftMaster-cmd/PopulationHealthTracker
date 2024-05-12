@@ -356,7 +356,6 @@ onAuthStateChanged(auth, user => {
     }
 });
 
-
 function displaySalesCounts(userId) {
     if (!userId) {
         console.error("User ID is undefined or not set.");
@@ -364,22 +363,15 @@ function displaySalesCounts(userId) {
     }
 
     const salesRef = ref(database, `sales/${userId}`);
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
+    console.log(`Attempting to fetch data from: ${salesRef.toString()}`);
 
     get(salesRef).then(snapshot => {
         if (snapshot.exists()) {
             const salesData = snapshot.val();
-            const salesArray = Object.values(salesData || {});
+            console.log("Sales Data:", salesData); // Debug to check what data is being fetched
 
-            // Filter sales to include only those from the current month and year
-            const filteredSales = salesArray.filter(sale => {
-                const saleDate = new Date(sale.timestamp);
-                return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
-            });
-
-            const salesCounts = calculateSaleTypeCounts(filteredSales);
+            let salesArray = Object.values(salesData || {});
+            const salesCounts = calculateSaleTypeCounts(salesArray);
             const salesCountsContainer = document.getElementById('salesCountsContainer');
             salesCountsContainer.innerHTML = ''; // Clear previous content
 
@@ -857,76 +849,6 @@ document.getElementById('toggleGoals').addEventListener('click', function() {
 
 
 
-function displaySalesProgress(userId) {
-    if (!userId) {
-        console.error("User ID is undefined or not set.");
-        return;
-    }
-
-    const salesRef = ref(database, `sales/${userId}`);
-    const goalsRef = ref(database, `users/${userId}/monthlySalesGoals`);
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    // Fetch both sales and goals data
-    Promise.all([
-        get(salesRef),
-        get(goalsRef)
-    ]).then(([salesSnapshot, goalsSnapshot]) => {
-        if (!salesSnapshot.exists() || !goalsSnapshot.exists()) {
-            console.log("Sales data or goals data not found.");
-            return;
-        }
-
-        const salesData = salesSnapshot.val();
-        const goalsData = goalsSnapshot.val();
-
-        // Filter sales for the current month and year
-        const filteredSales = Object.values(salesData || {}).filter(sale => {
-            const saleDate = new Date(sale.timestamp);
-            return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
-        });
-
-        // Calculate sales counts
-        const salesCounts = calculateSaleTypeCounts(filteredSales);
-
-        // Display sales counts and progress towards goals
-        displayProgress(salesCounts, goalsData);
-    }).catch(error => {
-        console.error('Failed to fetch sales or goals data:', error);
-    });
-}
-
-function displayProgress(salesCounts, goalsData) {
-    const progressContainer = document.getElementById('salesProgressContainer');
-    progressContainer.innerHTML = ''; // Clear previous content
-
-    Object.keys(goalsData).forEach(type => {
-        const goalAmount = goalsData[type];
-        const salesAmount = salesCounts[type] || 0;
-        const progressPercentage = (salesAmount / goalAmount * 100).toFixed(2);
-
-        // Create and append the display element
-        const progressElement = document.createElement('div');
-        progressElement.textContent = `${type}: ${salesAmount} sales, Goal: ${goalAmount}, Achieved: ${progressPercentage}%`;
-        progressContainer.appendChild(progressElement);
-    });
-}
-
-// Function to calculate sales counts from filtered sales
-function calculateSaleTypeCounts(salesArray) {
-    const counts = {};
-    salesArray.forEach(sale => {
-        Object.entries(sale.sale_types || {}).forEach(([type, amount]) => {
-            if (!counts[type]) {
-                counts[type] = 0;
-            }
-            counts[type] += amount;
-        });
-    });
-    return counts;
-}
 
 
 
