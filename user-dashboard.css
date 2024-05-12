@@ -608,6 +608,7 @@ button:hover {
 
 /* Style adjustments for each filter group */
 .filter-group {
+    padding: 10px 20px; /* Adjusted padding */
     display: flex; /* Use flexbox */
     justify-content: space-between; /* Space between items */
     align-items: center; /* Align items vertically */
@@ -617,6 +618,7 @@ button:hover {
 
 /* Style adjustments for filter labels */
 .filter-group label {
+    padding: 10px 20px; /* Adjusted padding */
     text-align: left; /* Align text to the left */
     font-size: 20px; /* Font size for readability */
     color: #ffffff; /* Color for contrast */
@@ -624,6 +626,7 @@ button:hover {
 }
 /* Style adjustments for select elements */
 .filter-group select {
+
     flex: 1;
     width: 200px;
     padding: 10px;
@@ -654,7 +657,7 @@ button:hover {
 #applyFilters {
     width: 400px; /* Width of the button */
     margin: 20px auto; /* Margin for auto-left and auto-right centers the button */
-    padding: 12px 0; /* Padding for height */
+    padding: 12px ; /* Padding for height */
     font-weight: bold; /* Bold font */
     border-radius: 15px; /* Rounded corners */
     background:  #011627; /* Gradient background */
