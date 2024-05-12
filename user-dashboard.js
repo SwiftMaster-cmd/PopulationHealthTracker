@@ -345,27 +345,36 @@ function calculateSaleTypeCounts(salesArray) {
     });
     return saleTypeCounts;
 }
-
 function displaySalesCounts() {
     const salesRef = ref(database, `sales/${userId}`);
     get(salesRef).then(snapshot => {
-        const salesData = snapshot.val();
-        let salesArray = Object.values(salesData || {});
-        const salesCounts = calculateSaleTypeCounts(salesArray);
+        if (snapshot.exists()) {
+            const salesData = snapshot.val();
+            let salesArray = Object.values(salesData || {});
+            console.log("Sales Array:", salesArray); // Debug: Check what the sales array looks like
 
-        const salesCountsContainer = document.getElementById('salesCountsContainer');
-        salesCountsContainer.innerHTML = ''; // Clear previous content
+            const salesCounts = calculateSaleTypeCounts(salesArray);
+            console.log("Sales Counts:", salesCounts); // Debug: Output calculated sales counts
 
-        Object.keys(salesCounts).forEach(type => {
-            const countElement = document.createElement('div');
-            countElement.textContent = `${type}: ${salesCounts[type]}`;
-            salesCountsContainer.appendChild(countElement);
-        });
+            const salesCountsContainer = document.getElementById('salesCountsContainer');
+            if (salesCountsContainer) {
+                salesCountsContainer.innerHTML = ''; // Clear previous content
+
+                Object.keys(salesCounts).forEach(type => {
+                    const countElement = document.createElement('div');
+                    countElement.textContent = `${type}: ${salesCounts[type]}`;
+                    salesCountsContainer.appendChild(countElement);
+                });
+            } else {
+                console.error("SalesCountsContainer element not found.");
+            }
+        } else {
+            console.error("No sales data found.");
+        }
     }).catch(error => {
         console.error('Failed to fetch sales data:', error);
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     displaySalesCounts(); // Display sales counts when the page loads
