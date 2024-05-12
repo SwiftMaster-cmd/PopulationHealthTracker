@@ -330,8 +330,6 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
 
 
 
-
-
 function calculateSaleTypeCounts(salesArray) {
     let saleTypeCounts = {};
     salesArray.forEach(sale => {
@@ -345,19 +343,32 @@ function calculateSaleTypeCounts(salesArray) {
     });
     return saleTypeCounts;
 }
-function displaySalesCounts() {
+
+// Trigger data fetch and display after user is confirmed logged in
+onAuthStateChanged(auth, user => {
+    if (user) {
+        userId = user.uid;
+        displaySalesCounts(userId); // Now passing userId directly to ensure it's defined
+    } else {
+        console.log("User is not logged in.");
+        userId = null; // Clear userId if no user is signed in
+        // Optionally clear or hide sales data display if needed
+    }
+});
+
+function displaySalesCounts(userId) {
     if (!userId) {
         console.error("User ID is undefined or not set.");
         return;
     }
 
     const salesRef = ref(database, `sales/${userId}`);
-    console.log(`Attempting to fetch data from: ${salesRef.toString()}`); // Check the actual path being queried
+    console.log(`Attempting to fetch data from: ${salesRef.toString()}`);
 
     get(salesRef).then(snapshot => {
         if (snapshot.exists()) {
             const salesData = snapshot.val();
-            console.log("Sales Data:", salesData); // Check what data is being fetched
+            console.log("Sales Data:", salesData); // Debug to check what data is being fetched
 
             let salesArray = Object.values(salesData || {});
             const salesCounts = calculateSaleTypeCounts(salesArray);
@@ -376,11 +387,6 @@ function displaySalesCounts() {
         console.error('Failed to fetch sales data:', error);
     });
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    displaySalesCounts(); // Display sales counts when the page loads
-});
 
 
 
