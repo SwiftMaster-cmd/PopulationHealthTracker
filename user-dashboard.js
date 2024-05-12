@@ -356,7 +356,6 @@ onAuthStateChanged(auth, user => {
     }
 });
 
-
 function displaySalesCounts(userId) {
     if (!userId) {
         console.error("User ID is undefined or not set.");
@@ -386,6 +385,7 @@ function displaySalesCounts(userId) {
             Object.keys(salesCounts).forEach(type => {
                 const countElement = document.createElement('div');
                 countElement.textContent = `${type}: ${salesCounts[type]}`;
+                countElement.className = 'sales-history-entry'; // Styling class for individual entries
                 salesCountsContainer.appendChild(countElement);
             });
         } else {
