@@ -346,35 +346,37 @@ function calculateSaleTypeCounts(salesArray) {
     return saleTypeCounts;
 }
 function displaySalesCounts() {
+    if (!userId) {
+        console.error("User ID is undefined or not set.");
+        return;
+    }
+
     const salesRef = ref(database, `sales/${userId}`);
+    console.log(`Attempting to fetch data from: ${salesRef.toString()}`); // Check the actual path being queried
+
     get(salesRef).then(snapshot => {
         if (snapshot.exists()) {
             const salesData = snapshot.val();
+            console.log("Sales Data:", salesData); // Check what data is being fetched
+
             let salesArray = Object.values(salesData || {});
-            console.log("Sales Array:", salesArray); // Debug: Check what the sales array looks like
-
             const salesCounts = calculateSaleTypeCounts(salesArray);
-            console.log("Sales Counts:", salesCounts); // Debug: Output calculated sales counts
-
             const salesCountsContainer = document.getElementById('salesCountsContainer');
-            if (salesCountsContainer) {
-                salesCountsContainer.innerHTML = ''; // Clear previous content
+            salesCountsContainer.innerHTML = ''; // Clear previous content
 
-                Object.keys(salesCounts).forEach(type => {
-                    const countElement = document.createElement('div');
-                    countElement.textContent = `${type}: ${salesCounts[type]}`;
-                    salesCountsContainer.appendChild(countElement);
-                });
-            } else {
-                console.error("SalesCountsContainer element not found.");
-            }
+            Object.keys(salesCounts).forEach(type => {
+                const countElement = document.createElement('div');
+                countElement.textContent = `${type}: ${salesCounts[type]}`;
+                salesCountsContainer.appendChild(countElement);
+            });
         } else {
-            console.error("No sales data found.");
+            console.log("No sales data found at path:", salesRef.toString());
         }
     }).catch(error => {
         console.error('Failed to fetch sales data:', error);
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     displaySalesCounts(); // Display sales counts when the page loads
