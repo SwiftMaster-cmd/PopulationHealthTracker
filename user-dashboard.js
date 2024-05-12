@@ -841,8 +841,7 @@ document.getElementById('toggleGoals').addEventListener('click', function() {
 
 
 
-
-// Function to fetch current sales and goals, then update the UI with the progress
+// Function to fetch sales and goals, then update UI with progress
 function updateSalesProgressDisplay(userId) {
     const salesRef = ref(database, `sales/${userId}`);
     const goalsRef = ref(database, `users/${userId}/monthlySalesGoals`);
@@ -859,9 +858,10 @@ function updateSalesProgressDisplay(userId) {
         const salesData = salesSnapshot.val();
         const goalsData = goalsSnapshot.val();
 
-        // Calculate sales counts
+        // Calculate sales counts using a refined function
         const salesCounts = calculateSaleTypeCounts(Object.values(salesData));
-        
+        console.log('Calculated Sales Counts:', salesCounts);  // Debug: log the calculated counts
+
         // Display progress in the UI
         displayProgress(salesCounts, goalsData);
     }).catch(error => {
@@ -869,17 +869,34 @@ function updateSalesProgressDisplay(userId) {
     });
 }
 
-// Function to calculate and display the progress towards goals
+// Refined function to calculate sales counts from an array of sales data
+function calculateSaleTypeCounts(salesArray) {
+    const salesCounts = {};
+
+    salesArray.forEach(sale => {
+        Object.entries(sale.sale_types || {}).forEach(([type, count]) => {
+            if (salesCounts[type]) {
+                salesCounts[type] += count;
+            } else {
+                salesCounts[type] = count;
+            }
+        });
+    });
+
+    return salesCounts;
+}
+
+// Function to display the progress toward goals
 function displayProgress(salesCounts, goalsData) {
     const progressContainer = document.getElementById('progressDisplay');
-    progressContainer.innerHTML = ''; // Clear previous content
+    progressContainer.innerHTML = '';  // Clear previous content
 
     Object.keys(goalsData).forEach(saleType => {
         const goalAmount = goalsData[saleType];
         const salesAmount = salesCounts[saleType] || 0;
-        const progressPercentage = ((salesAmount / goalAmount) * 100).toFixed(2);
+        const progressPercentage = goalAmount > 0 ? (salesAmount / goalAmount * 100).toFixed(2) : 0;
 
-        // Create progress display elements
+        // Create and append the progress display element
         const progressElement = document.createElement('div');
         progressElement.className = 'progress-bar';
         progressElement.style.width = progressPercentage + '%';
@@ -888,18 +905,6 @@ function displayProgress(salesCounts, goalsData) {
         progressContainer.appendChild(progressElement);
     });
 }
-
-// Add this function call to an appropriate place in your code, such as within an authentication listener or after data updates
-document.addEventListener('DOMContentLoaded', () => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            updateSalesProgressDisplay(user.uid); // Call this function with the current user's UID
-        } else {
-            console.log("User is not logged in.");
-        }
-    });
-});
 
 
 
