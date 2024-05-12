@@ -739,70 +739,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function setupSalesProgressListener(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
-
-    onValue(goalsRef, (goalSnapshot) => {
-        if (goalSnapshot.exists()) {
-            const goals = goalSnapshot.val();
-            onValue(salesRef, (salesSnapshot) => {
-                if (salesSnapshot.exists()) {
-                    updateProgressBars(salesSnapshot.val(), goals);
-                } else {
-                    console.log('No sales data found.');
-                }
-            });
-        } else {
-            console.log('No goals found');
-        }
-    });
-}
-
-function updateProgressBars(salesData, goals) {
-    const totals = {
-        "Billable HRA": 0,
-        "Flex HRA":0,
-        "Select RX": 0,
-        "Transfer": 0
-    };
-
-    // Aggregate sales data
-    Object.values(salesData).forEach(sale => {
-        Object.entries(sale.sale_types).forEach(([type, count]) => {
-            if (totals.hasOwnProperty(type)) { // Ensuring proper type name
-                totals[type] += count;
-            } else {
-                console.error(`Unexpected sale type: ${type}`);
-            }
-        });
-    });
-
-    // Update progress for each goal type
-    Object.keys(totals).forEach(type => {
-        const current = totals[type];
-        const goalKey = type.toLowerCase(); // Simplified, make sure this matches HTML IDs
-        const goal = goals[goalKey];
-        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`);
-        if (goal !== undefined) {
-            updateProgressBar(type, current, goal);
-        } else {
-            console.error(`Goal not found for type: ${type}`);
-        }
-    });
-}
-function updateProgressBar(type, current, goal) {
-    const progressId = `progress${type.replace(/\s+/g, '')}`; // Removes spaces, adapt as necessary
-    const progressBar = document.getElementById(progressId);
-    if (progressBar) {
-        const percentage = Math.min((current / goal) * 100, 100);
-        progressBar.style.width = `${percentage}%`;
-        progressBar.textContent = `${percentage.toFixed(0)}%`;
-    } else {
-        console.error(`Progress bar not found for type: ${type}`);
-    }
-}
-
 
 
 
@@ -858,6 +794,57 @@ document.getElementById('toggleGoals').addEventListener('click', function() {
 
 
 
+function updateProgressBars(salesData, goals) {
+    const totals = {
+        "Billable HRA": 0,
+        "Flex HRA": 0,
+        "Select RX": 0,
+        "Transfer": 0
+    };
+
+    // Aggregate sales data
+    Object.values(salesData).forEach(sale => {
+        Object.entries(sale.sale_types).forEach(([type, count]) => {
+            if (totals.hasOwnProperty(type)) {
+                totals[type] += count;
+            } else {
+                console.error(`Unexpected sale type: ${type}`);
+            }
+        });
+    });
+
+    let totalSales = 0;
+    let totalGoals = 0;
+
+    // Update progress for each goal type and calculate total sales and goals
+    Object.keys(totals).forEach(type => {
+        const current = totals[type];
+        const goalKey = type.toLowerCase();
+        const goal = goals[goalKey];
+        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`);
+        if (goal !== undefined) {
+            updateProgressBar(type, current, goal);
+            totalSales += current;
+            totalGoals += goal;
+        } else {
+            console.error(`Goal not found for type: ${type}`);
+        }
+    });
+
+    // Display the total progress
+    updateTotalProgress(totalSales, totalGoals);
+}
+
+function updateTotalProgress(totalSales, totalGoals) {
+    const totalProgressPercentage = (totalSales / totalGoals) * 100;
+    const totalProgressBar = document.getElementById('totalProgress');
+    if (totalProgressBar) {
+        totalProgressBar.style.width = `${totalProgressPercentage}%`;
+        totalProgressBar.textContent = `Total Progress: ${totalProgressPercentage.toFixed(0)}%`;
+    } else {
+        console.error('Total progress bar not found.');
+    }
+}
 
 
 
