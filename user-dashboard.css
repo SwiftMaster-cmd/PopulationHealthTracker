@@ -34,7 +34,7 @@
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center horizontally */
-    width: 100%; /* Takes 90% of the parent's width */
+    width: 90%; /* Takes 90% of the parent's width */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
     border-radius: 15px; /* Rounds the corners */
@@ -80,7 +80,7 @@
     flex-wrap: wrap; /* Allows items to wrap to the next line as needed */
     justify-content: flex-start; /* Aligns children to the start of the flex line */
     gap: 20px; /* Adds space between the containers */
-    width: 60%; /* Takes full width of the parent element */
+    width: 90%; /* Takes full width of the parent element */
     max-width: 90%; /* Optional: limits the maximum width of the wrapper */
     min-width: 20%; /* Optional: limits the maximum width of the wrapper */
     margin: 0 auto; /* Center align the wrapper within its parent */
