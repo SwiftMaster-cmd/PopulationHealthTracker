@@ -63,6 +63,8 @@
     align-items: center; /* Aligns children to the center */
     width: 90%; /* Takes full width of the parent */
     min-width: 400px; /* Minimum width set to 400px */
+    max-height: 500px; /* Minimum height set to 400px */
+    max-width: 4500px; /* Minimum width set to 400px */
     min-height: 400px; /* Minimum height set to 400px */
     margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
     padding: 20px; /* Adds spacing inside the container */
