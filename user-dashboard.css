@@ -80,7 +80,7 @@
     flex-wrap: wrap; /* Allows items to wrap to the next line as needed */
     justify-content: flex-start; /* Aligns children to the start of the flex line */
     gap: 20px; /* Adds space between the containers */
-    max-width: 90%; /* Optional: limits the maximum width of the wrapper */
+    max-width: 80%; /* Optional: limits the maximum width of the wrapper */
     margin: 0 auto; /* Center align the wrapper within its parent */
 }
 
