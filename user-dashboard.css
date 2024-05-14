@@ -109,7 +109,7 @@
 
 
 
-header:hover, .dashboard-container:hover, .sales-container:hover, .sales-history-container:hover {
+header:hover, .sales-container:hover, .sales-history-container:hover, .chartc-container:hover {
     transform: scale(1.05); /* Slight scale up on hover for pop effect */
     box-shadow: 0 0 25px rgba(0, 0, 0, 1); /* Darker shadow on hover for added depth */
 }
