@@ -56,6 +56,23 @@
     color: #ffffff; /* Text color */
 }
 
+
+
+.dashboard-layout-container {
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks child elements vertically */
+    align-items: center; /* Aligns children to the center horizontally */
+    width: 10%; /* Takes 90% of the parent's width */
+    height: 90%; /* Takes 90% of the parent's width */
+    padding: 25px 20px; /* Adds spacing inside the container */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
+    border-radius: 15px; /* Rounds the corners */
+    background: linear-gradient(to right, #023047, #011627); /* Background gradient */
+    color: #ffffff; /* Text color */
+}
+
+
+
 /* General container styling with flexbox */
 .sales-container, .chartc-container, .sales-history-container, .sales-container {
     display: flex; /* Enables flexbox */
