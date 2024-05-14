@@ -62,8 +62,8 @@
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center */
     width: 90%; /* Takes full width of the parent */
-    min-width: 40%; /* Minimum width set to 400px */
-    max-height: 40%; /* Minimum height set to 400px */
+    min-height: 30%; /* Minimum width set to 400px */
+    min-width: 30%; /* Minimum width set to 400px */
     max-width: 50%; /* Minimum width set to 400px */
     max-height: 50%; /* Minimum height set to 400px */
     margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
