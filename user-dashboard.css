@@ -81,7 +81,7 @@
     justify-content: flex-start; /* Aligns children to the start of the flex line */
     gap: 20px; /* Adds space between the containers */
     width: 100%; /* Takes full width of the parent element */
-    max-width: 1200px; /* Optional: limits the maximum width of the wrapper */
+    max-width: 90; /* Optional: limits the maximum width of the wrapper */
     margin: 0 auto; /* Center align the wrapper within its parent */
 }
 
