@@ -61,9 +61,9 @@
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center */
-    width: 90%; /* Takes full width of the parent */
-    min-height: 90%; /* Minimum width set to 400px */
-    min-width: 90%; /* Minimum width set to 400px */
+    width: 40%; /* Takes full width of the parent */
+    min-height: 30%; /* Minimum width set to 400px */
+    min-width: 30%; /* Minimum width set to 400px */
     max-width: 90%; /* Minimum width set to 400px */
     max-height: 90%; /* Minimum height set to 400px */
     margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
