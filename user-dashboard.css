@@ -62,10 +62,10 @@
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center */
     width: 90%; /* Takes full width of the parent */
-    min-height: 30%; /* Minimum width set to 400px */
-    min-width: 30%; /* Minimum width set to 400px */
-    max-width: 50%; /* Minimum width set to 400px */
-    max-height: 50%; /* Minimum height set to 400px */
+    min-height: 90%; /* Minimum width set to 400px */
+    min-width: 90%; /* Minimum width set to 400px */
+    max-width: 90%; /* Minimum width set to 400px */
+    max-height: 90%; /* Minimum height set to 400px */
     margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
