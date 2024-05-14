@@ -56,14 +56,14 @@
     color: #ffffff; /* Text color */
 }
 
-
 /* General container styling with flexbox */
-.sales-container,.chartc-container, .sales-history-container {
+.sales-container, .chartc-container, .sales-history-container, .sales-container {
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
-    align-items: center; /* Aligns children to the right */
+    align-items: center; /* Aligns children to the center */
     width: 90%; /* Takes full width of the parent */
-    max-width: 500px; /* Maximum width set to 500px */
+    min-width: 400px; /* Minimum width set to 400px */
+    min-height: 400px; /* Minimum height set to 400px */
     margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
@@ -71,6 +71,18 @@
     background: linear-gradient(to right, #023047, #011627); /* Background gradient */
     color: #ffffff; /* Text color */
 }
+
+/* Container wrapper to manage flex items */
+.containers-wrapper {
+    display: flex; /* Enables flexbox layout */
+    flex-wrap: wrap; /* Allows items to wrap to the next line as needed */
+    justify-content: flex-start; /* Aligns children to the start of the flex line */
+    gap: 20px; /* Adds space between the containers */
+    width: 100%; /* Takes full width of the parent element */
+    max-width: 1200px; /* Optional: limits the maximum width of the wrapper */
+    margin: 0 auto; /* Center align the wrapper within its parent */
+}
+
 
 .filters-container, .goals-container {
 
@@ -518,28 +530,6 @@ button:hover {
     background-color: #023047;  /* Darker color on hover */
 }
 
-
-
-
-
-
-
-
-
-.sales-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-    border-radius: 15px;
-    background: linear-gradient(to right, #023047, #011627);
-    color: #ffffff;
-    text-align: center;
-}
 
 
 
