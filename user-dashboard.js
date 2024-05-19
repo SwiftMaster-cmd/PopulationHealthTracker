@@ -331,6 +331,21 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
 
 
 
+get(salesRef).then(snapshot => {
+    const salesData = snapshot.val();
+    console.log("Sales Data:", salesData); // Check what data is being retrieved
+    if (!salesData) {
+        console.error('No sales data available.');
+        return;
+    }
+    let salesArray = Object.values(salesData);
+    const salesCounts = calculateSaleTypeCounts(salesArray);
+    console.log("Sales Counts:", salesCounts); // Check the computed counts
+
+    // Other code continues here...
+}).catch(error => {
+    console.error('Failed to fetch sales data:', error);
+});
 
 function calculateSaleTypeCounts(salesArray) {
     let saleTypeCounts = {};
@@ -343,33 +358,17 @@ function calculateSaleTypeCounts(salesArray) {
             }
         });
     });
+    console.log("Calculated Sale Type Counts:", saleTypeCounts);
     return saleTypeCounts;
 }
 
-function displaySalesCounts() {
-    const salesRef = ref(database, `sales/${userId}`);
-    get(salesRef).then(snapshot => {
-        const salesData = snapshot.val();
-        let salesArray = Object.values(salesData || {});
-        const salesCounts = calculateSaleTypeCounts(salesArray);
+<div id="salesCountsContainer"></div>
 
-        const salesCountsContainer = document.getElementById('salesCountsContainer');
-        salesCountsContainer.innerHTML = ''; // Clear previous content
-
-        Object.keys(salesCounts).forEach(type => {
-            const countElement = document.createElement('div');
-            countElement.textContent = `${type}: ${salesCounts[type]}`;
-            salesCountsContainer.appendChild(countElement);
-        });
-    }).catch(error => {
-        console.error('Failed to fetch sales data:', error);
-    });
+const salesCountsContainer = document.getElementById('salesCountsContainer');
+if (!salesCountsContainer) {
+    console.error("Failed to find the salesCountsContainer element.");
+    return;
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    displaySalesCounts(); // Display sales counts when the page loads
-});
 
 
 
