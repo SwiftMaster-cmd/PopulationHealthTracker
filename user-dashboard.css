@@ -79,7 +79,7 @@
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center */
     width: 500px; /* Takes full width of the parent */
-    height: 500px%; /* Takes full width of the parent */
+    height: 500px; /* Takes full width of the parent */
     min-height: 300px; /* Minimum width set to 400px */
     min-width: 300px; /* Minimum width set to 400px */
     max-width: 500px; /* Minimum width set to 400px */
