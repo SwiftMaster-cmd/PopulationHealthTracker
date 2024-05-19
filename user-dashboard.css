@@ -78,12 +78,12 @@
     display: flex; /* Enables flexbox */
     flex-direction: column; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center */
-    width: 45%; /* Takes full width of the parent */
-    height: 45%; /* Takes full width of the parent */
-    min-height: 45%; /* Minimum width set to 400px */
-    min-width: 45%; /* Minimum width set to 400px */
-    max-width: 90%; /* Minimum width set to 400px */
-    max-height: 90%; /* Minimum height set to 400px */
+    width: 500px; /* Takes full width of the parent */
+    height: 500px%; /* Takes full width of the parent */
+    min-height: 300px; /* Minimum width set to 400px */
+    min-width: 300px; /* Minimum width set to 400px */
+    max-width: 500px; /* Minimum width set to 400px */
+    max-height: 500px; /* Minimum height set to 400px */
     margin: 20px auto; /* Centers the container horizontally with automatic margins on both sides */
     padding: 20px; /* Adds spacing inside the container */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
