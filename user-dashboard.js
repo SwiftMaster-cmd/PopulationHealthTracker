@@ -50,8 +50,6 @@ document.getElementById('generateButton').addEventListener('click', async () => 
 
 
 
-
-
 // Helper functions for UI interactions
 function getSelectedESIContent() {
     const selectedButton = document.querySelector('.esi-btn.selected');
@@ -359,8 +357,6 @@ function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdF
 
 
 
-
-
 function calculateSaleTypeCounts(salesArray) {
     let saleTypeCounts = {};
     salesArray.forEach(sale => {
@@ -375,30 +371,57 @@ function calculateSaleTypeCounts(salesArray) {
     return saleTypeCounts;
 }
 
-function displaySalesCounts() {
+// Trigger data fetch and display after user is confirmed logged in
+onAuthStateChanged(auth, user => {
+    if (user) {
+        userId = user.uid;
+        displaySalesCounts(userId); // Now passing userId directly to ensure it's defined
+    } else {
+        console.log("User is not logged in.");
+        userId = null; // Clear userId if no user is signed in
+        // Optionally clear or hide sales data display if needed
+    }
+});
+
+function displaySalesCounts(userId) {
+    if (!userId) {
+        console.error("User ID is undefined or not set.");
+        return;
+    }
+
     const salesRef = ref(database, `sales/${userId}`);
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
     get(salesRef).then(snapshot => {
-        const salesData = snapshot.val();
-        let salesArray = Object.values(salesData || {});
-        const salesCounts = calculateSaleTypeCounts(salesArray);
+        if (snapshot.exists()) {
+            const salesData = snapshot.val();
+            const salesArray = Object.values(salesData || {});
 
-        const salesCountsContainer = document.getElementById('salesCountsContainer');
-        salesCountsContainer.innerHTML = ''; // Clear previous content
+            // Filter sales to include only those from the current month and year
+            const filteredSales = salesArray.filter(sale => {
+                const saleDate = new Date(sale.timestamp);
+                return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+            });
 
-        Object.keys(salesCounts).forEach(type => {
-            const countElement = document.createElement('div');
-            countElement.textContent = `${type}: ${salesCounts[type]}`;
-            salesCountsContainer.appendChild(countElement);
-        });
+            const salesCounts = calculateSaleTypeCounts(filteredSales);
+            const salesCountsContainer = document.getElementById('salesCountsContainer');
+            salesCountsContainer.innerHTML = ''; // Clear previous content
+
+            Object.keys(salesCounts).forEach(type => {
+                const countElement = document.createElement('div');
+                countElement.textContent = `${type}: ${salesCounts[type]}`;
+                countElement.className = 'sales-history-entry'; // Styling class for individual entries
+                salesCountsContainer.appendChild(countElement);
+            });
+        } else {
+            console.log("No sales data found at path:", salesRef.toString());
+        }
     }).catch(error => {
         console.error('Failed to fetch sales data:', error);
     });
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    displaySalesCounts(); // Display sales counts when the page loads
-});
 
 
 
@@ -743,70 +766,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function setupSalesProgressListener(userId) {
-    const salesRef = ref(database, 'sales/' + userId);
-    const goalsRef = ref(database, 'users/' + userId + '/monthlySalesGoals');
-
-    onValue(goalsRef, (goalSnapshot) => {
-        if (goalSnapshot.exists()) {
-            const goals = goalSnapshot.val();
-            onValue(salesRef, (salesSnapshot) => {
-                if (salesSnapshot.exists()) {
-                    updateProgressBars(salesSnapshot.val(), goals);
-                } else {
-                    console.log('No sales data found.');
-                }
-            });
-        } else {
-            console.log('No goals found');
-        }
-    });
-}
-
-function updateProgressBars(salesData, goals) {
-    const totals = {
-        "Billable HRA": 0,
-        "Flex HRA":0,
-        "Select RX": 0,
-        "Transfer": 0
-    };
-
-    // Aggregate sales data
-    Object.values(salesData).forEach(sale => {
-        Object.entries(sale.sale_types).forEach(([type, count]) => {
-            if (totals.hasOwnProperty(type)) { // Ensuring proper type name
-                totals[type] += count;
-            } else {
-                console.error(`Unexpected sale type: ${type}`);
-            }
-        });
-    });
-
-    // Update progress for each goal type
-    Object.keys(totals).forEach(type => {
-        const current = totals[type];
-        const goalKey = type.toLowerCase(); // Simplified, make sure this matches HTML IDs
-        const goal = goals[goalKey];
-        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`);
-        if (goal !== undefined) {
-            updateProgressBar(type, current, goal);
-        } else {
-            console.error(`Goal not found for type: ${type}`);
-        }
-    });
-}
-function updateProgressBar(type, current, goal) {
-    const progressId = `progress${type.replace(/\s+/g, '')}`; // Removes spaces, adapt as necessary
-    const progressBar = document.getElementById(progressId);
-    if (progressBar) {
-        const percentage = Math.min((current / goal) * 100, 100);
-        progressBar.style.width = `${percentage}%`;
-        progressBar.textContent = `${percentage.toFixed(0)}%`;
-    } else {
-        console.error(`Progress bar not found for type: ${type}`);
-    }
-}
-
 
 
 
@@ -862,6 +821,57 @@ document.getElementById('toggleGoals').addEventListener('click', function() {
 
 
 
+function updateProgressBars(salesData, goals) {
+    const totals = {
+        "Billable HRA": 0,
+        "Flex HRA": 0,
+        "Select RX": 0,
+        "Transfer": 0
+    };
+
+    // Aggregate sales data
+    Object.values(salesData).forEach(sale => {
+        Object.entries(sale.sale_types).forEach(([type, count]) => {
+            if (totals.hasOwnProperty(type)) {
+                totals[type] += count;
+            } else {
+                console.error(`Unexpected sale type: ${type}`);
+            }
+        });
+    });
+
+    let totalSales = 0;
+    let totalGoals = 0;
+
+    // Update progress for each goal type and calculate total sales and goals
+    Object.keys(totals).forEach(type => {
+        const current = totals[type];
+        const goalKey = type.toLowerCase();
+        const goal = goals[goalKey];
+        console.log(`Processing Type: ${type}, Current: ${current}, Goal: ${goal}`);
+        if (goal !== undefined) {
+            updateProgressBar(type, current, goal);
+            totalSales += current;
+            totalGoals += goal;
+        } else {
+            console.error(`Goal not found for type: ${type}`);
+        }
+    });
+
+    // Display the total progress
+    updateTotalProgress(totalSales, totalGoals);
+}
+
+function updateTotalProgress(totalSales, totalGoals) {
+    const totalProgressPercentage = (totalSales / totalGoals) * 100;
+    const totalProgressBar = document.getElementById('totalProgress');
+    if (totalProgressBar) {
+        totalProgressBar.style.width = `${totalProgressPercentage}%`;
+        totalProgressBar.textContent = `Total Progress: ${totalProgressPercentage.toFixed(0)}%`;
+    } else {
+        console.error('Total progress bar not found.');
+    }
+}
 
 
 
@@ -1161,7 +1171,6 @@ document.getElementById('cancelEditSale').addEventListener('click', function() {
     // Hide the modal
     document.getElementById('editSaleModal').style.display = 'none';
 });
-
 
 
 
