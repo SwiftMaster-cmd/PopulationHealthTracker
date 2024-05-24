@@ -1,8 +1,10 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getVertexAI, getGenerativeModel } from "firebase/vertexai-preview";
+
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
+
 
 // Your app's Firebase project configuration
 const firebaseConfig = {
@@ -16,31 +18,23 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
+
+
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 
-// Initialize the Vertex AI service
-const vertexAI = getVertexAI(firebaseApp);
+// Initialize FirebaseApp
+const firebaseApp = initializeApp(firebaseConfig);
 
-// Initialize the generative model with a model that supports your use case
-// Gemini 1.5 models are versatile and can be used with all API capabilities
-const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash-preview-0514" });
 
-// Wrap in an async function so you can use await
-async function run() {
-    // Provide a prompt that contains text
-    const prompt = "Write a story about a magic backpack.";
 
-    // To generate text output, call generateContent with the text input
-    const result = await model.generateContent(prompt);
 
-    const text = result.text;
-    console.log(text);
-}
 
-run();
+
+
+
 
 
 // Helper functions for UI interactions
