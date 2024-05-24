@@ -14,7 +14,7 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-// Initialize Firebasedocument.getElementById('addSalesF
+// Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
@@ -69,9 +69,8 @@ document.getElementById('lead_id').addEventListener('input', function() {
 document.getElementById('addSalesForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const token = grecaptcha.getResponse();
-    if (!token) {
-        alert('Please complete the reCAPTCHA.');
+    if (!userId) {
+        alert('Please log in to add sales.');
         return;
     }
 
@@ -115,7 +114,6 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
                     // Clear selected buttons
                     document.querySelectorAll('.esi-btn.selected').forEach(btn => btn.classList.remove('selected'));
                     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => btn.classList.remove('selected'));
-                    grecaptcha.reset(); // Reset reCAPTCHA
                 })
                 .catch(error => {
                     console.error('Error adding sale:', error);
@@ -126,32 +124,6 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
         console.error('Error fetching existing sales:', error);
     });
 });
-
-
-
-
-
-
-
-async function generateContentWithVertexAI(prompt) {
-    try {
-        const result = await model.generateContent(prompt);
-        const response = result.response;
-        const text = response.text();
-        console.log(text);
-    } catch (error) {
-        console.error('Error generating content:', error);
-    }
-}
-
-// Example usage
-document.getElementById('someButton').addEventListener('click', () => {
-    const prompt = "Write a story about a magic backpack.";
-    generateContentWithVertexAI(prompt);
-});
-
-
-
 
 
 

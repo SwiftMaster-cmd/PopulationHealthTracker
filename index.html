@@ -4,6 +4,7 @@
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
@@ -27,14 +28,20 @@
         const provider = new GoogleAuthProvider();
 
         async function googleSignIn() {
-    try {
-        const result = await signInWithPopup(auth, provider);
-        // Directly redirect to user dashboard after successful sign-in
-        window.location.href = 'user-dashboard.html';
-    } catch (error) {
-        console.error('Error during Google sign-in:', error);
-    }
-}
+            const token = grecaptcha.getResponse();
+            if (!token) {
+                alert('Please complete the reCAPTCHA.');
+                return;
+            }
+
+            try {
+                const result = await signInWithPopup(auth, provider);
+                // Directly redirect to user dashboard after successful sign-in
+                window.location.href = 'user-dashboard.html';
+            } catch (error) {
+                console.error('Error during Google sign-in:', error);
+            }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
@@ -45,6 +52,8 @@
     <div class="login-container">
         <h2>Please Sign In</h2>
         <div class="form-group">
+            <!-- reCAPTCHA widget -->
+            <div class="g-recaptcha" data-sitekey="6LdiOecpAAAAAKUOI7snIap5oVDMSOYCRc1AKEJK"></div>
             <!-- Google Sign-In Button -->
             <button id="googleSignInButton">Sign in with Google</button>
         </div>
