@@ -310,13 +310,38 @@
     
 
 
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://unpkg.com/@google/generative-ai"; // Ensure this path is correct
 
-    
-<h1>Google Generative AI Integration</h1>
-<button onclick="run()">Send Message</button>
-<div id="output"></div>
+        // Fetch your API_KEY
+        const API_KEY = "AIzaSyDdanD13Lt1SuBgWDNmUgMaiJ9MMqJqky4";
 
+        // Access your API key
+        const genAI = new GoogleGenerativeAI(API_KEY);
 
+        async function generateContent(prompt) {
+            try {
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+                const result = await model.generateContent({ text: prompt });
+                const response = result.response;
+                const text = response.text;
+                console.log(text);
+                return text;
+            } catch (error) {
+                console.error("Error generating content:", error);
+            }
+        }
+
+        async function runExample() {
+            const prompt = "Write a story about a magic backpack.";
+            const generatedText = await generateContent(prompt);
+            document.getElementById("output").innerText = generatedText;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("generateButton").addEventListener("click", runExample);
+        });
+    </script>
 
     
 <div class="dashboard-title-container">
