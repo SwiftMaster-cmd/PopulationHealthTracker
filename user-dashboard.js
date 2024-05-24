@@ -38,10 +38,6 @@ async function run() {
 
     const text = result.text;
     console.log(text);
-
-    // Display the text inside the salesCountsContainer div
-    const container = document.getElementById('salesCountsContainer');
-    container.innerText = text;
 }
 
 run();
