@@ -1,8 +1,9 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getVertexAI, getGenerativeModel } from "firebase/vertexai-preview";
-import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getVertexAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-vertexai.js"; // Adjust the import path as necessary
+
 // Your app's Firebase project configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -15,17 +16,28 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-
-
 // Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const database = getDatabase(firebaseApp);
+const vertexAI = getVertexAI(firebaseApp);
 
-initializeApp(firebaseConfig);
-const auth = getAuth();
-const database = getDatabase();
+const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash-preview-0514" });
 
-
-
-
+// Wrap in an async function so you can use await
+async function run() {
+    // Provide a prompt that contains text
+    const prompt = "Write a story about a magic backpack.";
+  
+    // To generate text output, call generateContent with the text input
+    const result = await model.generateContent({ text: prompt });
+  
+    const response = result.response;
+    const text = response.text;
+    console.log(text);
+}
+  
+run();
 
 // Helper functions for UI interactions
 function getSelectedESIContent() {
