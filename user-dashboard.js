@@ -18,8 +18,7 @@ const firebaseConfig = {
 
 
 // Initialize Firebase
-
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
 const vertexAI = getVertexAI(app);
