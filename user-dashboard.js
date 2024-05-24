@@ -3,6 +3,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
+// Import Google Generative AI
+import { GoogleGenerativeAI } from "https://unpkg.com/@google/generative-ai";  // Ensure this path is correct and available
 
 // Your app's Firebase project configuration
 const firebaseConfig = {
@@ -16,18 +18,10 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-
-
 // Initialize Firebase
-
-initializeApp(firebaseConfig);
-const auth = getAuth();
-const database = getDatabase();
-
-
-
-
-
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const database = getDatabase(firebaseApp);
 
 // Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI("AIzaSyDdanD13Lt1SuBgWDNmUgMaiJ9MMqJqky4");
@@ -57,6 +51,7 @@ async function runExample() {
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("generateButton").addEventListener("click", runExample);
 });
+
 
 
 
