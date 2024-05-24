@@ -1,12 +1,8 @@
-// Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getVertexAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-vertexai-preview.js";
 
-
-
-// Your app's Firebase project configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
     authDomain: "track-dac15.firebaseapp.com",
@@ -18,17 +14,12 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-
-
-// Initialize Firebase
-initializeApp(firebaseConfig);
+// Initialize Firebasedocument.getElementById('addSalesF
+const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
-
-// Initialize FirebaseApp
-const firebaseApp = initializeApp(firebaseConfig);
-
-
+const vertexAI = getVertexAI(firebaseApp);
+const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash-preview-0514" });
 
 
 
@@ -78,8 +69,9 @@ document.getElementById('lead_id').addEventListener('input', function() {
 document.getElementById('addSalesForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (!userId) {
-        alert('Please log in to add sales.');
+    const token = grecaptcha.getResponse();
+    if (!token) {
+        alert('Please complete the reCAPTCHA.');
         return;
     }
 
@@ -123,6 +115,7 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
                     // Clear selected buttons
                     document.querySelectorAll('.esi-btn.selected').forEach(btn => btn.classList.remove('selected'));
                     document.querySelectorAll('.sale-type-btn.selected').forEach(btn => btn.classList.remove('selected'));
+                    grecaptcha.reset(); // Reset reCAPTCHA
                 })
                 .catch(error => {
                     console.error('Error adding sale:', error);
@@ -133,6 +126,32 @@ document.getElementById('addSalesForm').addEventListener('submit', async (e) => 
         console.error('Error fetching existing sales:', error);
     });
 });
+
+
+
+
+
+
+
+async function generateContentWithVertexAI(prompt) {
+    try {
+        const result = await model.generateContent(prompt);
+        const response = result.response;
+        const text = response.text();
+        console.log(text);
+    } catch (error) {
+        console.error('Error generating content:', error);
+    }
+}
+
+// Example usage
+document.getElementById('someButton').addEventListener('click', () => {
+    const prompt = "Write a story about a magic backpack.";
+    generateContentWithVertexAI(prompt);
+});
+
+
+
 
 
 
