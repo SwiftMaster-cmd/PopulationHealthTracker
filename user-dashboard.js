@@ -1,8 +1,9 @@
+// Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { getVertexAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-vertexai-preview.js";
 
+// Your app's Firebase project configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
     authDomain: "track-dac15.firebaseapp.com",
@@ -14,40 +15,12 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
+
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-const vertexAI = getVertexAI(app);
-
-
-
-
-const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash-preview-0514" });
-
-async function generateContent(prompt) {
-    try {
-        const result = await model.generateContent(prompt);
-        const response = result.response;
-        const text = response.text();
-        console.log(text);
-        return text;
-    } catch (error) {
-        console.error('Error generating content:', error);
-        return 'Error generating content.';
-    }
-}
-
-document.getElementById('generateButton').addEventListener('click', async () => {
-    const prompt = document.getElementById('promptInput').value;
-    const content = await generateContent(prompt);
-    document.getElementById('outputContainer').textContent = content;
-});
-
-
-
-
-
+initializeApp(firebaseConfig);
+const auth = getAuth();
+const database = getDatabase();
 
 
 // Helper functions for UI interactions
