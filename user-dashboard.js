@@ -15,11 +15,35 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth();
-const database = getDatabase();
-const vertexAI = getVertexAI(firebaseApp);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+const vertexAI = getVertexAI(app);
+
+
+
+
 const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash-preview-0514" });
+
+async function generateContent(prompt) {
+    try {
+        const result = await model.generateContent(prompt);
+        const response = result.response;
+        const text = response.text();
+        console.log(text);
+        return text;
+    } catch (error) {
+        console.error('Error generating content:', error);
+        return 'Error generating content.';
+    }
+}
+
+document.getElementById('generateButton').addEventListener('click', async () => {
+    const prompt = document.getElementById('promptInput').value;
+    const content = await generateContent(prompt);
+    document.getElementById('outputContainer').textContent = content;
+});
+
 
 
 
