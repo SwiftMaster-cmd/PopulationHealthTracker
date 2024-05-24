@@ -3,8 +3,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
-// Import Google Generative AI
-import { GoogleGenerativeAI } from "https://unpkg.com/@google/generative-ai";  // Ensure this path is correct and available
 
 // Your app's Firebase project configuration
 const firebaseConfig = {
@@ -18,39 +16,17 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
+
+
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const database = getDatabase(firebaseApp);
 
-// Initialize Google Generative AI
-const genAI = new GoogleGenerativeAI("AIzaSyDdanD13Lt1SuBgWDNmUgMaiJ9MMqJqky4");
+initializeApp(firebaseConfig);
+const auth = getAuth();
+const database = getDatabase();
 
-// Function to use Google Generative AI to generate content
-async function generateContent(prompt) {
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-        const result = await model.generateContent({ text: prompt });
-        const response = result.response;
-        const text = response.text;
-        console.log(text);
-        return text;
-    } catch (error) {
-        console.error("Error generating content:", error);
-    }
-}
 
-// Example function to demonstrate generating content
-async function runExample() {
-    const prompt = "Write a story about a magic backpack.";
-    const generatedText = await generateContent(prompt);
-    document.getElementById("output").innerText = generatedText;
-}
 
-// Ensure this runs when the document is ready
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("generateButton").addEventListener("click", runExample);
-});
+
 
 
 
