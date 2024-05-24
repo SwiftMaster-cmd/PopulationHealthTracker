@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { getVertexAI, getGenerativeModel } from "firebase/vertexai-preview";
+
 
 // Your app's Firebase project configuration
 const firebaseConfig = {
@@ -23,27 +23,6 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase();
-
-const vertexAI = getVertexAI(firebaseApp);
-
-const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash-preview-0514" });
-
-
-// Wrap in an async function so you can use await
-async function run() {
-    // Provide a prompt that contains text
-    const prompt = "Write a story about a magic backpack."
-  
-    // To generate text output, call generateContent with the text input
-    const result = await model.generateContent(prompt);
-  
-    const response = result.response;
-    const text = response.text();
-    console.log(text);
-  }
-  
-  run();
-
 
 
 // Helper functions for UI interactions
