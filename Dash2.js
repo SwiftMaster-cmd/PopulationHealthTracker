@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 const firebaseConfig = {
@@ -13,8 +13,9 @@ const firebaseConfig = {
     measurementId: "G-RVBYB0RR06"
 };
 
-initializeApp(firebaseConfig);
-const database = getDatabase();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
 function fetchAndDisplaySalesOutcomes() {
     console.log("Attempting to fetch sales outcomes...");
@@ -55,4 +56,24 @@ function displayOutcomes(outcomes) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', fetchAndDisplaySalesOutcomes);
+function authenticateAndFetchData() {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log('Authenticated user:', user.displayName);
+            fetchAndDisplaySalesOutcomes();
+        } else {
+            console.log("No authenticated user found, prompting sign-in...");
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log('User signed in:', result.user.displayName);
+                    fetchAndDisplaySalesOutcomes();
+                })
+                .catch((error) => {
+                    console.error('Sign-in error:', error);
+                });
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', authenticateAndFetchData);
