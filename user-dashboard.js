@@ -266,6 +266,9 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
 
 
 
+// Fetch and display sales outcomes
+const database = firebase.database();
+const auth = firebase.auth();
 
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -278,7 +281,7 @@ auth.onAuthStateChanged(user => {
 });
 
 function fetchSalesOutcomes(userId) {
-    const outcomesRef = database.ref('salesOutcomes/' + userId);
+    const outcomesRef = database.ref('salesOutcomes');
     outcomesRef.on('value', snapshot => {
         const outcomes = snapshot.val();
         displayOutcomes(outcomes);
@@ -302,8 +305,6 @@ function displayOutcomes(outcomes) {
         outcomesDiv.appendChild(outcomeElem);
     }
 }
-
-
 
 
 
