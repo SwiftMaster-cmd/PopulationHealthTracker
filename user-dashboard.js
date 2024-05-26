@@ -36,14 +36,7 @@ function getSelectedESIContent() {
     return selectedButton ? selectedButton.getAttribute('data-value') : null;
 }
 
-function getSaleTypes() {
-    const saleTypes = {};
-    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
-        const value = btn.getAttribute('data-value');
-        saleTypes[value] = true; // Mark the sale type as present
-    });
-    return saleTypes;
-}
+
 
 // Event listeners for UI elements
 document.querySelectorAll('.esi-btn').forEach(btn => {
@@ -147,6 +140,19 @@ function getSaleTypesWithCommissionPoints() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Placeholder for user's ID
 let userId;
 
@@ -159,26 +165,9 @@ onAuthStateChanged(auth, (user) => {
         console.log("User is not logged in.");
         userId = null; // Clear userId if no user is signed in
     }
-}); 
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Function to fetch and display sales history
 function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -186,6 +175,9 @@ function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter
     }
 
     const salesRef = ref(database, `sales/${userId}`);
+    const outcomesRef = ref(database, `salesOutcomes/${userId}`);
+
+    // Fetch sales data
     onValue(salesRef, (snapshot) => {
         const salesHistoryElement = document.getElementById('salesHistory');
         salesHistoryElement.innerHTML = ''; // Clear existing content
@@ -201,52 +193,99 @@ function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter
             id: key
         }));
 
-        salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+        // Fetch sales outcomes data
+        get(outcomesRef).then(outcomeSnapshot => {
+            const outcomes = outcomeSnapshot.val() || {};
+            salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
 
-        if (timeSort === 'newest') {
-            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        } else if (timeSort === 'oldest') {
-            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        }
-
-        // Initialize an object to track cumulative sale type counts
-        let cumulativeSaleTypeCounts = {};
-
-        // If we are viewing the newest first, we will accumulate counts from the end
-        if (timeSort === 'newest') {
-            for (let i = salesArray.length - 1; i >= 0; i--) {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
-                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+            if (timeSort === 'newest') {
+                salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            } else if (timeSort === 'oldest') {
+                salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
             }
-        } else {
-            // Accumulate counts from the beginning for oldest first
-            salesArray.forEach(sale => {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+
+            salesArray.forEach((sale) => {
+                const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
+                const outcome = outcomes[sale.id];
+                const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, outcome);
+                const saleContainer = document.createElement('div');
+                saleContainer.className = 'sales-history-entry';
+                saleContainer.setAttribute('data-sale-id', sale.id);
+                saleContainer.innerHTML = saleContainerHTML;
+                salesHistoryElement.appendChild(saleContainer);
             });
-        }
 
-        salesArray.forEach((sale) => {
-            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
-            const saleContainer = document.createElement('div');
-            saleContainer.className = 'sales-history-entry';
-            saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = saleContainerHTML;
-            salesHistoryElement.appendChild(saleContainer);
+            // Generate and render the chart after fetching sales history
+            const chartData = generateChartData(salesArray);
+            renderSalesChart(chartData);
+        }).catch(error => {
+            console.error('Error fetching sales outcomes:', error);
         });
-
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
-         const chartData = generateChartData(salesArray);
-         renderSalesChart(chartData);
- 
-         // Execute the callback if provided
-         if (callback && typeof callback === 'function') {
-             callback();
-         }
     });
 }
 
+// Function to generate the HTML for a sale entry
+function generateSaleEntryHTML(sale, formattedTimestamp, outcome) {
+    let saleTypesDisplay = '';
+    if (sale.sale_types) {
+        saleTypesDisplay = Object.keys(sale.sale_types).map(type => `<span class="sale-type-span">${type}: ${sale.sale_types[type]}</span>`).join(', ');
+    }
+
+    let outcomeDisplay = '';
+    if (outcome) {
+        outcomeDisplay = `<div class="sale-outcome">
+            <div>Outcome Time: ${new Date(outcome.outcomeTime).toLocaleString()}</div>
+            <div>Assign Action: ${outcome.assignAction}</div>
+            <div>Notes: ${outcome.notesValue}</div>
+            <div>Account Number: ${outcome.accountNumber}</div>
+        </div>`;
+    }
+
+    return `
+        <div class="sale-info">
+            <div class="sale-data lead-id">Lead ID: ${sale.lead_id}</div>
+            <div class="sale-data esi">ESI: ${sale.esi_content || 'N/A'}</div>
+            <div class="sale-types">${saleTypesDisplay}</div>
+            <div class="sale-note">${sale.notes}</div>
+            ${outcomeDisplay}
+            <div class="sale-footer">
+                <div class="sale-timestamp">Time: ${formattedTimestamp}</div>
+                <div class="sale-actions">
+                    <button class="edit-btn" data-sale-id="${sale.id}">Edit</button>
+                    <button class="delete-btn" data-sale-id="${sale.id}">Delete</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Example function to apply filters (details need to be adapted based on actual filter logic)
+function applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter) {
+    // Implement filter logic here
+    return salesArray;
+}
+
+// Example function to generate chart data (details need to be adapted based on actual chart logic)
+function generateChartData(salesArray) {
+    // Implement chart data generation logic here
+    return {};
+}
+
+// Example function to render sales chart (details need to be adapted based on actual chart library)
+function renderSalesChart(data) {
+    // Implement chart rendering logic here
+}
+
+// Event listener for the apply filters button click
+document.getElementById('applyFilters').addEventListener('click', () => {
+    const timeFilter = document.getElementById('timeFilter').value;
+    const saleTypeFilter = document.getElementById('saleTypeFilter').value;
+    const esiFilter = document.getElementById('esiFilter').value;
+    const timeSort = document.getElementById('timeSortFilter').value;
+    const leadIdFilter = document.getElementById('leadIdFilter').value.trim(); // Get the lead ID filter
+
+    fetchSalesHistory(timeFilter, saleTypeFilter, esiFilter, timeSort, leadIdFilter);
+});
 
 
 
