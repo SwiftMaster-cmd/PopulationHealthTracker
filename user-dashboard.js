@@ -36,7 +36,14 @@ function getSelectedESIContent() {
     return selectedButton ? selectedButton.getAttribute('data-value') : null;
 }
 
-
+function getSaleTypes() {
+    const saleTypes = {};
+    document.querySelectorAll('.sale-type-btn.selected').forEach(btn => {
+        const value = btn.getAttribute('data-value');
+        saleTypes[value] = true; // Mark the sale type as present
+    });
+    return saleTypes;
+}
 
 // Event listeners for UI elements
 document.querySelectorAll('.esi-btn').forEach(btn => {
@@ -241,9 +248,24 @@ function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter
 }
 
 
-// Fetch and display sales outcomes
-const database = firebase.database();
-const auth = firebase.auth();
+
+
+
+function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
+    Object.keys(currentSaleTypes || {}).forEach(type => {
+        if (!cumulativeCounts[type]) {
+            cumulativeCounts[type] = currentSaleTypes[type];
+        } else {
+            cumulativeCounts[type] += currentSaleTypes[type];
+        }
+    });
+ 
+}
+
+
+
+
+
 
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -280,24 +302,6 @@ function displayOutcomes(outcomes) {
         outcomesDiv.appendChild(outcomeElem);
     }
 }
-
-
-
-function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
-    Object.keys(currentSaleTypes || {}).forEach(type => {
-        if (!cumulativeCounts[type]) {
-            cumulativeCounts[type] = currentSaleTypes[type];
-        } else {
-            cumulativeCounts[type] += currentSaleTypes[type];
-        }
-    });
- 
-}
-
-
-
-
-
 
 
 
@@ -434,14 +438,6 @@ function displaySalesCounts(userId) {
         console.error('Failed to fetch sales data:', error);
     });
 }
-
-
-
-
-
-
-
-
 
 
 
