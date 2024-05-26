@@ -266,45 +266,8 @@ function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
 
 
 
-// Fetch and display sales outcomes
-const database = firebase.database();
-const auth = firebase.auth();
 
-auth.onAuthStateChanged(user => {
-    if (user) {
-        fetchSalesOutcomes(user.uid);
-    } else {
-        auth.signInAnonymously().catch(error => {
-            console.error("Authentication error:", error);
-        });
-    }
-});
 
-function fetchSalesOutcomes(userId) {
-    const outcomesRef = database.ref('salesOutcomes');
-    outcomesRef.on('value', snapshot => {
-        const outcomes = snapshot.val();
-        displayOutcomes(outcomes);
-    });
-}
-
-function displayOutcomes(outcomes) {
-    const outcomesDiv = document.getElementById('outcomes');
-    outcomesDiv.innerHTML = ''; // Clear previous outcomes
-
-    for (let key in outcomes) {
-        const outcome = outcomes[key];
-        const outcomeElem = document.createElement('div');
-        outcomeElem.className = 'outcome';
-        outcomeElem.innerHTML = `
-            <p><strong>Outcome Time:</strong> ${outcome.outcomeTime}</p>
-            <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
-            <p><strong>Notes Value:</strong> ${outcome.notesValue}</p>
-            <p><strong>Account Number:</strong> ${outcome.accountNumber}</p>
-        `;
-        outcomesDiv.appendChild(outcomeElem);
-    }
-}
 
 
 
