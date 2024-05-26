@@ -169,9 +169,6 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-
-
-
 function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter = 'all', timeSort = 'newest', leadIdFilter = '') {
     if (!userId) {
         console.log("Attempted to fetch sales history without a valid user ID.");
@@ -179,69 +176,129 @@ function fetchSalesHistory(timeFilter = 'day', saleTypeFilter = 'all', esiFilter
     }
 
     const salesRef = ref(database, `sales/${userId}`);
+    const salesOutcomesRef = ref(database, `salesOutcomes/${userId}`);
+    
+    // Fetch sales data
     onValue(salesRef, (snapshot) => {
-        const salesHistoryElement = document.getElementById('salesHistory');
-        salesHistoryElement.innerHTML = ''; // Clear existing content
-
         let sales = snapshot.val();
-        if (!sales) {
-            salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
-            return;
-        }
 
-        let salesArray = Object.keys(sales).map(key => ({
-            ...sales[key],
-            id: key
-        }));
+        // Fetch salesOutcomes data
+        onValue(salesOutcomesRef, (snapshotOutcomes) => {
+            const salesHistoryElement = document.getElementById('salesHistory');
+            salesHistoryElement.innerHTML = ''; // Clear existing content
 
-        salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
-
-        if (timeSort === 'newest') {
-            salesArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        } else if (timeSort === 'oldest') {
-            salesArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        }
-
-        // Initialize an object to track cumulative sale type counts
-        let cumulativeSaleTypeCounts = {};
-
-        // If we are viewing the newest first, we will accumulate counts from the end
-        if (timeSort === 'newest') {
-            for (let i = salesArray.length - 1; i >= 0; i--) {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
-                salesArray[i].cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+            let salesOutcomes = snapshotOutcomes.val();
+            
+            if (!sales && !salesOutcomes) {
+                salesHistoryElement.innerHTML = '<div>No sales history found.</div>';
+                return;
             }
-        } else {
-            // Accumulate counts from the beginning for oldest first
-            salesArray.forEach(sale => {
-                updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
-                sale.cumulativeSaleTypes = {...cumulativeSaleTypeCounts}; // Clone the current state for the sale
+
+            let salesArray = [];
+            if (sales) {
+                salesArray = Object.keys(sales).map(key => ({
+                    ...sales[key],
+                    id: key
+                }));
+            }
+
+            if (salesOutcomes) {
+                const salesOutcomesArray = Object.keys(salesOutcomes).map(key => ({
+                    ...salesOutcomes[key],
+                    id: key,
+                    isOutcome: true
+                }));
+                salesArray = salesArray.concat(salesOutcomesArray);
+            }
+
+            salesArray = applyFilters(salesArray, timeFilter, saleTypeFilter, esiFilter, leadIdFilter);
+
+            if (timeSort === 'newest') {
+                salesArray.sort((a, b) => new Date(b.timestamp || b.outcomeTime) - new Date(a.timestamp || a.outcomeTime));
+            } else if (timeSort === 'oldest') {
+                salesArray.sort((a, b) => new Date(a.timestamp || a.outcomeTime) - new Date(b.timestamp || b.outcomeTime));
+            }
+
+            // Initialize an object to track cumulative sale type counts
+            let cumulativeSaleTypeCounts = {};
+
+            // If we are viewing the newest first, we will accumulate counts from the end
+            if (timeSort === 'newest') {
+                for (let i = salesArray.length - 1; i >= 0; i--) {
+                    if (!salesArray[i].isOutcome) {
+                        updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, salesArray[i].sale_types);
+                    }
+                    salesArray[i].cumulativeSaleTypes = { ...cumulativeSaleTypeCounts }; // Clone the current state for the sale
+                }
+            } else {
+                // Accumulate counts from the beginning for oldest first
+                salesArray.forEach(sale => {
+                    if (!sale.isOutcome) {
+                        updateCumulativeSaleTypeCounts(cumulativeSaleTypeCounts, sale.sale_types);
+                    }
+                    sale.cumulativeSaleTypes = { ...cumulativeSaleTypeCounts }; // Clone the current state for the sale
+                });
+            }
+
+            salesArray.forEach((sale) => {
+                const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() :
+                    sale.outcomeTime ? new Date(sale.outcomeTime).toLocaleString() : 'Unknown';
+                const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
+                const saleContainer = document.createElement('div');
+                saleContainer.className = 'sales-history-entry';
+                saleContainer.setAttribute('data-sale-id', sale.id);
+                saleContainer.innerHTML = saleContainerHTML;
+                salesHistoryElement.appendChild(saleContainer);
             });
-        }
 
-        salesArray.forEach((sale) => {
-            const formattedTimestamp = sale.timestamp ? new Date(sale.timestamp).toLocaleString() : 'Unknown';
-            const saleContainerHTML = generateSaleEntryHTML(sale, formattedTimestamp, sale.cumulativeSaleTypes);
-            const saleContainer = document.createElement('div');
-            saleContainer.className = 'sales-history-entry';
-            saleContainer.setAttribute('data-sale-id', sale.id);
-            saleContainer.innerHTML = saleContainerHTML;
-            salesHistoryElement.appendChild(saleContainer);
+            // After fetching the sales history and rendering the sales entries, generate and render the chart
+            const chartData = generateChartData(salesArray);
+            renderSalesChart(chartData);
+
+            // Execute the callback if provided
+            if (callback && typeof callback === 'function') {
+                callback();
+            }
         });
-
-         // After fetching the sales history and rendering the sales entries, generate and render the chart
-         const chartData = generateChartData(salesArray);
-         renderSalesChart(chartData);
- 
-         // Execute the callback if provided
-         if (callback && typeof callback === 'function') {
-             callback();
-         }
     });
 }
 
+// Helper function to update cumulative sale type counts
+function updateCumulativeSaleTypeCounts(cumulativeCounts, saleTypes) {
+    if (saleTypes) {
+        saleTypes.forEach(type => {
+            if (!cumulativeCounts[type]) {
+                cumulativeCounts[type] = 0;
+            }
+            cumulativeCounts[type]++;
+        });
+    }
+}
 
+// Helper function to generate HTML for a sale entry
+function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypes) {
+    return `
+        <div class="sale-entry">
+            <p><strong>Timestamp:</strong> ${formattedTimestamp}</p>
+            <p><strong>Assign Action:</strong> ${sale.assignAction || 'N/A'}</p>
+            <p><strong>Notes:</strong> ${sale.notesValue || 'N/A'}</p>
+            <p><strong>Account Number:</strong> ${sale.accountNumber || 'N/A'}</p>
+            <p><strong>Sale Types:</strong> ${sale.sale_types ? sale.sale_types.join(', ') : 'N/A'}</p>
+            <p><strong>Cumulative Sale Types:</strong> ${Object.entries(cumulativeSaleTypes).map(([type, count]) => `${type}: ${count}`).join(', ')}</p>
+        </div>
+    `;
+}
 
+// Helper function to generate chart data from sales array
+function generateChartData(salesArray) {
+    // Implement your chart data generation logic here
+    return {};
+}
+
+// Helper function to render sales chart
+function renderSalesChart(chartData) {
+    // Implement your chart rendering logic here
+}
 
 
 function updateCumulativeSaleTypeCounts(cumulativeCounts, currentSaleTypes) {
@@ -401,59 +458,6 @@ function displaySalesCounts(userId) {
 
 
 
-
-
-
-
-
-function viewSalesData() {
-    if (typeof firebase === 'undefined') {
-        console.error('Firebase SDK not loaded');
-        return;
-    }
-
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            const userId = user.uid;
-            const salesRef = firebase.database().ref('salesOutcomes/' + userId);
-
-            salesRef.once('value')
-                .then(snapshot => {
-                    const salesData = snapshot.val();
-                    const salesContainer = document.getElementById('salesOutcomesContainer');
-
-                    if (salesData) {
-                        console.log('Sales Data for user:', user.displayName);
-                        salesContainer.innerHTML = ''; // Clear existing content
-                        for (const key in salesData) {
-                            if (salesData.hasOwnProperty(key)) {
-                                const sale = salesData[key];
-                                const saleDiv = document.createElement('div');
-                                saleDiv.className = 'sale-entry';
-                                saleDiv.innerHTML = `
-                                    <p><strong>Outcome Time:</strong> ${sale.outcomeTime}</p>
-                                    <p><strong>Assign Action:</strong> ${sale.assignAction}</p>
-                                    <p><strong>Notes Value:</strong> ${sale.notesValue}</p>
-                                    <p><strong>Account Number:</strong> ${sale.accountNumber}</p>
-                                `;
-                                salesContainer.appendChild(saleDiv);
-                            }
-                        }
-                    } else {
-                        salesContainer.innerHTML = '<p>No sales data found for user.</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching sales data:', error);
-                });
-        } else {
-            console.error('No authenticated user found');
-        }
-    });
-}
-
-// Call the function to view sales data
-viewSalesData();
 
 
 
