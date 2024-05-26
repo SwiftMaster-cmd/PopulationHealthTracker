@@ -406,6 +406,67 @@ function displaySalesCounts(userId) {
 
 
 
+function viewSalesData() {
+    if (typeof firebase === 'undefined') {
+        console.error('Firebase SDK not loaded');
+        return;
+    }
+
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            const userId = user.uid;
+            const salesRef = firebase.database().ref('salesOutcomes/' + userId);
+
+            salesRef.once('value')
+                .then(snapshot => {
+                    const salesData = snapshot.val();
+                    const salesContainer = document.getElementById('salesOutcomesContainer');
+
+                    if (salesData) {
+                        console.log('Sales Data for user:', user.displayName);
+                        salesContainer.innerHTML = ''; // Clear existing content
+                        for (const key in salesData) {
+                            if (salesData.hasOwnProperty(key)) {
+                                const sale = salesData[key];
+                                const saleDiv = document.createElement('div');
+                                saleDiv.className = 'sale-entry';
+                                saleDiv.innerHTML = `
+                                    <p><strong>Outcome Time:</strong> ${sale.outcomeTime}</p>
+                                    <p><strong>Assign Action:</strong> ${sale.assignAction}</p>
+                                    <p><strong>Notes Value:</strong> ${sale.notesValue}</p>
+                                    <p><strong>Account Number:</strong> ${sale.accountNumber}</p>
+                                `;
+                                salesContainer.appendChild(saleDiv);
+                            }
+                        }
+                    } else {
+                        salesContainer.innerHTML = '<p>No sales data found for user.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching sales data:', error);
+                });
+        } else {
+            console.error('No authenticated user found');
+        }
+    });
+}
+
+// Call the function to view sales data
+viewSalesData();
+
+
+
+
+
+
+
+
+
+
+
+
+
 function generateSaleEntryHTML(sale, formattedTimestamp, cumulativeSaleTypeCounts) {
     let saleTypesDisplay = '';
 
