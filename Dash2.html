@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Outcomes</title>
     <style>
+        .account-container {
+            border: 2px solid #333;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .account-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
         .outcome-item {
             border: 1px solid #ccc;
             padding: 10px;
@@ -21,16 +32,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 </head>
 <body>
-
-
-
-
     <h1>Sales Outcomes</h1>
-
-
-
-
-
     <div id="sales-outcomes-container"></div>
 
     <script>
@@ -59,18 +61,42 @@
                         const outcomesContainer = document.getElementById('sales-outcomes-container');
                         outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
+                        // Group outcomes by account number
+                        const groupedOutcomes = {};
                         for (const key in outcomes) {
                             const outcome = outcomes[key];
-                            const outcomeElement = document.createElement('div');
-                            outcomeElement.classList.add('outcome-item');
+                            const accountNumber = outcome.accountNumber;
+                            if (!groupedOutcomes[accountNumber]) {
+                                groupedOutcomes[accountNumber] = [];
+                            }
+                            groupedOutcomes[accountNumber].push(outcome);
+                        }
 
-                            outcomeElement.innerHTML = `
-                                <p><strong>Outcome Time:</strong> ${outcome.outcomeTime}</p>
-                                <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
-                                <p><strong>Notes:</strong> ${outcome.notesValue}</p>
-                                <p><strong>Account Number:</strong> ${outcome.accountNumber}</p>
-                            `;
-                            outcomesContainer.appendChild(outcomeElement);
+                        // Display grouped outcomes, sorted by newest first
+                        for (const accountNumber in groupedOutcomes) {
+                            const accountContainer = document.createElement('div');
+                            accountContainer.classList.add('account-container');
+
+                            const accountTitle = document.createElement('div');
+                            accountTitle.classList.add('account-title');
+                            accountTitle.textContent = `Account Number: ${accountNumber}`;
+                            accountContainer.appendChild(accountTitle);
+
+                            const accountOutcomes = groupedOutcomes[accountNumber];
+                            accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
+
+                            for (const outcome of accountOutcomes) {
+                                const outcomeElement = document.createElement('div');
+                                outcomeElement.classList.add('outcome-item');
+                                outcomeElement.innerHTML = `
+                                    <p><strong>Outcome Time:</strong> ${outcome.outcomeTime}</p>
+                                    <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
+                                    <p><strong>Notes:</strong> ${outcome.notesValue}</p>
+                                `;
+                                accountContainer.appendChild(outcomeElement);
+                            }
+
+                            outcomesContainer.appendChild(accountContainer);
                         }
                     } else {
                         console.log('No sales outcomes found for user:', user.displayName);
@@ -94,13 +120,5 @@
             });
         });
     </script>
-
-
-
-
-
 </body>
-
-
-
 </html>
