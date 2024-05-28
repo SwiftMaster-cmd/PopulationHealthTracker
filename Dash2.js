@@ -1,79 +1,59 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+document.addEventListener('DOMContentLoaded', function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+        authDomain: "track-dac15.firebaseapp.com",
+        databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+        projectId: "track-dac15",
+        storageBucket: "track-dac15.appspot.com",
+        messagingSenderId: "495156821305",
+        appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+        measurementId: "G-RVBYB0RR06"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const provider = new firebase.auth.GoogleAuthProvider();
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
-    authDomain: "track-dac15.firebaseapp.com",
-    databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
-    projectId: "track-dac15",
-    storageBucket: "track-dac15.appspot.com",
-    messagingSenderId: "495156821305",
-    appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
-    measurementId: "G-RVBYB0RR06"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-
-function fetchAndDisplaySalesOutcomes() {
-    console.log("Attempting to fetch sales outcomes...");
-    const salesOutcomesRef = ref(database, 'salesOutcomes');
-
-    onValue(salesOutcomesRef, (snapshot) => {
-        if (snapshot.exists()) {
-            console.log("Data fetched successfully!");
+    function displaySalesOutcomes(user) {
+        const outcomesRef = firebase.database().ref('salesOutcomes/' + user.uid);
+        outcomesRef.on('value', (snapshot) => {
             const outcomes = snapshot.val();
-            displayOutcomes(outcomes);
-        } else {
-            console.log("No data available!");
-        }
-    }, (error) => {
-        console.error("Failed to fetch data: ", error);
-    });
-}
+            if (outcomes) {
+                const outcomesContainer = document.getElementById('sales-outcomes-container');
+                outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
-function displayOutcomes(outcomes) {
-    const outcomesList = document.getElementById('outcomes-list');
-    outcomesList.innerHTML = ''; // Clear the list before adding new items
+                for (const key in outcomes) {
+                    const outcome = outcomes[key];
+                    const outcomeElement = document.createElement('div');
+                    outcomeElement.classList.add('outcome-item');
 
-    for (const key in outcomes) {
-        const outcome = outcomes[key];
-        const outcomeItem = document.createElement('div');
-        outcomeItem.className = 'outcome-item';
-
-        const details = `
-            <p><strong>Account Number:</strong> ${outcome.accountNumber}</p>
-            <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
-            <p><strong>Notes Value:</strong> ${outcome.notesValue}</p>
-            <p><strong>Outcome Time:</strong> ${new Date(outcome.outcomeTime).toLocaleString()}</p>
-            <p><strong>User ID:</strong> ${outcome.userId}</p>
-        `;
-
-        outcomeItem.innerHTML = details;
-        outcomesList.appendChild(outcomeItem);
+                    outcomeElement.innerHTML = `
+                        <p><strong>Outcome Time:</strong> ${outcome.outcomeTime}</p>
+                        <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
+                        <p><strong>Notes:</strong> ${outcome.notesValue}</p>
+                        <p><strong>Account Number:</strong> ${outcome.accountNumber}</p>
+                    `;
+                    outcomesContainer.appendChild(outcomeElement);
+                }
+            } else {
+                console.log('No sales outcomes found for user:', user.displayName);
+            }
+        }, (error) => {
+            console.error('Error fetching sales outcomes:', error);
+        });
     }
-}
 
-function authenticateAndFetchData() {
-    onAuthStateChanged(auth, (user) => {
+    auth.onAuthStateChanged(user => {
         if (user) {
-            console.log('Authenticated user:', user.displayName);
-            fetchAndDisplaySalesOutcomes();
+            displaySalesOutcomes(user);
         } else {
-            console.log("No authenticated user found, prompting sign-in...");
-            const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log('User signed in:', result.user.displayName);
-                    fetchAndDisplaySalesOutcomes();
-                })
-                .catch((error) => {
-                    console.error('Sign-in error:', error);
-                });
+            auth.signInWithPopup(provider).then((result) => {
+                const user = result.user;
+                displaySalesOutcomes(user);
+            }).catch((error) => {
+                console.error('Authentication error:', error);
+            });
         }
     });
-}
-
-document.addEventListener('DOMContentLoaded', authenticateAndFetchData);
+});
