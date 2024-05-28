@@ -3,27 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="Dash2.css">
-    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
+    <title>Sales Outcomes</title>
+    <style>
+        .outcome-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .outcome-item p {
+            margin: 5px 0;
+        }
+    </style>
+    <!-- Load Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 </head>
-
-
-
-
-
 <body>
- 
-
     <h1>Sales Outcomes</h1>
     <div id="sales-outcomes-container"></div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+                authDomain: "track-dac15.firebaseapp.com",
+                databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+                projectId: "track-dac15",
+                storageBucket: "track-dac15.appspot.com",
+                messagingSenderId: "495156821305",
+                appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+                measurementId: "G-RVBYB0RR06"
+            };
+            
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const database = firebase.database();
+            const provider = new firebase.auth.GoogleAuthProvider();
 
+            function displaySalesOutcomes(user) {
+                const outcomesRef = firebase.database().ref('salesOutcomes/' + user.uid);
+                outcomesRef.on('value', (snapshot) => {
+                    const outcomes = snapshot.val();
+                    if (outcomes) {
+                        const outcomesContainer = document.getElementById('sales-outcomes-container');
+                        outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
-<script type="module" src="Dash2.js"></script>
+                        for (const key in outcomes) {
+                            const outcome = outcomes[key];
+                            const outcomeElement = document.createElement('div');
+                            outcomeElement.classList.add('outcome-item');
+
+                            outcomeElement.innerHTML = `
+                                <p><strong>Outcome Time:</strong> ${outcome.outcomeTime}</p>
+                                <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
+                                <p><strong>Notes:</strong> ${outcome.notesValue}</p>
+                                <p><strong>Account Number:</strong> ${outcome.accountNumber}</p>
+                            `;
+                            outcomesContainer.appendChild(outcomeElement);
+                        }
+                    } else {
+                        console.log('No sales outcomes found for user:', user.displayName);
+                    }
+                }, (error) => {
+                    console.error('Error fetching sales outcomes:', error);
+                });
+            }
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    displaySalesOutcomes(user);
+                } else {
+                    auth.signInWithPopup(provider).then((result) => {
+                        const user = result.user;
+                        displaySalesOutcomes(user);
+                    }).catch((error) => {
+                        console.error('Authentication error:', error);
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
