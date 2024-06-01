@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                     for (const outcome of accountOutcomes) {
-                        // Check if assignAction is exactly "--"
-                        if (outcome.assignAction.trim() !== "--") {
+                        // Check if assignAction is valid
+                        if (outcome.assignAction && outcome.assignAction.trim() !== "--" && outcome.assignAction.trim() !== "") {
                             const outcomeElement = document.createElement('div');
                             outcomeElement.classList.add('outcome-item');
                             outcomeElement.innerHTML = `
