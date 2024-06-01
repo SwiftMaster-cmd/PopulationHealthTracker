@@ -40,11 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const groupedOutcomes = {};
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
-                    console.log(`Checking outcome with assignAction: '${outcome.assignAction}'`); // Debug log to see the value
-                
+                    const accountNumber = outcome.accountNumber;
                     if (outcome.assignAction.trim() === "--") {
-                        console.log("Skipping due to assignAction being '--'"); // Debug log for skipping
-                        continue;
+                        continue; // Skip outcomes with "--" in assign action
                     }
                     if (!groupedOutcomes[accountNumber]) {
                         groupedOutcomes[accountNumber] = {};
