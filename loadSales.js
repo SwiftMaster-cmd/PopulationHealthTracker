@@ -61,14 +61,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                     for (const outcome of accountOutcomes) {
-                        const outcomeElement = document.createElement('div');
-                        outcomeElement.classList.add('outcome-item');
-                        outcomeElement.innerHTML = `
-                            <p><strong>Outcome Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
-                            <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
-                            <p><strong>Notes:</strong> ${outcome.notesValue}</p>
-                        `;
-                        accountContainer.appendChild(outcomeElement);
+                        if (outcome.assignAction && outcome.assignAction !== "unknown") {
+                            const outcomeElement = document.createElement('div');
+                            outcomeElement.classList.add('outcome-item');
+                            outcomeElement.innerHTML = `
+                                <p><strong>Outcome Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
+                                <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
+                                <p><strong>Notes:</strong> ${outcome.notesValue}</p>
+                            `;
+                            accountContainer.appendChild(outcomeElement);
+                        }
                     }
 
                     outcomesContainer.appendChild(accountContainer);
