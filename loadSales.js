@@ -36,18 +36,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
-                // Group outcomes by account number and filter duplicates
+                // Group outcomes by account number
                 const groupedOutcomes = {};
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
                     if (!groupedOutcomes[accountNumber]) {
-                        groupedOutcomes[accountNumber] = new Map();
+                        groupedOutcomes[accountNumber] = [];
                     }
-                    // Only add valid outcomes to the map
-                    if (outcome.assignAction.trim() !== "--") {
-                        groupedOutcomes[accountNumber].set(outcome.outcomeTime, outcome);
-                    }
+                    groupedOutcomes[accountNumber].push(outcome);
                 }
 
                 // Display grouped outcomes, sorted by newest first
@@ -60,13 +57,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountTitle.textContent = `Account Number: ${accountNumber}`;
                     accountContainer.appendChild(accountTitle);
 
-                    const uniqueOutcomes = Array.from(groupedOutcomes[accountNumber].values());
+                    const accountOutcomes = groupedOutcomes[accountNumber];
+                    accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
-                    uniqueOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-
-                    console.log(`Account Number: ${accountNumber}`);
-                    uniqueOutcomes.forEach((outcome, index) => {
-                        console.log(`Unique Outcome ${index + 1}:`, outcome);
+                    for (const outcome of accountOutcomes) {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
@@ -75,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p><strong>Notes:</strong> ${outcome.notesValue}</p>
                         `;
                         accountContainer.appendChild(outcomeElement);
-                    });
+                    }
 
                     outcomesContainer.appendChild(accountContainer);
                 }
