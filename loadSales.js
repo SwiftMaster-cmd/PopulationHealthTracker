@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                     for (const outcome of accountOutcomes) {
-                        // Check if assignAction does not contain only "--"
+                        // Check if assignAction is exactly "--"
                         if (outcome.assignAction.trim() !== "--") {
                             const outcomeElement = document.createElement('div');
                             outcomeElement.classList.add('outcome-item');
