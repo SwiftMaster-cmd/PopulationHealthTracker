@@ -36,15 +36,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
-                // Group outcomes by account number
+                // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
-                    if (!groupedOutcomes[accountNumber]) {
-                        groupedOutcomes[accountNumber] = [];
+                    if (outcome.assignAction === "--") {
+                        continue; // Skip outcomes with "--" in assign action
                     }
-                    groupedOutcomes[accountNumber].push(outcome);
+                    if (!groupedOutcomes[accountNumber]) {
+                        groupedOutcomes[accountNumber] = {};
+                    }
+                    groupedOutcomes[accountNumber][outcome.assignAction] = outcome; // Only keep the latest outcome for each action
                 }
 
                 // Display grouped outcomes, sorted by newest first
@@ -57,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountTitle.textContent = `Account Number: ${accountNumber}`;
                     accountContainer.appendChild(accountTitle);
 
-                    const accountOutcomes = groupedOutcomes[accountNumber];
+                    const accountOutcomes = Object.values(groupedOutcomes[accountNumber]);
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                     for (const outcome of accountOutcomes) {
