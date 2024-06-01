@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (outcomes) {
                 const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
-    
+
                 // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
                 for (const key in outcomes) {
@@ -49,27 +49,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     groupedOutcomes[accountNumber][outcome.assignAction] = outcome; // Only keep the latest outcome for each action
                 }
-    
-                // Convert grouped outcomes to an array and sort by newest account outcome time first
-                const sortedAccounts = Object.entries(groupedOutcomes).sort(([, actionsA], [, actionsB]) => {
-                    const latestOutcomeA = Object.values(actionsA).sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime))[0];
-                    const latestOutcomeB = Object.values(actionsB).sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime))[0];
-                    return new Date(latestOutcomeB.outcomeTime) - new Date(latestOutcomeA.outcomeTime);
+
+                // Sort account numbers by the newest outcome time
+                const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
+                    const latestA = Object.values(groupedOutcomes[a]).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
+                    const latestB = Object.values(groupedOutcomes[b]).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
+                    return new Date(latestB.outcomeTime) - new Date(latestA.outcomeTime);
                 });
-    
-                // Display sorted and grouped outcomes
-                for (const [accountNumber, accountOutcomes] of sortedAccounts) {
+
+                // Display grouped outcomes, sorted by newest account first
+                for (const accountNumber of sortedAccounts) {
                     const accountContainer = document.createElement('div');
                     accountContainer.classList.add('account-container');
-    
+
                     const accountTitle = document.createElement('div');
                     accountTitle.classList.add('account-title');
                     accountTitle.textContent = `Account Number: ${accountNumber}`;
                     accountContainer.appendChild(accountTitle);
-    
-                    const sortedOutcomes = Object.values(accountOutcomes).sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-    
-                    for (const outcome of sortedOutcomes) {
+
+                    const accountOutcomes = Object.values(groupedOutcomes[accountNumber]);
+                    accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
+
+                    for (const outcome of accountOutcomes) {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         `;
                         accountContainer.appendChild(outcomeElement);
                     }
-    
+
                     outcomesContainer.appendChild(accountContainer);
                 }
             } else {
@@ -89,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching sales outcomes:', error);
         });
     }
-    
+
     auth.onAuthStateChanged(user => {
         if (user) {
             displaySalesOutcomes(user);
@@ -102,3 +103,4 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+});
