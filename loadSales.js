@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
+            second: '2-digit',
             hour12: true
         });
     }
@@ -43,9 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!groupedOutcomes[accountNumber]) {
                         groupedOutcomes[accountNumber] = new Map();
                     }
-                    // Create a unique key based on the outcome fields
-                    const uniqueKey = `${outcome.outcomeTime}_${outcome.assignAction}_${outcome.notesValue}`;
-                    groupedOutcomes[accountNumber].set(uniqueKey, outcome);
+                    // Only add valid outcomes to the map
+                    if (outcome.assignAction.trim() !== "--") {
+                        groupedOutcomes[accountNumber].set(outcome.outcomeTime, outcome);
+                    }
                 }
 
                 // Display grouped outcomes, sorted by newest first
@@ -64,17 +66,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     console.log(`Account Number: ${accountNumber}`);
                     uniqueOutcomes.forEach((outcome, index) => {
-                        console.log(`Unique Key: ${index + 1}`, outcome);
-                        if (outcome.assignAction.trim() !== "--") {
-                            const outcomeElement = document.createElement('div');
-                            outcomeElement.classList.add('outcome-item');
-                            outcomeElement.innerHTML = `
-                                <p><strong>Outcome Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
-                                <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
-                                <p><strong>Notes:</strong> ${outcome.notesValue}</p>
-                            `;
-                            accountContainer.appendChild(outcomeElement);
-                        }
+                        console.log(`Unique Outcome ${index + 1}:`, outcome);
+                        const outcomeElement = document.createElement('div');
+                        outcomeElement.classList.add('outcome-item');
+                        outcomeElement.innerHTML = `
+                            <p><strong>Outcome Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
+                            <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
+                            <p><strong>Notes:</strong> ${outcome.notesValue}</p>
+                        `;
+                        accountContainer.appendChild(outcomeElement);
                     });
 
                     outcomesContainer.appendChild(accountContainer);
