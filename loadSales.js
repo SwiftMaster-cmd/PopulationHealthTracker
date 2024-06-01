@@ -41,11 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
                     if (!groupedOutcomes[accountNumber]) {
-                        groupedOutcomes[accountNumber] = new Set();
+                        groupedOutcomes[accountNumber] = new Map();
                     }
                     // Create a unique key based on the outcome fields
                     const uniqueKey = `${outcome.outcomeTime}_${outcome.assignAction}_${outcome.notesValue}`;
-                    groupedOutcomes[accountNumber].add(uniqueKey);
+                    groupedOutcomes[accountNumber].set(uniqueKey, outcome);
                 }
 
                 // Display grouped outcomes, sorted by newest first
@@ -58,14 +58,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountTitle.textContent = `Account Number: ${accountNumber}`;
                     accountContainer.appendChild(accountTitle);
 
-                    const uniqueOutcomes = Array.from(groupedOutcomes[accountNumber]).map(key => {
-                        const [outcomeTime, assignAction, notesValue] = key.split('_');
-                        return { outcomeTime, assignAction, notesValue };
-                    });
+                    const uniqueOutcomes = Array.from(groupedOutcomes[accountNumber].values());
 
                     uniqueOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
-                    uniqueOutcomes.forEach(outcome => {
+                    console.log(`Account Number: ${accountNumber}`);
+                    uniqueOutcomes.forEach((outcome, index) => {
+                        console.log(`Unique Key: ${index + 1}`, outcome);
                         if (outcome.assignAction.trim() !== "--") {
                             const outcomeElement = document.createElement('div');
                             outcomeElement.classList.add('outcome-item');
