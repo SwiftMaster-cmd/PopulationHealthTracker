@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
-                    if (outcome.assignAction === "--") {
+                    if (outcome.assignAction.trim() === "--") {
                         continue; // Skip outcomes with "--" in assign action
                     }
                     if (!groupedOutcomes[accountNumber]) {
