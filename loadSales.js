@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const userRef = firebase.database().ref('users/' + user.uid);
         userRef.on('value', (snapshot) => {
             const userData = snapshot.val();
+            console.log('User data snapshot:', snapshot);
+            console.log('User data:', userData);
             if (userData) {
                 const customerInfoContainer = document.getElementById('customer-info');
                 customerInfoContainer.innerHTML = `
