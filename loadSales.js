@@ -74,9 +74,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
-                            <p><strong>Outcome Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
-                            <p><strong>Assign Action:</strong> ${outcome.assignAction}</p>
-                            <p><strong>Notes:</strong> ${outcome.notesValue}</p>
+                            <p><strong>Action:</strong> ${outcome.assignAction}</p>
+                        `;
+                        if (outcome.notesValue && outcome.notesValue.trim() && outcome.notesValue !== ' ') {
+                            outcomeElement.innerHTML += `<p><strong>Notes:</strong> ${outcome.notesValue}</p>`;
+                        }
+                        outcomeElement.innerHTML += `
+                            <p class="outcome-time"><strong>Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
                         `;
                         accountContainer.appendChild(outcomeElement);
                     }
