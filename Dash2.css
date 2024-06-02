@@ -1,20 +1,72 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Header */
+h1 {
+    font-size: 28px;
+    color: #555;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Sales Outcomes Container */
+#sales-outcomes-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Account Container */
 .account-container {
-    border: 2px solid #333;
+    background-color: #fff;
+    border: 2px solid #e0e0e0;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.account-container:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Account Title */
+.account-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+/* Outcome Item */
+.outcome-item {
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-.account-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
+
+.outcome-item:hover {
+    background-color: #f0f0f0;
+    border-color: #d0d0d0;
 }
-.outcome-item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-}
+
+/* Outcome Item Text */
 .outcome-item p {
     margin: 5px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.outcome-item p strong {
+    color: #333;
 }
