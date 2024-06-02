@@ -31,15 +31,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayCustomerInfo(customerInfo) {
         const customerInfoContainer = document.getElementById('customer-info');
         customerInfoContainer.innerHTML = `
-            <h3>Customer Information</h3>
-            <p><strong>First Name:</strong> ${customerInfo.firstName}</p>
-            <p><strong>Last Name:</strong> ${customerInfo.lastName}</p>
-            <p><strong>Gender:</strong> ${customerInfo.gender}</p>
-            <p><strong>Birthdate:</strong> ${customerInfo.birthdate}</p>
-            <p><strong>Email:</strong> ${customerInfo.email}</p>
-            <p><strong>Phone:</strong> ${customerInfo.phone}</p>
-            <p><strong>Zipcode:</strong> ${customerInfo.zipcode}</p>
-            <p><strong>State ID:</strong> ${customerInfo.stateId}</p>
+            <h2>Customer Info</h2>
+            <div><strong>First Name:</strong> ${customerInfo.firstName}</div>
+            <div><strong>Last Name:</strong> ${customerInfo.lastName}</div>
+            <div><strong>Gender:</strong> ${customerInfo.gender}</div>
+            <div><strong>Birthdate:</strong> ${customerInfo.birthdate}</div>
+            <div><strong>Phone:</strong> ${customerInfo.phone}</div>
+            <div><strong>Zipcode:</strong> ${customerInfo.zipcode}</div>
+            <div><strong>State ID:</strong> ${customerInfo.stateId}</div>
         `;
     }
 
