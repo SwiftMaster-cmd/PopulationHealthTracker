@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         continue; // Skip outcomes with "--" in assign action
                     }
                     if (!groupedOutcomes[accountNumber]) {
-                        groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo, actions: {} };
+                        groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
                     }
                     groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
 
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
-                            <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName}">${outcome.assignAction}</button>
+                            <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</button>
                             <div class="notes">${outcome.notesValue || 'No notes'}</div>
                             <div class="outcome-time">${formatDateTime(outcome.outcomeTime)}</div>
                         `;
