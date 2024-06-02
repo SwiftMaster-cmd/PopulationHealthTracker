@@ -55,10 +55,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (outcomes) {
                 const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
-
+    
                 // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
-
+    
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
@@ -70,42 +70,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
                 }
-
+    
                 // Sort account numbers by the newest outcome time
                 const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
                     const latestA = Object.values(groupedOutcomes[a].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                     const latestB = Object.values(groupedOutcomes[b].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                     return new Date(latestB.outcomeTime) - new Date(latestA.outcomeTime);
                 });
-
+    
                 // Display grouped outcomes, sorted by newest account first
                 for (const accountNumber of sortedAccounts) {
                     const accountContainer = document.createElement('div');
                     accountContainer.classList.add('account-container');
-
+    
                     const accountTitle = document.createElement('div');
                     accountTitle.classList.add('account-title');
                     accountTitle.textContent = `Account Number: ${accountNumber}`;
                     accountContainer.appendChild(accountTitle);
-
+    
                     const accountContent = document.createElement('div');
                     accountContent.classList.add('account-content');
                     accountContainer.appendChild(accountContent);
-
+    
                     const salesInfoContainer = document.createElement('div');
                     salesInfoContainer.classList.add('sales-info');
                     accountContent.appendChild(salesInfoContainer);
-
+    
                     const customerInfoContainer = document.createElement('div');
                     customerInfoContainer.classList.add('customer-info-container');
                     accountContent.appendChild(customerInfoContainer);
-
+    
                     const customerInfoHtml = displayCustomerInfo(groupedOutcomes[accountNumber].customerInfo);
                     customerInfoContainer.innerHTML = customerInfoHtml;
-
+    
                     const accountOutcomes = Object.values(groupedOutcomes[accountNumber].actions);
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-
+    
                     for (const outcome of accountOutcomes) {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         `;
                         salesInfoContainer.appendChild(outcomeElement);
                     }
-
+    
                     outcomesContainer.appendChild(accountContainer);
                 }
             } else {
