@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
+                const salesCounts = {};
 
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
@@ -81,6 +82,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo, actions: {} };
                     }
                     groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
+
+                    // Tally the sales counts
+                    if (!salesCounts[outcome.assignAction]) {
+                        salesCounts[outcome.assignAction] = 0;
+                    }
+                    salesCounts[outcome.assignAction]++;
                 }
 
                 // Sort account numbers by the newest outcome time
@@ -122,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
-                            <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}">${outcome.assignAction}</button>
+                            <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName}">${outcome.assignAction}</button>
                             <div class="notes">${outcome.notesValue || 'No notes'}</div>
                             <div class="outcome-time">${formatDateTime(outcome.outcomeTime)}</div>
                         `;
@@ -145,7 +152,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.addEventListener('click', function() {
                         const account = this.getAttribute('data-account');
                         const action = this.getAttribute('data-action');
-                        const textToCopy = `${account}: ${action}`;
+                        const firstName = this.getAttribute('data-firstname');
+                        const lastName = this.getAttribute('data-lastname');
+                        const textToCopy = `${account} - ${action} - ${firstName} ${lastName}`;
                         navigator.clipboard.writeText(textToCopy).then(() => {
                             alert(`Copied: ${textToCopy}`);
                         }).catch(err => {
@@ -153,6 +162,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     });
                 });
+
+                // Display sales counts
+                const salesCountsContainer = document.createElement('div');
+                salesCountsContainer.classList.add('sales-counts-container');
+                for (const action in salesCounts) {
+                    const countElement = document.createElement('div');
+                    countElement.classList.add('sales-count-item');
+                    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
+                    salesCountsContainer.appendChild(countElement);
+                }
+                outcomesContainer.prepend(salesCountsContainer);
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
             }
