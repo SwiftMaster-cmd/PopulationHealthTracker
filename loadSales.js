@@ -28,6 +28,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function getSaleType(action, notes) {
+        if (action === 'Notes') {
+            if (/fe|final expense|vbc|dental/i.test(notes)) {
+                return 'Transfer';
+            }
+        } else if (action === 'Select RX Enrolled History Received' || action === 'Select RX Enrolled History Not Received') {
+            return 'Select RX Enrolled';
+        } else if (action === 'HRA') {
+            if (/billable|bill|b/i.test(notes)) {
+                return 'Billable HRA';
+            }
+            return 'HRA';
+        }
+        return action;
+    }
+
     function displayCustomerInfo(customerInfo) {
         if (!customerInfo) {
             return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
@@ -82,12 +98,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
                     }
                     groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
+                }
 
-                    // Tally the sales counts
-                    if (!salesCounts[outcome.assignAction]) {
-                        salesCounts[outcome.assignAction] = 0;
+                // Tally the sales counts
+                for (const accountNumber in groupedOutcomes) {
+                    const actions = groupedOutcomes[accountNumber].actions;
+                    for (const action in actions) {
+                        const outcome = actions[action];
+                        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+
+                        if (!salesCounts[saleType]) {
+                            salesCounts[saleType] = 0;
+                        }
+                        salesCounts[saleType]++;
                     }
-                    salesCounts[outcome.assignAction]++;
                 }
 
                 // Sort account numbers by the newest outcome time
