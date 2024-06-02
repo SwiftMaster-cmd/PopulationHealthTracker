@@ -108,13 +108,14 @@ h1 {
 .more-info-btn {
     display: block;
     margin: 10px 0;
-    padding: 5px 10px;
+    padding: 10px 20px;
     background-color: #444;
     color: #e0e0e0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 18px;
 }
 
 .more-info-btn:hover {
