@@ -206,35 +206,35 @@ outcomesContainer.prepend(salesCountsContainer);
         });
     }
 
+    // Add this function to display the monthly chart
+function displayMonthlyChart(monthlySalesData) {
+    const chartContainer = document.createElement('div');
+    chartContainer.classList.add('chart-container');
+    chartContainer.innerHTML = '<canvas id="monthlySalesChart"></canvas>';
+    document.getElementById('sales-outcomes-container').prepend(chartContainer);
 
+    const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+    const labels = Array.from({ length: 31 }, (_, i) => i + 1);
+    const datasets = Object.keys(monthlySalesData).map((saleType, index) => {
+        const colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan'];
+        return {
+            label: saleType,
+            data: monthlySalesData[saleType],
+            borderColor: colors[index % colors.length],
+            fill: false
+        };
+    });
 
-    function displayMonthlyChart(monthlySalesData) {
-        const chartContainer = document.createElement('div');
-        chartContainer.classList.add('chart-container');
-        chartContainer.innerHTML = '<canvas id="monthlySalesChart"></canvas>';
-        document.getElementById('sales-outcomes-container').prepend(chartContainer);
-
-        const ctx = document.getElementById('monthlySalesChart').getContext('2d');
-        const labels = Array.from({ length: 31 }, (_, i) => i + 1);
-        const datasets = Object.keys(monthlySalesData).map((saleType, index) => {
-            const colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan'];
-            return {
-                label: saleType,
-                data: monthlySalesData[saleType],
-                borderColor: colors[index % colors.length],
-                fill: false
-            };
-        });
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                scales: {                x: {
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
                     title: {
                         display: true,
                         text: 'Day of the Month'
@@ -251,6 +251,26 @@ outcomesContainer.prepend(salesCountsContainer);
     });
 }
 
+// Inside the displaySalesOutcomes function, before the end of the if(outcomes) block
+const monthlySalesData = {};
+
+// Prepare data for the chart
+for (const key in outcomes) {
+    const outcome = outcomes[key];
+    const date = new Date(outcome.outcomeTime);
+    const day = date.getDate();
+    const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+
+    if (!monthlySalesData[saleType]) {
+        monthlySalesData[saleType] = Array.from({ length: 31 }, () => 0);
+    }
+    if (date.getFullYear() === new Date().getFullYear() && date.getMonth() === new Date().getMonth()) {
+        monthlySalesData[saleType][day - 1]++;
+    }
+}
+
+// Call the function to display the chart
+displayMonthlyChart(monthlySalesData);
 
     auth.onAuthStateChanged(user => {
         if (user) {
