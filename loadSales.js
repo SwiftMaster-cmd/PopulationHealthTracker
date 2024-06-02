@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
         measurementId: "G-RVBYB0RR06"
     };
-    
+
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const database = firebase.database();
@@ -29,16 +29,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayCustomerInfo(customerInfo) {
-        const customerInfoContainer = document.getElementById('customer-info');
-        customerInfoContainer.innerHTML = `
-            <h2>Customer Info</h2>
-            <div><strong>First Name:</strong> ${customerInfo.firstName}</div>
-            <div><strong>Last Name:</strong> ${customerInfo.lastName}</div>
-            <div><strong>Gender:</strong> ${customerInfo.gender}</div>
-            <div><strong>Birthdate:</strong> ${customerInfo.birthdate}</div>
-            <div><strong>Phone:</strong> ${customerInfo.phone}</div>
-            <div><strong>Zipcode:</strong> ${customerInfo.zipcode}</div>
-            <div><strong>State ID:</strong> ${customerInfo.stateId}</div>
+        if (!customerInfo) {
+            return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
+        }
+        
+        return `
+            <div class="customer-info">
+                <h4>Customer Information</h4>
+                <p><strong>First Name:</strong> ${customerInfo.firstName || 'N/A'}</p>
+                <p><strong>Last Name:</strong> ${customerInfo.lastName || 'N/A'}</p>
+                <p><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</p>
+                <p><strong>Birthdate:</strong> ${customerInfo.birthdate || 'N/A'}</p>
+                <p><strong>Email:</strong> ${customerInfo.email || 'N/A'}</p>
+                <p><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</p>
+                <p><strong>Zipcode:</strong> ${customerInfo.zipcode || 'N/A'}</p>
+                <p><strong>State ID:</strong> ${customerInfo.stateId || 'N/A'}</p>
+            </div>
         `;
     }
 
@@ -47,12 +53,11 @@ document.addEventListener('DOMContentLoaded', function() {
         outcomesRef.on('value', (snapshot) => {
             const outcomes = snapshot.val();
             if (outcomes) {
-                const outcomesContainer = document.getElementById('sales-outcomes');
+                const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
                 // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
-                let latestCustomerInfo = null;
 
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
@@ -61,23 +66,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         continue; // Skip outcomes with "--" in assign action
                     }
                     if (!groupedOutcomes[accountNumber]) {
-                        groupedOutcomes[accountNumber] = {};
+                        groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo, outcomes: [] };
                     }
-                    groupedOutcomes[accountNumber][outcome.assignAction] = outcome; // Only keep the latest outcome for each action
-
-                    // Update latest customer info
-                    latestCustomerInfo = outcome.customerInfo;
-                }
-
-                // Display latest customer info
-                if (latestCustomerInfo) {
-                    displayCustomerInfo(latestCustomerInfo);
+                    groupedOutcomes[accountNumber].outcomes.push(outcome); // Add outcome to the account number
                 }
 
                 // Sort account numbers by the newest outcome time
                 const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
-                    const latestA = Object.values(groupedOutcomes[a]).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
-                    const latestB = Object.values(groupedOutcomes[b]).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
+                    const latestA = groupedOutcomes[a].outcomes.reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
+                    const latestB = groupedOutcomes[b].outcomes.reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                     return new Date(latestB.outcomeTime) - new Date(latestA.outcomeTime);
                 });
 
@@ -91,7 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountTitle.textContent = `Account Number: ${accountNumber}`;
                     accountContainer.appendChild(accountTitle);
 
-                    const accountOutcomes = Object.values(groupedOutcomes[accountNumber]);
+                    const customerInfoHtml = displayCustomerInfo(groupedOutcomes[accountNumber].customerInfo);
+                    accountContainer.innerHTML += customerInfoHtml;
+
+                    const accountOutcomes = groupedOutcomes[accountNumber].outcomes;
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                     for (const outcome of accountOutcomes) {
