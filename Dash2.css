@@ -19,6 +19,15 @@ h1 {
     flex-direction: column;
     padding: 20px;
 }
+.account-content {
+    display: flex;
+    justify-content: space-between;
+}
+.sales-info, .customer-info-container {
+    width: 48%;
+    padding: 10px;
+    box-sizing: border-box;
+}
 .account-container {
     border: 1px solid #ccc;
     padding: 20px;
