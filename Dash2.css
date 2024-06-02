@@ -58,7 +58,7 @@ h1 {
 
 /* Customer Info Container */
 .customer-info-container {
-    max-height: 400px;
+    max-height: 200px;
     overflow-y: auto;
 }
 
@@ -87,38 +87,31 @@ h1 {
     margin-bottom: 5px;
 }
 
-/* Outcome Item */
-.outcome-item {
+/* More Info Button */
+.more-info-btn {
+    display: block;
+    margin: 10px 0;
+    padding: 5px 10px;
+    background-color: #444;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.more-info-btn:hover {
+    background-color: #555;
+}
+
+/* More Info Popup */
+.more-info-popup {
     background-color: #2a2a2a;
     border: 1px solid #444;
-    padding: 15px;
-    margin: 15px 0;
+    padding: 10px;
     border-radius: 5px;
-    position: relative;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Outcome Item Hover */
-.outcome-item:hover {
-    background-color: #333;
-    border-color: #555;
-}
-
-/* Outcome Item Text */
-.outcome-item p {
-    margin: 5px 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #e0e0e0;
-}
-
-/* Outcome Time */
-.outcome-time {
-    font-size: 0.9em;
-    color: #888;
-}
-
-/* Hover Effect */
-.account-container:hover {
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
+    position: absolute;
+    z-index: 10;
+    margin-top: 10px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
