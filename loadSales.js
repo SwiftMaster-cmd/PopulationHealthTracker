@@ -101,18 +101,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Tally the sales counts
-                for (const accountNumber in groupedOutcomes) {
-                    const actions = groupedOutcomes[accountNumber].actions;
-                    for (const action in actions) {
-                        const outcome = actions[action];
-                        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+for (const accountNumber in groupedOutcomes) {
+    const actions = groupedOutcomes[accountNumber].actions;
+    for (const action in actions) {
+        const outcome = actions[action];
+        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
 
-                        if (!salesCounts[saleType]) {
-                            salesCounts[saleType] = 0;
-                        }
-                        salesCounts[saleType]++;
-                    }
-                }
+        if (!salesCounts[saleType]) {
+            salesCounts[saleType] = 0;
+        }
+        salesCounts[saleType]++;
+    }
+}
+
 
                 // Sort account numbers by the newest outcome time
                 const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
@@ -187,16 +188,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 });
 
-                // Display sales counts
-                const salesCountsContainer = document.createElement('div');
-                salesCountsContainer.classList.add('sales-counts-container');
-                for (const action in salesCounts) {
-                    const countElement = document.createElement('div');
-                    countElement.classList.add('sales-count-item');
-                    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
-                    salesCountsContainer.appendChild(countElement);
-                }
-                outcomesContainer.prepend(salesCountsContainer);
+              // Display sales counts
+const salesCountsContainer = document.createElement('div');
+salesCountsContainer.classList.add('sales-counts-container');
+for (const action in salesCounts) {
+    const countElement = document.createElement('div');
+    countElement.classList.add('sales-count-item');
+    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
+    salesCountsContainer.appendChild(countElement);
+}
+outcomesContainer.prepend(salesCountsContainer);
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
             }
