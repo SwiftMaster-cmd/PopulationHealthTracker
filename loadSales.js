@@ -33,8 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
         userRef.on('value', (snapshot) => {
             const userData = snapshot.val();
             if (userData) {
-                const customerInfoContainer = document.getElementById('customer-info-container');
+                const customerInfoContainer = document.getElementById('customer-info');
                 customerInfoContainer.innerHTML = `
+                    <h2>Customer Info</h2>
                     <div><strong>First Name:</strong> ${userData.firstName}</div>
                     <div><strong>Last Name:</strong> ${userData.lastName}</div>
                     <div><strong>Gender:</strong> ${userData.gender}</div>
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
         outcomesRef.on('value', (snapshot) => {
             const outcomes = snapshot.val();
             if (outcomes) {
-                const outcomesContainer = document.getElementById('sales-outcomes-container');
+                const outcomesContainer = document.getElementById('sales-outcomes');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
                 // Group outcomes by account number and filter out unwanted outcomes
