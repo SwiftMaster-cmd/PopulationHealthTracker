@@ -206,7 +206,11 @@ outcomesContainer.prepend(salesCountsContainer);
         });
     }
 
-    // Add this function to display the monthly chart
+    
+
+
+
+// Add this function to display the monthly chart
 function displayMonthlyChart(monthlySalesData) {
     const chartContainer = document.createElement('div');
     chartContainer.classList.add('chart-container');
@@ -271,6 +275,10 @@ for (const key in outcomes) {
 
 // Call the function to display the chart
 displayMonthlyChart(monthlySalesData);
+
+
+
+
 
     auth.onAuthStateChanged(user => {
         if (user) {
