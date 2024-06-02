@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const firebaseConfig = {
-        // Your Firebase configuration
+        apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+        authDomain: "track-dac15.firebaseapp.com",
+        databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+        projectId: "track-dac15",
+        storageBucket: "track-dac15.appspot.com",
+        messagingSenderId: "495156821305",
+        appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+        measurementId: "G-RVBYB0RR06"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -38,7 +45,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayCustomerInfo(customerInfo) {
-        // Your displayCustomerInfo code
+        if (!customerInfo) {
+            return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
+        }
+
+        return `
+            <div class="customer-info">
+                <div class="customer-row">
+                    <div class="customer-field"><strong>First:</strong> ${customerInfo.firstName || 'N/A'}</div>
+                    <div class="customer-field"><strong>Last:</strong> ${customerInfo.lastName || 'N/A'}</div>
+                </div>
+                <div class="customer-row">
+                    <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
+                    <button class="more-info-btn">+ More</button>
+                </div>
+                <div class="more-info-popup" style="display:none;">
+                    <div class="customer-row">
+                        <div class="customer-field"><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</div>
+                        <div class="customer-field"><strong>Birth:</strong> ${customerInfo.birthdate || 'N/A'}</div>
+                    </div>
+                    <div class="customer-row">
+                        <div class="customer-field"><strong>Email:</strong> ${customerInfo.email || 'N/A'}</div>
+                    </div>
+                    <div class="customer-row">
+                        <div class="customer-field"><strong>Zip:</strong> ${customerInfo.zipcode || 'N/A'}</div>
+                        <div class="customer-field"><strong>State:</strong> ${customerInfo.stateId || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     function displaySalesOutcomes(user) {
@@ -49,9 +84,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
+                // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
                 const salesCounts = {};
-                const monthlySalesData = {};
 
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
@@ -63,18 +98,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
                     }
                     groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
+                }
 
-                    // Prepare data for the chart
-                    const date = new Date(outcome.outcomeTime);
-                    const month = date.getMonth();
-                    const day = date.getDate();
-                    const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+                // Tally the sales counts
+                for (const accountNumber in groupedOutcomes) {
+                    const actions = groupedOutcomes[accountNumber].actions;
+                    for (const action in actions) {
+                        const outcome = actions[action];
+                        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
 
-                    if (!monthlySalesData[saleType]) {
-                        monthlySalesData[saleType] = Array.from({ length: 31 }, () => 0);
-                    }
-                    if (date.getFullYear() === new Date().getFullYear() && month === new Date().getMonth()) {
-                        monthlySalesData[saleType][day - 1]++;
+                        if (!salesCounts[saleType]) {
+                            salesCounts[saleType] = 0;
+                        }
+                        salesCounts[saleType]++;
                     }
                 }
 
@@ -152,19 +188,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 });
 
-                // Display sales counts
-                const salesCountsContainer = document.createElement('div');
-                salesCountsContainer.classList.add('sales-counts-container');
-                for (const action in salesCounts) {
-                    const countElement = document.createElement('div');
-                    countElement.classList.add('sales-count-item');
-                    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
-                    salesCountsContainer.appendChild(countElement);
-                }
-                outcomesContainer.prepend(salesCountsContainer);
-
-                // Display the monthly chart
-                displayMonthlyChart(monthlySalesData);
+// Display sales counts
+const salesCountsContainer = document.createElement('div');
+salesCountsContainer.classList.add('sales-counts-container');
+for (const action in salesCounts) {
+    const countElement = document.createElement('div');
+    countElement.classList.add('sales-count-item');
+    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
+    salesCountsContainer.appendChild(countElement);
+}
+outcomesContainer.prepend(salesCountsContainer);
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
             }
@@ -172,6 +205,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching sales outcomes:', error);
         });
     }
+
+
 
     function displayMonthlyChart(monthlySalesData) {
         const chartContainer = document.createElement('div');
@@ -216,15 +251,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 }
 
-auth.onAuthStateChanged(user => {
-    if (user) {
-        displaySalesOutcomes(user);
-    } else {
-        auth.signInWithPopup(provider).then((result) => {
-            const user = result.user;
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
             displaySalesOutcomes(user);
-        }).catch((error) => {
-            console.error('Authentication error:', error);
-        });
-    }
-});});
+        } else {
+            auth.signInWithPopup(provider).then((result) => {
+                const user = result.user;
+                displaySalesOutcomes(user);
+            }).catch((error) => {
+                console.error('Authentication error:', error);
+            });
+        }
+    });
+});
