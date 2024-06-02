@@ -45,18 +45,12 @@ h1 {
     justify-content: space-between;
 }
 
-/* Sales Info */
-.sales-info {
+/* Sales Info and Customer Info Container */
+.sales-info, .customer-info-container {
     width: 48%;
     padding: 10px;
     box-sizing: border-box;
-}
-
-/* Customer Info Container */
-.customer-info-container {
-    width: 48%;
     border: 1px solid #444;
-    padding: 10px;
     border-radius: 5px;
     background-color: #2a2a2a;
 }
