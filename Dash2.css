@@ -22,6 +22,23 @@ h1 {
     padding: 20px;
 }
 
+/* Sales Counts Container */
+.sales-counts-container {
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Sales Count Item */
+.sales-count-item {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #bbb;
+}
+
 /* Account Container */
 .account-container {
     border: 1px solid #444;
@@ -138,13 +155,14 @@ h1 {
 
 /* Copy Action Button */
 .copy-action-btn {
-    padding: 5px 10px;
+    padding: 10px 20px;
     background-color: #444;
     color: #e0e0e0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 32px;
 }
 
 .copy-action-btn:hover {
@@ -155,6 +173,7 @@ h1 {
 .notes {
     text-align: left;
     flex-grow: 1;
+    margin-left: 20px;
 }
 
 /* Outcome Time */
@@ -162,6 +181,7 @@ h1 {
     font-size: 0.9em;
     color: #888;
     text-align: right;
+    margin-left: auto;
 }
 
 /* Hover Effect */
