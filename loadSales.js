@@ -28,30 +28,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function displayCustomerInfo(user) {
-        const userRef = firebase.database().ref('users/' + user.uid);
-        userRef.on('value', (snapshot) => {
-            const userData = snapshot.val();
-            console.log('User data snapshot:', snapshot);
-            console.log('User data:', userData);
-            if (userData) {
-                const customerInfoContainer = document.getElementById('customer-info');
-                customerInfoContainer.innerHTML = `
-                    <h2>Customer Info</h2>
-                    <div><strong>First Name:</strong> ${userData.firstName}</div>
-                    <div><strong>Last Name:</strong> ${userData.lastName}</div>
-                    <div><strong>Gender:</strong> ${userData.gender}</div>
-                    <div><strong>Birthdate:</strong> ${userData.birthdate}</div>
-                    <div><strong>Phone:</strong> ${userData.phone}</div>
-                    <div><strong>Zipcode:</strong> ${userData.zipcode}</div>
-                    <div><strong>State ID:</strong> ${userData.stateId}</div>
-                `;
-            } else {
-                console.log('No user data found for user:', user.displayName);
-            }
-        }, (error) => {
-            console.error('Error fetching user data:', error);
-        });
+    function displayCustomerInfo(customerInfo) {
+        const customerInfoContainer = document.getElementById('customer-info');
+        customerInfoContainer.innerHTML = `
+            <h2>Customer Info</h2>
+            <div><strong>First Name:</strong> ${customerInfo.firstName}</div>
+            <div><strong>Last Name:</strong> ${customerInfo.lastName}</div>
+            <div><strong>Gender:</strong> ${customerInfo.gender}</div>
+            <div><strong>Birthdate:</strong> ${customerInfo.birthdate}</div>
+            <div><strong>Phone:</strong> ${customerInfo.phone}</div>
+            <div><strong>Zipcode:</strong> ${customerInfo.zipcode}</div>
+            <div><strong>State ID:</strong> ${customerInfo.stateId}</div>
+        `;
     }
 
     function displaySalesOutcomes(user) {
@@ -64,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
+                let latestCustomerInfo = null;
+
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
@@ -74,6 +64,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         groupedOutcomes[accountNumber] = {};
                     }
                     groupedOutcomes[accountNumber][outcome.assignAction] = outcome; // Only keep the latest outcome for each action
+
+                    // Update latest customer info
+                    latestCustomerInfo = outcome.customerInfo;
+                }
+
+                // Display latest customer info
+                if (latestCustomerInfo) {
+                    displayCustomerInfo(latestCustomerInfo);
                 }
 
                 // Sort account numbers by the newest outcome time
@@ -124,12 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             displaySalesOutcomes(user);
-            displayCustomerInfo(user);
         } else {
             auth.signInWithPopup(provider).then((result) => {
                 const user = result.user;
                 displaySalesOutcomes(user);
-                displayCustomerInfo(user);
             }).catch((error) => {
                 console.error('Authentication error:', error);
             });
