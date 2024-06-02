@@ -115,3 +115,56 @@ h1 {
     margin-top: 10px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
+
+/* Outcome Item */
+.outcome-item {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+/* Outcome Item Hover */
+.outcome-item:hover {
+    background-color: #333;
+    border-color: #555;
+}
+
+/* Copy Action Button */
+.copy-action-btn {
+    padding: 5px 10px;
+    background-color: #444;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.copy-action-btn:hover {
+    background-color: #555;
+}
+
+/* Notes */
+.notes {
+    text-align: left;
+    flex-grow: 1;
+}
+
+/* Outcome Time */
+.outcome-time {
+    font-size: 0.9em;
+    color: #888;
+    text-align: right;
+}
+
+/* Hover Effect */
+.account-container:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
+}

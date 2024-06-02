@@ -122,13 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
-                            <p><strong>Action:</strong> ${outcome.assignAction}</p>
-                        `;
-                        if (outcome.notesValue && outcome.notesValue.trim() && outcome.notesValue !== ' ') {
-                            outcomeElement.innerHTML += `<p><strong>Notes:</strong> ${outcome.notesValue}</p>`;
-                        }
-                        outcomeElement.innerHTML += `
-                            <p class="outcome-time"><strong>Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
+                            <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}">${outcome.assignAction}</button>
+                            <div class="notes">${outcome.notesValue || 'No notes'}</div>
+                            <div class="outcome-time">${formatDateTime(outcome.outcomeTime)}</div>
                         `;
                         salesInfoContainer.appendChild(outcomeElement);
                     }
@@ -141,6 +137,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.addEventListener('click', function() {
                         const popup = this.nextElementSibling;
                         popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+                    });
+                });
+
+                // Add event listeners for Copy Action buttons
+                document.querySelectorAll('.copy-action-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const account = this.getAttribute('data-account');
+                        const action = this.getAttribute('data-action');
+                        const textToCopy = `${account}: ${action}`;
+                        navigator.clipboard.writeText(textToCopy).then(() => {
+                            alert(`Copied: ${textToCopy}`);
+                        }).catch(err => {
+                            console.error('Could not copy text: ', err);
+                        });
                     });
                 });
             } else {
