@@ -29,17 +29,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayCustomerInfo(customerInfo) {
+        if (!customerInfo) {
+            return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
+        }
+        
         return `
             <div class="customer-info">
                 <h4>Customer Information</h4>
-                <p><strong>First Name:</strong> ${customerInfo.firstName}</p>
-                <p><strong>Last Name:</strong> ${customerInfo.lastName}</p>
-                <p><strong>Gender:</strong> ${customerInfo.gender}</p>
-                <p><strong>Birthdate:</strong> ${customerInfo.birthdate}</p>
-                <p><strong>Email:</strong> ${customerInfo.email}</p>
-                <p><strong>Phone:</strong> ${customerInfo.phone}</p>
-                <p><strong>Zipcode:</strong> ${customerInfo.zipcode}</p>
-                <p><strong>State ID:</strong> ${customerInfo.stateId}</p>
+                <p><strong>First Name:</strong> ${customerInfo.firstName || 'N/A'}</p>
+                <p><strong>Last Name:</strong> ${customerInfo.lastName || 'N/A'}</p>
+                <p><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</p>
+                <p><strong>Birthdate:</strong> ${customerInfo.birthdate || 'N/A'}</p>
+                <p><strong>Email:</strong> ${customerInfo.email || 'N/A'}</p>
+                <p><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</p>
+                <p><strong>Zipcode:</strong> ${customerInfo.zipcode || 'N/A'}</p>
+                <p><strong>State ID:</strong> ${customerInfo.stateId || 'N/A'}</p>
             </div>
         `;
     }
