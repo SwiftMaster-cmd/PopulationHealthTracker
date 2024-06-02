@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (/billable|bill|b/i.test(notes)) {
                 return 'Billable HRA';
             }
-            return 'HRA';
+            return 'HRA Completed';
         }
         return action;
     }
@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="customer-row">
                     <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
+                    <button class="more-info-btn">+ More</button>
                 </div>
-                <button class="more-info-btn">+ More</button>
                 <div class="more-info-popup" style="display:none;">
                     <div class="customer-row">
                         <div class="customer-field"><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</div>
@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
-                    if (outcome.assignAction.trim() === "--") {
-                        continue; // Skip outcomes with "--" in assign action
+                    if (outcome.assignAction.trim() === "--" || outcome.assignAction === 'Notes') {
+                        continue; // Skip outcomes with "--" in assign action and exclude notes from counting
                     }
                     if (!groupedOutcomes[accountNumber]) {
                         groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
@@ -101,19 +101,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Tally the sales counts
-for (const accountNumber in groupedOutcomes) {
-    const actions = groupedOutcomes[accountNumber].actions;
-    for (const action in actions) {
-        const outcome = actions[action];
-        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+                for (const accountNumber in groupedOutcomes) {
+                    const actions = groupedOutcomes[accountNumber].actions;
+                    for (const action in actions) {
+                        const outcome = actions[action];
+                        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
 
-        if (!salesCounts[saleType]) {
-            salesCounts[saleType] = 0;
-        }
-        salesCounts[saleType]++;
-    }
-}
-
+                        if (!salesCounts[saleType]) {
+                            salesCounts[saleType] = 0;
+                        }
+                        salesCounts[saleType]++;
+                    }
+                }
 
                 // Sort account numbers by the newest outcome time
                 const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
@@ -151,6 +150,7 @@ for (const accountNumber in groupedOutcomes) {
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                     for (const outcome of accountOutcomes) {
+                        if (outcome.assignAction.trim() === "--") continue; // Ensure actions with "--" are not displayed
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
