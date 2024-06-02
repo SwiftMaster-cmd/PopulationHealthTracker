@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -57,14 +57,6 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
 });
 
-
-
-
-
-
-
-
-
 // User Registration Function
 async function registerUser(email, password, additionalData) {
     try {
@@ -87,4 +79,18 @@ async function loginUser(email, password) {
     } catch (error) {
         console.error('Login error:', error);
     }
+}
+
+// Function to register a new user with additional data
+async function registerNewUser(email, password, firstName, lastName, gender, birthdate, phone, zipcode, stateId) {
+    const additionalData = {
+        firstName: firstName,
+        lastName: lastName,
+        gender: gender,
+        birthdate: birthdate,
+        phone: phone,
+        zipcode: zipcode,
+        stateId: stateId,
+    };
+    await registerUser(email, password, additionalData);
 }
