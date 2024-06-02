@@ -88,12 +88,13 @@ h1 {
 .customer-row {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
 }
 
 /* Customer Fields */
 .customer-field {
-    width: 48%;
+    width: 45%;
 }
 
 /* Customer Field Labels */
@@ -107,15 +108,15 @@ h1 {
 /* More Info Button */
 .more-info-btn {
     display: block;
-    margin: 10px 0;
-    padding: 10px 20px;
+    padding: 5px 10px;
     background-color: #444;
     color: #e0e0e0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 18px;
+    font-size: 14px;
+    margin-left: 10px;
 }
 
 .more-info-btn:hover {
@@ -156,14 +157,14 @@ h1 {
 
 /* Copy Action Button */
 .copy-action-btn {
-    padding: 10px 20px;
+    padding: 5px 10px;
     background-color: #444;
     color: #e0e0e0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 32px;
+    font-size: 18px;
 }
 
 .copy-action-btn:hover {
