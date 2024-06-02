@@ -71,3 +71,18 @@ h1 {
 .outcome-item p strong {
     color: #333;
 }
+
+#sales-outcomes-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+#sales-outcomes {
+    width: 60%;
+    padding-right: 20px;
+}
+#customer-info {
+    width: 35%;
+    padding-left: 20px;
+    border-left: 1px solid #ccc;
+}
