@@ -28,6 +28,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function displayCustomerInfo(user) {
+        const userRef = firebase.database().ref('users/' + user.uid);
+        userRef.on('value', (snapshot) => {
+            const userData = snapshot.val();
+            if (userData) {
+                const customerInfoContainer = document.getElementById('customer-info-container');
+                customerInfoContainer.innerHTML = `
+                    <div><strong>First Name:</strong> ${userData.firstName}</div>
+                    <div><strong>Last Name:</strong> ${userData.lastName}</div>
+                    <div><strong>Gender:</strong> ${userData.gender}</div>
+                    <div><strong>Birthdate:</strong> ${userData.birthdate}</div>
+                    <div><strong>Phone:</strong> ${userData.phone}</div>
+                    <div><strong>Zipcode:</strong> ${userData.zipcode}</div>
+                    <div><strong>State ID:</strong> ${userData.stateId}</div>
+                `;
+            } else {
+                console.log('No user data found for user:', user.displayName);
+            }
+        }, (error) => {
+            console.error('Error fetching user data:', error);
+        });
+    }
+
     function displaySalesOutcomes(user) {
         const outcomesRef = firebase.database().ref('salesOutcomes/' + user.uid);
         outcomesRef.on('value', (snapshot) => {
@@ -98,10 +121,12 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             displaySalesOutcomes(user);
+            displayCustomerInfo(user);
         } else {
             auth.signInWithPopup(provider).then((result) => {
                 const user = result.user;
                 displaySalesOutcomes(user);
+                displayCustomerInfo(user);
             }).catch((error) => {
                 console.error('Authentication error:', error);
             });
