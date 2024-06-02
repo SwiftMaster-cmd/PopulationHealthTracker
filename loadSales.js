@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!customerInfo) {
             return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
         }
-        
+
         return `
             <div class="customer-info">
                 <h4>Customer Information</h4>
@@ -56,15 +56,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
-                // Group outcomes by account number and filter out unwanted outcomes
+                // Group outcomes by account number
                 const groupedOutcomes = {};
 
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
-                    if (outcome.assignAction.trim() === "--") {
-                        continue; // Skip outcomes with "--" in assign action
-                    }
+
                     if (!groupedOutcomes[accountNumber]) {
                         groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo, outcomes: [] };
                     }
