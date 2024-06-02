@@ -227,4 +227,4 @@ auth.onAuthStateChanged(user => {
             console.error('Authentication error:', error);
         });
     }
-});
+});});
