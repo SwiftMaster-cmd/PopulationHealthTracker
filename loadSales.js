@@ -114,62 +114,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
 
-                // Aggregate sales data for charts
-                const dailySales = {};
-                const weeklySales = {};
-                const monthlySales = {};
-
-                const today = new Date();
-                const currentWeekStart = new Date(today.setDate(today.getDate() - today.getDay())); // Set to Sunday of current week
-                const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-
-                for (const key in outcomes) {
-                    const outcome = outcomes[key];
-                    const outcomeDate = new Date(outcome.outcomeTime);
-                    const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-
-                    // Aggregate daily sales
-                    const dayKey = outcomeDate.toISOString().split('T')[0];
-                    if (!dailySales[dayKey]) {
-                        dailySales[dayKey] = {};
-                    }
-                    if (!dailySales[dayKey][saleType]) {
-                        dailySales[dayKey][saleType] = 0;
-                    }
-                    dailySales[dayKey][saleType]++;
-
-                    // Aggregate weekly sales
-                    if (outcomeDate >= currentWeekStart) {
-                        const weekKey = currentWeekStart.toISOString().split('T')[0];
-                        if (!weeklySales[weekKey]) {
-                            weeklySales[weekKey] = {};
-                        }
-                        if (!weeklySales[weekKey][saleType]) {
-                            weeklySales[weekKey][saleType] = 0;
-                        }
-                        weeklySales[weekKey][saleType]++;
-                    }
-
-                    // Aggregate monthly sales
-                    if (outcomeDate >= currentMonthStart) {
-                        const monthKey = currentMonthStart.toISOString().split('T')[0];
-                        if (!monthlySales[monthKey]) {
-                            monthlySales[monthKey] = {};
-                        }
-                        if (!monthlySales[monthKey][saleType]) {
-                            monthlySales[monthKey][saleType] = 0;
-                        }
-                        monthlySales[monthKey][saleType]++;
-                    }
-                }
-
-                // Display grouped outcomes, sorted by newest account first
+                // Sort account numbers by the newest outcome time
                 const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
                     const latestA = Object.values(groupedOutcomes[a].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                     const latestB = Object.values(groupedOutcomes[b].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                     return new Date(latestB.outcomeTime) - new Date(latestA.outcomeTime);
                 });
 
+                // Display grouped outcomes, sorted by newest account first
                 for (const accountNumber of sortedAccounts) {
                     const accountContainer = document.createElement('div');
                     accountContainer.classList.add('account-container');
@@ -202,9 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const outcomeElement = document.createElement('div');
                         outcomeElement.classList.add('outcome-item');
                         outcomeElement.innerHTML = `
-                            <button class="copy-action-btn" data-account="${
-
-accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</button>
+                            <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</button>
                             <div class="notes">${outcome.notesValue || 'No notes'}</div>
                             <div class="outcome-time">${formatDateTime(outcome.outcomeTime)}</div>
                         `;
@@ -238,45 +188,16 @@ accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedO
                     });
                 });
 
-                // Create charts for daily, weekly, and monthly sales
-                const createChart = (containerId, data, title) => {
-                    const ctx = document.getElementById(containerId).getContext('2d');
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: Object.keys(data),
-                            datasets: Object.keys(data[Object.keys(data)[0]]).map(saleType => ({
-                                label: saleType,
-                                data: Object.keys(data).map(key => data[key][saleType] || 0),
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1
-                            }))
-                        },
-                        options: {
-                            title: {
-                                display: true,
-                                text: title
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-                };
-
-                // Create chart containers
-                outcomesContainer.innerHTML += `
-                    <canvas id="daily-sales-chart" width="400" height="200"></canvas>
-                    <canvas id="weekly-sales-chart" width="400" height="200"></canvas>
-                    <canvas id="monthly-sales-chart" width="400" height="200"></canvas>
-                `;
-
-                createChart('daily-sales-chart', dailySales, 'Daily Sales');
-                createChart('weekly-sales-chart', weeklySales, 'Weekly Sales');
-                createChart('monthly-sales-chart', monthlySales, 'Monthly Sales');
+// Display sales counts
+const salesCountsContainer = document.createElement('div');
+salesCountsContainer.classList.add('sales-counts-container');
+for (const action in salesCounts) {
+    const countElement = document.createElement('div');
+    countElement.classList.add('sales-count-item');
+    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
+    salesCountsContainer.appendChild(countElement);
+}
+outcomesContainer.prepend(salesCountsContainer);
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
             }
