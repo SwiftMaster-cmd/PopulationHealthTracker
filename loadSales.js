@@ -56,23 +56,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 const outcomesContainer = document.getElementById('sales-outcomes-container');
                 outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
-                // Group outcomes by account number
+                // Group outcomes by account number and filter out unwanted outcomes
                 const groupedOutcomes = {};
 
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const accountNumber = outcome.accountNumber;
-
-                    if (!groupedOutcomes[accountNumber]) {
-                        groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo, outcomes: [] };
+                    if (outcome.assignAction.trim() === "--") {
+                        continue; // Skip outcomes with "--" in assign action
                     }
-                    groupedOutcomes[accountNumber].outcomes.push(outcome); // Add outcome to the account number
+                    if (!groupedOutcomes[accountNumber]) {
+                        groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo, actions: {} };
+                    }
+                    groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
                 }
 
                 // Sort account numbers by the newest outcome time
                 const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
-                    const latestA = groupedOutcomes[a].outcomes.reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
-                    const latestB = groupedOutcomes[b].outcomes.reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
+                    const latestA = Object.values(groupedOutcomes[a].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
+                    const latestB = Object.values(groupedOutcomes[b].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                     return new Date(latestB.outcomeTime) - new Date(latestA.outcomeTime);
                 });
 
@@ -89,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const customerInfoHtml = displayCustomerInfo(groupedOutcomes[accountNumber].customerInfo);
                     accountContainer.innerHTML += customerInfoHtml;
 
-                    const accountOutcomes = groupedOutcomes[accountNumber].outcomes;
+                    const accountOutcomes = Object.values(groupedOutcomes[accountNumber].actions);
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                     for (const outcome of accountOutcomes) {
