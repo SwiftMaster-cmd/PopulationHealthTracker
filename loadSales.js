@@ -88,8 +88,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     accountTitle.textContent = `Account Number: ${accountNumber}`;
                     accountContainer.appendChild(accountTitle);
 
+                    const accountContent = document.createElement('div');
+                    accountContent.classList.add('account-content');
+                    accountContainer.appendChild(accountContent);
+
+                    const salesInfoContainer = document.createElement('div');
+                    salesInfoContainer.classList.add('sales-info');
+                    accountContent.appendChild(salesInfoContainer);
+
+                    const customerInfoContainer = document.createElement('div');
+                    customerInfoContainer.classList.add('customer-info-container');
+                    accountContent.appendChild(customerInfoContainer);
+
                     const customerInfoHtml = displayCustomerInfo(groupedOutcomes[accountNumber].customerInfo);
-                    accountContainer.innerHTML += customerInfoHtml;
+                    customerInfoContainer.innerHTML = customerInfoHtml;
 
                     const accountOutcomes = Object.values(groupedOutcomes[accountNumber].actions);
                     accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
@@ -106,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         outcomeElement.innerHTML += `
                             <p class="outcome-time"><strong>Time:</strong> ${formatDateTime(outcome.outcomeTime)}</p>
                         `;
-                        accountContainer.appendChild(outcomeElement);
+                        salesInfoContainer.appendChild(outcomeElement);
                     }
 
                     outcomesContainer.appendChild(accountContainer);
