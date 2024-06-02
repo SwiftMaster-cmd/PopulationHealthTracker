@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="customer-row">
                     <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
-                    <div class="customer-field"><strong>State:</strong> ${customerInfo.stateId || 'N/A'}</div>
                 </div>
                 <button class="more-info-btn">+ More</button>
                 <div class="more-info-popup" style="display:none;">
@@ -54,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="customer-row">
                         <div class="customer-field"><strong>Zip:</strong> ${customerInfo.zipcode || 'N/A'}</div>
+                        <div class="customer-field"><strong>State:</strong> ${customerInfo.stateId || 'N/A'}</div>
                     </div>
                 </div>
             </div>
