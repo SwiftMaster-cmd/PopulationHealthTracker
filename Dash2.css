@@ -43,6 +43,7 @@ h1 {
 .account-content {
     display: flex;
     justify-content: space-between;
+    gap: 20px; /* Add some space between sales info and customer info */
 }
 
 /* Sales Info and Customer Info Container */
@@ -57,7 +58,7 @@ h1 {
 
 /* Customer Info Container */
 .customer-info-container {
-    max-height: 400px;
+    max-height: 200px;
     overflow-y: auto;
 }
 
@@ -76,6 +77,14 @@ h1 {
 /* Customer Fields */
 .customer-field {
     width: 48%;
+}
+
+/* Customer Field Labels */
+.customer-field strong {
+    display: block;
+    font-weight: bold;
+    color: #bbb;
+    margin-bottom: 5px;
 }
 
 /* Outcome Item */
