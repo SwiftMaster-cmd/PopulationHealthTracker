@@ -55,6 +55,12 @@ h1 {
     background-color: #2a2a2a;
 }
 
+/* Customer Info Container */
+.customer-info-container {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 /* Customer Info */
 .customer-info {
     margin-bottom: 10px;
