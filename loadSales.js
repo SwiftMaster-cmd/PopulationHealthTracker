@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Add event listeners for + More buttons
                 document.querySelectorAll('.more-info-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        const popup = this.nextElementSibling;
+                        const popup = this.parentElement.nextElementSibling;
                         popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
                     });
                 });
@@ -188,16 +188,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 });
 
-                // Display sales counts
-                const salesCountsContainer = document.createElement('div');
-                salesCountsContainer.classList.add('sales-counts-container');
-                for (const action in salesCounts) {
-                    const countElement = document.createElement('div');
-                    countElement.classList.add('sales-count-item');
-                    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
-                    salesCountsContainer.appendChild(countElement);
-                }
-                outcomesContainer.prepend(salesCountsContainer);
+// Display sales counts
+const salesCountsContainer = document.createElement('div');
+salesCountsContainer.classList.add('sales-counts-container');
+for (const action in salesCounts) {
+    const countElement = document.createElement('div');
+    countElement.classList.add('sales-count-item');
+    countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
+    salesCountsContainer.appendChild(countElement);
+}
+outcomesContainer.prepend(salesCountsContainer);
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
             }
