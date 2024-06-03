@@ -72,7 +72,6 @@ h1 {
 
 
 
-
 /* Customer Info Container */
 .customer-info {
     width: 400px;
@@ -111,6 +110,8 @@ h1 {
     padding: 0 10px;
     text-align: center;
     flex: 1;
+    font-size: 18px; /* Bigger text size */
+    font-weight: bold; /* Bold text */
 }
 
 /* Customer Field Labels */
@@ -127,14 +128,14 @@ h1 {
 
 /* More Info Button */
 .more-info-btn {
-    padding: 5px 10px;
+    padding: 10px; /* Adjusted padding for bigger size */
     background-color: #444;
     color: #e0e0e0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 14px;
+    font-size: 18px; /* Same size as other text */
     text-align: center;
 }
 
@@ -155,7 +156,6 @@ h1 {
 .account-container:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
 }
-
 
 
 
