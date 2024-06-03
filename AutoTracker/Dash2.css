@@ -1,10 +1,11 @@
 /* General Styles */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Helvetica Neue', sans-serif;
     background-color: #121212;
     color: #e0e0e0;
     margin: 0;
     padding: 20px;
+    font-weight: 500; /* Use a bolder weight for the body text */
 }
 
 /* Header */
@@ -13,6 +14,7 @@ h1 {
     color: #e0e0e0;
     text-align: center;
     margin-bottom: 30px;
+    font-weight: 700; /* Bolder weight for header */
 }
 
 /* Sales Outcomes Container */
@@ -32,6 +34,7 @@ h1 {
     margin-bottom: 20px;
     border-radius: 5px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+    font-weight: 600; /* Bolder weight for sales counts */
 }
 
 /* Sales Count Item */
@@ -49,13 +52,14 @@ h1 {
     border-radius: 5px;
     background-color: #1e1e1e;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+    font-weight: 600; /* Bolder weight for account container */
 }
 
 /* Account Title */
 .account-title {
     font-size: 1.2em;
     margin-bottom: 10px;
-    font-weight: bold;
+    font-weight: 700; /* Bolder weight for account title */
 }
 
 /* Account Content */
@@ -78,6 +82,7 @@ h1 {
     border: 1px solid #444;
     border-radius: 5px;
     background-color: #2a2a2a;
+    font-weight: 600; /* Bolder weight for customer info */
 }
 
 /* Customer Row */
@@ -101,7 +106,7 @@ h1 {
 .customer-field {
     padding: 0 10px;
     font-size: 18px; /* Bigger text size */
-    font-weight: bold; /* Bold text */
+    font-weight: 700; /* Bold text */
 }
 
 /* Align left for first name and phone number */
@@ -127,6 +132,7 @@ h1 {
     transition: background-color 0.3s;
     font-size: 18px; /* Same size as other text */
     text-align: center;
+    font-weight: 600; /* Bolder weight for button */
 }
 
 /* More Info Popup */
@@ -158,6 +164,7 @@ h1 {
     transition: background-color 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
+    font-weight: 600; /* Bolder weight for outcome items */
 }
 
 /* Outcome Item Hover */
@@ -181,13 +188,16 @@ h1 {
     text-align: center;
     font-size: 1.1em;
     width: 250px; /* Set the width of the action */
+    font-weight: 700; /* Bolder weight for action */
+    font-size: 18px; /* Increase text size to match the action */
 }
 
 /* Date Top */
 .date-top {
     text-align: right;
-    font-size: 0.9em;
+    font-size: 1.1em; /* Increase text size to match the action */
     color: #888;
+    margin-bottom: 10px; /* Add vertical spacing */
 }
 
 /* Bottom Section */
@@ -203,13 +213,16 @@ h1 {
 .notes {
     text-align: left;
     flex-grow: 1;
+    font-size: 1.1em; /* Increase text size to match the action */
+    margin-top: 10px; /* Add vertical spacing */
 }
 
 /* Time Bottom */
 .time-bottom {
     text-align: right;
-    font-size: 0.9em;
+    font-size: 1.1em; /* Increase text size to match the action */
     color: #888;
+    margin-top: 10px; /* Add vertical spacing */
 }
 
 /* Copy Action Button */
@@ -222,6 +235,7 @@ h1 {
     cursor: pointer;
     transition: background-color 0.3s;
     font-size: 18px;
+    font-weight: 700; /* Bolder weight for copy action button */
 }
 
 .copy-action-btn:hover {
