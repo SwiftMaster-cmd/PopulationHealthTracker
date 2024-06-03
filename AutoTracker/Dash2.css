@@ -224,3 +224,15 @@ h1 {
 .copy-action-btn:hover {
     background-color: #555;
 }
+.outcomes-chart-container {
+    display: flex;
+    flex-direction: row;
+}
+#sales-outcomes-container {
+    flex: 1;
+    margin-right: 20px;
+}
+#sales-bar-chart {
+    flex: 1;
+    max-width: 400px;
+}

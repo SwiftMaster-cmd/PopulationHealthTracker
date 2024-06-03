@@ -171,7 +171,6 @@ function displaySalesOutcomes(user) {
                     });
                 });
             });
-
             // Display sales counts
             const salesCountsContainer = document.createElement('div');
             salesCountsContainer.classList.add('sales-counts-container');
@@ -182,6 +181,9 @@ function displaySalesOutcomes(user) {
                 salesCountsContainer.appendChild(countElement);
             }
             outcomesContainer.prepend(salesCountsContainer);
+
+            // Create bar graph for current day sales
+            createBarGraph(currentDayCounts);
         } else {
             console.log('No sales outcomes found for user:', user.displayName);
         }
@@ -199,6 +201,33 @@ function formatDate(dateTime) {
 function formatTime(dateTime) {
     const date = new Date(dateTime);
     return date.toLocaleTimeString();
+}
+
+function createBarGraph(salesCounts) {
+    const ctx = document.getElementById('sales-bar-chart').getContext('2d');
+    const labels = Object.keys(salesCounts);
+    const data = Object.values(salesCounts);
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sales Counts for Today',
+                data: data,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
 // Attach the function to the window object
