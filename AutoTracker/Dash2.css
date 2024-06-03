@@ -77,7 +77,6 @@ h1 {
 
 
 
-
 /* Customer Info Container */
 .customer-info-container {
     max-height: 200px;
@@ -91,9 +90,11 @@ h1 {
     border: 1px solid #444;
     border-radius: 5px;
     background-color: #2a2a2a;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Customer Rows */
+/* Customer Row */
 .customer-row {
     display: flex;
     justify-content: space-between;
@@ -101,10 +102,11 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* Customer Fields */
+/* Customer Field */
 .customer-field {
     flex: 1;
     padding: 0 10px;
+    text-align: center;
 }
 
 /* Customer Field Labels */
@@ -142,8 +144,8 @@ h1 {
     z-index: 10;
     margin-top: 10px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+    display: none;
 }
-
 
 
 

@@ -12,7 +12,7 @@ function displayCustomerInfo(customerInfo) {
                 <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
                 <button class="more-info-btn">+ More</button>
             </div>
-            <div class="more-info-popup" style="display:none;">
+            <div class="more-info-popup">
                 <div class="customer-row">
                     <div class="customer-field"><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</div>
                     <div class="customer-field"><strong>Birth:</strong> ${customerInfo.birthdate || 'N/A'}</div>
@@ -28,3 +28,13 @@ function displayCustomerInfo(customerInfo) {
         </div>
     `;
 }
+
+// Event listener to toggle the display of the more-info-popup
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.more-info-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const popup = this.parentElement.nextElementSibling;
+            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+});
