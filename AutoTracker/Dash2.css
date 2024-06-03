@@ -75,12 +75,11 @@ h1 {
 /* Customer Info Container */
 .customer-info {
     width: 400px;
-    height: 200px;
+    height: 100px;
     margin: 0 auto; /* Center the container horizontally */
     display: flex;
     flex-direction: column;
     justify-content: center; /* Center contents vertically */
-    align-items: center; /* Center contents horizontally */
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #444;
@@ -108,22 +107,20 @@ h1 {
 /* Customer Field */
 .customer-field {
     padding: 0 10px;
-    text-align: center;
-    flex: 1;
     font-size: 18px; /* Bigger text size */
     font-weight: bold; /* Bold text */
 }
 
-/* Customer Field Labels */
-.customer-field {
-    font-weight: bold;
-    color: #bbb;
+/* Align left for first name and phone number */
+.customer-field.align-left {
+    text-align: left;
+    padding-left: 20px; /* Add padding to bring it closer to the left side */
 }
 
-/* Customer Field Values */
-.customer-field span {
-    color: #fff;
-    margin-left: 5px;
+/* Align right for last name and button */
+.customer-field.align-right {
+    text-align: right;
+    padding-right: 20px; /* Add padding to bring it closer to the right side */
 }
 
 /* More Info Button */
