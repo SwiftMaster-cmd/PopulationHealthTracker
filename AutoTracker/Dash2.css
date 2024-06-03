@@ -176,9 +176,10 @@ h1 {
 
 /* Action */
 .action {
-    text-align: left;
+    text-align: center;
     font-size: 1.1em;
-    width: 400px; /* Set the width of the action container */
+    width: 250px; /* Set the width of the action container */
+    margin: 0 auto; /* Center the action container */
 }
 
 /* Date Top */
