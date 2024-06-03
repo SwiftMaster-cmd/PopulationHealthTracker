@@ -29,30 +29,12 @@ function displayCustomerInfo(customerInfo) {
     `;
 }
 
-// Event listener to toggle the display of the more-info-popup and close it when clicking outside
+// Event listener to toggle the display of the more-info-popup
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.more-info-btn').forEach(btn => {
-        btn.addEventListener('click', function(event) {
-            event.stopPropagation();
-            const popup = this.nextElementSibling;
-            document.querySelectorAll('.more-info-popup').forEach(p => {
-                if (p !== popup) {
-                    p.style.display = 'none';
-                }
-            });
+        btn.addEventListener('click', function() {
+            const popup = this.parentElement.nextElementSibling;
             popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
-        });
-    });
-
-    document.addEventListener('click', function() {
-        document.querySelectorAll('.more-info-popup').forEach(popup => {
-            popup.style.display = 'none';
-        });
-    });
-
-    document.querySelectorAll('.more-info-popup').forEach(popup => {
-        popup.addEventListener('click', function(event) {
-            event.stopPropagation();
         });
     });
 });
