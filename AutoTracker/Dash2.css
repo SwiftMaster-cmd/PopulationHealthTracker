@@ -172,14 +172,15 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    width: 400px; /* Set the width of the top section container */
+    margin: 0 auto; /* Center the top section container */
 }
 
 /* Action */
 .action {
     text-align: center;
     font-size: 1.1em;
-    width: 250px; /* Set the width of the action container */
-    margin: 0 auto; /* Center the action container */
+    width: 250px; /* Set the width of the action */
 }
 
 /* Date Top */
@@ -194,6 +195,8 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 400px; /* Set the width of the bottom section container */
+    margin: 0 auto; /* Center the bottom section container */
 }
 
 /* Notes */
