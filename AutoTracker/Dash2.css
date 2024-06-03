@@ -75,6 +75,9 @@ h1 {
     background-color: #2a2a2a;
 }
 
+
+
+
 /* Customer Info Container */
 .customer-info-container {
     max-height: 200px;
@@ -84,6 +87,10 @@ h1 {
 /* Customer Info */
 .customer-info {
     margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2a2a2a;
 }
 
 /* Customer Rows */
@@ -96,7 +103,8 @@ h1 {
 
 /* Customer Fields */
 .customer-field {
-    width: 45%;
+    flex: 1;
+    padding: 0 10px;
 }
 
 /* Customer Field Labels */
@@ -109,7 +117,6 @@ h1 {
 
 /* More Info Button */
 .more-info-btn {
-    display: block;
     padding: 5px 10px;
     background-color: #444;
     color: #e0e0e0;
@@ -136,6 +143,11 @@ h1 {
     margin-top: 10px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
+
+
+
+
+
 
 /* Outcome Item */
 .outcome-item {
