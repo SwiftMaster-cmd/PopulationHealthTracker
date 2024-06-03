@@ -1,5 +1,3 @@
-// sales-outcomes.js
-
 function formatDateTime(dateTime) {
     const date = new Date(dateTime);
     return date.toLocaleString('en-US', {
@@ -61,8 +59,6 @@ function displayCustomerInfo(customerInfo) {
     `;
 }
 
-
-
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -96,10 +92,12 @@ function displaySalesOutcomes(user) {
                     const outcome = actions[action];
                     const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
 
-                    if (!salesCounts[saleType]) {
-                        salesCounts[saleType] = 0;
+                    if (saleType !== 'Notes') {
+                        if (!salesCounts[saleType]) {
+                            salesCounts[saleType] = 0;
+                        }
+                        salesCounts[saleType]++;
                     }
-                    salesCounts[saleType]++;
                 }
             }
 
@@ -144,12 +142,12 @@ function displaySalesOutcomes(user) {
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
                         <div class="top-section">
-                            <div class="action">${outcome.assignAction}</div>
-                            <div class="date-top">${formatDate(outcome.outcomeTime)}</div>
+                            <div class="action" style="float:left;">${outcome.assignAction}</div>
+                            <div class="date-top" style="float:right;">${formatDate(outcome.outcomeTime)}</div>
                         </div>
                         <div class="bottom-section">
-                            <div class="notes">${outcome.notesValue || 'No notes'}</div>
-                            <div class="time-bottom">${formatTime(outcome.outcomeTime)}</div>
+                            <div class="notes" style="float:left;">${outcome.notesValue || 'No notes'}</div>
+                            <div class="time-bottom" style="float:right;">${formatTime(outcome.outcomeTime)}</div>
                         </div>
                     `;
                     salesInfoContainer.appendChild(outcomeElement);
