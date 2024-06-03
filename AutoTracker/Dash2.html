@@ -7,38 +7,28 @@
     <link rel="stylesheet" href="Dash2.css">
     <!-- Load Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Load Custom Scripts -->
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="customer-info.js" defer></script>
     <script src="sales-outcomes.js" defer></script>
-    <style>
-      
-    </style>
 </head>
 <body>
-
-
     <h2>Sales Charts</h2>
     <div>
         <h3>Daily Sales</h3>
         <canvas id="chart-container" width="1000" height="500"></canvas>
     </div>
-   
-</div>
-
 
     <h1>Sales Outcomes</h1>
-
-
     <div id="sales-outcomes-container"></div>
-
 
     <h4>To add the auto tracker: click the button, copy the text and put it in the URL part of the bookmark, name it AutoTracker or whatever you would like, then save. The bookmark must be pressed every time the URL changes or you work on a new sale, so there's a visual indicator to show if the tracker is active in the Actions Tab.</h4>
     <h4>
-        <button class="navigate-button" onclick="window.location.href='Track.html'">Auto Tracker Script</button>
+        <button class="navigate-button" onclick="window.location.href='AutoTracker/Dash2.html'">AutoTracker Dashboard</button>
     </h4>
 </body>
 </html>
