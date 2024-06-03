@@ -65,23 +65,7 @@ h1 {
     gap: 20px; /* Add some space between sales info and customer info */
 }
 
-/* Sales Info and Customer Info Container */
-.sales-info, .customer-info-container {
-    width: 48%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #2a2a2a;
-}
-
 /* Customer Info Container */
-.customer-info-container {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-/* Customer Info */
 .customer-info {
     margin-bottom: 10px;
     padding: 10px;
@@ -96,15 +80,16 @@ h1 {
 /* Customer Row */
 .customer-row {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
     margin-bottom: 10px;
 }
 
 /* Customer Field Container */
 .customer-field-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
 }
@@ -139,13 +124,7 @@ h1 {
     transition: background-color 0.3s;
     font-size: 14px;
     margin-left: 10px;
-    width: 100px;
     text-align: center;
-    align-self: center;
-}
-
-.more-info-btn:hover {
-    background-color: #555;
 }
 
 /* More Info Popup */
@@ -156,9 +135,14 @@ h1 {
     border-radius: 5px;
     position: absolute;
     z-index: 10;
-    margin-top: 100px; /* Adjust the margin to position it lower */
+    margin-top: 40px; /* Adjust the margin to position it lower */
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
     display: none;
+}
+
+/* Hover Effect */
+.account-container:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
 }
 
 
