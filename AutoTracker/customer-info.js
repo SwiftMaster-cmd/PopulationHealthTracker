@@ -8,23 +8,23 @@ function displayCustomerInfo(customerInfo) {
         <div class="customer-info">
             <div class="customer-row">
                 <div class="customer-field-container">
-                    <div class="customer-field"><strong>First:</strong> ${customerInfo.firstName || 'N/A'}</div>
-                    <div class="customer-field"><strong>Last:</strong> ${customerInfo.lastName || 'N/A'}</div>
-                    <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
+                    <div class="customer-field"><strong>First:</strong><span> ${customerInfo.firstName || 'N/A'}</span></div>
+                    <div class="customer-field"><strong>Last:</strong><span> ${customerInfo.lastName || 'N/A'}</span></div>
+                    <div class="customer-field"><strong>Phone:</strong><span> ${customerInfo.phone || 'N/A'}</span></div>
                 </div>
                 <button class="more-info-btn">+ More</button>
             </div>
             <div class="more-info-popup">
                 <div class="customer-row">
-                    <div class="customer-field"><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</div>
-                    <div class="customer-field"><strong>Birth:</strong> ${customerInfo.birthdate || 'N/A'}</div>
+                    <div class="customer-field"><strong>Gender:</strong><span> ${customerInfo.gender || 'N/A'}</span></div>
+                    <div class="customer-field"><strong>Birth:</strong><span> ${customerInfo.birthdate || 'N/A'}</span></div>
                 </div>
                 <div class="customer-row">
-                    <div class="customer-field"><strong>Email:</strong> ${customerInfo.email || 'N/A'}</div>
+                    <div class="customer-field"><strong>Email:</strong><span> ${customerInfo.email || 'N/A'}</span></div>
                 </div>
                 <div class="customer-row">
-                    <div class="customer-field"><strong>Zip:</strong> ${customerInfo.zipcode || 'N/A'}</div>
-                    <div class="customer-field"><strong>State:</strong> ${customerInfo.stateId || 'N/A'}</div>
+                    <div class="customer-field"><strong>Zip:</strong><span> ${customerInfo.zipcode || 'N/A'}</span></div>
+                    <div class="customer-field"><strong>State:</strong><span> ${customerInfo.stateId || 'N/A'}</span></div>
                 </div>
             </div>
         </div>
