@@ -62,6 +62,7 @@ function displayCustomerInfo(customerInfo) {
 }
 
 
+
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -143,16 +144,12 @@ function displaySalesOutcomes(user) {
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
                         <div class="top-section">
-                            <div class="action copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</div>
+                            <div class="action">${outcome.assignAction}</div>
                             <div class="date-top">${formatDate(outcome.outcomeTime)}</div>
                         </div>
                         <div class="bottom-section">
                             <div class="notes">${outcome.notesValue || 'No notes'}</div>
                             <div class="time-bottom">${formatTime(outcome.outcomeTime)}</div>
-                        </div>
-                        <button class="more-info-btn">More Info</button>
-                        <div class="more-info-popup">
-                            <p>Additional information about the outcome...</p>
                         </div>
                     `;
                     salesInfoContainer.appendChild(outcomeElement);
@@ -174,14 +171,6 @@ function displaySalesOutcomes(user) {
                     }).catch(err => {
                         console.error('Could not copy text: ', err);
                     });
-                });
-            });
-
-            // Add event listeners for More Info buttons
-            document.querySelectorAll('.more-info-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const popup = this.nextElementSibling;
-                    popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
                 });
             });
 

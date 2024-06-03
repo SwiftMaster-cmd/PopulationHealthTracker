@@ -1,4 +1,3 @@
-// customer-info.js
 function displayCustomerInfo(customerInfo) {
     if (!customerInfo) {
         return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
@@ -31,21 +30,19 @@ function displayCustomerInfo(customerInfo) {
     `;
 }
 
-// Event listener to toggle the display of the more-info-popup
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.more-info-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const popup = this.parentElement.nextElementSibling;
+    document.body.addEventListener('click', function(event) {
+        const target = event.target;
+        if (target.classList.contains('more-info-btn')) {
+            const popup = target.closest('.customer-field-container').nextElementSibling;
             popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
-        });
-    });
-
-    // Event listener to hide the more-info-popup when clicking outside
-    document.addEventListener('click', function(event) {
-        document.querySelectorAll('.more-info-popup').forEach(popup => {
-            if (!popup.contains(event.target) && !popup.previousElementSibling.contains(event.target)) {
-                popup.style.display = 'none';
-            }
-        });
+            event.stopPropagation();
+        } else {
+            document.querySelectorAll('.more-info-popup').forEach(popup => {
+                if (!popup.contains(event.target) && !popup.previousElementSibling.contains(event.target)) {
+                    popup.style.display = 'none';
+                }
+            });
+        }
     });
 });
