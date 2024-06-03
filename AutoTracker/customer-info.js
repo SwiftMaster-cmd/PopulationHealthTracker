@@ -6,12 +6,10 @@ function displayCustomerInfo(customerInfo) {
 
     return `
         <div class="customer-info">
-            <div class="customer-row">
-                <div class="customer-field-container">
-                    <div class="customer-field"><strong>First:</strong><span> ${customerInfo.firstName || 'N/A'}</span></div>
-                    <div class="customer-field"><strong>Last:</strong><span> ${customerInfo.lastName || 'N/A'}</span></div>
-                    <div class="customer-field"><strong>Phone:</strong><span> ${customerInfo.phone || 'N/A'}</span></div>
-                </div>
+            <div class="customer-row customer-field-container">
+                <div class="customer-field"><strong>First:</strong><span> ${customerInfo.firstName || 'N/A'}</span></div>
+                <div class="customer-field"><strong>Last:</strong><span> ${customerInfo.lastName || 'N/A'}</span></div>
+                <div class="customer-field"><strong>Phone:</strong><span> ${customerInfo.phone || 'N/A'}</span></div>
                 <button class="more-info-btn">+ More</button>
             </div>
             <div class="more-info-popup">
