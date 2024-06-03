@@ -12,7 +12,7 @@ function displayCustomerInfo(customerInfo) {
                 <div class="customer-field"><strong>Phone:</strong><span> ${customerInfo.phone || 'N/A'}</span></div>
                 <button class="more-info-btn">+ More</button>
             </div>
-            <div class="more-info-popup">
+            <div class="more-info-popup" style="display: none;">
                 <div class="customer-row">
                     <div class="customer-field"><strong>Gender:</strong><span> ${customerInfo.gender || 'N/A'}</span></div>
                     <div class="customer-field"><strong>Birth:</strong><span> ${customerInfo.birthdate || 'N/A'}</span></div>
