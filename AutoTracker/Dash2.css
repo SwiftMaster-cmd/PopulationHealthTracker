@@ -178,11 +178,10 @@ h1 {
 .action {
     text-align: left;
     font-size: 1.1em;
-    width: 400px; /* Set the width of the action container */
 }
 
-/* Date Top */
-.date-top {
+/* Time Top */
+.time-top {
     text-align: right;
     font-size: 0.9em;
     color: #888;
@@ -222,4 +221,9 @@ h1 {
 
 .copy-action-btn:hover {
     background-color: #555;
+}
+
+/* Hover Effect */
+.account-container:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
 }
