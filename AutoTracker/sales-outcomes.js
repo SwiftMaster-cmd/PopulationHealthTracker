@@ -141,14 +141,9 @@ function displaySalesOutcomes(user) {
                     const outcomeElement = document.createElement('div');
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
-                        <div class="action-notes">
-                            <div class="action">${outcome.assignAction}</div>
-                            <div class="date-time">
-                                <div class="date">${formatDateTime(outcome.outcomeTime).split(', ')[0]}</div>
-                                <div class="time">${formatDateTime(outcome.outcomeTime).split(', ')[1]}</div>
-                            </div>
-                        </div>
+                        <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</button>
                         <div class="notes">${outcome.notesValue || 'No notes'}</div>
+                        <div class="outcome-time">${formatDateTime(outcome.outcomeTime)}</div>
                     `;
                     salesInfoContainer.appendChild(outcomeElement);
                 }
@@ -198,3 +193,5 @@ function displaySalesOutcomes(user) {
     });
 }
 
+// Attach the function to the window object
+window.displaySalesOutcomes = displaySalesOutcomes;

@@ -41,41 +41,29 @@ h1 {
     color: #bbb;
 }
 
-
-
-
-
-
-
+/* Account Container */
 .account-container {
+    border: 1px solid #444;
+    padding: 20px;
     margin-bottom: 20px;
-    border: 1px solid #ddd;
-    padding: 10px;
+    border-radius: 5px;
+    background-color: #1e1e1e;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
+
+/* Account Title */
 .account-title {
-    font-weight: bold;
+    font-size: 1.2em;
     margin-bottom: 10px;
+    font-weight: bold;
 }
-.action-notes {
+
+/* Account Content */
+.account-content {
     display: flex;
     justify-content: space-between;
+    gap: 20px; /* Add some space between sales info and customer info */
 }
-.action {
-    text-align: left;
-}
-.date-time {
-    text-align: right;
-}
-.notes {
-    display: flex;
-    justify-content: space-between;
-}
-.notes div {
-    flex: 1;
-}
-
-
-
 
 
 
