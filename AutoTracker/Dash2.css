@@ -139,7 +139,6 @@ h1 {
     z-index: 10;
     margin-top: 40px; /* Adjust the margin to position it lower */
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
-    display: none;
 }
 
 /* Hover Effect */
