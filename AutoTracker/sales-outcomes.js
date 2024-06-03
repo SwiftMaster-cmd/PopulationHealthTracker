@@ -62,7 +62,6 @@ function displayCustomerInfo(customerInfo) {
 }
 
 
-
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -144,7 +143,7 @@ function displaySalesOutcomes(user) {
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
                         <div class="top-section">
-                            <div class="action">${outcome.assignAction}</div>
+                            <div class="action copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</div>
                             <div class="date-top">${formatDate(outcome.outcomeTime)}</div>
                         </div>
                         <div class="bottom-section">
