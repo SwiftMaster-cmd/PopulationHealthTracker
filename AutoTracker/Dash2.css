@@ -68,7 +68,7 @@ h1 {
 /* Customer Info Container */
 .customer-info {
     width: 400px;
-    height: 100px;
+    height: 80px;
     margin: 0 auto; /* Center the container horizontally */
     display: flex;
     flex-direction: column;
