@@ -37,4 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
         });
     });
+
+    // Event listener to hide the more-info-popup when clicking outside
+    document.addEventListener('click', function(event) {
+        document.querySelectorAll('.more-info-popup').forEach(popup => {
+            if (!popup.contains(event.target) && !popup.previousElementSibling.contains(event.target)) {
+                popup.style.display = 'none';
+            }
+        });
+    });
 });
