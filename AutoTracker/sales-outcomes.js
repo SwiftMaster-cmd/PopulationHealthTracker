@@ -60,7 +60,6 @@ function displayCustomerInfo(customerInfo) {
         </div>
     `;
 }
-
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -141,9 +140,14 @@ function displaySalesOutcomes(user) {
                     const outcomeElement = document.createElement('div');
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
-                        <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</button>
-                        <div class="notes">${outcome.notesValue || 'No notes'}</div>
-                        <div class="outcome-time">${formatDateTime(outcome.outcomeTime)}</div>
+                        <div class="top-section">
+                            <div class="action">${outcome.assignAction}</div>
+                            <div class="time-top">${formatDateTime(outcome.outcomeTime)}</div>
+                        </div>
+                        <div class="bottom-section">
+                            <div class="notes">${outcome.notesValue || 'No notes'}</div>
+                            <div class="time-bottom">${formatDateTime(outcome.outcomeTime)}</div>
+                        </div>
                     `;
                     salesInfoContainer.appendChild(outcomeElement);
                 }
