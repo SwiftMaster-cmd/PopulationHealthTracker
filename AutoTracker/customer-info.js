@@ -7,9 +7,11 @@ function displayCustomerInfo(customerInfo) {
     return `
         <div class="customer-info">
             <div class="customer-row">
-                <div class="customer-field"><strong>First:</strong> ${customerInfo.firstName || 'N/A'}</div>
-                <div class="customer-field"><strong>Last:</strong> ${customerInfo.lastName || 'N/A'}</div>
-                <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
+                <div class="customer-field-container">
+                    <div class="customer-field"><strong>First:</strong> ${customerInfo.firstName || 'N/A'}</div>
+                    <div class="customer-field"><strong>Last:</strong> ${customerInfo.lastName || 'N/A'}</div>
+                    <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
+                </div>
                 <button class="more-info-btn">+ More</button>
             </div>
             <div class="more-info-popup">
