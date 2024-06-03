@@ -68,7 +68,7 @@ h1 {
 /* Customer Info Container */
 .customer-info {
     width: 400px;
-    height: 120px;
+    height: 100px;
     margin: 0 auto; /* Center the container horizontally */
     display: flex;
     flex-direction: column;
@@ -100,7 +100,7 @@ h1 {
 /* Customer Field */
 .customer-field {
     padding: 0 10px;
-    font-size: 24px; /* Bigger text size */
+    font-size: 18px; /* Bigger text size */
     font-weight: bold; /* Bold text */
 }
 
@@ -125,7 +125,7 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 24px; /* Same size as other text */
+    font-size: 18px; /* Same size as other text */
     text-align: center;
 }
 
@@ -218,7 +218,7 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 24px;
+    font-size: 18px;
 }
 
 .copy-action-btn:hover {
