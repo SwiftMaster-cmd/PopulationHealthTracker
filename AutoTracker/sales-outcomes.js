@@ -63,7 +63,6 @@ function displayCustomerInfo(customerInfo) {
 
 
 
-
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -146,11 +145,11 @@ function displaySalesOutcomes(user) {
                     outcomeElement.innerHTML = `
                         <div class="top-section">
                             <div class="action">${outcome.assignAction}</div>
-                            <div class="time-top">${formatDateTime(outcome.outcomeTime)}</div>
+                            <div class="date-top">${formatDate(outcome.outcomeTime)}</div>
                         </div>
                         <div class="bottom-section">
                             <div class="notes">${outcome.notesValue || 'No notes'}</div>
-                            <div class="time-bottom">${formatDateTime(outcome.outcomeTime)}</div>
+                            <div class="time-bottom">${formatTime(outcome.outcomeTime)}</div>
                         </div>
                     `;
                     salesInfoContainer.appendChild(outcomeElement);
@@ -158,14 +157,6 @@ function displaySalesOutcomes(user) {
 
                 outcomesContainer.appendChild(accountContainer);
             }
-
-            // Add event listeners for + More buttons
-            document.querySelectorAll('.more-info-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const popup = this.parentElement.nextElementSibling;
-                    popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
-                });
-            });
 
             // Add event listeners for Copy Action buttons
             document.querySelectorAll('.copy-action-btn').forEach(btn => {
@@ -199,6 +190,17 @@ function displaySalesOutcomes(user) {
     }, (error) => {
         console.error('Error fetching sales outcomes:', error);
     });
+}
+
+// Helper functions
+function formatDate(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleDateString();
+}
+
+function formatTime(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString();
 }
 
 // Attach the function to the window object
