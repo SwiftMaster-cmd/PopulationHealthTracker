@@ -1,66 +1,3 @@
-// sales-outcomes.js
-
-function formatDateTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    });
-}
-
-function getSaleType(action, notes) {
-    if (action === 'Notes') {
-        if (/fe|final expense|vbc|dental/i.test(notes)) {
-            return 'Transfer';
-        }
-    } else if (action === 'Select RX Enrolled History Received' || action === 'Select RX Enrolled History Not Received') {
-        return 'Select RX Enrolled';
-    } else if (action === 'HRA') {
-        if (/billable|bill|b/i.test(notes)) {
-            return 'Billable HRA';
-        }
-        return 'HRA Completed';
-    }
-    return action;
-}
-
-function displayCustomerInfo(customerInfo) {
-    if (!customerInfo) {
-        return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
-    }
-
-    return `
-        <div class="customer-info">
-            <div class="customer-row">
-                <div class="customer-field"><strong>First:</strong> ${customerInfo.firstName || 'N/A'}</div>
-                <div class="customer-field"><strong>Last:</strong> ${customerInfo.lastName || 'N/A'}</div>
-            </div>
-            <div class="customer-row">
-                <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
-                <button class="more-info-btn">+ More</button>
-            </div>
-            <div class="more-info-popup" style="display:none;">
-                <div class="customer-row">
-                    <div class="customer-field"><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</div>
-                    <div class="customer-field"><strong>Birth:</strong> ${customerInfo.birthdate || 'N/A'}</div>
-                </div>
-                <div class="customer-row">
-                    <div class="customer-field"><strong>Email:</strong> ${customerInfo.email || 'N/A'}</div>
-                </div>
-                <div class="customer-row">
-                    <div class="customer-field"><strong>Zip:</strong> ${customerInfo.zipcode || 'N/A'}</div>
-                    <div class="customer-field"><strong>State:</strong> ${customerInfo.stateId || 'N/A'}</div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -141,9 +78,14 @@ function displaySalesOutcomes(user) {
                     const outcomeElement = document.createElement('div');
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
-                        <button class="copy-action-btn" data-account="${accountNumber}" data-action="${outcome.assignAction}" data-firstname="${groupedOutcomes[accountNumber].customerInfo.firstName || ''}" data-lastname="${groupedOutcomes[accountNumber].customerInfo.lastName || ''}">${outcome.assignAction}</button>
+                        <div class="action-notes">
+                            <div class="action">${outcome.assignAction}</div>
+                            <div class="date-time">
+                                <div class="date">${formatDateTime(outcome.outcomeTime).split(', ')[0]}</div>
+                                <div class="time">${formatDateTime(outcome.outcomeTime).split(', ')[1]}</div>
+                            </div>
+                        </div>
                         <div class="notes">${outcome.notesValue || 'No notes'}</div>
-                        <div class="outcome-time">${formatDateTime(outcome.outcomeTime)}</div>
                     `;
                     salesInfoContainer.appendChild(outcomeElement);
                 }
@@ -192,6 +134,42 @@ function displaySalesOutcomes(user) {
         console.error('Error fetching sales outcomes:', error);
     });
 }
+
+// CSS to align elements as per requirement
+const styles = `
+    .account-container {
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+    .account-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .action-notes {
+        display: flex;
+        justify-content: space-between;
+    }
+    .action {
+        text-align: left;
+    }
+    .date-time {
+        text-align: right;
+    }
+    .notes {
+        display: flex;
+        justify-content: space-between;
+    }
+    .notes div {
+        flex: 1;
+    }
+`;
+
+// Add styles to the document
+const styleSheet = document.createElement('style');
+styleSheet.type = 'text/css';
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
 
 // Attach the function to the window object
 window.displaySalesOutcomes = displaySalesOutcomes;
