@@ -1,9 +1,7 @@
 function displayCustomerInfo(customerInfo) {
-    if (!customerInfo) {
-        return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
-    }
-
-    return `
+    const customerInfoHtml = !customerInfo 
+        ? '<div class="customer-info"><h4>No Customer Information Available</h4></div>'
+        : `
         <div class="customer-info">
             <div class="customer-row customer-field-container">
                 <div class="customer-field align-left"><strong>First:</strong><span> ${customerInfo.firstName || 'N/A'}</span></div>
@@ -28,9 +26,26 @@ function displayCustomerInfo(customerInfo) {
             </div>
         </div>
     `;
+    console.log("Generated Customer Info HTML: ", customerInfoHtml); // Debug statement
+    return customerInfoHtml;
 }
 
+// Example of inserting the HTML into the DOM
 document.addEventListener('DOMContentLoaded', function() {
+    const customerData = {
+        firstName: 'John',
+        lastName: 'Doe',
+        phone: '123-456-7890',
+        gender: 'Male',
+        birthdate: '01/01/1980',
+        email: 'john.doe@example.com',
+        zipcode: '12345',
+        stateId: 'CA'
+    };
+
+    const customerInfoContainer = document.getElementById('customer-info-container');
+    customerInfoContainer.innerHTML = displayCustomerInfo(customerData);
+
     document.body.addEventListener('click', function(event) {
         const target = event.target;
         console.log("Clicked element:", target); // Add logging to see the clicked element
