@@ -1,15 +1,64 @@
-// Helper functions
-function formatDate(dateTime) {
+function formatDateTime(dateTime) {
     const date = new Date(dateTime);
-    return date.toLocaleDateString();
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
 }
 
-function formatTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleTimeString();
+function getSaleType(action, notes) {
+    if (action === 'Notes') {
+        if (/fe|final expense|vbc|dental/i.test(notes)) {
+            return 'Transfer';
+        }
+    } else if (action === 'Select RX Enrolled History Received' || action === 'Select RX Enrolled History Not Received') {
+        return 'Select RX Enrolled';
+    } else if (action === 'HRA') {
+        if (/billable|bill|b/i.test(notes)) {
+            return 'Billable HRA';
+        }
+        return 'HRA Completed';
+    }
+    return action;
 }
 
-// Display sales outcomes for the current user
+function displayCustomerInfo(customerInfo) {
+    if (!customerInfo) {
+        return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
+    }
+
+    return `
+        <div class="customer-info">
+            <div class="customer-row">
+                <div class="customer-field"><strong>First:</strong> ${customerInfo.firstName || 'N/A'}</div>
+                <div class="customer-field"><strong>Last:</strong> ${customerInfo.lastName || 'N/A'}</div>
+            </div>
+            <div class="customer-row">
+                <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
+                <button class="more-info-btn">+ More</button>
+            </div>
+            <div class="more-info-popup" style="display:none;">
+                <div class="customer-row">
+                    <div class="customer-field"><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</div>
+                    <div class="customer-field"><strong>Birth:</strong> ${customerInfo.birthdate || 'N/A'}</div>
+                </div>
+                <div class="customer-row">
+                    <div class="customer-field"><strong>Email:</strong> ${customerInfo.email || 'N/A'}</div>
+                </div>
+                <div class="customer-row">
+                    <div class="customer-field"><strong>Zip:</strong> ${customerInfo.zipcode || 'N/A'}</div>
+                    <div class="customer-field"><strong>State:</strong> ${customerInfo.stateId || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -141,58 +190,16 @@ function displaySalesOutcomes(user) {
     });
 }
 
-// Function to display leaderboard
-function displayLeaderboard() {
-    const database = firebase.database();
-    const leaderboardRef = database.ref('leaderboard');
-    leaderboardRef.on('value', (snapshot) => {
-        const leaderboardData = snapshot.val();
-        if (leaderboardData) {
-            const sortedUsers = Object.keys(leaderboardData).sort((a, b) => leaderboardData[b].totalSales - leaderboardData[a].totalSales);
-            const leaderboardContainer = document.getElementById('leaderboard-container');
-            leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
-
-            sortedUsers.forEach((userId, index) => {
-                const userData = leaderboardData[userId];
-                const userElement = document.createElement('div');
-                userElement.classList.add('leaderboard-item');
-                userElement.innerHTML = `
-                    <div class="rank">${index + 1}</div>
-                    <div class="username">${userData.username || 'Unknown User'}</div>
-                    <div class="sales-count">${userData.totalSales || 0}</div>
-                `;
-                leaderboardContainer.appendChild(userElement);
-            });
-        } else {
-            console.log('No leaderboard data found.');
-        }
-    }, (error) => {
-        console.error('Error fetching leaderboard data:', error);
-    });
+// Helper functions
+function formatDate(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleDateString();
 }
 
-// Function to update leaderboard
-function updateLeaderboard(user, salesCounts) {
-    const database = firebase.database();
-    const userRef = database.ref('leaderboard/' + user.uid);
-    userRef.once('value').then((snapshot) => {
-        const userData = snapshot.val();
-        const totalSales = Object.values(salesCounts).reduce((sum, count) => sum + count, 0);
-        const newUserData = {
-            username: user.displayName,
-            totalSales: (userData ? userData.totalSales : 0) + totalSales
-        };
-        userRef.set(newUserData).then(() => {
-            console.log('Leaderboard updated for user:', user.displayName);
-        }).catch((error) => {
-            console.error('Error updating leaderboard:', error);
-        });
-    }).catch((error) => {
-        console.error('Error fetching user data for leaderboard:', error);
-    });
+function formatTime(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString();
 }
 
-// Attach the functions to the window object
+// Attach the function to the window object
 window.displaySalesOutcomes = displaySalesOutcomes;
-window.displayLeaderboard = displayLeaderboard;
-window.updateLeaderboard = updateLeaderboard;
