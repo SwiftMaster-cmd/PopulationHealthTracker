@@ -34,8 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
         const target = event.target;
         if (target.classList.contains('more-info-btn')) {
-            const popup = target.closest('.customer-field-container').nextElementSibling;
-            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+            const container = target.closest('.customer-field-container');
+            if (container) {
+                const popup = container.nextElementSibling;
+                if (popup && popup.classList.contains('more-info-popup')) {
+                    popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+                }
+            }
             event.stopPropagation();
         } else {
             document.querySelectorAll('.more-info-popup').forEach(popup => {
