@@ -33,13 +33,18 @@ function displayCustomerInfo(customerInfo) {
 document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
         const target = event.target;
+        console.log("Clicked element:", target); // Add logging to see the clicked element
         if (target.classList.contains('more-info-btn')) {
             const container = target.closest('.customer-field-container');
             if (container) {
                 const popup = container.nextElementSibling;
                 if (popup && popup.classList.contains('more-info-popup')) {
                     popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+                } else {
+                    console.log("Popup not found or does not have the correct class");
                 }
+            } else {
+                console.log("Container not found");
             }
             event.stopPropagation();
         } else {
