@@ -1,7 +1,9 @@
 function displayCustomerInfo(customerInfo) {
-    const customerInfoHtml = !customerInfo 
-        ? '<div class="customer-info"><h4>No Customer Information Available</h4></div>'
-        : `
+    if (!customerInfo) {
+        return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
+    }
+
+    return `
         <div class="customer-info">
             <div class="customer-row customer-field-container">
                 <div class="customer-field align-left"><strong>First:</strong><span> ${customerInfo.firstName || 'N/A'}</span></div>
@@ -26,41 +28,14 @@ function displayCustomerInfo(customerInfo) {
             </div>
         </div>
     `;
-    console.log("Generated Customer Info HTML: ", customerInfoHtml); // Debug statement
-    return customerInfoHtml;
 }
 
-// Example of inserting the HTML into the DOM
 document.addEventListener('DOMContentLoaded', function() {
-    const customerData = {
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '123-456-7890',
-        gender: 'Male',
-        birthdate: '01/01/1980',
-        email: 'john.doe@example.com',
-        zipcode: '12345',
-        stateId: 'CA'
-    };
-
-    const customerInfoContainer = document.getElementById('customer-info-container');
-    customerInfoContainer.innerHTML = displayCustomerInfo(customerData);
-
     document.body.addEventListener('click', function(event) {
         const target = event.target;
-        console.log("Clicked element:", target); // Add logging to see the clicked element
         if (target.classList.contains('more-info-btn')) {
-            const container = target.closest('.customer-field-container');
-            if (container) {
-                const popup = container.nextElementSibling;
-                if (popup && popup.classList.contains('more-info-popup')) {
-                    popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
-                } else {
-                    console.log("Popup not found or does not have the correct class");
-                }
-            } else {
-                console.log("Container not found");
-            }
+            const popup = target.closest('.customer-field-container').nextElementSibling;
+            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
             event.stopPropagation();
         } else {
             document.querySelectorAll('.more-info-popup').forEach(popup => {
