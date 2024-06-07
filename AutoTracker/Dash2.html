@@ -10,41 +10,41 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="color-palette.js" defer></script>
     <!-- Include Chroma.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
     
     <!-- Load Custom Scripts -->
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="customer-info.js" defer></script>
     <script src="sales-outcomes.js" defer></script>
+    <script src="color-palette.js" defer></script>
 
-    
-
-
-    
-
+    <style>
+        .color-picker-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
     
     <h1>Sales Outcomes</h1>
     
+    <div class="color-picker-container">
+        <input type="color" id="colorPicker" />
+        <button id="applyColor">Apply Color Palette</button>
+    </div>
 
-    
     <div class="outcomes-chart-container">
         <div id="sales-outcomes-container"></div>
         <canvas id="sales-bar-chart" width="400" height="200"></canvas>
     </div>
 
-
-    <div class="color-picker-container">
-        <button id="color-picker-button">Choose Color</button>
-    </div>
-    
     <h4>To add the auto tracker: click the button, copy the text and put it in the URL part of the bookmark, name it AutoTracker or whatever you would like, then save. The bookmark must be pressed every time the URL changes or you work on a new sale, so there's a visual indicator to show if the tracker is active in the Actions Tab.</h4>
     <h4>
         <button class="navigate-button" onclick="window.location.href='AutoTracker/Dash2.html'">AutoTracker Dashboard</button>
     </h4>
+
 </body>
 </html>
