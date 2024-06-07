@@ -62,17 +62,27 @@ function displayCustomerInfo(customerInfo) {
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
+    const salesCountsRef = database.ref('salesCounts/' + user.uid);
+
     outcomesRef.on('value', (snapshot) => {
         const outcomes = snapshot.val();
         console.log('Sales outcomes retrieved:', outcomes);
+        
         if (outcomes) {
             const outcomesContainer = document.getElementById('sales-outcomes-container');
             outcomesContainer.innerHTML = ''; // Clear previous outcomes
 
+            // Initialize sales counts
+            const salesCounts = {
+                billableHRA: 0,
+                selectRX: 0,
+                selectPatientManagement: 0,
+                transfer: 0
+            };
+
             // Group outcomes by account number and filter out unwanted outcomes
             const groupedOutcomes = {};
-            const salesCounts = {};
-
+            
             for (const key in outcomes) {
                 const outcome = outcomes[key];
                 const accountNumber = outcome.accountNumber;
@@ -83,23 +93,28 @@ function displaySalesOutcomes(user) {
                     groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
                 }
                 groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
-            }
 
-            // Tally the sales counts
-            for (const accountNumber in groupedOutcomes) {
-                const actions = groupedOutcomes[accountNumber].actions;
-                for (const action in actions) {
-                    const outcome = actions[action];
-                    const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-
-                    if (saleType !== 'Notes') {
-                        if (!salesCounts[saleType]) {
-                            salesCounts[saleType] = 0;
-                        }
-                        salesCounts[saleType]++;
-                    }
+                // Update sales counts
+                const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+                if (saleType === 'Billable HRA') {
+                    salesCounts.billableHRA++;
+                } else if (saleType === 'Select RX Enrolled') {
+                    salesCounts.selectRX++;
+                } else if (saleType === 'Select Patient Management') {
+                    salesCounts.selectPatientManagement++;
+                } else if (saleType === 'Transfer') {
+                    salesCounts.transfer++;
                 }
             }
+
+            // Update the sales counts in Firebase
+            salesCountsRef.set(salesCounts, (error) => {
+                if (error) {
+                    console.error('Failed to update sales counts:', error);
+                } else {
+                    console.log('Sales counts updated successfully:', salesCounts);
+                }
+            });
 
             // Sort account numbers by the newest outcome time
             const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
