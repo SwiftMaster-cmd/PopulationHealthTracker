@@ -23,6 +23,7 @@ function getSaleType(action, notes) {
     return action;
 }
 
+
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
