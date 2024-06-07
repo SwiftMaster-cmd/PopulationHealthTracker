@@ -1,75 +1,56 @@
-function displayLeaderboard() {
-    const database = firebase.database();
-    const outcomesRef = database.ref('salesOutcomes/');
-    outcomesRef.on('value', (snapshot) => {
-        const outcomes = snapshot.val();
-        console.log('Sales outcomes retrieved:', outcomes);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Outcomes</title>
+    <link rel="stylesheet" href="Dash2.css">
+    <!-- Load Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include Chroma.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    
+    <!-- Load Custom Scripts -->
+    <script src="firebase-init.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="customer-info.js" defer></script>
+    <script src="sales-outcomes.js" defer></script>
+    <script src="color-palette.js" defer></script>
+    <script src="leaderboard.js" defer></script>
 
-        if (outcomes) {
-            const leaderboardContainer = document.getElementById('leaderboard-container');
-            leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
-
-            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-            const userSRXCounts = {};
-
-            // Iterate through all outcomes
-            for (const userId in outcomes) {
-                const userOutcomes = outcomes[userId];
-                for (const key in userOutcomes) {
-                    const outcome = userOutcomes[key];
-                    const outcomeDate = outcome.outcomeTime.split('T')[0]; // Extract date from outcomeTime
-
-                    // Check if outcome is for today and is an SRX action
-                    if (outcomeDate === today && (outcome.assignAction === 'Select RX Enrolled History Received' || outcome.assignAction === 'Select RX Enrolled History Not Received')) {
-                        if (!userSRXCounts[userId]) {
-                            userSRXCounts[userId] = {
-                                displayName: outcome.displayName,
-                                count: 0
-                            };
-                        }
-                        userSRXCounts[userId].count++;
-                    }
-                }
-            }
-
-            console.log('User SRX counts:', userSRXCounts);
-
-            // Convert object to array and sort by count descending
-            const sortedUsers = Object.values(userSRXCounts).sort((a, b) => b.count - a.count);
-            console.log('Sorted users by SRX count:', sortedUsers);
-
-            // Display top 5 users
-            const top5Users = sortedUsers.slice(0, 5);
-            const leaderboardTitle = document.createElement('h3');
-            leaderboardTitle.textContent = 'Top 5 SRX Actions for Today';
-            leaderboardContainer.appendChild(leaderboardTitle);
-
-            const leaderboardList = document.createElement('ol');
-            top5Users.forEach((user, index) => {
-                const userItem = document.createElement('li');
-                userItem.textContent = `${index + 1}. ${user.displayName}: ${user.count} SRX actions`;
-                leaderboardList.appendChild(userItem);
-            });
-
-            leaderboardContainer.appendChild(leaderboardList);
-        } else {
-            console.log('No sales outcomes found.');
+    <style>
+        .color-picker-container {
+            text-align: center;
+            margin: 20px 0;
         }
-    }, (error) => {
-        console.error('Error fetching sales outcomes:', error);
-    });
-}
+    </style>
+</head>
+<body>
+    
+    <h1>Sales Outcomes</h1>
+    
 
-// Helper function to format date and time
-function formatDateTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    });
-}
+
+    <div id="leaderboard-container"></div>
+
+    <div class="color-picker-container">
+        <input type="color" id="colorPicker" />
+        <button id="applyColor">Apply Color Palette</button>
+    </div>
+
+    <div class="outcomes-chart-container">
+        <div id="sales-outcomes-container"></div>
+        <canvas id="sales-bar-chart" width="400" height="200"></canvas>
+    </div>
+
+
+    <h4>To add the auto tracker: click the button, copy the text and put it in the URL part of the bookmark, name it AutoTracker or whatever you would like, then save. The bookmark must be pressed every time the URL changes or you work on a new sale, so there's a visual indicator to show if the tracker is active in the Actions Tab.</h4>
+    <h4>
+        <button class="navigate-button" onclick="window.location.href='AutoTracker/Dash2.html'">AutoTracker Dashboard</button>
+    </h4>
+
+</body>
+</html>
