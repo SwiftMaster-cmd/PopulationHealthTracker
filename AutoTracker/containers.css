@@ -1,0 +1,164 @@
+/* Containers */
+.container {
+    background-color: var(--color-tertiary, #1e1e1e);
+    border: 1px solid var(--color-quaternary, #444);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Specific Container Styles */
+.counter-container {
+    background-color: var(--color-quaternary, #282828);
+}
+
+.leaderboard-container {
+    background-color: var(--color-tertiary, #2a2a2a);
+}
+
+/* Sales Outcomes Container */
+#sales-outcomes-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 850px;
+    margin: 0 auto; /* Center the container */
+}
+
+/* Sales Counts Container */
+.sales-counts-container {
+    background-color: var(--color-tertiary, #1e1e1e);
+    border: 1px solid var(--color-quaternary, #444);
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Account Container */
+.account-container {
+    border: 1px solid var(--color-quaternary, #444);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: var(--color-tertiary, #1e1e1e);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Account Title */
+.account-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: var(--color-secondary, #e0e0e0);
+}
+
+/* Account Content */
+.account-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Add some space between sales info and customer info */
+}
+
+/* Customer Info Container */
+.customer-info {
+    width: 400px;
+    height: 100px;
+    margin: 0 auto; /* Center the container horizontally */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center contents vertically */
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid var(--color-quaternary, #444);
+    border-radius: 5px;
+    background-color: var(--color-tertiary, #2a2a2a);
+}
+
+/* Customer Row */
+.customer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Customer Field Container */
+.customer-field-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Customer Field */
+.customer-field {
+    padding: 0 10px;
+    font-size: 18px; /* Bigger text size */
+    font-weight: bold; /* Bold text */
+}
+
+/* Align left for first name and phone number */
+.customer-field.align-left {
+    text-align: left;
+    padding-left: 20px; /* Add padding to bring it closer to the left side */
+}
+
+/* Align right for last name and button */
+.customer-field.align-right {
+    text-align: right;
+    padding-right: 20px; /* Add padding to bring it closer to the right side */
+}
+
+/* Hover Effect */
+.container:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Outcome Item */
+.outcome-item {
+    background-color: var(--color-tertiary, #2a2a2a);
+    border: 1px solid var(--color-quaternary, #444);
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.outcome-item:hover {
+    background-color: var(--color-quaternary, #333);
+    border-color: var(--color-quinary, #555);
+}
+
+/* Top Section */
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Action */
+.action {
+    text-align: center;
+    font-size: 1.1em;
+    width: 250px; /* Set the width of the action container */
+    margin: 0 auto; /* Center the action container */
+}
+
+/* Bottom Section */
+.bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Notes */
+.notes {
+    text-align: left;
+    flex-grow: 1;
+}

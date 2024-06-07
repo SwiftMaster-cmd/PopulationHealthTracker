@@ -1,0 +1,48 @@
+/* Buttons */
+.more-info-btn {
+    padding: 10px; /* Adjusted padding for bigger size */
+    background-color: var(--color-quaternary, #444);
+    color: var(--color-secondary, #e0e0e0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px; /* Same size as other text */
+    text-align: center;
+}
+
+.more-info-btn:hover {
+    background-color: var(--color-quinary, #555);
+}
+
+.copy-action-btn {
+    padding: 5px 10px;
+    background-color: var(--color-quaternary, #444);
+    color: var(--color-secondary, #e0e0e0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px;
+}
+
+.copy-action-btn:hover {
+    background-color: var(--color-quinary, #555);
+}
+
+/* General button style */
+.button {
+    padding: 10px;
+    background-color: var(--color-quaternary, #444);
+    color: var(--color-secondary, #e0e0e0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px; /* Same size as other text */
+    text-align: center;
+}
+
+.button:hover {
+    background-color: var(--color-quinary, #555);
+}
