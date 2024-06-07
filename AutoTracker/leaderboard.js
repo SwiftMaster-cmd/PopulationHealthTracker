@@ -1,12 +1,27 @@
+// Global variable declaration
+let salesCountsRef;
+
+// Ensuring Firebase is initialized before using it
+if (!firebase.apps.length) {
+    firebase.initializeApp({
+        // Your Firebase configuration
+    });
+} else {
+    firebase.app(); // if already initialized, use that one
+}
+
+// Assigning the reference after Firebase is assured to be initialized
+db = firebase.database();
 salesCountsRef = db.ref('salesCounts');
+
 // Fetching and displaying leaderboard
 function updateLeaderboard(saleType = 'selectRX') {
-    salesCountsRef.orderByChild(`${saleType}`).limitToLast(5).on('value', (snapshot) => {
+    salesCountsRef.orderByChild(saleType).limitToLast(5).on('value', snapshot => {
         const leaderboardData = snapshot.val();
         const leaderboardDisplay = document.getElementById('leaderboard-display');
         leaderboardDisplay.innerHTML = ''; // Clear previous content
         if (leaderboardData) {
-            Object.keys(leaderboardDatßa).forEach(user => {
+            Object.keys(leaderboardData).forEach(user => {
                 const userSales = leaderboardData[user][saleType];
                 const userElement = document.createElement('div');
                 userElement.textContent = `${user}: ${userSales}`;
@@ -15,6 +30,8 @@ function updateLeaderboard(saleType = 'selectRX') {
         } else {
             leaderboardDisplay.textContent = 'No data available';
         }
+    }, error => {
+        console.error('Failed to fetch leaderboard data:', error);
     });
 }
 
