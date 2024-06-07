@@ -9,34 +9,46 @@ function displayLeaderboard() {
             const leaderboardContainer = document.getElementById('leaderboard-container');
             leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
 
-            const srxActions = [];
+            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            const userSRXCounts = {};
 
+            // Iterate through all outcomes
             for (const userId in outcomes) {
                 const userOutcomes = outcomes[userId];
                 for (const key in userOutcomes) {
                     const outcome = userOutcomes[key];
-                    if (outcome.assignAction === 'Select RX Enrolled History Received' || outcome.assignAction === 'Select RX Enrolled History Not Received') {
-                        srxActions.push(outcome);
+                    const outcomeDate = outcome.outcomeTime.split('T')[0]; // Extract date from outcomeTime
+
+                    // Check if outcome is for today and is an SRX action
+                    if (outcomeDate === today && (outcome.assignAction === 'Select RX Enrolled History Received' || outcome.assignAction === 'Select RX Enrolled History Not Received')) {
+                        if (!userSRXCounts[userId]) {
+                            userSRXCounts[userId] = {
+                                displayName: outcome.displayName,
+                                count: 0
+                            };
+                        }
+                        userSRXCounts[userId].count++;
                     }
                 }
             }
 
-            console.log('Filtered SRX actions:', srxActions);
+            console.log('User SRX counts:', userSRXCounts);
 
-            // Sort SRX actions by time (newest first)
-            srxActions.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
+            // Convert object to array and sort by count descending
+            const sortedUsers = Object.values(userSRXCounts).sort((a, b) => b.count - a.count);
+            console.log('Sorted users by SRX count:', sortedUsers);
 
-            // Display top 5 SRX actions
-            const top5SrxActions = srxActions.slice(0, 5);
+            // Display top 5 users
+            const top5Users = sortedUsers.slice(0, 5);
             const leaderboardTitle = document.createElement('h3');
-            leaderboardTitle.textContent = 'Top 5 SRX Actions';
+            leaderboardTitle.textContent = 'Top 5 SRX Actions for Today';
             leaderboardContainer.appendChild(leaderboardTitle);
 
             const leaderboardList = document.createElement('ol');
-            top5SrxActions.forEach(action => {
-                const actionItem = document.createElement('li');
-                actionItem.textContent = `${action.displayName}: ${action.assignAction} at ${formatDateTime(action.outcomeTime)}`;
-                leaderboardList.appendChild(actionItem);
+            top5Users.forEach((user, index) => {
+                const userItem = document.createElement('li');
+                userItem.textContent = `${index + 1}. ${user.displayName}: ${user.count} SRX actions`;
+                leaderboardList.appendChild(userItem);
             });
 
             leaderboardContainer.appendChild(leaderboardList);
