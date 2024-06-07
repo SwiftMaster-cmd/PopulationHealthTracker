@@ -1,4 +1,5 @@
 function displayLeaderboard() {
+    console.log("Starting displayLeaderboard function");
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/');
     outcomesRef.on('value', (snapshot) => {
@@ -12,15 +13,18 @@ function displayLeaderboard() {
             const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
             const userSRXCounts = {};
 
+            console.log("Processing outcomes for today:", today);
+
             // Iterate through all outcomes
             for (const userId in outcomes) {
+                console.log(`Processing outcomes for user: ${userId}`);
                 const userOutcomes = outcomes[userId];
                 for (const key in userOutcomes) {
                     const outcome = userOutcomes[key];
                     const outcomeDate = outcome.outcomeTime.split('T')[0]; // Extract date from outcomeTime
 
-                    // Check if outcome is for today and is an SRX action
                     if (outcomeDate === today && (outcome.assignAction === 'Select RX Enrolled History Received' || outcome.assignAction === 'Select RX Enrolled History Not Received')) {
+                        console.log(`Found SRX action for user: ${userId}, outcome:`, outcome);
                         if (!userSRXCounts[userId]) {
                             userSRXCounts[userId] = {
                                 displayName: outcome.displayName,
