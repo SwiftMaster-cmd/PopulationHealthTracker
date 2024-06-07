@@ -1,16 +1,7 @@
 // Global variable declaration
 let salesCountsRef;
 
-// Ensuring Firebase is initialized before using it
-if (!firebase.apps.length) {
-    firebase.initializeApp({
-        // Your Firebase configuration
-    });
-} else {
-    firebase.app(); // if already initialized, use that one
-}
 
-// Assigning the reference after Firebase is assured to be initialized
 db = firebase.database();
 salesCountsRef = db.ref('salesCounts');
 
