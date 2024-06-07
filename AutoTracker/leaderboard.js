@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const userData = userSnapshot.val();
                         const { firstName, lastName } = extractNamesFromEmail(userEmail);
                         const listItem = document.createElement('li');
-                        listItem.textContent = `#${index + 1} - User: ${firstName} ${lastName}, Sales: ${sales.salesCount}`;
+                        listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
                     });
                 });
