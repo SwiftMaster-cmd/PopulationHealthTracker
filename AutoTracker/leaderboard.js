@@ -14,22 +14,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function extractNamesFromEmail(email) {
-        try {
-            const emailParts = email.split('@');
-            const nameParts = emailParts[0].split('.');
-            const firstName = nameParts[0];
-            const lastName = nameParts[1];
-            return {
-                firstName: firstName,
-                lastName: lastName
-            };
-        } catch (error) {
-            console.error('Error extracting names from email:', error);
-            return {
-                firstName: 'Unknown',
-                lastName: 'User'
-            };
-        }
+        const emailParts = email.split('@');
+        const nameParts = emailParts[0].split('.');
+        const firstName = nameParts[0];
+        const lastName = nameParts[1];
+        return {
+            firstName: firstName,
+            lastName: lastName
+        };
     }
 
     function updateLeaderboards() {
