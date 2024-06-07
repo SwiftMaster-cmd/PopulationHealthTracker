@@ -1,3 +1,4 @@
+
 function displayLeaderboard(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/');
