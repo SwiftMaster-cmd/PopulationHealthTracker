@@ -199,3 +199,18 @@ function formatTime(dateTime) {
 
 // Attach the function to the window object
 window.displaySalesOutcomes = displaySalesOutcomes;
+
+
+// Helper functions
+function formatDate(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleDateString();
+}
+
+function formatTime(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString();
+}
+
+// Attach the function to the window object
+window.displaySalesOutcomes = displaySalesOutcomes;
