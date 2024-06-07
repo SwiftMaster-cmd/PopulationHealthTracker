@@ -1,3 +1,4 @@
+// Assuming firebase is already initialized in your project
 
 const db = firebase.database();
 const salesCountsRef = db.ref('salesCounts');
@@ -8,12 +9,16 @@ function updateLeaderboard(saleType = 'selectRX') {
         const leaderboardData = snapshot.val();
         const leaderboardDisplay = document.getElementById('leaderboard-display');
         leaderboardDisplay.innerHTML = ''; // Clear previous content
-        Object.keys(leaderboardData).forEach(user => {
-            const userSales = leaderboardData[user][saleType];
-            const userElement = document.createElement('div');
-            userElement.textContent = `${user}: ${userSales}`;
-            leaderboardDisplay.appendChild(userElement);
-        });
+        if (leaderboardData) {
+            Object.keys(leaderboardData).forEach(user => {
+                const userSales = leaderboardData[user][saleType];
+                const userElement = document.createElement('div');
+                userElement.textContent = `${user}: ${userSales}`;
+                leaderboardDisplay.appendChild(userElement);
+            });
+        } else {
+            leaderboardDisplay.textContent = 'No data available';
+        }
     });
 }
 
@@ -21,6 +26,7 @@ function updateLeaderboard(saleType = 'selectRX') {
 function createButtons() {
     const types = ['selectRX', 'billableHRA', 'selectPatientManagement', 'transfer'];
     const buttonsContainer = document.getElementById('buttons-container');
+    buttonsContainer.innerHTML = ''; // Clear previous buttons
     types.forEach(type => {
         const button = document.createElement('button');
         button.textContent = type;
@@ -30,7 +36,7 @@ function createButtons() {
 }
 
 // Initialize the leaderboard with SelectRX type and create buttons
-window.onload = () => {
+document.addEventListener('DOMContentLoaded', () => {
     createButtons();
     updateLeaderboard('selectRX');
-};
+});
