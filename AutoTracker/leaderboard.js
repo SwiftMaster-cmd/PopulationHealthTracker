@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards(user.email);
+            updateLeaderboards();
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
-        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
         const firstName = nameParts[0];
         const lastName = nameParts[1];
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    function updateLeaderboards(userEmail) {
+    function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -55,10 +54,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
+                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
                         const listItem = document.createElement('li');
-                        listItem.textContent = `User: ${firstName} ${lastName}, Sales: ${sales.salesCount}`;
+                        listItem.innerHTML = `<div class="user-info"><span class="ranking">${index + 1}</span> ${firstName} ${lastName} - Sales: ${sales.salesCount}</div>`;
                         leaderboardElement.appendChild(listItem);
+                        if (index < topSales.length - 1) {
+                            leaderboardElement.appendChild(document.createElement('hr'));
+                        }
                     });
                 });
             });
