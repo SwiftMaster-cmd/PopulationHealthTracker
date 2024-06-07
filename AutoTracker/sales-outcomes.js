@@ -23,49 +23,21 @@ function formatDateTime(dateTime) {
 }
 
 function getSaleType(action, notes) {
-    if (action === 'SRX: Enrolled - Rx History Not Available' || action === 'SRX: Enrolled - Rx History Received') {
+    // Normalize action to lowercase for reliable comparison
+    const normalizedAction = action.toLowerCase();
+
+    if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
         return 'Select RX';
-    } else if (action === 'HRA' && /bill|billable/i.test(notes)) {
+    } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
         return 'Billable HRA';
-    } else if (action === 'Notes' && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+    } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
         return 'Transfer';
-    } else if (action === 'Select Patient Management') {
+    } else if (normalizedAction.includes('select patient management')) {
         return 'Select Patient Management';
     }
-    return action;
+    return action; // Return the original action if no type matches
 }
 
-function displayCustomerInfo(customerInfo) {
-    if (!customerInfo) {
-        return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
-    }
-
-    return `
-        <div class="customer-info">
-            <div class="customer-row">
-                <div class="customer-field"><strong>First:</strong> ${customerInfo.firstName || 'N/A'}</div>
-                <div class="customer-field"><strong>Last:</strong> ${customerInfo.lastName || 'N/A'}</div>
-            </div>
-            <div class="customer-row">
-                <div class="customer-field"><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</div>
-                <button class="more-info-btn">+ More</button>
-            </div>
-            <div class="more-info-popup" style="display:none;">
-                <div class="customer-row">
-                    <div class="customer-field"><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</div>
-                    <div class="customer-field"><strong>Birth:</strong> ${customerInfo.birthdate || 'N/A'}</div>
-                </div>
-                <div class="customer-row">
-                    <div class="customer-field"><strong>Email:</strong> ${customerInfo.email || 'N/A'}</div>
-                </div>
-                <div class="customer-row">
-                    <div class="customer-field"><strong>Zip:</strong> ${customerInfo.zipcode || 'N/A'}</div>
-                    <div class="customer-field"><strong>State:</strong> ${customerInfo.stateId || 'N/A'}</div>
-                </div>
-            </div>
-        </div>
-    `;
-}
 
 function displaySalesOutcomes(user) {
     const database = firebase.database();
