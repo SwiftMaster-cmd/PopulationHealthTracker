@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const dbRef = ref(database, 'salesCounts');
     const userRef = ref(database, 'users');
