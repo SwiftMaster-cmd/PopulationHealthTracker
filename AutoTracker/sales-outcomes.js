@@ -91,7 +91,7 @@ function displaySalesOutcomes(user) {
                 const action = outcome.assignAction;
                 const notes = outcome.notesValue;
                 
-                console.log(`Processing outcome - Action: "${action}", Notes: "${notes}"`);
+                console.log(`Processing outcome - Key: ${key}, Action: "${action}", Notes: "${notes}"`);
 
                 // Get the sale type
                 const saleType = getSaleType(action, notes);
@@ -107,6 +107,8 @@ function displaySalesOutcomes(user) {
                 } else if (saleType === 'Transfer') {
                     salesCounts.transfer++;
                 }
+
+                console.log('Updated salesCounts:', salesCounts); // Log after each update
             }
 
             // Log final sales counts
