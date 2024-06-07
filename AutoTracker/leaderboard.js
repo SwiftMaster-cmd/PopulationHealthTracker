@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear the leaderboard element
                 leaderboardElement.innerHTML = '';
 
-                // Display the top 5 salespeople
+                // Display the top 5 salespeople with their rankings
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
