@@ -1,4 +1,5 @@
 
+// leaderboard.js
 function displayLeaderboard(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/');
@@ -11,6 +12,7 @@ function displayLeaderboard(user) {
 
             // Group outcomes by user and filter out unwanted outcomes
             const userSales = {};
+            console.log('Processing outcomes...');
 
             for (const userId in outcomes) {
                 const userOutcomes = outcomes[userId];
@@ -33,8 +35,11 @@ function displayLeaderboard(user) {
                 }
             }
 
+            console.log('User sales:', userSales);
+
             // Sort users by their total sales in descending order
             const sortedUsers = Object.keys(userSales).sort((a, b) => userSales[b].salesCount - userSales[a].salesCount);
+            console.log('Sorted users:', sortedUsers);
 
             // Display leaderboard
             const leaderboardTitle = document.createElement('h3');
