@@ -1,9 +1,3 @@
-ß
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
 
 document.addEventListener('DOMContentLoaded', function() {
     const dbRef = ref(database, 'salesCounts');
