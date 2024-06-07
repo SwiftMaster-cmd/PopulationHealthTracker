@@ -12,7 +12,7 @@ function formatDateTime(dateTime) {
 }
 
 function getSaleType(action, notes) {
-    if (action.includes('SRx')) {
+    if (action === 'SRX Enrolled - History Received' || action === 'SRX Enrolled - History Not Received') {
         return 'Select RX';
     } else if (action === 'HRA' && /bill|billable/i.test(notes)) {
         return 'Billable HRA';
