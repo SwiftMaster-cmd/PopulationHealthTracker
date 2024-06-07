@@ -23,6 +23,7 @@ function getSaleType(action, notes) {
     return action;
 }
 
+
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -60,7 +61,7 @@ function displaySalesOutcomes(user) {
 
                 // Update sales counts
                 const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-                console.log(`Action: "${outcome.assignAction}", Notes: "${outcome.notesValue}", Sale Type: "${saleType}"`); // Debugging line
+                console.log(`Processing outcome: Account Number: ${accountNumber}, Action: "${outcome.assignAction}", Notes: "${outcome.notesValue}", Sale Type: "${saleType}"`); // Debugging line
                 if (saleType === 'Billable HRA') {
                     salesCounts.billableHRA++;
                 } else if (saleType === 'Select RX') {
