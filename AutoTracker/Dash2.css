@@ -1,8 +1,16 @@
+:root {
+    --primary-color: #121212;
+    --secondary-color: #1e1e1e;
+    --accent-color: #2a2a2a;
+    --background-color: #333;
+    --text-color: #e0e0e0;
+}
+
 /* General Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: var(--background-color);
+    color: var(--text-color);
     margin: 0;
     padding: 20px;
 }
@@ -10,7 +18,7 @@ body {
 /* Header */
 h1 {
     font-size: 28px;
-    color: #e0e0e0;
+    color: var(--text-color);
     text-align: center;
     margin-bottom: 30px;
 }
@@ -26,8 +34,8 @@ h1 {
 
 /* Sales Counts Container */
 .sales-counts-container {
-    background-color: #1e1e1e;
-    border: 1px solid #444;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -38,16 +46,16 @@ h1 {
 .sales-count-item {
     margin-bottom: 10px;
     font-size: 18px;
-    color: #bbb;
+    color: var(--text-color);
 }
 
 /* Account Container */
 .account-container {
-    border: 1px solid #444;
+    border: 1px solid var(--primary-color);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: #1e1e1e;
+    background-color: var(--secondary-color);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -75,9 +83,9 @@ h1 {
     justify-content: center; /* Center contents vertically */
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid #444;
+    border: 1px solid var(--primary-color);
     border-radius: 5px;
-    background-color: #2a2a2a;
+    background-color: var(--accent-color);
 }
 
 /* Customer Row */
@@ -119,8 +127,8 @@ h1 {
 /* More Info Button */
 .more-info-btn {
     padding: 10px; /* Adjusted padding for bigger size */
-    background-color: #444;
-    color: #e0e0e0;
+    background-color: var(--primary-color);
+    color: var(--text-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -131,8 +139,8 @@ h1 {
 
 /* More Info Popup */
 .more-info-popup {
-    background-color: #2a2a2a;
-    border: 1px solid #444;
+    background-color: var(--accent-color);
+    border: 1px solid var(--primary-color);
     padding: 10px;
     border-radius: 5px;
     position: absolute;
@@ -149,8 +157,8 @@ h1 {
 
 /* Outcome Item */
 .outcome-item {
-    background-color: #2a2a2a;
-    border: 1px solid #444;
+    background-color: var(--accent-color);
+    border: 1px solid var(--primary-color);
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
@@ -162,8 +170,8 @@ h1 {
 
 /* Outcome Item Hover */
 .outcome-item:hover {
-    background-color: #333;
-    border-color: #555;
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
 }
 
 /* Top Section */
@@ -186,7 +194,7 @@ h1 {
 .date-top {
     text-align: right;
     font-size: 0.9em;
-    color: #888;
+    color: var(--text-color);
 }
 
 /* Bottom Section */
@@ -206,14 +214,14 @@ h1 {
 .time-bottom {
     text-align: right;
     font-size: 0.9em;
-    color: #888;
+    color: var(--text-color);
 }
 
 /* Copy Action Button */
 .copy-action-btn {
     padding: 5px 10px;
-    background-color: #444;
-    color: #e0e0e0;
+    background-color: var(--primary-color);
+    color: var(--text-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -222,5 +230,5 @@ h1 {
 }
 
 .copy-action-btn:hover {
-    background-color: #555;
+    background-color: var(--secondary-color);
 }
