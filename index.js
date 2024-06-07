@@ -63,6 +63,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // User is signed in
+        const userRef = firebase.database().ref('users/' + user.uid);
+        userRef.set({
+            email: user.email,
+            // other user data
+        });
+    } else {
+        // No user is signed in
+        window.location.href = 'index.html';
+    }
+});
+
+
 
 
 // User Registration Function

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const dbRef = firebase.database().ref('salesCounts');
+    const userRef = firebase.database().ref('users');
     const auth = firebase.auth();
 
     auth.onAuthStateChanged(user => {
@@ -40,9 +41,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
-                    const user = firebase.auth().getUser(sales.userId).then(userRecord => {
+                    userRef.child(sales.userId).once('value').then(userSnapshot => {
+                        const userData = userSnapshot.val();
                         const listItem = document.createElement('li');
-                        listItem.textContent = `User: ${userRecord.email}, Sales: ${sales.salesCount}`;
+                        listItem.textContent = `User: ${userData.email}, Sales: ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
                     }).catch(error => {
                         console.error('Error fetching user data:', error);
