@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards(user.email, user.uid);
+            updateLeaderboards(user.email);
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    function updateLeaderboards(userEmail, userId) {
+    function updateLeaderboards(userEmail) {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -55,13 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
-                        const listItem = document.createElement('div');
-                        listItem.className = 'leaderboard-item';
+                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
+                        const listItem = document.createElement('li');
                         listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
-                        if (sales.userId === userId) {
-                            listItem.classList.add('current-user');
-                        }
                         leaderboardElement.appendChild(listItem);
                     });
                 });
@@ -75,12 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
         salesTypes.forEach(salesType => {
             const leaderboardElement = document.getElementById(`${salesType}-leaderboard`);
             if (leaderboardElement) {
-                // Add a container for the leaderboard items
-                const leaderboardContainer = document.createElement('div');
-                leaderboardContainer.className = 'leaderboard-container';
-                leaderboardElement.appendChild(leaderboardContainer);
-                
-                updateLeaderboard(salesType, leaderboardContainer);
+                updateLeaderboard(salesType, leaderboardElement);
             }
         });
     }
