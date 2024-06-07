@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function extractNamesFromEmail(email) {
+        if (!email) {
+            console.error('Email is undefined or null');
+            return {
+                firstName: 'Unknown',
+                lastName: 'User'
+            };
+        }
         const emailParts = email.split('@');
         const nameParts = emailParts[0].split('.');
         const firstName = nameParts[0];
@@ -54,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
+                        if (!userData || !userData.email) {
+                            console.error('User data or email is missing for userId:', sales.userId);
+                            return;
+                        }
                         const { firstName, lastName } = extractNamesFromEmail(userData.email);
                         const listItem = document.createElement('li');
                         listItem.innerHTML = `<div class="user-info"><span class="ranking">${index + 1}</span> ${firstName} ${lastName} - Sales: ${sales.salesCount}</div>`;
