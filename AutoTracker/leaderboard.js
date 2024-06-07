@@ -1,14 +1,3 @@
-// Assuming firebase is already initialized in your project
-if (!firebase.apps.length) {
-    firebase.initializeApp({
-        // your config
-    });
-} else {
-    firebase.app(); // if already initialized, use that one
-}
-
-const db = firebase.database();
-const salesCountsRef = db.ref('salesCounts');
 
 // Fetching and displaying leaderboard
 function updateLeaderboard(saleType = 'selectRX') {
@@ -17,7 +6,7 @@ function updateLeaderboard(saleType = 'selectRX') {
         const leaderboardDisplay = document.getElementById('leaderboard-display');
         leaderboardDisplay.innerHTML = ''; // Clear previous content
         if (leaderboardData) {
-            Object.keys(leaderboardData).forEach(user => {
+            Object.keys(leaderboardDatßa).forEach(user => {
                 const userSales = leaderboardData[user][saleType];
                 const userElement = document.createElement('div');
                 userElement.textContent = `${user}: ${userSales}`;
@@ -27,7 +16,7 @@ function updateLeaderboard(saleType = 'selectRX') {
             leaderboardDisplay.textContent = 'No data available';
         }
     });
-}
+}ß
 
 // Function to create buttons for switching sales types
 function createButtons() {
