@@ -12,7 +12,7 @@ function formatDateTime(dateTime) {
 }
 function getSaleType(action, notes) {
     if (action === 'SRX: Enrolled - Rx History Not Available' || action === 'SRX: Enrolled - Rx History Received') {
-        return 'Select RX Enrolled';
+        return 'selectRX';
     } else if (action === 'HRA' && /bill|billable/i.test(notes)) {
         return 'Billable HRA';
     } else if (action === 'Notes' && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
