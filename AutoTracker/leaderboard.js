@@ -11,29 +11,29 @@ document.addEventListener('DOMContentLoaded', function() {
         measurementId: "G-RVBYB0RR06"
     };
 
+    
     // Initialize Firebase only if it hasn't been initialized
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
 
-    // Initializing Firebase database reference inside the DOMContentLoaded callback
+    // Initialize Firebase services after Firebase is initialized
     const db = firebase.database();
     window.salesCountsRef = db.ref('salesCounts');
 
-    // Initialize the leaderboard with SelectRX type and create buttons
-    createButtons();
-    updateLeaderboard('selectRX');
+    // Firebase Authentication State Listener
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // User is signed in, now safe to fetch data
+            createButtons();
+            updateLeaderboard('selectRX');
+        } else {
+            // No user is signed in
+            console.log("User must be logged in to view the leaderboard");
+        }
+    });
 });
 
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      // User is signed in, now safe to fetch data
-      updateLeaderboard('selectRX');
-    } else {
-      // No user is signed in, maybe redirect to login or show an error
-      console.log("User must be logged in to view the leaderboard");
-    }
-  });
   
 
 // Fetching and displaying leaderboard
