@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateLeaderboards(userEmail, userId) {
         // Function to update the leaderboard for a specific sales type
-        function updateLeaderboard(salesType, leaderboardElement) {
+        function updateLeaderboard(salesType, leaderboardContainer) {
             dbRef.once('value').then(snapshot => {
                 const data = snapshot.val();
                 let salesArray = [];
@@ -47,8 +47,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get the top 5 salespeople
                 const topSales = salesArray.slice(0, 5);
 
-                // Clear the leaderboard element
-                leaderboardElement.innerHTML = '';
+                // Clear the leaderboard container
+                leaderboardContainer.innerHTML = '';
+
+                // Create a container for this sales type
+                const salesTypeContainer = document.createElement('div');
+                salesTypeContainer.className = 'sales-type-container';
+
+                // Create a title for this sales type
+                const title = document.createElement('h3');
+                title.className = 'sale-type-title';
+                title.textContent = salesType;
+                salesTypeContainer.appendChild(title);
 
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
@@ -61,9 +71,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (sales.userId === userId) {
                             listItem.classList.add('current-user');
                         }
-                        leaderboardElement.appendChild(listItem);
+                        salesTypeContainer.appendChild(listItem);
                     });
                 });
+
+                leaderboardContainer.appendChild(salesTypeContainer);
             });
         }
 
@@ -71,16 +83,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const salesTypes = ['billableHRA', 'selectPatientManagement', 'selectRX', 'transfer'];
 
         // Update leaderboard for each sales type
+        const leaderboardContainer = document.getElementById('leaderboard-container');
         salesTypes.forEach(salesType => {
-            const leaderboardElement = document.getElementById(`${salesType}-leaderboard`);
-            if (leaderboardElement) {
-                // Add a container for the leaderboard items
-                const leaderboardContainer = document.createElement('div');
-                leaderboardContainer.className = 'leaderboard-container';
-                leaderboardElement.appendChild(leaderboardContainer);
-                
-                updateLeaderboard(salesType, leaderboardContainer);
-            }
+            updateLeaderboard(salesType, leaderboardContainer);
         });
     }
 });
