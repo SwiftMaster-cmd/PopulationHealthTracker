@@ -1,4 +1,4 @@
-
+salesCountsRef = db.ref('salesCounts');
 // Fetching and displaying leaderboard
 function updateLeaderboard(saleType = 'selectRX') {
     salesCountsRef.orderByChild(`${saleType}`).limitToLast(5).on('value', (snapshot) => {
