@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const dbRef = firebase.database().ref('salesCounts');
+    const userRef = firebase.database().ref('users');
     const auth = firebase.auth();
 
     auth.onAuthStateChanged(user => {
@@ -40,8 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
-                    const userRef = firebase.database().ref(`users/${sales.userId}`);
-                    userRef.once('value').then(userSnapshot => {
+                    userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
                         const listItem = document.createElement('li');
                         listItem.textContent = `User: ${userData.username}, Sales: ${sales.salesCount}`;
