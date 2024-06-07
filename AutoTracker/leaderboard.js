@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards(user.email);
+            updateLeaderboards(user.email, user.uid);
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    function updateLeaderboards(userEmail) {
+    function updateLeaderboards(userEmail, userId) {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -55,9 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
+                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
                         const listItem = document.createElement('li');
                         listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
+                        if (sales.userId === userId) {
+                            listItem.classList.add('current-user');
+                        }
                         leaderboardElement.appendChild(listItem);
                     });
                 });
