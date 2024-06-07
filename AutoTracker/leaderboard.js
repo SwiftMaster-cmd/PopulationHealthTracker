@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const emailParts = email.split('@');
         const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0];
-        const lastName = nameParts[1];
+        const firstName = nameParts[0] || 'Unknown';
+        const lastName = nameParts[1] || 'User';
         return {
             firstName: firstName,
             lastName: lastName
@@ -72,8 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (index < topSales.length - 1) {
                             leaderboardElement.appendChild(document.createElement('hr'));
                         }
+                    }).catch(error => {
+                        console.error('Error fetching user data for userId:', sales.userId, error);
                     });
                 });
+            }).catch(error => {
+                console.error('Error fetching sales data:', error);
             });
         }
 
