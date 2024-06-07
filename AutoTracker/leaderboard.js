@@ -16,7 +16,7 @@ function updateLeaderboard(saleType = 'selectRX') {
             leaderboardDisplay.textContent = 'No data available';
         }
     });
-}ß
+}
 
 // Function to create buttons for switching sales types
 function createButtons() {
