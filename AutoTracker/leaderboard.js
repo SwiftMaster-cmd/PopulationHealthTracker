@@ -22,12 +22,13 @@ function displayLeaderboard() {
                 for (const key in userOutcomes) {
                     const outcome = userOutcomes[key];
                     const outcomeDate = outcome.outcomeTime.split('T')[0]; // Extract date from outcomeTime
+                    const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
 
-                    if (outcomeDate === today && (outcome.assignAction === 'Select RX Enrolled History Received' || outcome.assignAction === 'Select RX Enrolled History Not Received')) {
+                    if (outcomeDate === today && saleType === 'Select RX') {
                         console.log(`Found SRX action for user: ${userId}, outcome:`, outcome);
                         if (!userSRXCounts[userId]) {
                             userSRXCounts[userId] = {
-                                displayName: outcome.displayName,
+                                displayName: outcome.displayName || 'Anonymous', // Provide a default display name if not available
                                 count: 0
                             };
                         }
@@ -64,16 +65,16 @@ function displayLeaderboard() {
     });
 }
 
-// Helper function to format date and time
-function formatDateTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    });
+// Include this function if it's not already present in your codebase
+function getSaleType(action, notes) {
+    if (action.includes('SRX: Enrolled - Rx History Received') || action.includes('SRX: Enrolled - Rx History Not Available')) {
+        return 'Select RX';
+    } else if (action.includes('HRA') && /bill|billable/i.test(notes)) {
+        return 'Billable HRA';
+    } else if (action.includes('Notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+        return 'Transfer';
+    } else if (action.includes('Select Patient Management')) {
+        return 'Select Patient Management';
+    }
+    return action;
 }
