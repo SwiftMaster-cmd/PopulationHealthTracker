@@ -224,7 +224,6 @@ h1 {
 .copy-action-btn:hover {
     background-color: var(--color-quinary, #555);
 }
-
 /* Leaderboard Styles */
 #leaderboard-container {
     margin: 20px auto;
@@ -238,6 +237,31 @@ h1 {
 #leaderboard-container h3 {
     text-align: center;
     color: var(--color-secondary, #e0e0e0);
+}
+
+#leaderboard-container .leaderboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.leaderboard-item {
+    background-color: var(--color-tertiary, #2a2a2a);
+    border: 1px solid var(--color-quaternary, #444);
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 calc(20% - 20px); /* Adjust width to fit your layout */
+}
+
+.leaderboard-item.current-user {
+    text-decoration: underline;
+    background-color: #e0f7fa; /* Highlight current user */
 }
 
 #leaderboard-container ol {
@@ -278,18 +302,6 @@ h1 {
     font-size: 18px;
     margin-bottom: 10px;
     text-align: center;
-}
-
-.outcome-item {
-    background-color: var(--color-tertiary, #2a2a2a);
-    border: 1px solid var(--color-quaternary, #444);
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 5px;
-    position: relative;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    display: flex;
-    flex-direction: column;
 }
 
 .user-info {
