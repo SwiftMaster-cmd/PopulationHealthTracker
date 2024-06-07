@@ -15,15 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
+
+    // Initializing Firebase database reference inside the DOMContentLoaded callback
+    const db = firebase.database();
+    window.salesCountsRef = db.ref('salesCounts');
+
+    // Initialize the leaderboard with SelectRX type and create buttons
+    createButtons();
+    updateLeaderboard('selectRX');
 });
-
-
-// Global variable declaration
-let salesCountsRef;
-
-
-db = firebase.database();
-salesCountsRef = db.ref('salesCounts');
 
 // Fetching and displaying leaderboard
 function updateLeaderboard(saleType = 'selectRX') {
@@ -58,9 +58,3 @@ function createButtons() {
         buttonsContainer.appendChild(button);
     });
 }
-
-// Initialize the leaderboard with SelectRX type and create buttons
-document.addEventListener('DOMContentLoaded', () => {
-    createButtons();
-    updateLeaderboard('selectRX');
-});
