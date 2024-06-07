@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards();
+            updateLeaderboards(user.email);
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
         }
     });
 
-    function updateLeaderboards() {
+    function updateLeaderboards(userEmail) {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
                         const listItem = document.createElement('li');
-                        listItem.textContent = `User: ${userData.username}, Sales: ${sales.salesCount}`;
+                        listItem.textContent = `User: ${userEmail}, Sales: ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
                     });
                 });
