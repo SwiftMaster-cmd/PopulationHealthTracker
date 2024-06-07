@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const dbRef = firebase.database().ref('salesCounts');
+    const auth = firebase.auth();
 
     // Function to update the leaderboard for a specific sales type
     function updateLeaderboard(salesType, leaderboardElement) {
@@ -28,9 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Display the top 5 salespeople
             topSales.forEach((sales, index) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `User: ${sales.userId}, Sales: ${sales.salesCount}`;
-                leaderboardElement.appendChild(listItem);
+                const userRef = firebase.database().ref(`users/${sales.userId}`);
+                userRef.once('value').then(userSnapshot => {
+                    const userData = userSnapshot.val();
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `User: ${userData.username}, Sales: ${sales.salesCount}`;
+                    leaderboardElement.appendChild(listItem);
+                });
             });
         });
     }
