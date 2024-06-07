@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
                         const { firstName, lastName } = extractNamesFromEmail(userData.email);
-                        const listItem = document.createElement('li');
+                        const listItem = document.createElement('div');
+                        listItem.className = 'leaderboard-item';
                         listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
                         if (sales.userId === userId) {
                             listItem.classList.add('current-user');
@@ -74,7 +75,12 @@ document.addEventListener('DOMContentLoaded', function() {
         salesTypes.forEach(salesType => {
             const leaderboardElement = document.getElementById(`${salesType}-leaderboard`);
             if (leaderboardElement) {
-                updateLeaderboard(salesType, leaderboardElement);
+                // Add a container for the leaderboard items
+                const leaderboardContainer = document.createElement('div');
+                leaderboardContainer.className = 'leaderboard-container';
+                leaderboardElement.appendChild(leaderboardContainer);
+                
+                updateLeaderboard(salesType, leaderboardContainer);
             }
         });
     }
