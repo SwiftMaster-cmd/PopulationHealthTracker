@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards(user.email);
+            updateLeaderboards();
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
@@ -14,17 +14,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function extractNamesFromEmail(email) {
-        const emailParts = email.split('@');
-        const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0];
-        const lastName = nameParts[1];
-        return {
-            firstName: firstName,
-            lastName: lastName
-        };
+        try {
+            const emailParts = email.split('@');
+            const nameParts = emailParts[0].split('.');
+            const firstName = nameParts[0];
+            const lastName = nameParts[1];
+            return {
+                firstName: firstName,
+                lastName: lastName
+            };
+        } catch (error) {
+            console.error('Error extracting names from email:', error);
+            return {
+                firstName: 'Unknown',
+                lastName: 'User'
+            };
+        }
     }
 
-    function updateLeaderboards(userEmail) {
+    function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -58,7 +66,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         const listItem = document.createElement('li');
                         listItem.innerHTML = `<div class="user-info"><span class="ranking">${index + 1}</span> ${firstName} ${lastName} - Sales: ${sales.salesCount}</div>`;
                         leaderboardElement.appendChild(listItem);
-                        leaderboardElement.appendChild(document.createElement('hr'));
+                        if (index < topSales.length - 1) {
+                            leaderboardElement.appendChild(document.createElement('hr'));
+                        }
                     });
                 });
             });
