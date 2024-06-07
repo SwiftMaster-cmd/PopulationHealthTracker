@@ -60,9 +60,10 @@ function displaySalesOutcomes(user) {
 
                 // Update sales counts
                 const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+                console.log(`Sale Type for action "${outcome.assignAction}": ${saleType}`); // Debugging line
                 if (saleType === 'Billable HRA') {
                     salesCounts.billableHRA++;
-                } else if (saleType === 'Select RX Enrolled') { // Ensure this matches the return value in getSaleType
+                } else if (saleType === 'Select RX') { // Ensure this matches the return value in getSaleType
                     salesCounts.selectRX++;
                 } else if (saleType === 'Select Patient Management') {
                     salesCounts.selectPatientManagement++;
@@ -151,31 +152,6 @@ function displaySalesOutcomes(user) {
                 });
             });
 
-            for (const key in outcomes) {
-                const outcome = outcomes[key];
-                const accountNumber = outcome.accountNumber;
-                if (outcome.assignAction.trim() === "--") {
-                    continue; // Skip outcomes with "--" in assign action
-                }
-                if (!groupedOutcomes[accountNumber]) {
-                    groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
-                }
-                groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
-            
-                // Update sales counts
-                const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-                console.log(`Sale Type for action "${outcome.assignAction}": ${saleType}`); // Debugging line
-                if (saleType === 'Billable HRA') {
-                    salesCounts.billableHRA++;
-                } else if (saleType === 'Select RX') { // Ensure this matches the return value in getSaleType
-                    salesCounts.selectRX++;
-                } else if (saleType === 'Select Patient Management') {
-                    salesCounts.selectPatientManagement++;
-                } else if (saleType === 'Transfer') {
-                    salesCounts.transfer++;
-                }
-            }
-
             // Display sales counts
             const salesCountsContainer = document.createElement('div');
             salesCountsContainer.classList.add('sales-counts-container');
@@ -193,6 +169,21 @@ function displaySalesOutcomes(user) {
         console.error('Error fetching sales outcomes:', error);
     });
 }
+
+// Helper functions
+function formatDate(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleDateString();
+}
+
+function formatTime(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString();
+}
+
+// Attach the function to the window object
+window.displaySalesOutcomes = displaySalesOutcomes;
+
 
 // Helper functions
 function formatDate(dateTime) {
