@@ -12,17 +12,14 @@ function formatDateTime(dateTime) {
 }
 
 function getSaleType(action, notes) {
-    if (action === 'Notes') {
-        if (/fe|final expense|vbc|dental/i.test(notes)) {
-            return 'Transfer';
-        }
-    } else if (action === 'Select RX Enrolled History Received' || action === 'Select RX Enrolled History Not Received') {
-        return 'Select RX Enrolled';
-    } else if (action === 'HRA') {
-        if (/billable|bill|b/i.test(notes)) {
-            return 'Billable HRA';
-        }
-        return 'HRA Completed';
+    if (action.includes('SRx')) {
+        return 'Select RX';
+    } else if (action === 'HRA' && /bill|billable/i.test(notes)) {
+        return 'Billable HRA';
+    } else if (action === 'Notes' && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+        return 'Transfer';
+    } else if (action === 'Select Patient Management') {
+        return 'Select Patient Management';
     }
     return action;
 }
