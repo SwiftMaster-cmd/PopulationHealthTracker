@@ -14,17 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function extractNamesFromEmail(email) {
-        if (!email) {
-            console.error('Email is undefined or null');
-            return {
-                firstName: 'Unknown',
-                lastName: 'User'
-            };
-        }
         const emailParts = email.split('@');
         const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0] || 'Unknown';
-        const lastName = nameParts[1] || 'User';
+        const firstName = nameParts[0];
+        const lastName = nameParts[1];
         return {
             firstName: firstName,
             lastName: lastName
@@ -61,10 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        if (!userData || !userData.email) {
-                            console.error('User data or email is missing for userId:', sales.userId);
-                            return;
-                        }
                         const { firstName, lastName } = extractNamesFromEmail(userData.email);
                         const listItem = document.createElement('li');
                         listItem.innerHTML = `<div class="user-info"><span class="ranking">${index + 1}</span> ${firstName} ${lastName} - Sales: ${sales.salesCount}</div>`;
@@ -72,12 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (index < topSales.length - 1) {
                             leaderboardElement.appendChild(document.createElement('hr'));
                         }
-                    }).catch(error => {
-                        console.error('Error fetching user data for userId:', sales.userId, error);
                     });
                 });
-            }).catch(error => {
-                console.error('Error fetching sales data:', error);
             });
         }
 
