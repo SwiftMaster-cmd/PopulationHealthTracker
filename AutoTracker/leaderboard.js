@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const dbRef = ref(database, 'salesCounts');
-    const userRef = ref(database, 'users');
+    const dbRef = firebase.database().ref('salesCounts');
+    const userRef = firebase.database().ref('users');
+    const auth = firebase.auth();
 
-    onAuthStateChanged(auth, user => {
+    auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
             updateLeaderboards();
@@ -15,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
-            get(dbRef).then(snapshot => {
+            dbRef.once('value').then(snapshot => {
                 const data = snapshot.val();
                 let salesArray = [];
 
@@ -40,13 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
-                    get(ref(database, `users/${sales.userId}`)).then(userSnapshot => {
+                    userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
                         const listItem = document.createElement('li');
-                        listItem.textContent = `User: ${userData.email}, Sales: ${sales.salesCount}`;
+                        listItem.textContent = `User: ${userData.username}, Sales: ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
-                    }).catch(error => {
-                        console.error('Error fetching user data:', error);
                     });
                 });
             });
