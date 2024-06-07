@@ -22,6 +22,9 @@ function getSaleType(action, notes) {
     }
     return action;
 }
+
+
+
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -43,18 +46,19 @@ function displaySalesOutcomes(user) {
                 transfer: 0
             };
 
-            // Initialize total counts for each action
-            const totalCounts = {};
-
             // Group outcomes by account number and filter out unwanted outcomes
             const groupedOutcomes = {};
 
             for (const key in outcomes) {
                 const outcome = outcomes[key];
                 const accountNumber = outcome.accountNumber;
+                console.log(`Processing outcome key: ${key}, accountNumber: ${accountNumber}`);
+
                 if (outcome.assignAction.trim() === "--") {
+                    console.log(`Skipping outcome with assignAction "--" for key: ${key}`);
                     continue; // Skip outcomes with "--" in assign action
                 }
+                
                 if (!groupedOutcomes[accountNumber]) {
                     groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
                 }
@@ -62,14 +66,8 @@ function displaySalesOutcomes(user) {
 
                 // Update sales counts
                 const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-                console.log(`Processing outcome: Account Number: ${accountNumber}, Action: "${outcome.assignAction}", Notes: "${outcome.notesValue}", Sale Type: "${saleType}"`); // Debugging line
-
-                // Update the total counts for each action
-                if (!totalCounts[outcome.assignAction]) {
-                    totalCounts[outcome.assignAction] = 0;
-                }
-                totalCounts[outcome.assignAction]++;
-
+                console.log(`Sale Type for action "${outcome.assignAction}", notes "${outcome.notesValue}": ${saleType}`);
+                
                 if (saleType === 'Billable HRA') {
                     salesCounts.billableHRA++;
                 } else if (saleType === 'Select RX') {
@@ -81,7 +79,6 @@ function displaySalesOutcomes(user) {
                 }
             }
 
-            console.log('Total Counts for Each Action:', totalCounts); // Debugging line
             console.log('Final Sales Counts:', salesCounts); // Debugging line
 
             // Update the sales counts in Firebase
