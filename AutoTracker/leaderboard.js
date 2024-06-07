@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards(user.email, user.uid);
+            updateLeaderboards(user.email);
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
+        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
         const firstName = nameParts[0];
         const lastName = nameParts[1];
@@ -24,19 +25,19 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    function updateLeaderboards(userEmail, userId) {
+    function updateLeaderboards(userEmail) {
         // Function to update the leaderboard for a specific sales type
-        function updateLeaderboard(salesType, leaderboardContainer) {
+        function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
                 const data = snapshot.val();
                 let salesArray = [];
 
                 // Collect sales data for the specified sales type
-                for (let uid in data) {
-                    if (data[uid][salesType] !== undefined) {
+                for (let userId in data) {
+                    if (data[userId][salesType] !== undefined) {
                         salesArray.push({
-                            userId: uid,
-                            salesCount: data[uid][salesType]
+                            userId: userId,
+                            salesCount: data[userId][salesType]
                         });
                     }
                 }
@@ -47,35 +48,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get the top 5 salespeople
                 const topSales = salesArray.slice(0, 5);
 
-                // Clear the leaderboard container
-                leaderboardContainer.innerHTML = '';
-
-                // Create a container for this sales type
-                const salesTypeContainer = document.createElement('div');
-                salesTypeContainer.className = 'sales-type-container';
-
-                // Create a title for this sales type
-                const title = document.createElement('h3');
-                title.className = 'sale-type-title';
-                title.textContent = salesType;
-                salesTypeContainer.appendChild(title);
+                // Clear the leaderboard element
+                leaderboardElement.innerHTML = '';
 
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
-                        const listItem = document.createElement('div');
-                        listItem.className = 'leaderboard-item';
+                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
+                        const listItem = document.createElement('li');
                         listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
-                        if (sales.userId === userId) {
-                            listItem.classList.add('current-user');
-                        }
-                        salesTypeContainer.appendChild(listItem);
+                        leaderboardElement.appendChild(listItem);
                     });
                 });
-
-                leaderboardContainer.appendChild(salesTypeContainer);
             });
         }
 
@@ -83,9 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const salesTypes = ['billableHRA', 'selectPatientManagement', 'selectRX', 'transfer'];
 
         // Update leaderboard for each sales type
-        const leaderboardContainer = document.getElementById('leaderboard-container');
         salesTypes.forEach(salesType => {
-            updateLeaderboard(salesType, leaderboardContainer);
+            const leaderboardElement = document.getElementById(`${salesType}-leaderboard`);
+            if (leaderboardElement) {
+                updateLeaderboard(salesType, leaderboardElement);
+            }
         });
     }
 });
