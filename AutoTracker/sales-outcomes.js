@@ -23,7 +23,6 @@ function getSaleType(action, notes) {
     return action;
 }
 
-
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -61,10 +60,10 @@ function displaySalesOutcomes(user) {
 
                 // Update sales counts
                 const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-                console.log(`Sale Type for action "${outcome.assignAction}": ${saleType}`); // Debugging line
+                console.log(`Action: "${outcome.assignAction}", Notes: "${outcome.notesValue}", Sale Type: "${saleType}"`); // Debugging line
                 if (saleType === 'Billable HRA') {
                     salesCounts.billableHRA++;
-                } else if (saleType === 'Select RX') { // Ensure this matches the return value in getSaleType
+                } else if (saleType === 'Select RX') {
                     salesCounts.selectRX++;
                 } else if (saleType === 'Select Patient Management') {
                     salesCounts.selectPatientManagement++;
@@ -72,6 +71,8 @@ function displaySalesOutcomes(user) {
                     salesCounts.transfer++;
                 }
             }
+
+            console.log('Final Sales Counts:', salesCounts); // Debugging line
 
             // Update the sales counts in Firebase
             salesCountsRef.set(salesCounts, (error) => {
@@ -170,36 +171,6 @@ function displaySalesOutcomes(user) {
         console.error('Error fetching sales outcomes:', error);
     });
 }
-
-// Helper functions
-function formatDate(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleDateString();
-}
-
-function formatTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleTimeString();
-}
-
-// Attach the function to the window object
-window.displaySalesOutcomes = displaySalesOutcomes;
-
-
-// Helper functions
-function formatDate(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleDateString();
-}
-
-function formatTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleTimeString();
-}
-
-// Attach the function to the window object
-window.displaySalesOutcomes = displaySalesOutcomes;
-
 
 // Helper functions
 function formatDate(dateTime) {
