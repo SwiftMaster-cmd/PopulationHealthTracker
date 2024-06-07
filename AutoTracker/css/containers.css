@@ -1,6 +1,6 @@
 /* Containers */
 .container {
-    background-color: var(--color-tertiary, #1e1e1e);
+    background-color: var(--color-secondary, #2a2a2a);
     border: 1px solid var(--color-quaternary, #444);
     padding: 20px;
     margin-bottom: 20px;
@@ -10,11 +10,11 @@
 
 /* Specific Container Styles */
 .counter-container {
-    background-color: var(--color-quaternary, #282828);
+    background-color: var(--color-tertiary, #1e1e1e);
 }
 
 .leaderboard-container {
-    background-color: var(--color-tertiary, #2a2a2a);
+    background-color: var(--color-secondary, #2a2a2a);
 }
 
 /* Sales Outcomes Container */
@@ -27,7 +27,7 @@
 
 /* Sales Counts Container */
 .sales-counts-container {
-    background-color: var(--color-tertiary, #1e1e1e);
+    background-color: var(--color-secondary, #2a2a2a);
     border: 1px solid var(--color-quaternary, #444);
     padding: 10px;
     margin-bottom: 20px;
@@ -41,7 +41,7 @@
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: var(--color-tertiary, #1e1e1e);
+    background-color: var(--color-secondary, #2a2a2a);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -97,6 +97,7 @@
     padding: 0 10px;
     font-size: 18px; /* Bigger text size */
     font-weight: bold; /* Bold text */
+    color: var(--color-secondary, #e0e0e0);
 }
 
 /* Align left for first name and phone number */
@@ -118,7 +119,7 @@
 
 /* Outcome Item */
 .outcome-item {
-    background-color: var(--color-tertiary, #2a2a2a);
+    background-color: var(--color-secondary, #2a2a2a);
     border: 1px solid var(--color-quaternary, #444);
     padding: 15px;
     margin: 15px 0;
@@ -161,4 +162,5 @@
 .notes {
     text-align: left;
     flex-grow: 1;
+    color: var(--color-secondary, #e0e0e0);
 }
