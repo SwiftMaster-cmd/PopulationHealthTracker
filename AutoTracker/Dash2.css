@@ -22,12 +22,15 @@ h1 {
     padding: 20px;
     max-width: 850px;
     margin: 0 auto; /* Center the container */
+    background-color: var(--color-tertiary, #1e1e1e);
+    border-radius: 5px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Sales Counts Container */
 .sales-counts-container {
-    background-color: var(--color-tertiary, #1e1e1e);
-    border: 1px solid var(--color-quaternary, #444);
+    background-color: var(--color-quaternary, #282828);
+    border: 1px solid var(--color-quinary, #444);
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -47,7 +50,7 @@ h1 {
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: var(--color-tertiary, #1e1e1e);
+    background-color: var(--color-quaternary, #282828);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -56,6 +59,7 @@ h1 {
     font-size: 1.2em;
     margin-bottom: 10px;
     font-weight: bold;
+    color: var(--color-secondary, #e0e0e0);
 }
 
 /* Account Content */
@@ -127,6 +131,10 @@ h1 {
     transition: background-color 0.3s;
     font-size: 18px; /* Same size as other text */
     text-align: center;
+}
+
+.more-info-btn:hover {
+    background-color: var(--color-quinary, #555);
 }
 
 /* More Info Popup */
@@ -224,7 +232,6 @@ h1 {
 .copy-action-btn:hover {
     background-color: var(--color-quinary, #555);
 }
-
 
 
 
