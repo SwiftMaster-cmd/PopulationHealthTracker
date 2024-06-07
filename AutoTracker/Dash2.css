@@ -15,26 +15,31 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* Sales Outcomes Container */
-#sales-outcomes-container {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    max-width: 850px;
-    margin: 0 auto; /* Center the container */
+/* Containers */
+.container {
     background-color: var(--color-tertiary, #1e1e1e);
+    border: 1px solid var(--color-quaternary, #444);
+    padding: 20px;
+    margin-bottom: 20px;
     border-radius: 5px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Sales Counts Container */
-.sales-counts-container {
+/* Specific Container Styles */
+.counter-container {
     background-color: var(--color-quaternary, #282828);
-    border: 1px solid var(--color-quinary, #444);
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+.leaderboard-container {
+    background-color: var(--color-tertiary, #2a2a2a);
+}
+
+/* Sales Outcomes Container */
+#sales-outcomes-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 850px;
+    margin: 0 auto; /* Center the container */
 }
 
 /* Sales Count Item */
@@ -45,16 +50,6 @@ h1 {
 }
 
 /* Account Container */
-.account-container {
-    border: 1px solid var(--color-quaternary, #444);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    background-color: var(--color-quaternary, #282828);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
-}
-
-/* Account Title */
 .account-title {
     font-size: 1.2em;
     margin-bottom: 10px;
@@ -62,7 +57,6 @@ h1 {
     color: var(--color-secondary, #e0e0e0);
 }
 
-/* Account Content */
 .account-content {
     display: flex;
     justify-content: space-between;
@@ -84,7 +78,6 @@ h1 {
     background-color: var(--color-tertiary, #2a2a2a);
 }
 
-/* Customer Row */
 .customer-row {
     display: flex;
     justify-content: space-between;
@@ -93,7 +86,6 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* Customer Field Container */
 .customer-field-container {
     display: flex;
     justify-content: space-between;
@@ -101,20 +93,17 @@ h1 {
     width: 100%;
 }
 
-/* Customer Field */
 .customer-field {
     padding: 0 10px;
     font-size: 18px; /* Bigger text size */
     font-weight: bold; /* Bold text */
 }
 
-/* Align left for first name and phone number */
 .customer-field.align-left {
     text-align: left;
     padding-left: 20px; /* Add padding to bring it closer to the left side */
 }
 
-/* Align right for last name and button */
 .customer-field.align-right {
     text-align: right;
     padding-right: 20px; /* Add padding to bring it closer to the right side */
@@ -137,7 +126,6 @@ h1 {
     background-color: var(--color-quinary, #555);
 }
 
-/* More Info Popup */
 .more-info-popup {
     background-color: var(--color-tertiary, #2a2a2a);
     border: 1px solid var(--color-quaternary, #444);
@@ -151,7 +139,7 @@ h1 {
 }
 
 /* Hover Effect */
-.account-container:hover {
+.container:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
 }
 
@@ -168,13 +156,11 @@ h1 {
     flex-direction: column;
 }
 
-/* Outcome Item Hover */
 .outcome-item:hover {
     background-color: var(--color-quaternary, #333);
     border-color: var(--color-quinary, #555);
 }
 
-/* Top Section */
 .top-section {
     display: flex;
     justify-content: space-between;
@@ -182,7 +168,6 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* Action */
 .action {
     text-align: center;
     font-size: 1.1em;
@@ -190,34 +175,29 @@ h1 {
     margin: 0 auto; /* Center the action container */
 }
 
-/* Date Top */
 .date-top {
     text-align: right;
     font-size: 0.9em;
     color: var(--color-quinary, #888);
 }
 
-/* Bottom Section */
 .bottom-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* Notes */
 .notes {
     text-align: left;
     flex-grow: 1;
 }
 
-/* Time Bottom */
 .time-bottom {
     text-align: right;
     font-size: 0.9em;
     color: var(--color-quinary, #888);
 }
 
-/* Copy Action Button */
 .copy-action-btn {
     padding: 5px 10px;
     background-color: var(--color-quaternary, #444);
@@ -232,12 +212,6 @@ h1 {
 .copy-action-btn:hover {
     background-color: var(--color-quinary, #555);
 }
-
-
-
-
-
-
 
 /* Leaderboard Styles */
 #leaderboard-container {
