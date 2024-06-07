@@ -47,7 +47,7 @@ h1 {
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: var(--color-tertiary, #1e1e1e); /* Unchanged */
+    background-color: var(--color-tertiary, #1e1e1e);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -119,7 +119,7 @@ h1 {
 /* More Info Button */
 .more-info-btn {
     padding: 10px; /* Adjusted padding for bigger size */
-    background-color: var(--color-tertiary, #1e1e1e); /* Lighter background */
+    background-color: var(--color-quaternary, #444);
     color: var(--color-secondary, #e0e0e0);
     border: none;
     border-radius: 5px;
@@ -130,16 +130,16 @@ h1 {
 }
 
 /* More Info Popup */
-.more-info-btn {
-    padding: 10px; /* Adjusted padding for bigger size */
-    background-color: var(--color-tertiary, #1e1e1e); /* Lighter background */
-    color: var(--color-secondary, #e0e0e0);
-    border: none;
+.more-info-popup {
+    background-color: var(--color-tertiary, #2a2a2a);
+    border: 1px solid var(--color-quaternary, #444);
+    padding: 10px;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 18px; /* Same size as other text */
-    text-align: center;
+    position: absolute;
+    z-index: 10;
+    margin-top: 40px; /* Adjust the margin to position it lower */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+    display: none;
 }
 
 /* Hover Effect */
@@ -149,8 +149,8 @@ h1 {
 
 /* Outcome Item */
 .outcome-item {
-    background-color: var(--color-quaternary, #2a2a2a); /* Darker background */
-    border: 1px solid var(--color-quinary, #444); /* Unchanged */
+    background-color: var(--color-tertiary, #2a2a2a);
+    border: 1px solid var(--color-quaternary, #444);
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
@@ -212,11 +212,15 @@ h1 {
 /* Copy Action Button */
 .copy-action-btn {
     padding: 5px 10px;
-    background-color: var(--color-tertiary, #1e1e1e); /* Lighter background */
+    background-color: var(--color-quaternary, #444);
     color: var(--color-secondary, #e0e0e0);
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
     font-size: 18px;
+}
+
+.copy-action-btn:hover {
+    background-color: var(--color-quinary, #555);
 }
