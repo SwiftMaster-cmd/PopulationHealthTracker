@@ -10,19 +10,19 @@ function formatDateTime(dateTime) {
         hour12: true
     });
 }
-
 function getSaleType(action, notes) {
-    if (action.includes('SRX: Enrolled') && !action.includes('Opted Out')) {
-        return 'Select RX';
+    if (action === 'SRX: Enrolled - Rx History Not Available' || action === 'SRX: Enrolled - Rx History Received') {
+        return 'Select RX Enrolled';
     } else if (action === 'HRA' && /bill|billable/i.test(notes)) {
         return 'Billable HRA';
     } else if (action === 'Notes' && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
         return 'Transfer';
-    } else if (action.includes('Select Patient Management')) {
+    } else if (action === 'Select Patient Management') {
         return 'Select Patient Management';
     }
     return action;
 }
+
 function displayCustomerInfo(customerInfo) {
     if (!customerInfo) {
         return '<div class="customer-info"><h4>No Customer Information Available</h4></div>';
