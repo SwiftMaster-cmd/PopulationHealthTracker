@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
-        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
         const firstName = nameParts[0];
         const lastName = nameParts[1];
@@ -55,10 +54,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
+                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
                         const listItem = document.createElement('li');
-                        listItem.textContent = `User: ${firstName} ${lastName}, Sales: ${sales.salesCount}`;
+                        listItem.innerHTML = `<div class="user-info"><span class="ranking">${index + 1}</span> ${firstName} ${lastName} - Sales: ${sales.salesCount}</div>`;
                         leaderboardElement.appendChild(listItem);
+                        leaderboardElement.appendChild(document.createElement('hr'));
                     });
                 });
             });

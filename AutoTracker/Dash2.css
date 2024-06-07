@@ -225,7 +225,6 @@ h1 {
     background-color: var(--color-quinary, #555);
 }
 
-
 /* Leaderboard Styles */
 #leaderboard-container {
     margin: 20px auto;
@@ -242,13 +241,20 @@ h1 {
 }
 
 #leaderboard-container ol {
-    list-style-type: decimal;
-    padding-left: 20px;
+    list-style-type: none;
+    padding-left: 0;
+    text-align: center;
 }
 
 #leaderboard-container li {
     margin: 5px 0;
     font-size: 18px;
+}
+
+#leaderboard-container hr {
+    border: 0;
+    border-top: 1px solid var(--color-quaternary, #444);
+    margin: 10px 0;
 }
 
 .nav-buttons-container {
@@ -284,4 +290,15 @@ h1 {
     transition: background-color 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
+}
+
+.user-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ranking {
+    font-weight: bold;
+    margin-right: 10px;
 }
