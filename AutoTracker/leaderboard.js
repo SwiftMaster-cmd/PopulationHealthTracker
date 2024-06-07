@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const dbRef = firebase.database().ref('salesCounts');
-    const userRef = firebase.database().ref('users');
-    const auth = firebase.auth();
+    const dbRef = ref(database, 'salesCounts');
+    const userRef = ref(database, 'users');
 
-    auth.onAuthStateChanged(user => {
+    onAuthStateChanged(auth, user => {
         if (user) {
             // User is signed in, proceed with reading the database
             updateLeaderboards();
@@ -16,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
-            dbRef.once('value').then(snapshot => {
+            get(dbRef).then(snapshot => {
                 const data = snapshot.val();
                 let salesArray = [];
 
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
-                    userRef.child(sales.userId).once('value').then(userSnapshot => {
+                    get(ref(database, `users/${sales.userId}`)).then(userSnapshot => {
                         const userData = userSnapshot.val();
                         const listItem = document.createElement('li');
                         listItem.textContent = `User: ${userData.email}, Sales: ${sales.salesCount}`;
