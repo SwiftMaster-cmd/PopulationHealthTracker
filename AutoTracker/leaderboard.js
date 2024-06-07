@@ -25,6 +25,17 @@ document.addEventListener('DOMContentLoaded', function() {
     updateLeaderboard('selectRX');
 });
 
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      // User is signed in, now safe to fetch data
+      updateLeaderboard('selectRX');
+    } else {
+      // No user is signed in, maybe redirect to login or show an error
+      console.log("User must be logged in to view the leaderboard");
+    }
+  });
+  
+
 // Fetching and displaying leaderboard
 function updateLeaderboard(saleType = 'selectRX') {
     salesCountsRef.orderByChild(saleType).limitToLast(5).on('value', snapshot => {
