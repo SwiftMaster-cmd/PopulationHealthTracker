@@ -1,4 +1,4 @@
-function displayLeaderboard(user) {
+function displayLeaderboard() {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/');
     outcomesRef.on('value', (snapshot) => {
@@ -9,16 +9,13 @@ function displayLeaderboard(user) {
             const leaderboardContainer = document.getElementById('leaderboard-container');
             leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
 
-            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
             const srxActions = [];
 
             for (const userId in outcomes) {
                 const userOutcomes = outcomes[userId];
                 for (const key in userOutcomes) {
                     const outcome = userOutcomes[key];
-                    const outcomeDate = outcome.outcomeTime.split('T')[0]; // Extract date from outcomeTime
-
-                    if (outcomeDate === today && (outcome.assignAction === 'Select RX Enrolled History Received' || outcome.assignAction === 'Select RX Enrolled History Not Received')) {
+                    if (outcome.assignAction === 'Select RX Enrolled History Received' || outcome.assignAction === 'Select RX Enrolled History Not Received') {
                         srxActions.push(outcome);
                     }
                 }
@@ -32,7 +29,7 @@ function displayLeaderboard(user) {
             // Display top 5 SRX actions
             const top5SrxActions = srxActions.slice(0, 5);
             const leaderboardTitle = document.createElement('h3');
-            leaderboardTitle.textContent = 'Top 5 SRX Actions for Today';
+            leaderboardTitle.textContent = 'Top 5 SRX Actions';
             leaderboardContainer.appendChild(leaderboardTitle);
 
             const leaderboardList = document.createElement('ol');
