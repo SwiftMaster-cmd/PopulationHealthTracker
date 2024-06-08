@@ -31,11 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.style.color = textColor;
         });
 
-        // Remove the hover update from here and handle it in CSS
-        // document.querySelectorAll('.button:hover').forEach(btn => {
-        //     btn.style.backgroundColor = styles.getPropertyValue('--color-secondary');
-        // });
-
         document.querySelectorAll('.container').forEach(container => {
             container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
             container.style.color = textColor;

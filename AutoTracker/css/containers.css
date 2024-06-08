@@ -1,7 +1,8 @@
+/* containers.css */
 /* Containers */
 .container {
-    background-color: var(--color-primary, #ffccff); /* Updated to primary color */
-    border: 1px solid var(--color-quaternary, #444);
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-quaternary);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -10,11 +11,13 @@
 
 /* Specific Container Styles */
 .counter-container {
-    background-color: var(--color-tertiary, #ff99ff); /* Updated to tertiary color */
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
 }
 
 .leaderboard-container {
-    background-color: var(--color-primary, #ffccff); /* Updated to primary color */
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
 }
 
 /* Sales Outcomes Container */
@@ -27,8 +30,9 @@
 
 /* Sales Counts Container */
 .sales-counts-container {
-    background-color: var(--color-primary, #ffccff); /* Updated to primary color */
-    border: 1px solid var(--color-quaternary, #444);
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: 1px solid var(--color-quaternary);
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -37,11 +41,12 @@
 
 /* Account Container */
 .account-container {
-    border: 1px solid var(--color-quaternary, #444);
+    border: 1px solid var(--color-quaternary);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: var(--color-primary, #ffccff); /* Updated to primary color */
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -50,7 +55,7 @@
     font-size: 1.2em;
     margin-bottom: 10px;
     font-weight: bold;
-    color: var(--color-secondary, #e0e0e0);
+    color: var(--color-primary);
 }
 
 /* Account Content */
@@ -70,9 +75,10 @@
     justify-content: center; /* Center contents vertically */
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid var(--color-quaternary, #444);
+    border: 1px solid var(--color-quaternary);
     border-radius: 5px;
-    background-color: var(--color-tertiary, #ff99ff); /* Updated to tertiary color */
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
 }
 
 /* Customer Row */
@@ -97,7 +103,7 @@
     padding: 0 10px;
     font-size: 18px; /* Bigger text size */
     font-weight: bold; /* Bold text */
-    color: var(--color-secondary, #e0e0e0);
+    color: var(--color-primary);
 }
 
 /* Align left for first name and phone number */
@@ -119,8 +125,9 @@
 
 /* Outcome Item */
 .outcome-item {
-    background-color: var(--color-primary, #ffccff); /* Updated to primary color */
-    border: 1px solid var(--color-quaternary, #444);
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    border: 1px solid var(--color-quaternary);
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
@@ -131,8 +138,8 @@
 }
 
 .outcome-item:hover {
-    background-color: var(--color-quaternary, #333);
-    border-color: var(--color-quinary, #555);
+    background-color: var(--color-quaternary);
+    border-color: var(--color-quinary);
 }
 
 /* Top Section */
@@ -162,5 +169,5 @@
 .notes {
     text-align: left;
     flex-grow: 1;
-    color: var(--color-secondary, #e0e0e0);
+    color: var(--color-secondary);
 }
