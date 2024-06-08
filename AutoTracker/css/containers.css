@@ -8,12 +8,12 @@
 
 /* Specific Container Styles */
 .counter-container {
-    background-color: #34495E; /* Slightly lighter background */
+    background-color: #1E1E1E; /* Slightly darker background */
     color: #ECF0F1; /* Light text color */
 }
 
 .leaderboard-container {
-    background-color: #34495E; /* Slightly lighter background */
+    background-color: #1E1E1E; /* Slightly darker background */
     color: #ECF0F1; /* Light text color */
 }
 
@@ -27,9 +27,9 @@
 
 /* Sales Counts Container */
 .sales-counts-container {
-    background-color: #34495E; /* Slightly lighter background */
+    background-color: #1E1E1E; /* Slightly darker background */
     color: #ECF0F1; /* Light text color */
-    border: 1px solid #16A085; /* Updated border color */
+    border: 1px solid #34495E; /* Updated border color */
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -38,11 +38,11 @@
 
 /* Account Container */
 .account-container {
-    border: 1px solid #16A085; /* Updated border color */
+    border: 1px solid #34495E; /* Updated border color */
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: #34495E; /* Slightly lighter background */
+    background-color: #1E1E1E; /* Slightly darker background */
     color: #ECF0F1; /* Light text color */
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
@@ -72,9 +72,9 @@
     justify-content: center; /* Center contents vertically */
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid #16A085; /* Updated border color */
+    border: 1px solid #34495E; /* Updated border color */
     border-radius: 5px;
-    background-color: #34495E; /* Slightly lighter background */
+    background-color: #1E1E1E; /* Slightly darker background */
     color: #ECF0F1; /* Light text color */
 }
 
@@ -122,9 +122,9 @@
 
 /* Outcome Item */
 .outcome-item {
-    background-color: #2C3E50; /* Darker background */
+    background-color: #1E1E1E; /* Darker background */
     color: #ECF0F1; /* Light text color */
-    border: 1px solid #16A085; /* Updated border color */
+    border: 1px solid #34495E; /* Updated border color */
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
@@ -135,7 +135,7 @@
 }
 
 .outcome-item:hover {
-    background-color: #16A085; /* Hover background color */
+    background-color: #34495E; /* Hover background color */
     border-color: #1ABC9C; /* Hover border color */
 }
 
