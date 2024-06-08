@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateLeaderboards(userEmail) {
-        console.log('Updating leaderboards for:', userEmail);
         updateLeaderboard(currentSalesType, currentPeriod, document.getElementById('leaderboard-list'));
         document.getElementById('leaderboard-title').textContent = `${capitalizeFirstLetter(currentSalesType)} - ${capitalizeFirstLetter(currentPeriod)}`;
     }

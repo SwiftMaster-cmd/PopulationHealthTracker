@@ -34,24 +34,26 @@
 <body>
     
     <h1>Sales Outcomes</h1>
-    <div id="leaderboard-controls">
-        <div class="leaderboard-buttons">
-            <button class="leaderboard-btn" onclick="showLeaderboard('day')">Day</button>
-            <button class="leaderboard-btn" onclick="showLeaderboard('week')">Week</button>
-            <button class="leaderboard-btn" onclick="showLeaderboard('month')">Month</button>
+    <div id="controls">
+        <div class="timeframe-buttons">
+            <button onclick="showLeaderboard('day')">Day</button>
+            <button onclick="showLeaderboard('week')">Week</button>
+            <button onclick="showLeaderboard('month')">Month</button>
         </div>
         <div class="sales-type-buttons">
-            <button class="sales-type-btn" onclick="showSalesType('billableHRA')">Billable HRA</button>
-            <button class="sales-type-btn" onclick="showSalesType('selectPatientManagement')">Patient Management</button>
-            <button class="sales-type-btn" onclick="showSalesType('selectRX')">Select RX</button>
-            <button class="sales-type-btn" onclick="showSalesType('transfer')">Transfer</button>
+            <button onclick="showSalesType('billableHRA')">Billable HRA</button>
+            <button onclick="showSalesType('selectPatientManagement')">Patient Management</button>
+            <button onclick="showSalesType('selectRX')">Select RX</button>
+            <button onclick="showSalesType('transfer')">Transfer</button>
         </div>
     </div>
     
     <div id="leaderboard-container">
-        <h3 id="leaderboard-title">Select RX - Day</h3>
+        <h3 id="leaderboard-title"></h3>
         <ul id="leaderboard-list"></ul>
     </div>
+    
+
     
     <div class="color-picker-container">
         <input type="color" id="colorPicker" />
