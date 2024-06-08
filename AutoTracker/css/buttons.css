@@ -1,8 +1,8 @@
 /* Buttons */
 .more-info-btn {
     padding: 10px; /* Adjusted padding for bigger size */
-    background-color: var(--color-primary, #ff00ff); /* Updated to primary color */
-    color: var(--color-secondary, #e0e0e0);
+    background-color: #3498DB; /* Primary color updated to a blue shade */
+    color: #ECF0F1; /* Light text color */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -12,13 +12,13 @@
 }
 
 .more-info-btn:hover {
-    background-color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
+    background-color: #2980B9; /* Darker shade for hover effect */
 }
 
 .copy-action-btn {
     padding: 5px 10px;
-    background-color: var(--color-primary, #ff00ff); /* Updated to primary color */
-    color: var(--color-secondary, #e0e0e0);
+    background-color: #3498DB; /* Primary color updated to a blue shade */
+    color: #ECF0F1; /* Light text color */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -27,14 +27,14 @@
 }
 
 .copy-action-btn:hover {
-    background-color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
+    background-color: #2980B9; /* Darker shade for hover effect */
 }
 
 /* General button style */
 .button {
     padding: 10px;
-    background-color: var(--color-primary, #ff00ff); /* Updated to primary color */
-    color: var(--color-secondary, #e0e0e0);
+    background-color: #3498DB; /* Primary color updated to a blue shade */
+    color: #ECF0F1; /* Light text color */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -44,5 +44,5 @@
 }
 
 .button:hover {
-    background-color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
+    background-color: #2980B9; /* Darker shade for hover effect */
 }
