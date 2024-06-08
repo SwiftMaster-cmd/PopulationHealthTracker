@@ -8,13 +8,13 @@
 
 /* Specific Container Styles */
 .counter-container {
-    background-color: #1E1E1E; /* Slightly darker background */
-    color: #ECF0F1; /* Light text color */
+    background-color: #1E1E1E; /* Fixed darker background */
+    color: #ECF0F1; /* Fixed light text color */
 }
 
 .leaderboard-container {
-    background-color: #1E1E1E; /* Slightly darker background */
-    color: #ECF0F1; /* Light text color */
+    background-color: #1E1E1E; /* Fixed darker background */
+    color: #ECF0F1; /* Fixed light text color */
 }
 
 /* Sales Outcomes Container */
@@ -27,9 +27,9 @@
 
 /* Sales Counts Container */
 .sales-counts-container {
-    background-color: #1E1E1E; /* Slightly darker background */
-    color: #ECF0F1; /* Light text color */
-    border: 1px solid #34495E; /* Updated border color */
+    background-color: #1E1E1E; /* Fixed darker background */
+    color: #ECF0F1; /* Fixed light text color */
+    border: 1px solid #34495E; /* Fixed border color */
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -38,12 +38,12 @@
 
 /* Account Container */
 .account-container {
-    border: 1px solid #34495E; /* Updated border color */
+    border: 1px solid #34495E; /* Fixed border color */
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: #1E1E1E; /* Slightly darker background */
-    color: #ECF0F1; /* Light text color */
+    background-color: #1E1E1E; /* Fixed darker background */
+    color: #ECF0F1; /* Fixed light text color */
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -52,7 +52,7 @@
     font-size: 1.2em;
     margin-bottom: 10px;
     font-weight: bold;
-    color: #ECF0F1; /* Light text color */
+    color: #ECF0F1; /* Fixed light text color */
 }
 
 /* Account Content */
@@ -72,10 +72,10 @@
     justify-content: center; /* Center contents vertically */
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid #34495E; /* Updated border color */
+    border: 1px solid #34495E; /* Fixed border color */
     border-radius: 5px;
-    background-color: #1E1E1E; /* Slightly darker background */
-    color: #ECF0F1; /* Light text color */
+    background-color: #1E1E1E; /* Fixed darker background */
+    color: #ECF0F1; /* Fixed light text color */
 }
 
 /* Customer Row */
@@ -100,7 +100,7 @@
     padding: 0 10px;
     font-size: 18px; /* Bigger text size */
     font-weight: bold; /* Bold text */
-    color: #ECF0F1; /* Light text color */
+    color: #ECF0F1; /* Fixed light text color */
 }
 
 /* Align left for first name and phone number */
@@ -122,9 +122,9 @@
 
 /* Outcome Item */
 .outcome-item {
-    background-color: #1E1E1E; /* Darker background */
-    color: #ECF0F1; /* Light text color */
-    border: 1px solid #34495E; /* Updated border color */
+    background-color: #1E1E1E; /* Fixed darker background */
+    color: #ECF0F1; /* Fixed light text color */
+    border: 1px solid #34495E; /* Fixed border color */
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
@@ -166,5 +166,5 @@
 .notes {
     text-align: left;
     flex-grow: 1;
-    color: #ECF0F1; /* Light text color */
+    color: #ECF0F1; /* Fixed light text color */
 }
