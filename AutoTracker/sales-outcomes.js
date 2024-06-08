@@ -38,11 +38,38 @@ function getSaleType(action, notes) {
     return action; // Return the original action if no type matches
 }
 
+function getCurrentDayKey() {
+    const now = new Date();
+    return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+}
+
+function getCurrentWeekKey() {
+    const now = new Date();
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
+    return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
+}
+
+Date.prototype.getWeekNumber = function() {
+    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+};
+
+function getCurrentMonthKey() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
+}
 
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
     const salesCountsRef = database.ref('salesCounts/' + user.uid);
+
+    const dayKey = getCurrentDayKey();
+    const weekKey = getCurrentWeekKey();
+    const monthKey = getCurrentMonthKey();
 
     outcomesRef.on('value', (snapshot) => {
         const outcomes = snapshot.val();
@@ -51,10 +78,24 @@ function displaySalesOutcomes(user) {
         if (outcomes) {
             // Initialize sales counts
             const salesCounts = {
-                billableHRA: 0,
-                selectRX: 0,
-                selectPatientManagement: 0,
-                transfer: 0
+                day: {
+                    billableHRA: 0,
+                    selectRX: 0,
+                    selectPatientManagement: 0,
+                    transfer: 0
+                },
+                week: {
+                    billableHRA: 0,
+                    selectRX: 0,
+                    selectPatientManagement: 0,
+                    transfer: 0
+                },
+                month: {
+                    billableHRA: 0,
+                    selectRX: 0,
+                    selectPatientManagement: 0,
+                    transfer: 0
+                }
             };
 
             // Process each outcome
@@ -71,13 +112,21 @@ function displaySalesOutcomes(user) {
 
                 // Update sales counts based on sale type
                 if (saleType === 'Billable HRA') {
-                    salesCounts.billableHRA++;
+                    salesCounts.day.billableHRA++;
+                    salesCounts.week.billableHRA++;
+                    salesCounts.month.billableHRA++;
                 } else if (saleType === 'Select RX') {
-                    salesCounts.selectRX++;
+                    salesCounts.day.selectRX++;
+                    salesCounts.week.selectRX++;
+                    salesCounts.month.selectRX++;
                 } else if (saleType === 'Select Patient Management') {
-                    salesCounts.selectPatientManagement++;
+                    salesCounts.day.selectPatientManagement++;
+                    salesCounts.week.selectPatientManagement++;
+                    salesCounts.month.selectPatientManagement++;
                 } else if (saleType === 'Transfer') {
-                    salesCounts.transfer++;
+                    salesCounts.day.transfer++;
+                    salesCounts.week.transfer++;
+                    salesCounts.month.transfer++;
                 }
 
                 console.log('Updated salesCounts:', salesCounts); // Log after each update
@@ -87,7 +136,12 @@ function displaySalesOutcomes(user) {
             console.log('Final Sales Counts:', salesCounts);
 
             // Update the sales counts in Firebase
-            salesCountsRef.set(salesCounts, (error) => {
+            const updates = {};
+            updates[`${dayKey}/day`] = salesCounts.day;
+            updates[`${weekKey}/week`] = salesCounts.week;
+            updates[`${monthKey}/month`] = salesCounts.month;
+
+            salesCountsRef.update(updates, (error) => {
                 if (error) {
                     console.error('Failed to update sales counts:', error);
                 } else {
@@ -101,11 +155,13 @@ function displaySalesOutcomes(user) {
 
             const salesCountsContainer = document.createElement('div');
             salesCountsContainer.classList.add('sales-counts-container');
-            for (const action in salesCounts) {
-                const countElement = document.createElement('div');
-                countElement.classList.add('sales-count-item');
-                countElement.innerHTML = `<strong>${action}:</strong> ${salesCounts[action]}`;
-                salesCountsContainer.appendChild(countElement);
+            for (const period in salesCounts) {
+                for (const action in salesCounts[period]) {
+                    const countElement = document.createElement('div');
+                    countElement.classList.add('sales-count-item');
+                    countElement.innerHTML = `<strong>${action} (${period}):</strong> ${salesCounts[period][action]}`;
+                    salesCountsContainer.appendChild(countElement);
+                }
             }
             outcomesContainer.appendChild(salesCountsContainer);
 
@@ -168,24 +224,23 @@ function displaySalesOutcomes(user) {
                         <div class="top-section">
                             <div class="action" style="float:left;">${outcome.assignAction}</div>
                             <div class="date-top" style="float:right;">${formatDate(outcome.outcomeTime)}</div>
-                        </div>
-                        <div class="bottom-section">
-                            <div class="notes" style="float:left;">${outcome.notesValue || 'No notes'}</div>
-                            <div class="time-bottom" style="float:right;">${formatTime(outcome.outcomeTime)}</div>
-                        </div>
-                    `;
-                    salesInfoContainer.appendChild(outcomeElement);
-                }
-
-                outcomesContainer.appendChild(accountContainer);
+                        </div>               
+                             <div class="bottom-section">
+                        <div class="notes" style="float:left;">${outcome.notesValue || 'No notes'}</div>
+                        <div class="time-bottom" style="float:right;">${formatTime(outcome.outcomeTime)}</div>
+                    </div>
+                `;
+                salesInfoContainer.appendChild(outcomeElement);
             }
-        } else {
-            console.log('No sales outcomes found for user:', user.displayName);
-        }
-    }, (error) => {
-        console.error('Error fetching sales outcomes:', error);
-    });
-}
 
+            outcomesContainer.appendChild(accountContainer);
+        }
+    } else {
+        console.log('No sales outcomes found for user:', user.displayName);
+    }
+}, (error) => {
+    console.error('Error fetching sales outcomes:', error);
+});
+}
 // Attach the function to the window object
 window.displaySalesOutcomes = displaySalesOutcomes;
