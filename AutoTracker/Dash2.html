@@ -31,111 +31,48 @@
         }
     </style>
 </head>
-
 <body>
-    <!-- Your app content -->
-    <div id="leaderboard-container">
-        <h3>Leaderboards</h3>
-        <div id="leaderboard-types-container">
-            <div class="leaderboard-container" id="billableHRA-leaderboard">
+    
+    <h1>Sales Outcomes</h1>
+    <div id="leaderboard-container" class="container">
+        <h3>Sales Leaderboard</h3>
+        <div id="leaderboard-types-container" class="container">
+            <div class="leaderboard-container" id="billableHRA-container">
                 <h2>Billable HRA</h2>
-                <ul class="leaderboard-list"></ul>
+                <ol id="billableHRA-leaderboard" class="leaderboard-list"></ol>
             </div>
-            <div class="leaderboard-container" id="selectPatientManagement-leaderboard">
+    
+            <div class="leaderboard-container" id="selectPatientManagement-container">
                 <h2>Select Patient Management</h2>
-                <ul class="leaderboard-list"></ul>
+                <ol id="selectPatientManagement-leaderboard" class="leaderboard-list"></ol>
             </div>
-            <div class="leaderboard-container" id="selectRX-leaderboard">
+    
+            <div class="leaderboard-container" id="selectRX-container">
                 <h2>Select RX</h2>
-                <ul class="leaderboard-list"></ul>
+                <ol id="selectRX-leaderboard" class="leaderboard-list"></ol>
             </div>
-            <div class="leaderboard-container" id="transfer-leaderboard">
+    
+            <div class="leaderboard-container" id="transfer-container">
                 <h2>Transfer</h2>
-                <ul class="leaderboard-list"></ul>
+                <ol id="transfer-leaderboard" class="leaderboard-list"></ol>
             </div>
         </div>
     </div>
+    
+    <div class="color-picker-container">
+        <input type="color" id="colorPicker" />
+        <button id="applyColor" class="button">Apply Color Palette</button>
+    </div>
 
-    <!-- Your script for updating leaderboards -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dbRef = firebase.database().ref('salesCounts');
-            const userRef = firebase.database().ref('users');
-            const auth = firebase.auth();
+    <div class="outcomes-chart-container container">
+        <div id="sales-outcomes-container" class="container"></div>
+        <canvas id="sales-bar-chart" width="400" height="200"></canvas>
+    </div>
 
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    // User is signed in, proceed with reading the database
-                    updateLeaderboards();
-                } else {
-                    // No user is signed in, redirect to login
-                    window.location.href = 'index.html';
-                }
-            });
+    <h4>To add the auto tracker: click the button, copy the text and put it in the URL part of the bookmark, name it AutoTracker or whatever you would like, then save. The bookmark must be pressed every time the URL changes or you work on a new sale, so there's a visual indicator to show if the tracker is active in the Actions Tab.</h4>
+    <h4>
+        <button class="navigate-button button" onclick="window.location.href='AutoTracker/Dash2.html'">AutoTracker Dashboard</button>
+    </h4>
 
-            function getEmailName(email) {
-                return email.split('@')[0];
-            }
-
-            function updateLeaderboards() {
-                // Function to update the leaderboard for a specific sales type
-                function updateLeaderboard(salesType, leaderboardElement) {
-                    dbRef.once('value').then(snapshot => {
-                        const data = snapshot.val();
-                        let salesArray = [];
-
-                        // Collect sales data for the specified sales type
-                        for (let userId in data) {
-                            if (data[userId][salesType] !== undefined) {
-                                salesArray.push({
-                                    userId: userId,
-                                    salesCount: data[userId][salesType]
-                                });
-                            }
-                        }
-
-                        // Sort the sales data in descending order
-                        salesArray.sort((a, b) => b.salesCount - a.salesCount);
-
-                        // Get the top 5 salespeople
-                        const topSales = salesArray.slice(0, 5);
-
-                        // Clear the leaderboard element
-                        leaderboardElement.innerHTML = '';
-
-                        // Use a Set to track processed user IDs
-                        const processedUsers = new Set();
-
-                        // Display the top 5 salespeople
-                        topSales.forEach((sales, index) => {
-                            if (!processedUsers.has(sales.userId)) {
-                                userRef.child(sales.userId).once('value').then(userSnapshot => {
-                                    const userData = userSnapshot.val();
-                                    if (userData && userData.email) {
-                                        const emailName = getEmailName(userData.email);
-                                        const listItem = document.createElement('li');
-                                        listItem.textContent = `#${index + 1} - ${emailName} - ${sales.salesCount}`;
-                                        leaderboardElement.appendChild(listItem);
-                                        processedUsers.add(sales.userId);  // Mark user as processed
-                                    }
-                                });
-                            }
-                        });
-                    });
-                }
-
-                // Define sales types
-                const salesTypes = ['billableHRA', 'selectPatientManagement', 'selectRX', 'transfer'];
-
-                // Update leaderboard for each sales type
-                salesTypes.forEach(salesType => {
-                    const leaderboardElement = document.getElementById(`${salesType}-leaderboard`);
-                    if (leaderboardElement) {
-                        updateLeaderboard(salesType, leaderboardElement);
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
