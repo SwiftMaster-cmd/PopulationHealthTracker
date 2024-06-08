@@ -29,21 +29,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateLeaderboards(userEmail) {
-        updateLeaderboard(currentSalesType, currentPeriod, document.getElementById('leaderboard-list'));
+        updateLeaderboard(currentSalesType, document.getElementById('leaderboard-list'));
         document.getElementById('leaderboard-title').textContent = `${capitalizeFirstLetter(currentSalesType)} - ${capitalizeFirstLetter(currentPeriod)}`;
     }
 
-    function updateLeaderboard(salesType, period, leaderboardElement) {
+    function updateLeaderboard(salesType, leaderboardElement) {
         dbRef.once('value').then(snapshot => {
             const data = snapshot.val();
             let salesArray = [];
 
-            // Collect sales data for the specified sales type and period
+            // Collect sales data for the specified sales type
             for (let userId in data) {
-                if (data[userId][salesType] && data[userId][salesType][period] !== undefined) {
+                if (data[userId][salesType] !== undefined) {
                     salesArray.push({
                         userId: userId,
-                        salesCount: data[userId][salesType][period]
+                        salesCount: data[userId][salesType]
                     });
                 }
             }
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             topSales.forEach((sales, index) => {
                 userRef.child(sales.userId).once('value').then(userSnapshot => {
                     const userData = userSnapshot.val();
-                    const { firstName, lastName } = extractNamesFromEmail(userEmail);
+                    const { firstName, lastName } = extractNamesFromEmail(userData.email);
                     const listItem = document.createElement('li');
                     listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
                     leaderboardElement.appendChild(listItem);
