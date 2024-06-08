@@ -23,7 +23,6 @@ function formatDateTime(dateTime) {
 }
 
 function getSaleType(action, notes) {
-    // Normalize action to lowercase for reliable comparison
     const normalizedAction = action.toLowerCase();
 
     if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
@@ -35,12 +34,12 @@ function getSaleType(action, notes) {
     } else if (normalizedAction.includes('select patient management')) {
         return 'Select Patient Management';
     }
-    return action; // Return the original action if no type matches
+    return action;
 }
 
 function getCurrentDayKey() {
     const now = new Date();
-    return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    return now.toISOString().split('T')[0];
 }
 
 function getCurrentWeekKey() {
@@ -59,7 +58,7 @@ Date.prototype.getWeekNumber = function() {
 
 function getCurrentMonthKey() {
     const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
 function isSameDay(date1, date2) {
@@ -84,10 +83,6 @@ function displaySalesOutcomes(user) {
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
     const salesCountsRef = database.ref('salesCounts/' + user.uid);
 
-    const dayKey = getCurrentDayKey();
-    const weekKey = getCurrentWeekKey();
-    const monthKey = getCurrentMonthKey();
-
     const now = new Date();
 
     outcomesRef.on('value', (snapshot) => {
@@ -95,7 +90,6 @@ function displaySalesOutcomes(user) {
         console.log('Sales outcomes retrieved:', outcomes);
 
         if (outcomes) {
-            // Initialize sales counts
             const salesCounts = {
                 day: {
                     billableHRA: 0,
@@ -117,7 +111,6 @@ function displaySalesOutcomes(user) {
                 }
             };
 
-            // Process each outcome
             for (const key in outcomes) {
                 const outcome = outcomes[key];
                 const action = outcome.assignAction;
@@ -126,11 +119,9 @@ function displaySalesOutcomes(user) {
 
                 console.log(`Processing outcome - Key: ${key}, Action: "${action}", Notes: "${notes}"`);
 
-                // Get the sale type
                 const saleType = getSaleType(action, notes);
                 console.log(`Identified Sale Type: ${saleType}`);
 
-                // Update sales counts based on sale type and time frame
                 if (isSameDay(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
                         salesCounts.day.billableHRA++;
@@ -167,17 +158,15 @@ function displaySalesOutcomes(user) {
                     }
                 }
 
-                console.log('Updated salesCounts:', salesCounts); // Log after each update
+                console.log('Updated salesCounts:', salesCounts);
             }
 
-            // Log final sales counts
             console.log('Final Sales Counts:', salesCounts);
 
-            // Update the sales counts in Firebase
             const updates = {};
-            updates[`${dayKey}/day`] = salesCounts.day;
-            updates[`${weekKey}/week`] = salesCounts.week;
-            updates[`${monthKey}/month`] = salesCounts.month;
+            updates[`day`] = salesCounts.day;
+            updates[`week`] = salesCounts.week;
+            updates[`month`] = salesCounts.month;
 
             salesCountsRef.update(updates, (error) => {
                 if (error) {
@@ -187,9 +176,8 @@ function displaySalesOutcomes(user) {
                 }
             });
 
-            // Display sales counts in the UI
             const outcomesContainer = document.getElementById('sales-outcomes-container');
-            outcomesContainer.innerHTML = ''; // Clear previous outcomes
+            outcomesContainer.innerHTML = '';
 
             const salesCountsContainer = document.createElement('div');
             salesCountsContainer.classList.add('sales-counts-container');
@@ -203,7 +191,6 @@ function displaySalesOutcomes(user) {
             }
             outcomesContainer.appendChild(salesCountsContainer);
 
-            // Process and display outcomes
             const groupedOutcomes = {};
 
             for (const key in outcomes) {
@@ -211,22 +198,20 @@ function displaySalesOutcomes(user) {
                 const accountNumber = outcome.accountNumber;
 
                 if (outcome.assignAction.trim() === "--") {
-                    continue; // Skip outcomes with "--" in assign action
+                    continue;
                 }
                 if (!groupedOutcomes[accountNumber]) {
                     groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
                 }
-                groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome; // Keep only the latest action for each type
+                groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome;
             }
 
-            // Sort account numbers by the newest outcome time
             const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
                 const latestA = Object.values(groupedOutcomes[a].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                 const latestB = Object.values(groupedOutcomes[b].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
                 return new Date(latestB.outcomeTime) - new Date(latestA.outcomeTime);
             });
 
-            // Display grouped outcomes, sorted by newest account first
             for (const accountNumber of sortedAccounts) {
                 const accountContainer = document.createElement('div');
                 accountContainer.classList.add('account-container');
@@ -255,7 +240,7 @@ function displaySalesOutcomes(user) {
                 accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
 
                 for (const outcome of accountOutcomes) {
-                    if (outcome.assignAction.trim() === "--") continue; // Ensure actions with "--" are not displayed
+                    if (outcome.assignAction.trim() === "--") continue;
                     const outcomeElement = document.createElement('div');
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
