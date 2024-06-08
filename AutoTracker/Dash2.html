@@ -34,29 +34,23 @@
 <body>
     
     <h1>Sales Outcomes</h1>
-    <div id="leaderboard-container" class="container">
-        <h3>Sales Leaderboard</h3>
-        <div id="leaderboard-types-container" class="container">
-            <div class="leaderboard-container" id="billableHRA-container">
-                <h2>Billable HRA</h2>
-                <ol id="billableHRA-leaderboard" class="leaderboard-list"></ol>
-            </div>
-    
-            <div class="leaderboard-container" id="selectPatientManagement-container">
-                <h2>Select Patient Management</h2>
-                <ol id="selectPatientManagement-leaderboard" class="leaderboard-list"></ol>
-            </div>
-    
-            <div class="leaderboard-container" id="selectRX-container">
-                <h2>Select RX</h2>
-                <ol id="selectRX-leaderboard" class="leaderboard-list"></ol>
-            </div>
-    
-            <div class="leaderboard-container" id="transfer-container">
-                <h2>Transfer</h2>
-                <ol id="transfer-leaderboard" class="leaderboard-list"></ol>
-            </div>
+    <div id="leaderboard-controls">
+        <div class="leaderboard-buttons">
+            <button class="leaderboard-btn" onclick="showLeaderboard('day')">Day</button>
+            <button class="leaderboard-btn" onclick="showLeaderboard('week')">Week</button>
+            <button class="leaderboard-btn" onclick="showLeaderboard('month')">Month</button>
         </div>
+        <div class="sales-type-buttons">
+            <button class="sales-type-btn" onclick="showSalesType('billableHRA')">Billable HRA</button>
+            <button class="sales-type-btn" onclick="showSalesType('selectPatientManagement')">Patient Management</button>
+            <button class="sales-type-btn" onclick="showSalesType('selectRX')">Select RX</button>
+            <button class="sales-type-btn" onclick="showSalesType('transfer')">Transfer</button>
+        </div>
+    </div>
+    
+    <div id="leaderboard-container">
+        <h3 id="leaderboard-title">Select RX - Day</h3>
+        <ul id="leaderboard-list"></ul>
     </div>
     
     <div class="color-picker-container">

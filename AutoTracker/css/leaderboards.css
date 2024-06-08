@@ -105,3 +105,33 @@
     font-weight: bold;
     margin-right: 10px;
 }
+
+/* Positioning the buttons around the leaderboard */
+#leaderboard-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.leaderboard-buttons, .sales-type-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Adjusting the button styles */
+.leaderboard-btn, .sales-type-btn {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #3498DB;
+    color: #ECF0F1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px;
+}
+
+.leaderboard-btn:hover, .sales-type-btn:hover {
+    background-color: #2980B9;
+}
