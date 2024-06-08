@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateLeaderboard(salesType, period, leaderboardElement) {
         const periodKey = getPeriodKey();
-        const periodRef = `${period}/${periodKey}/${salesType}`;
+        const periodRef = `salesCounts/${periodKey}/${period}/${salesType}`;
         console.log('Fetching data from:', periodRef);
         dbRef.child(periodRef).once('value').then(snapshot => {
             const data = snapshot.val();
