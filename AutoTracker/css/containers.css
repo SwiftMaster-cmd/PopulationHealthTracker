@@ -15,6 +15,11 @@
 .leaderboard-container {
     background-color: #1E1E1E; /* Fixed darker background */
     color: #ECF0F1; /* Fixed light text color */
+    border: 1px solid #34495E; /* Fixed border color */
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Sales Outcomes Container */
@@ -103,7 +108,7 @@
     color: #ECF0F1; /* Fixed light text color */
 }
 
-/* Align left for first name  and phone number */
+/* Align left for first name and phone number */
 .customer-field.align-left {
     text-align: left;
     padding-left: 20px; /* Add padding to bring it closer to the left side */
