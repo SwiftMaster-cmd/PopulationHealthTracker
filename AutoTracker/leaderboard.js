@@ -14,10 +14,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function extractNamesFromEmail(email) {
+        if (typeof email !== 'string') {
+            return { firstName: 'Unknown', lastName: 'User' };
+        }
+        
         const emailParts = email.split('@');
+        if (emailParts.length < 2) {
+            return { firstName: 'Unknown', lastName: 'User' };
+        }
+
         const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0];
-        const lastName = nameParts[1];
+        const firstName = nameParts[0] ? nameParts[0] : 'Unknown';
+        const lastName = nameParts[1] ? nameParts[1] : 'User';
         return {
             firstName: firstName,
             lastName: lastName
