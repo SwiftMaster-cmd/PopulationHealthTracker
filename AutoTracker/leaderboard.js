@@ -1,17 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const dbRef = firebase.database().ref('salesCounts');
-    const userRef = firebase.database().ref('users');
-    const auth = firebase.auth();
 
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            // User is signed in, proceed with reading the database
-            updateLeaderboards(user.email);
-        } else {
-            // No user is signed in, redirect to login
-            window.location.href = 'index.html';
-        }
-    });
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
