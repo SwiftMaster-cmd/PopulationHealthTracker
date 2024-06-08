@@ -1,45 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if Firebase app is already initialized
-    if (!firebase.apps.length) {
-        const firebaseConfig = {
-            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
-            authDomain: "track-dac15.firebaseapp.com",
-            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
-            projectId: "track-dac15",
-            storageBucket: "track-dac15.appspot.com",
-            messagingSenderId: "495156821305",
-            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
-            measurementId: "G-RVBYB0RR06"
-        };
-        firebase.initializeApp(firebaseConfig);
-    } else {
-        firebase.app(); // if already initialized, use that one
-    }
-
     const dbRef = firebase.database().ref('salesCounts');
     const userRef = firebase.database().ref('users');
     const auth = firebase.auth();
-    const provider = new firebase.auth.GoogleAuthProvider();
 
     auth.onAuthStateChanged(user => {
         if (user) {
-            console.log('User authenticated:', user);
-            window.displaySalesOutcomes(user); // Call the global function
-            updateLeaderboards(user.email); // Update leaderboards
+            // User is signed in, proceed with reading the database
+            updateLeaderboards(user.email);
         } else {
-            auth.signInWithPopup(provider).then((result) => {
-                const user = result.user;
-                console.log('User signed in:', user);
-                window.displaySalesOutcomes(user); // Call the global function
-                updateLeaderboards(user.email); // Update leaderboards
-            }).catch((error) => {
-                console.error('Authentication error:', error);
-            });
+            // No user is signed in, redirect to login
+            window.location.href = 'index.html';
         }
     });
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
+        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
         const firstName = nameParts[0];
         const lastName = nameParts[1];
@@ -75,15 +51,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear the leaderboard element
                 leaderboardElement.innerHTML = '';
 
+                // Use a Set to track processed user IDs
+                const processedUsers = new Set();
+
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
-                    userRef.child(sales.userId).once('value').then(userSnapshot => {
-                        const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
-                        leaderboardElement.appendChild(listItem);
-                    });
+                    if (!processedUsers.has(sales.userId)) {
+                        userRef.child(sales.userId).once('value').then(userSnapshot => {
+                            const userData = userSnapshot.val();
+                            const { firstName, lastName } = extractNamesFromEmail(userData.email);
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
+                            leaderboardElement.appendChild(listItem);
+                            processedUsers.add(sales.userId);  // Mark user as processed
+                        });
+                    }
                 });
             });
         }
