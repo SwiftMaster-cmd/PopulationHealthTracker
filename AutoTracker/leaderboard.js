@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (user) {
             // User is signed in, proceed with reading the database
             console.log('User signed in:', user.email);
-            updateLeaderboards(user.email);
+            updateLeaderboards();
         } else {
             // No user is signed in, redirect to login
             console.log('No user signed in, redirecting to login.');
@@ -64,14 +64,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function updateLeaderboards(userEmail) {
+    function updateLeaderboards() {
         updateLeaderboard(currentSalesType, currentPeriod, document.getElementById('leaderboard-list'));
         document.getElementById('leaderboard-title').textContent = `${capitalizeFirstLetter(currentSalesType)} - ${capitalizeFirstLetter(currentPeriod)}`;
     }
 
     function updateLeaderboard(salesType, period, leaderboardElement) {
         const periodKey = getPeriodKey();
-        const periodRef = `salesCounts/${periodKey}/${period}/${salesType}`;
+        const periodRef = `${period}/${periodKey}/${salesType}`;
         console.log('Fetching data from:', periodRef);
         dbRef.child(periodRef).once('value').then(snapshot => {
             const data = snapshot.val();
@@ -121,13 +121,13 @@ document.addEventListener('DOMContentLoaded', function() {
     window.showLeaderboard = function(period) {
         currentPeriod = period;
         console.log('Period changed to:', currentPeriod);
-        updateLeaderboards(firebase.auth().currentUser.email);
+        updateLeaderboards();
     }
 
     window.showSalesType = function(salesType) {
         currentSalesType = salesType;
         console.log('Sales type changed to:', currentSalesType);
-        updateLeaderboards(firebase.auth().currentUser.email);
+        updateLeaderboards();
     }
 
     function capitalizeFirstLetter(string) {
@@ -135,5 +135,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Display default leaderboard on load
-    updateLeaderboards(firebase.auth().currentUser ? firebase.auth().currentUser.email : '');
+    updateLeaderboards();
 });
