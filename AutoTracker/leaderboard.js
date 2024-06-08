@@ -25,7 +25,14 @@ function getCurrentMonthKey() {
 function loadLeaderboard() {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
-    
+
+    // Log the entire salesCounts data to understand the structure
+    salesCountsRef.once('value', snapshot => {
+        console.log('Full salesCounts data:', snapshot.val());
+    }).catch(error => {
+        console.error('Error fetching salesCounts data:', error);
+    });
+
     const dayKey = getCurrentDayKey();
     const weekKey = getCurrentWeekKey();
     const monthKey = getCurrentMonthKey();
@@ -52,6 +59,7 @@ function loadLeaderboard() {
             snapshot.forEach(childSnapshot => {
                 const userId = childSnapshot.key;
                 const userData = childSnapshot.val();
+                console.log(`Data for user ${userId}:`, userData); // Log user data
                 const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
                 users.push({ userId, count });
             });
