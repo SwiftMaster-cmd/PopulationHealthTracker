@@ -30,13 +30,40 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
+    function getCurrentDateKey() {
+        const now = new Date();
+        return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    }
+
+    function getCurrentWeekKey() {
+        const now = new Date();
+        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
+        return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
+    }
+
+    function getCurrentMonthKey() {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
+    }
+
+    function getPeriodKey() {
+        if (currentPeriod === 'day') {
+            return getCurrentDateKey();
+        } else if (currentPeriod === 'week') {
+            return getCurrentWeekKey();
+        } else if (currentPeriod === 'month') {
+            return getCurrentMonthKey();
+        }
+    }
+
     function updateLeaderboards(userEmail) {
         updateLeaderboard(currentSalesType, currentPeriod, document.getElementById('leaderboard-list'));
         document.getElementById('leaderboard-title').textContent = `${capitalizeFirstLetter(currentSalesType)} - ${capitalizeFirstLetter(currentPeriod)}`;
     }
 
     function updateLeaderboard(salesType, period, leaderboardElement) {
-        const periodRef = `${period}/${salesType}`;
+        const periodKey = getPeriodKey();
+        const periodRef = `${period}/${periodKey}/${salesType}`;
         console.log('Fetching data from:', periodRef);
         dbRef.child(periodRef).once('value').then(snapshot => {
             const data = snapshot.val();
