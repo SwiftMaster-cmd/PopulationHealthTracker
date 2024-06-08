@@ -27,10 +27,6 @@ function loadLeaderboard() {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
 
-    const dayKey = getCurrentDayKey();
-    const weekKey = getCurrentWeekKey();
-    const monthKey = getCurrentMonthKey();
-    
     const leaderboardContainer = document.getElementById('leaderboard-container');
     if (!leaderboardContainer) {
         console.error('Leaderboard container element not found');
@@ -39,22 +35,17 @@ function loadLeaderboard() {
 
     leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
     
-    const periods = {
-        day: dayKey,
-        week: weekKey,
-        month: getCurrentMonthKey()
-    };
+    const periods = ['day', 'week', 'month'];
     const saleType = 'selectRX'; // Focusing on SRX
 
-    for (const period in periods) {
-        const periodKey = periods[period];
+    periods.forEach(period => {
         salesCountsRef.once('value', snapshot => {
             const salesData = snapshot.val();
             const users = [];
 
             for (const userId in salesData) {
                 const userData = salesData[userId];
-                const count = userData[periodKey] && userData[periodKey][saleType] ? userData[periodKey][saleType] : 0;
+                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
                 users.push({ userId, count });
             }
 
@@ -78,7 +69,7 @@ function loadLeaderboard() {
         }).catch(error => {
             console.error('Error fetching sales data:', error);
         });
-    }
+    });
 }
 
 // Ensure the DOM is fully loaded before running the script
