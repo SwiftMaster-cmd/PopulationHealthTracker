@@ -1,3 +1,4 @@
+// Helper functions
 function getCurrentDayKey() {
     const now = new Date();
     return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
@@ -54,13 +55,13 @@ function loadLeaderboard() {
 
     for (const period in periods) {
         const periodKey = periods[period];
-        salesCountsRef.orderByChild(`${period}/${saleType}`).limitToLast(5).once('value', snapshot => {
+        salesCountsRef.orderByChild(`${periodKey}/${saleType}`).limitToLast(5).once('value', snapshot => {
             const users = [];
             snapshot.forEach(childSnapshot => {
                 const userId = childSnapshot.key;
                 const userData = childSnapshot.val();
                 console.log(`Data for user ${userId}:`, userData); // Log user data
-                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                const count = userData[periodKey] && userData[periodKey][saleType] ? userData[periodKey][saleType] : 0;
                 users.push({ userId, count });
             });
 
