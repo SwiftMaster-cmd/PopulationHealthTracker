@@ -40,12 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 salesArray.sort((a, b) => b.salesCount - a.salesCount);
 
                 const topSales = salesArray.slice(0, 5);
-                leaderboardElement.innerHTML = '';
+                leaderboardElement.innerHTML = ''; // Clear the existing leaderboard
 
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
+                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
                         const listItem = document.createElement('li');
                         listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
