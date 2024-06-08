@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get the top 5 salespeople
                 const topSales = salesArray.slice(0, 5);
 
-                // Clear the leaderboard element before appending new items
+                // Clear the leaderboard element
                 leaderboardElement.innerHTML = '';
 
                 // Display the top 5 salespeople
