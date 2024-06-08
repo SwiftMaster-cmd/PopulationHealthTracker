@@ -3,110 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Outcomes</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/containers.css">
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/leaderboards.css">
-    <!-- Load Firebase SDKs -->
+    <title>Your App</title>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Include Chroma.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
-    
-    <!-- Load Custom Scripts -->
-    <script src="firebase-init.js" defer></script>
-    <script src="auth.js" defer></script>
-    <script src="customer-info.js" defer></script>
-    <script src="sales-outcomes.js" defer></script>
-    <script src="color-palette.js" defer></script>
-    <script src="leaderboard.js" defer></script>
-
-    <style>
-        .color-picker-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-    </style>
+    <!-- Initialize Firebase -->
+    <script src="path/to/your/firebase-init.js"></script>
 </head>
 <body>
-    
-    <h1>Sales Outcomes</h1>
-    <div id="leaderboard-container" class="container">
-        <h3>Sales Leaderboard</h3>
-        <div id="leaderboard-types-container" class="container">
-            <div class="leaderboard-container" id="billableHRA-container">
-                <h2>Billable HRA</h2>
-                <ol id="billableHRA-leaderboard" class="leaderboard-list"></ol>
-            </div>
-    
-            <div class="leaderboard-container" id="selectPatientManagement-container">
-                <h2>Select Patient Management</h2>
-                <ol id="selectPatientManagement-leaderboard" class="leaderboard-list"></ol>
-            </div>
-    
-            <div class="leaderboard-container" id="selectRX-container">
-                <h2>Select RX</h2>
-                <ol id="selectRX-leaderboard" class="leaderboard-list"></ol>
-            </div>
-    
-            <div class="leaderboard-container" id="transfer-container">
-                <h2>Transfer</h2>
-                <ol id="transfer-leaderboard" class="leaderboard-list"></ol>
-            </div>
-        </div>
-    </div>
-    
-    <div class="color-picker-container">
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-    </div>
-
-    <!-- Directly place the sales outcomes container without an additional wrapping container -->
-    <div id="sales-outcomes-container"></div>
-    <canvas id="sales-bar-chart" width="400" height="200"></canvas>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Outcomes</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/containers.css">
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/leaderboards.css">
-    <!-- Load Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Include Chroma.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
-    
-    <!-- Load Custom Scripts -->
-    <script src="firebase-init.js" defer></script>
-    <script src="auth.js" defer></script>
-    <script src="customer-info.js" defer></script>
-    <script src="sales-outcomes.js" defer></script>
-    <script src="color-palette.js" defer></script>
-    <script src="leaderboard.js" defer></script>
-
-    <style>
-        .color-picker-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-    
-    <h1>Sales Outcomes</h1>
+    <!-- Your app content -->
     <div id="leaderboard-container">
-        <h3>Sales Leaderboard</h3>
+        <h3>Leaderboards</h3>
         <div id="leaderboard-types-container">
             <div class="leaderboard-container" id="billableHRA-leaderboard">
                 <h2>Billable HRA</h2>
@@ -127,14 +35,86 @@
         </div>
     </div>
 
-    <div class="color-picker-container">
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-    </div>
+    <!-- Your script for updating leaderboards -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dbRef = firebase.database().ref('salesCounts');
+            const userRef = firebase.database().ref('users');
+            const auth = firebase.auth();
 
-    <!-- Directly place the sales outcomes container without an additional wrapping container -->
-    <div id="sales-outcomes-container"></div>
-    <canvas id="sales-bar-chart" width="400" height="200"></canvas>
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // User is signed in, proceed with reading the database
+                    updateLeaderboards();
+                } else {
+                    // No user is signed in, redirect to login
+                    window.location.href = 'index.html';
+                }
+            });
 
+            function getEmailName(email) {
+                return email.split('@')[0];
+            }
+
+            function updateLeaderboards() {
+                // Function to update the leaderboard for a specific sales type
+                function updateLeaderboard(salesType, leaderboardElement) {
+                    dbRef.once('value').then(snapshot => {
+                        const data = snapshot.val();
+                        let salesArray = [];
+
+                        // Collect sales data for the specified sales type
+                        for (let userId in data) {
+                            if (data[userId][salesType] !== undefined) {
+                                salesArray.push({
+                                    userId: userId,
+                                    salesCount: data[userId][salesType]
+                                });
+                            }
+                        }
+
+                        // Sort the sales data in descending order
+                        salesArray.sort((a, b) => b.salesCount - a.salesCount);
+
+                        // Get the top 5 salespeople
+                        const topSales = salesArray.slice(0, 5);
+
+                        // Clear the leaderboard element
+                        leaderboardElement.innerHTML = '';
+
+                        // Use a Set to track processed user IDs
+                        const processedUsers = new Set();
+
+                        // Display the top 5 salespeople
+                        topSales.forEach((sales, index) => {
+                            if (!processedUsers.has(sales.userId)) {
+                                userRef.child(sales.userId).once('value').then(userSnapshot => {
+                                    const userData = userSnapshot.val();
+                                    if (userData && userData.email) {
+                                        const emailName = getEmailName(userData.email);
+                                        const listItem = document.createElement('li');
+                                        listItem.textContent = `#${index + 1} - ${emailName} - ${sales.salesCount}`;
+                                        leaderboardElement.appendChild(listItem);
+                                        processedUsers.add(sales.userId);  // Mark user as processed
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+
+                // Define sales types
+                const salesTypes = ['billableHRA', 'selectPatientManagement', 'selectRX', 'transfer'];
+
+                // Update leaderboard for each sales type
+                salesTypes.forEach(salesType => {
+                    const leaderboardElement = document.getElementById(`${salesType}-leaderboard`);
+                    if (leaderboardElement) {
+                        updateLeaderboard(salesType, leaderboardElement);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
