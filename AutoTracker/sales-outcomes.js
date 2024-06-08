@@ -1,8 +1,3 @@
-// sales-outcomes.js
-
-// Import the salesCountsHandler functions
-import { getCurrentDayKey, getCurrentWeekKey, getCurrentMonthKey, updateSalesCountsInFirebase } from './salesCountsHandler.js';
-
 // Helper functions
 function formatDate(dateTime) {
     const date = new Date(dateTime);
@@ -43,6 +38,30 @@ function getSaleType(action, notes) {
     return action; // Return the original action if no type matches
 }
 
+function getCurrentDayKey() {
+    const now = new Date();
+    return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+}
+
+function getCurrentWeekKey() {
+    const now = new Date();
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
+    return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
+}
+
+Date.prototype.getWeekNumber = function() {
+    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+};
+
+function getCurrentMonthKey() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
+}
+
 function isSameDay(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() &&
            date1.getMonth() === date2.getMonth() &&
@@ -63,6 +82,11 @@ function isSameMonth(date1, date2) {
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
+    const salesCountsRef = database.ref('salesCounts/' + user.uid);
+
+    const dayKey = getCurrentDayKey();
+    const weekKey = getCurrentWeekKey();
+    const monthKey = getCurrentMonthKey();
 
     const now = new Date();
 
@@ -149,8 +173,19 @@ function displaySalesOutcomes(user) {
             // Log final sales counts
             console.log('Final Sales Counts:', salesCounts);
 
-            // Update the sales counts in Firebase using the handler function
-            updateSalesCountsInFirebase(user, salesCounts);
+            // Update the sales counts in Firebase
+            const updates = {};
+            updates[`${dayKey}/day`] = salesCounts.day;
+            updates[`${weekKey}/week`] = salesCounts.week;
+            updates[`${monthKey}/month`] = salesCounts.month;
+
+            salesCountsRef.update(updates, (error) => {
+                if (error) {
+                    console.error('Failed to update sales counts:', error);
+                } else {
+                    console.log('Sales counts updated successfully:', salesCounts);
+                }
+            });
 
             // Display sales counts in the UI
             const outcomesContainer = document.getElementById('sales-outcomes-container');
@@ -225,7 +260,7 @@ function displaySalesOutcomes(user) {
                     outcomeElement.classList.add('outcome-item');
                     outcomeElement.innerHTML = `
                         <div class="top-section">
-                            <div class="action" style="                            float:left;">${outcome.assignAction}</div>
+                            <div class="action" style="float:left;">${outcome.assignAction}</div>
                             <div class="date-top" style="float:right;">${formatDate(outcome.outcomeTime)}</div>
                         </div>
                         <div class="bottom-section">
