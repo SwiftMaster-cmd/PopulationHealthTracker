@@ -1,7 +1,7 @@
 /* Buttons */
 .more-info-btn {
     padding: 10px; /* Adjusted padding for bigger size */
-    background-color: var(--color-quaternary, #444);
+    background-color: var(--color-primary, #ff00ff); /* Updated to primary color */
     color: var(--color-secondary, #e0e0e0);
     border: none;
     border-radius: 5px;
@@ -12,12 +12,12 @@
 }
 
 .more-info-btn:hover {
-    background-color: var(--color-quinary, #555);
+    background-color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
 }
 
 .copy-action-btn {
     padding: 5px 10px;
-    background-color: var(--color-quaternary, #444);
+    background-color: var(--color-primary, #ff00ff); /* Updated to primary color */
     color: var(--color-secondary, #e0e0e0);
     border: none;
     border-radius: 5px;
@@ -27,13 +27,13 @@
 }
 
 .copy-action-btn:hover {
-    background-color: var(--color-quinary, #555);
+    background-color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
 }
 
 /* General button style */
 .button {
     padding: 10px;
-    background-color: var(--color-quaternary, #444);
+    background-color: var(--color-primary, #ff00ff); /* Updated to primary color */
     color: var(--color-secondary, #e0e0e0);
     border: none;
     border-radius: 5px;
@@ -44,5 +44,5 @@
 }
 
 .button:hover {
-    background-color: var(--color-quinary, #555);
+    background-color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
 }
