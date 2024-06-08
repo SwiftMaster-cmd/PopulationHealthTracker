@@ -3,21 +3,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const userRef = firebase.database().ref('users');
     const auth = firebase.auth();
 
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // User is signed in, proceed with reading the database
+            updateLeaderboards();
+        } else {
+            // No user is signed in, redirect to login
+            window.location.href = 'index.html';
+        }
+    });
 
-
-    function extractNamesFromEmail(email) {
-        const emailParts = email.split('@');
-        const domain = emailParts[1];
-        const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0];
-        const lastName = nameParts[1];
-        return {
-            firstName: firstName,
-            lastName: lastName
-        };
+    function getEmailName(email) {
+        return email.split('@')[0];
     }
 
-    function updateLeaderboards(userEmail) {
+    function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -43,15 +43,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear the leaderboard element
                 leaderboardElement.innerHTML = '';
 
+                // Use a Set to track processed user IDs
+                const processedUsers = new Set();
+
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
-                    userRef.child(sales.userId).once('value').then(userSnapshot => {
-                        const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
-                        leaderboardElement.appendChild(listItem);
-                    });
+                    if (!processedUsers.has(sales.userId)) {
+                        userRef.child(sales.userId).once('value').then(userSnapshot => {
+                            const userData = userSnapshot.val();
+                            if (userData && userData.email) {
+                                const emailName = getEmailName(userData.email);
+                                const listItem = document.createElement('li');
+                                listItem.textContent = `#${index + 1} - ${emailName} - ${sales.salesCount}`;
+                                leaderboardElement.appendChild(listItem);
+                                processedUsers.add(sales.userId);  // Mark user as processed
+                            }
+                        });
+                    }
                 });
             });
         }
