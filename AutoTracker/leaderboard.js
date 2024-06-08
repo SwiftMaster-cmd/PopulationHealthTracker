@@ -14,18 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function extractNamesFromEmail(email) {
-        if (typeof email !== 'string') {
-            return { firstName: 'Unknown', lastName: 'User' };
-        }
-        
         const emailParts = email.split('@');
-        if (emailParts.length < 2) {
-            return { firstName: 'Unknown', lastName: 'User' };
-        }
-
+        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0] ? nameParts[0] : 'Unknown';
-        const lastName = nameParts[1] ? nameParts[1] : 'User';
+        const firstName = nameParts[0];
+        const lastName = nameParts[1];
         return {
             firstName: firstName,
             lastName: lastName
@@ -62,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
+                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
                         const listItem = document.createElement('li');
                         listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
