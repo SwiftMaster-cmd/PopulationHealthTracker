@@ -62,6 +62,23 @@ function getCurrentMonthKey() {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
 }
 
+function isSameDay(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+}
+
+function isSameWeek(date1, date2) {
+    const week1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate() - date1.getDay() + (date1.getDay() === 0 ? -6 : 1));
+    const week2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate() - date2.getDay() + (date2.getDay() === 0 ? -6 : 1));
+    return week1.getTime() === week2.getTime();
+}
+
+function isSameMonth(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth();
+}
+
 function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -70,6 +87,8 @@ function displaySalesOutcomes(user) {
     const dayKey = getCurrentDayKey();
     const weekKey = getCurrentWeekKey();
     const monthKey = getCurrentMonthKey();
+
+    const now = new Date();
 
     outcomesRef.on('value', (snapshot) => {
         const outcomes = snapshot.val();
@@ -103,30 +122,49 @@ function displaySalesOutcomes(user) {
                 const outcome = outcomes[key];
                 const action = outcome.assignAction;
                 const notes = outcome.notesValue;
-                
+                const outcomeTime = new Date(outcome.outcomeTime);
+
                 console.log(`Processing outcome - Key: ${key}, Action: "${action}", Notes: "${notes}"`);
 
                 // Get the sale type
                 const saleType = getSaleType(action, notes);
                 console.log(`Identified Sale Type: ${saleType}`);
 
-                // Update sales counts based on sale type
-                if (saleType === 'Billable HRA') {
-                    salesCounts.day.billableHRA++;
-                    salesCounts.week.billableHRA++;
-                    salesCounts.month.billableHRA++;
-                } else if (saleType === 'Select RX') {
-                    salesCounts.day.selectRX++;
-                    salesCounts.week.selectRX++;
-                    salesCounts.month.selectRX++;
-                } else if (saleType === 'Select Patient Management') {
-                    salesCounts.day.selectPatientManagement++;
-                    salesCounts.week.selectPatientManagement++;
-                    salesCounts.month.selectPatientManagement++;
-                } else if (saleType === 'Transfer') {
-                    salesCounts.day.transfer++;
-                    salesCounts.week.transfer++;
-                    salesCounts.month.transfer++;
+                // Update sales counts based on sale type and time frame
+                if (isSameDay(outcomeTime, now)) {
+                    if (saleType === 'Billable HRA') {
+                        salesCounts.day.billableHRA++;
+                    } else if (saleType === 'Select RX') {
+                        salesCounts.day.selectRX++;
+                    } else if (saleType === 'Select Patient Management') {
+                        salesCounts.day.selectPatientManagement++;
+                    } else if (saleType === 'Transfer') {
+                        salesCounts.day.transfer++;
+                    }
+                }
+
+                if (isSameWeek(outcomeTime, now)) {
+                    if (saleType === 'Billable HRA') {
+                        salesCounts.week.billableHRA++;
+                    } else if (saleType === 'Select RX') {
+                        salesCounts.week.selectRX++;
+                    } else if (saleType === 'Select Patient Management') {
+                        salesCounts.week.selectPatientManagement++;
+                    } else if (saleType === 'Transfer') {
+                        salesCounts.week.transfer++;
+                    }
+                }
+
+                if (isSameMonth(outcomeTime, now)) {
+                    if (saleType === 'Billable HRA') {
+                        salesCounts.month.billableHRA++;
+                    } else if (saleType === 'Select RX') {
+                        salesCounts.month.selectRX++;
+                    } else if (saleType === 'Select Patient Management') {
+                        salesCounts.month.selectPatientManagement++;
+                    } else if (saleType === 'Transfer') {
+                        salesCounts.month.transfer++;
+                    }
                 }
 
                 console.log('Updated salesCounts:', salesCounts); // Log after each update
@@ -224,23 +262,24 @@ function displaySalesOutcomes(user) {
                         <div class="top-section">
                             <div class="action" style="float:left;">${outcome.assignAction}</div>
                             <div class="date-top" style="float:right;">${formatDate(outcome.outcomeTime)}</div>
-                        </div>               
-                             <div class="bottom-section">
-                        <div class="notes" style="float:left;">${outcome.notesValue || 'No notes'}</div>
-                        <div class="time-bottom" style="float:right;">${formatTime(outcome.outcomeTime)}</div>
-                    </div>
-                `;
-                salesInfoContainer.appendChild(outcomeElement);
-            }
+                        </div>
+                        <div class="bottom-section">
+                            <div class="notes" style="float:left;">${outcome.notesValue || 'No notes'}</div>
+                            <div class="time-bottom" style="float:right;">${formatTime(outcome.outcomeTime)}</div>
+                        </div>
+                    `;
+                    salesInfoContainer.appendChild(outcomeElement);
+                }
 
-            outcomesContainer.appendChild(accountContainer);
+                outcomesContainer.appendChild(accountContainer);
+            }
+        } else {
+            console.log('No sales outcomes found for user:', user.displayName);
         }
-    } else {
-        console.log('No sales outcomes found for user:', user.displayName);
-    }
-}, (error) => {
-    console.error('Error fetching sales outcomes:', error);
-});
+    }, (error) => {
+        console.error('Error fetching sales outcomes:', error);
+    });
 }
+
 // Attach the function to the window object
 window.displaySalesOutcomes = displaySalesOutcomes;
