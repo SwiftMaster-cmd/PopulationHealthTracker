@@ -1,8 +1,8 @@
 /* containers.css */
 /* Containers */
 .container {
-    background-color: var(--color-primary);
-    border: 1px solid var(--color-quaternary);
+    background-color: #2C3E50; /* Darker background for contrast */
+    border: 1px solid #16A085; /* Updated border color */
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -11,13 +11,13 @@
 
 /* Specific Container Styles */
 .counter-container {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: #34495E; /* Slightly lighter background */
+    color: #ECF0F1; /* Light text color */
 }
 
 .leaderboard-container {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: #34495E; /* Slightly lighter background */
+    color: #ECF0F1; /* Light text color */
 }
 
 /* Sales Outcomes Container */
@@ -30,9 +30,9 @@
 
 /* Sales Counts Container */
 .sales-counts-container {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    border: 1px solid var(--color-quaternary);
+    background-color: #34495E; /* Slightly lighter background */
+    color: #ECF0F1; /* Light text color */
+    border: 1px solid #16A085; /* Updated border color */
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -41,12 +41,12 @@
 
 /* Account Container */
 .account-container {
-    border: 1px solid var(--color-quaternary);
+    border: 1px solid #16A085; /* Updated border color */
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: #34495E; /* Slightly lighter background */
+    color: #ECF0F1; /* Light text color */
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -55,7 +55,7 @@
     font-size: 1.2em;
     margin-bottom: 10px;
     font-weight: bold;
-    color: var(--color-primary);
+    color: #ECF0F1; /* Light text color */
 }
 
 /* Account Content */
@@ -75,10 +75,10 @@
     justify-content: center; /* Center contents vertically */
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid var(--color-quaternary);
+    border: 1px solid #16A085; /* Updated border color */
     border-radius: 5px;
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: #34495E; /* Slightly lighter background */
+    color: #ECF0F1; /* Light text color */
 }
 
 /* Customer Row */
@@ -103,7 +103,7 @@
     padding: 0 10px;
     font-size: 18px; /* Bigger text size */
     font-weight: bold; /* Bold text */
-    color: var(--color-primary);
+    color: #ECF0F1; /* Light text color */
 }
 
 /* Align left for first name and phone number */
@@ -125,9 +125,9 @@
 
 /* Outcome Item */
 .outcome-item {
-    background-color: var(--color-primary);
-    color: var(--color-secondary);
-    border: 1px solid var(--color-quaternary);
+    background-color: #2C3E50; /* Darker background */
+    color: #ECF0F1; /* Light text color */
+    border: 1px solid #16A085; /* Updated border color */
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
@@ -138,8 +138,8 @@
 }
 
 .outcome-item:hover {
-    background-color: var(--color-quaternary);
-    border-color: var(--color-quinary);
+    background-color: #16A085; /* Hover background color */
+    border-color: #1ABC9C; /* Hover border color */
 }
 
 /* Top Section */
@@ -169,5 +169,5 @@
 .notes {
     text-align: left;
     flex-grow: 1;
-    color: var(--color-secondary);
+    color: #ECF0F1; /* Light text color */
 }
