@@ -1,4 +1,17 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const dbRef = firebase.database().ref('salesCounts');
+    const userRef = firebase.database().ref('users');
+    const auth = firebase.auth();
 
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // User is signed in, proceed with reading the database
+            updateLeaderboards();
+        } else {
+            // No user is signed in, redirect to login
+            window.location.href = 'index.html';
+        }
+    });
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
@@ -11,7 +24,7 @@
         };
     }
 
-    function updateLeaderboards(userEmail) {
+    function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
