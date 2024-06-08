@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.documentElement.style.setProperty('--color-quaternary', palette[3]);
         document.documentElement.style.setProperty('--color-quinary', palette[4]);
 
+        document.body.style.backgroundColor = palette[0]; // Update body background color
+
         updateStyles(isDark);
     }
 
