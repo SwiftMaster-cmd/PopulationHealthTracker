@@ -21,6 +21,7 @@
     gap: 20px;
     justify-content: center;
     overflow-x: auto; /* Allow horizontal scrolling */
+    flex-wrap: nowrap; /* Prevent wrapping to a new line */
 }
 
 .leaderboard-container {
