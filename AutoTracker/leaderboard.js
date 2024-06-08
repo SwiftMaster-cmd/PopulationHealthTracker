@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    function getCurrentDateKey() {
+    function getCurrentDayKey() {
         const now = new Date();
         return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
     }
@@ -41,6 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
     }
 
+    Date.prototype.getWeekNumber = function() {
+        const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    };
+
     function getCurrentMonthKey() {
         const now = new Date();
         return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
@@ -48,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getPeriodKey() {
         if (currentPeriod === 'day') {
-            return getCurrentDateKey();
+            return getCurrentDayKey();
         } else if (currentPeriod === 'week') {
             return getCurrentWeekKey();
         } else if (currentPeriod === 'month') {
