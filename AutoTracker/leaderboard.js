@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
-        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
         const firstName = nameParts[0];
         const lastName = nameParts[1];
@@ -71,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateLeaderboard(salesType, period, leaderboardElement) {
         const periodKey = getPeriodKey();
-        const periodRef = `${period}/${periodKey}/${salesType}`;
+        const periodRef = `${period}/${periodKey}`;
         console.log('Fetching data from:', periodRef);
         dbRef.child(periodRef).once('value').then(snapshot => {
             const data = snapshot.val();
@@ -80,10 +79,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Collect sales data for the specified sales type and period
             if (data) {
                 for (let userId in data) {
-                    if (data[userId] !== undefined) {
+                    if (data[userId][salesType] !== undefined) {
                         salesArray.push({
                             userId: userId,
-                            salesCount: data[userId]
+                            salesCount: data[userId][salesType]
                         });
                     }
                 }
