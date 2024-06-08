@@ -1,12 +1,9 @@
-/* containers.css */
 /* Containers */
 .container {
-    background-color: #2C3E50; /* Darker background for contrast */
-    border: 1px solid #16A085; /* Updated border color */
+    background-color: transparent; /* Make container background invisible */
+    border: none; /* Remove border */
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Specific Container Styles */

@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #2C3E50; /* Dark background for better contrast */
+    background-color: #1E1E1E; /* Dark background for better contrast */
     color: #ECF0F1; /* Light text color */
     margin: 0;
     padding: 20px;
@@ -15,21 +15,19 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* Container */
+/* Invisible Container */
 .container {
-    background-color: #34495E; /* Slightly lighter background */
-    border: 1px solid #16A085;
+    background-color: transparent; /* Make container background invisible */
+    border: none; /* Remove border */
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Outcome Item */
 .outcome-item {
-    background-color: #34495E;
-    color: #ECF0F1;
-    border: 1px solid #16A085;
+    background-color: #2C3E50; /* Darker background */
+    color: #ECF0F1; /* Light text color */
+    border: 1px solid #16A085; /* Updated border color */
     padding: 15px;
     margin: 15px 0;
     border-radius: 5px;
@@ -40,8 +38,8 @@ h1 {
 }
 
 .outcome-item:hover {
-    background-color: #16A085;
-    border-color: #1ABC9C;
+    background-color: #16A085; /* Hover background color */
+    border-color: #1ABC9C; /* Hover border color */
 }
 
 /* Top Section */
@@ -71,7 +69,7 @@ h1 {
 .notes {
     text-align: left;
     flex-grow: 1;
-    color: #ECF0F1;
+    color: #ECF0F1; /* Light text color */
 }
 
 /* Date Top */
