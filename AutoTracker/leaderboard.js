@@ -5,20 +5,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     auth.onAuthStateChanged(user => {
         if (user) {
-            // User is signed in, proceed with reading the database
             updateLeaderboards(user.email);
         } else {
-            // No user is signed in, redirect to login
             window.location.href = 'index.html';
         }
     });
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
-        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0];
-        const lastName = nameParts[1];
+        const firstName = nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1);
+        const lastName = nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1);
         return {
             firstName: firstName,
             lastName: lastName
@@ -26,13 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateLeaderboards(userEmail) {
-        // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
                 const data = snapshot.val();
                 let salesArray = [];
 
-                // Collect sales data for the specified sales type
                 for (let userId in data) {
                     if (data[userId][salesType] !== undefined) {
                         salesArray.push({
@@ -42,16 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
 
-                // Sort the sales data in descending order
                 salesArray.sort((a, b) => b.salesCount - a.salesCount);
 
-                // Get the top 5 salespeople
                 const topSales = salesArray.slice(0, 5);
-
-                // Clear the leaderboard element
                 leaderboardElement.innerHTML = '';
 
-                // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
@@ -64,10 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Define sales types
         const salesTypes = ['billableHRA', 'selectPatientManagement', 'selectRX', 'transfer'];
-
-        // Update leaderboard for each sales type
         salesTypes.forEach(salesType => {
             const leaderboardElement = document.getElementById(`${salesType}-leaderboard`);
             if (leaderboardElement) {

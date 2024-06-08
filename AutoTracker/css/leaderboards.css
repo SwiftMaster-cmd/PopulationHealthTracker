@@ -1,47 +1,45 @@
-/* leaderboards.css */
-/* Leaderboard Styles */
+/* General Container Style */
 #leaderboard-container {
     margin: 20px auto;
     padding: 20px;
-    background-color: var(--color-primary);
+    background-color: #2C3E50; /* Darker background for contrast */
     border-radius: 5px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
     max-width: 1200px;
-    overflow-x: auto; /* Enable horizontal scrolling if needed */
 }
 
 #leaderboard-container h3 {
     text-align: center;
-    color: var(--color-secondary);
+    color: #ECF0F1; /* Light color for text */
 }
 
 #leaderboard-types-container {
     display: flex;
-    flex-direction: row; /* Ensure horizontal layout */
+    flex-direction: row;
     gap: 20px;
     justify-content: center;
-    overflow-x: auto; /* Allow horizontal scrolling */
-    flex-wrap: nowrap; /* Prevent wrapping to a new line */
+    overflow-x: auto;
+    flex-wrap: nowrap;
 }
 
 .leaderboard-container {
-    flex: 0 0 auto; /* Prevent flex items from shrinking or growing */
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    border: 1px solid var(--color-quaternary);
+    background-color: #34495E; /* Slightly lighter than main container */
+    color: #ECF0F1; /* Light text color */
+    border: 1px solid #ECF0F1;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    min-width: 250px; /* Ensure a minimum width for each container */
+    min-width: 250px;
 }
 
 .leaderboard-container h2 {
     margin-bottom: 10px;
     text-align: center;
-    color: var(--color-primary);
+    color: #ECF0F1; /* Light color for text */
 }
 
 .leaderboard-list {
@@ -52,9 +50,9 @@
 }
 
 .leaderboard-item {
-    background-color: var(--color-tertiary);
-    color: var(--color-secondary);
-    border: 1px solid var(--color-quaternary);
+    background-color: #1ABC9C; /* Contrasting color for items */
+    color: #2C3E50; /* Dark text for readability */
+    border: 1px solid #16A085;
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
@@ -64,12 +62,12 @@
 
 .leaderboard-item.current-user {
     text-decoration: underline;
-    background-color: #e0f7fa;
+    background-color: #2ECC71; /* Highlight color for current user */
 }
 
 #leaderboard-container hr {
     border: 0;
-    border-top: 1px solid var(--color-quaternary);
+    border-top: 1px solid #16A085;
     margin: 10px 0;
 }
 
