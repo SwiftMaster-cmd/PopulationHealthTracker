@@ -103,7 +103,7 @@
     color: #ECF0F1; /* Fixed light text color */
 }
 
-/* Align left for first name and phone number */
+/* Align left for first name  and phone number */
 .customer-field.align-left {
     text-align: left;
     padding-left: 20px; /* Add padding to bring it closer to the left side */
