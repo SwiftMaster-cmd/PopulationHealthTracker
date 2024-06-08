@@ -3,14 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your App</title>
-    <!-- Firebase SDK -->
+    <title>Sales Outcomes</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/containers.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/leaderboards.css">
+    <!-- Load Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <!-- Initialize Firebase -->
-    <script src="path/to/your/firebase-init.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include Chroma.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    
+    <!-- Load Custom Scripts -->
+    <script src="firebase-init.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="customer-info.js" defer></script>
+    <script src="sales-outcomes.js" defer></script>
+    <script src="color-palette.js" defer></script>
+    <script src="leaderboard.js" defer></script>
+
+    <style>
+        .color-picker-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
 </head>
+
 <body>
     <!-- Your app content -->
     <div id="leaderboard-container">
