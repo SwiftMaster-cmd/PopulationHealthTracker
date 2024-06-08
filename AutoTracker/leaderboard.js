@@ -1,19 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Firebase only if it hasn't been initialized already
-    if (!firebase.apps.length) {
-        firebase.initializeApp({
-            apiKey: "your-api-key",
-            authDomain: "your-auth-domain",
-            databaseURL: "your-database-url",
-            projectId: "your-project-id",
-            storageBucket: "your-storage-bucket",
-            messagingSenderId: "your-messaging-sender-id",
-            appId: "your-app-id"
-        });
-    } else {
-        firebase.app(); // if already initialized, use that one
-    }
-
     const dbRef = firebase.database().ref('salesCounts');
     const userRef = firebase.database().ref('users');
     const auth = firebase.auth();
@@ -63,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get the top 5 salespeople
                 const topSales = salesArray.slice(0, 5);
 
-                // Clear the leaderboard element before appending new items
+                // Clear the leaderboard element
                 leaderboardElement.innerHTML = '';
 
                 // Display the top 5 salespeople
