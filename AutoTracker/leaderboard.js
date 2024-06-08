@@ -38,39 +38,45 @@ function loadLeaderboard() {
 
     leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
     
-    const periods = ['day', 'week', 'month'];
-    const saleTypes = ['billableHRA', 'selectRX', 'selectPatientManagement', 'transfer'];
-    
-    periods.forEach(period => {
-        saleTypes.forEach(saleType => {
-            salesCountsRef.orderByChild(`${period}/${saleType}`).limitToLast(5).once('value', snapshot => {
-                const users = [];
-                snapshot.forEach(childSnapshot => {
-                    const userId = childSnapshot.key;
-                    const userData = childSnapshot.val();
-                    const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                    users.push({ userId, count });
-                });
-                
-                users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
-                
-                const periodSaleTypeContainer = document.createElement('div');
-                periodSaleTypeContainer.classList.add('leaderboard-section');
-                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleType} (${period})</h3>`;
-                
-                users.forEach((user, index) => {
-                    const userElement = document.createElement('div');
-                    userElement.classList.add('leaderboard-item');
-                    userElement.innerHTML = `<strong>${index + 1}. User ID: ${user.userId} - ${saleType}: ${user.count}</strong>`;
-                    periodSaleTypeContainer.appendChild(userElement);
-                });
-                
-                leaderboardContainer.appendChild(periodSaleTypeContainer);
-            }).catch(error => {
-                console.error('Error fetching sales data:', error);
+    const periods = {
+        day: dayKey,
+        week: weekKey,
+        month: monthKey
+    };
+    const saleType = 'selectRX'; // Focusing on SRX
+
+    for (const period in periods) {
+        const periodKey = periods[period];
+        salesCountsRef.orderByChild(`${period}/${saleType}`).limitToLast(5).once('value', snapshot => {
+            const users = [];
+            snapshot.forEach(childSnapshot => {
+                const userId = childSnapshot.key;
+                const userData = childSnapshot.val();
+                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                users.push({ userId, count });
             });
+
+            // Check if users array is populated correctly
+            console.log(`Users for ${period} - ${saleType}:`, users);
+            
+            users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
+            
+            const periodSaleTypeContainer = document.createElement('div');
+            periodSaleTypeContainer.classList.add('leaderboard-section');
+            periodSaleTypeContainer.innerHTML = `<h3>Top 5 SRX (${period})</h3>`;
+            
+            users.forEach((user, index) => {
+                const userElement = document.createElement('div');
+                userElement.classList.add('leaderboard-item');
+                userElement.innerHTML = `<strong>${index + 1}. User ID: ${user.userId} - SRX: ${user.count}</strong>`;
+                periodSaleTypeContainer.appendChild(userElement);
+            });
+            
+            leaderboardContainer.appendChild(periodSaleTypeContainer);
+        }).catch(error => {
+            console.error('Error fetching sales data:', error);
         });
-    });
+    }
 }
 
 // Ensure the DOM is fully loaded before running the script
