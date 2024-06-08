@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards(user.email);
+            updateLeaderboards();
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
         }
     });
 
-    function updateLeaderboards(userEmail) {
+    function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -47,10 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!processedUsers.has(sales.userId)) {
                         userRef.child(sales.userId).once('value').then(userSnapshot => {
                             const userData = userSnapshot.val();
-                            const listItem = document.createElement('li');
-                            listItem.textContent = `#${index + 1} - ${userData.email} - ${sales.salesCount}`;
-                            leaderboardElement.appendChild(listItem);
-                            processedUsers.add(sales.userId);  // Mark user as processed
+                            if (userData && userData.email) {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = `#${index + 1} - ${userData.email} - ${sales.salesCount}`;
+                                leaderboardElement.appendChild(listItem);
+                                processedUsers.add(sales.userId);  // Mark user as processed
+                            }
                         });
                     }
                 });
