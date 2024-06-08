@@ -13,17 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    function extractNamesFromEmail(email) {
-        const emailParts = email.split('@');
-        const nameParts = emailParts[0].split('.');
-        const firstName = nameParts[0];
-        const lastName = nameParts[1];
-        return {
-            firstName: firstName,
-            lastName: lastName
-        };
-    }
-
     function updateLeaderboards() {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
@@ -54,9 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
                         const listItem = document.createElement('li');
-                        listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
+                        listItem.textContent = `#${index + 1} - ${userData.email} - ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
                     });
                 });
