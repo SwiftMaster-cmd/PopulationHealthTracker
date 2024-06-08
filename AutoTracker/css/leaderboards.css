@@ -19,11 +19,10 @@
     flex-wrap: nowrap;
     gap: 20px;
     justify-content: center;
-    overflow-x: auto; /* Allow horizontal scrolling */
 }
 
 .leaderboard-container {
-    flex: 0 0 auto; /* Prevent flex items from shrinking or growing */
+    flex: 1 1 auto; /* Allow containers to grow and shrink */
     display: flex;
     flex-direction: column;
     align-items: center;
