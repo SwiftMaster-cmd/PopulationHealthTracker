@@ -23,7 +23,7 @@ function getCurrentMonthKey() {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
 }
 
-function loadLeaderboard() {
+function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
 
@@ -34,49 +34,84 @@ function loadLeaderboard() {
     }
 
     leaderboardContainer.innerHTML = ''; // Clear previous leaderboard
-    
+
+    salesCountsRef.once('value', snapshot => {
+        const salesData = snapshot.val();
+        const users = [];
+
+        for (const userId in salesData) {
+            const userData = salesData[userId];
+            const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+            users.push({ userId, count });
+        }
+
+        // Check if users array is populated correctly
+        console.log(`Users for ${period} - ${saleType}:`, users);
+
+        users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
+
+        const periodSaleTypeContainer = document.createElement('div');
+        periodSaleTypeContainer.classList.add('leaderboard-section');
+        periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleType} (${period})</h3>`;
+
+        users.slice(0, 5).forEach((user, index) => {
+            const userElement = document.createElement('div');
+            userElement.classList.add('leaderboard-item');
+            userElement.innerHTML = `<strong>${index + 1}. User ID: ${user.userId} - ${saleType}: ${user.count}</strong>`;
+            periodSaleTypeContainer.appendChild(userElement);
+        });
+
+        leaderboardContainer.appendChild(periodSaleTypeContainer);
+    }).catch(error => {
+        console.error('Error fetching sales data:', error);
+    });
+}
+
+// Create buttons for period and sale types
+function createButtons() {
+    const buttonContainer = document.getElementById('button-container');
+    if (!buttonContainer) {
+        console.error('Button container element not found');
+        return;
+    }
+
     const periods = ['day', 'week', 'month'];
-    const saleType = 'selectRX'; // Focusing on SRX
+    const saleTypes = ['selectRX', 'billableHRA', 'transfer', 'selectPatientManagement'];
 
     periods.forEach(period => {
-        salesCountsRef.once('value', snapshot => {
-            const salesData = snapshot.val();
-            const users = [];
+        const periodButton = document.createElement('button');
+        periodButton.textContent = period.charAt(0).toUpperCase() + period.slice(1);
+        periodButton.onclick = () => {
+            loadLeaderboard(period, document.querySelector('.sale-type-button.active').dataset.saleType);
+            document.querySelectorAll('.period-button').forEach(btn => btn.classList.remove('active'));
+            periodButton.classList.add('active');
+        };
+        periodButton.classList.add('period-button');
+        if (period === 'day') periodButton.classList.add('active');
+        buttonContainer.appendChild(periodButton);
+    });
 
-            for (const userId in salesData) {
-                const userData = salesData[userId];
-                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                users.push({ userId, count });
-            }
-
-            // Check if users array is populated correctly
-            console.log(`Users for ${period} - ${saleType}:`, users);
-            
-            users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
-
-            const periodSaleTypeContainer = document.createElement('div');
-            periodSaleTypeContainer.classList.add('leaderboard-section');
-            periodSaleTypeContainer.innerHTML = `<h3>Top 5 SRX (${period})</h3>`;
-            
-            users.slice(0, 5).forEach((user, index) => {
-                const userElement = document.createElement('div');
-                userElement.classList.add('leaderboard-item');
-                userElement.innerHTML = `<strong>${index + 1}. User ID: ${user.userId} - SRX: ${user.count}</strong>`;
-                periodSaleTypeContainer.appendChild(userElement);
-            });
-            
-            leaderboardContainer.appendChild(periodSaleTypeContainer);
-        }).catch(error => {
-            console.error('Error fetching sales data:', error);
-        });
+    saleTypes.forEach(type => {
+        const typeButton = document.createElement('button');
+        typeButton.textContent = type.replace(/([A-Z])/g, ' $1').trim();
+        typeButton.onclick = () => {
+            loadLeaderboard(document.querySelector('.period-button.active').dataset.period, type);
+            document.querySelectorAll('.sale-type-button').forEach(btn => btn.classList.remove('active'));
+            typeButton.classList.add('active');
+        };
+        typeButton.classList.add('sale-type-button');
+        typeButton.dataset.saleType = type;
+        if (type === 'selectRX') typeButton.classList.add('active');
+        buttonContainer.appendChild(typeButton);
     });
 }
 
 // Ensure the DOM is fully loaded before running the script
 document.addEventListener('DOMContentLoaded', () => {
+    createButtons();
     if (firebase.apps.length) {
         loadLeaderboard();
     } else {
-        document.addEventListener('firebaseInitialized', loadLeaderboard);
+        document.addEventListener('firebaseInitialized', () => loadLeaderboard());
     }
 });
