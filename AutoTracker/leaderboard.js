@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in, proceed with reading the database
-            updateLeaderboards();
+            updateLeaderboards(user.email);
         } else {
             // No user is signed in, redirect to login
             window.location.href = 'index.html';
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function extractNamesFromEmail(email) {
         const emailParts = email.split('@');
+        const domain = emailParts[1];
         const nameParts = emailParts[0].split('.');
         const firstName = nameParts[0];
         const lastName = nameParts[1];
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    function updateLeaderboards() {
+    function updateLeaderboards(userEmail) {
         // Function to update the leaderboard for a specific sales type
         function updateLeaderboard(salesType, leaderboardElement) {
             dbRef.once('value').then(snapshot => {
@@ -47,14 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get the top 5 salespeople
                 const topSales = salesArray.slice(0, 5);
 
-                // Clear the leaderboard element to prevent duplication
+                // Clear the leaderboard element
                 leaderboardElement.innerHTML = '';
 
                 // Display the top 5 salespeople
                 topSales.forEach((sales, index) => {
                     userRef.child(sales.userId).once('value').then(userSnapshot => {
                         const userData = userSnapshot.val();
-                        const { firstName, lastName } = extractNamesFromEmail(userData.email);
+                        const { firstName, lastName } = extractNamesFromEmail(userEmail);
                         const listItem = document.createElement('li');
                         listItem.textContent = `#${index + 1} - ${firstName} ${lastName} - ${sales.salesCount}`;
                         leaderboardElement.appendChild(listItem);
