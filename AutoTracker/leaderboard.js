@@ -29,21 +29,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateLeaderboards(userEmail) {
-        updateLeaderboard(currentSalesType, document.getElementById('leaderboard-list'));
+        updateLeaderboard(currentSalesType, currentPeriod, document.getElementById('leaderboard-list'));
         document.getElementById('leaderboard-title').textContent = `${capitalizeFirstLetter(currentSalesType)} - ${capitalizeFirstLetter(currentPeriod)}`;
     }
 
-    function updateLeaderboard(salesType, leaderboardElement) {
-        dbRef.once('value').then(snapshot => {
+    function updateLeaderboard(salesType, period, leaderboardElement) {
+        const periodRef = `${period}/${salesType}`;
+        dbRef.child(periodRef).once('value').then(snapshot => {
             const data = snapshot.val();
             let salesArray = [];
 
-            // Collect sales data for the specified sales type
+            // Collect sales data for the specified sales type and period
             for (let userId in data) {
-                if (data[userId][salesType] !== undefined) {
+                if (data[userId] !== undefined) {
                     salesArray.push({
                         userId: userId,
-                        salesCount: data[userId][salesType]
+                        salesCount: data[userId]
                     });
                 }
             }
