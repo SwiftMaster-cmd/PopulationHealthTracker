@@ -1,8 +1,9 @@
+/* leaderboards.css */
 /* Leaderboard Styles */
 #leaderboard-container {
     margin: 20px auto;
     padding: 20px;
-    background-color: var(--color-primary, #ffccff); /* Updated to primary color */
+    background-color: var(--color-primary);
     border-radius: 5px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
     max-width: 1200px;
@@ -10,7 +11,7 @@
 
 #leaderboard-container h3 {
     text-align: center;
-    color: var(--color-secondary, #e0e0e0);
+    color: var(--color-secondary);
 }
 
 #leaderboard-types-container {
@@ -18,25 +19,27 @@
     flex-wrap: nowrap;
     gap: 20px;
     justify-content: center;
+    overflow-x: auto; /* Allow horizontal scrolling */
 }
 
 .leaderboard-container {
-    flex: 1;
+    flex: 0 0 auto; /* Prevent flex items from shrinking or growing */
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: var(--color-secondary, #ff99ff); /* Updated to secondary color */
-    border: 1px solid var(--color-quaternary, #444);
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: 1px solid var(--color-quaternary);
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    max-width: 250px;
+    min-width: 250px; /* Ensure a minimum width for each container */
 }
 
 .leaderboard-container h2 {
     margin-bottom: 10px;
     text-align: center;
-    color: var(--color-secondary, #e0e0e0);
+    color: var(--color-primary);
 }
 
 .leaderboard-list {
@@ -47,8 +50,9 @@
 }
 
 .leaderboard-item {
-    background-color: var(--color-tertiary, #ffccff); /* Updated to tertiary color */
-    border: 1px solid var(--color-quaternary, #444);
+    background-color: var(--color-tertiary);
+    color: var(--color-secondary);
+    border: 1px solid var(--color-quaternary);
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
@@ -58,12 +62,12 @@
 
 .leaderboard-item.current-user {
     text-decoration: underline;
-    background-color: #e0f7fa; /* Highlight current user */
+    background-color: #e0f7fa;
 }
 
 #leaderboard-container hr {
     border: 0;
-    border-top: 1px solid var(--color-quaternary, #444);
+    border-top: 1px solid var(--color-quaternary);
     margin: 10px 0;
 }
 

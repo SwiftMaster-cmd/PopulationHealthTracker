@@ -1,8 +1,9 @@
+/* styles.css */
 /* General Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: var(--color-primary, #ffccff); /* Updated to primary color */
-    color: var(--color-secondary, #e0e0e0);
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
     margin: 0;
     padding: 20px;
 }
@@ -10,7 +11,7 @@ body {
 /* Header */
 h1 {
     font-size: 28px;
-    color: var(--color-secondary, #e0e0e0);
+    color: var(--color-secondary);
     text-align: center;
     margin-bottom: 30px;
 }
@@ -19,12 +20,88 @@ h1 {
 .date-top {
     text-align: right;
     font-size: 0.9em;
-    color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
+    color: var(--color-quinary);
 }
 
 /* Time Bottom */
 .time-bottom {
     text-align: right;
     font-size: 0.9em;
-    color: var(--color-quinary, #ff99ff); /* Updated to quinary color */
+    color: var(--color-quinary);
+}
+
+/* Container */
+.container {
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-quaternary);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Button */
+.button {
+    padding: 10px;
+    background-color: var(--color-tertiary);
+    color: var(--color-secondary);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: var(--color-quinary);
+}
+
+/* Outcome Item */
+.outcome-item {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    border: 1px solid var(--color-quaternary);
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.outcome-item:hover {
+    background-color: var(--color-quaternary);
+    border-color: var(--color-quinary);
+}
+
+/* Top Section */
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Action */
+.action {
+    text-align: center;
+    font-size: 1.1em;
+    width: 250px; /* Set the width of the action container */
+    margin: 0 auto; /* Center the action container */
+}
+
+/* Bottom Section */
+.bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Notes */
+.notes {
+    text-align: left;
+    flex-grow: 1;
+    color: var(--color-secondary);
 }
