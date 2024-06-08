@@ -27,13 +27,6 @@ function loadLeaderboard() {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
 
-    // Log the entire salesCounts data to understand the structure
-    salesCountsRef.once('value', snapshot => {
-        console.log('Full salesCounts data:', snapshot.val());
-    }).catch(error => {
-        console.error('Error fetching salesCounts data:', error);
-    });
-
     const dayKey = getCurrentDayKey();
     const weekKey = getCurrentWeekKey();
     const monthKey = getCurrentMonthKey();
@@ -49,32 +42,32 @@ function loadLeaderboard() {
     const periods = {
         day: dayKey,
         week: weekKey,
-        month: monthKey
+        month: getCurrentMonthKey()
     };
     const saleType = 'selectRX'; // Focusing on SRX
 
     for (const period in periods) {
         const periodKey = periods[period];
-        salesCountsRef.orderByChild(`${periodKey}/${saleType}`).limitToLast(5).once('value', snapshot => {
+        salesCountsRef.once('value', snapshot => {
+            const salesData = snapshot.val();
             const users = [];
-            snapshot.forEach(childSnapshot => {
-                const userId = childSnapshot.key;
-                const userData = childSnapshot.val();
-                console.log(`Data for user ${userId}:`, userData); // Log user data
+
+            for (const userId in salesData) {
+                const userData = salesData[userId];
                 const count = userData[periodKey] && userData[periodKey][saleType] ? userData[periodKey][saleType] : 0;
                 users.push({ userId, count });
-            });
+            }
 
             // Check if users array is populated correctly
             console.log(`Users for ${period} - ${saleType}:`, users);
             
             users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
-            
+
             const periodSaleTypeContainer = document.createElement('div');
             periodSaleTypeContainer.classList.add('leaderboard-section');
             periodSaleTypeContainer.innerHTML = `<h3>Top 5 SRX (${period})</h3>`;
             
-            users.forEach((user, index) => {
+            users.slice(0, 5).forEach((user, index) => {
                 const userElement = document.createElement('div');
                 userElement.classList.add('leaderboard-item');
                 userElement.innerHTML = `<strong>${index + 1}. User ID: ${user.userId} - SRX: ${user.count}</strong>`;
