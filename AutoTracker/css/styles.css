@@ -21,10 +21,10 @@ body {
 }
 
 .leaderboard-container {
-    display: grid;
-    justify-content: center; /* Center the gray container */
+    display: flex;
+    justify-content: center; /* Center the gray container content horizontally */
     align-items: center;
-    margin: 20px auto;
+    margin: 0 auto; /* Center the container itself horizontally */
     padding: 10px;
     background-color: var(--color-secondary);
     border-radius: 10px;
@@ -33,6 +33,7 @@ body {
     max-width: 750px;
     box-sizing: border-box;
 }
+
 
 .time-buttons-container {
     display: flex;
