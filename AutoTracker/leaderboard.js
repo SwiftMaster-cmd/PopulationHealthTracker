@@ -59,12 +59,13 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                 const periodSaleTypeContainer = document.createElement('div');
                 periodSaleTypeContainer.classList.add('leaderboard-section');
-                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleType} (${period})</h3>`;
+                const saleTypeReadable = getReadableSaleType(saleType);
+                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleTypeReadable} - Day</h3>`;
 
                 users.slice(0, 5).forEach((user, index) => {
                     const userElement = document.createElement('div');
                     userElement.classList.add('leaderboard-item');
-                    userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${saleType}: ${user.count}</strong>`;
+                    userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${saleTypeReadable}: ${user.count}</strong>`;
                     periodSaleTypeContainer.appendChild(userElement);
                 });
 
@@ -76,6 +77,21 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     }).catch(error => {
         console.error('Error fetching sales data:', error);
     });
+}
+
+function getReadableSaleType(saleType) {
+    switch (saleType) {
+        case 'selectRX':
+            return 'Select RX';
+        case 'billableHRA':
+            return 'Billable HRA';
+        case 'transfer':
+            return 'Transfer';
+        case 'selectPatientManagement':
+            return 'Select Patient Management';
+        default:
+            return saleType;
+    }
 }
 
 // Create buttons for period and sale types
@@ -111,7 +127,7 @@ function createButtons() {
 
     saleTypes.forEach(type => {
         const typeButton = document.createElement('button');
-        typeButton.textContent = type.replace(/([A-Z])/g, ' $1').trim();
+        typeButton.textContent = getReadableSaleType(type);
         typeButton.onclick = () => {
             loadLeaderboard(document.querySelector('.period-button.active').dataset.period, type);
             document.querySelectorAll('.sale-type-button').forEach(btn => btn.classList.remove('active'));
