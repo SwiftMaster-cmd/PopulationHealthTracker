@@ -25,7 +25,7 @@ body {
     flex-direction: column; /* Change to column to center align the content */
     align-items: center; /* Center align the content */
     margin: 20px auto; /* Center the container */
-    padding: 20px;
+    padding: 10px; /* Reduce padding */
     background-color: var(--color-secondary);
     border-radius: 10px;
     color: inherit;
@@ -38,12 +38,12 @@ body {
     display: flex;
     justify-content: space-around;
     width: 100%; /* Make it take full width */
-    margin-bottom: 20px; /* Add some space below the buttons */
+    margin-bottom: 10px; /* Reduce space below the buttons */
 }
 
 .period-button {
     margin: 5px;
-    padding: 15px 30px; /* Increase padding for more space */
+    padding: 10px 20px; /* Reduce padding */
     border: none;
     border-radius: 5px;
     background-color: var(--color-primary);
@@ -67,9 +67,9 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: var(--color-tertiary);
-    padding: 20px;
-    padding-left: 30px;  /* Add padding on the left */
-    padding-right: 30px; /* Add padding on the right */
+    padding: 10px; /* Reduce padding */
+    padding-left: 20px;  /* Add padding on the left */
+    padding-right: 20px; /* Add padding on the right */
     border-radius: 10px;
     color: inherit;
     width: 100%;
@@ -90,12 +90,12 @@ body {
     display: flex;
     justify-content: space-around;
     width: 100%; /* Make it take full width */
-    margin-top: 20px;
+    margin-top: 10px; /* Reduce space above the buttons */
 }
 
 .sale-type-button {
     margin: 5px;
-    padding: 15px 30px; /* Increase padding for more space */
+    padding: 10px 20px; /* Reduce padding */
     border: none;
     border-radius: 5px;
     background-color: var(--color-primary);
