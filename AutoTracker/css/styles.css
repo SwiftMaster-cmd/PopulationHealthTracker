@@ -72,6 +72,8 @@ body {
     border-radius: 10px;
     color: inherit;
     width: 100%;
+    max-width: 500px; /* Set maximum width */
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
 }
 
 .leaderboard-item {
