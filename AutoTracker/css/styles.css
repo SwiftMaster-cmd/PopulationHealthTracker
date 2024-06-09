@@ -41,7 +41,8 @@ body {
 
 .leaderboard-container {
     display: flex;
-   
+    justify-content: center; /* Center the gray container content horizontally */
+    align-items: center;
     margin: 20px auto; /* Center the container itself horizontally */
     padding: 10px;
     background-color: var(--color-secondary);
@@ -49,6 +50,7 @@ body {
     color: inherit;
     width: 100%;
     max-width: 750px;
+
 }
 
 .time-buttons-container {
