@@ -1,4 +1,4 @@
-/* styles.css */
+/* Add this to your styles.css */
 :root {
     --color-primary: #007bff; /* Default colors, will be overridden by JavaScript */
     --color-secondary: #6c757d;
@@ -81,15 +81,12 @@ body {
     width: 100%;
 }
 
-/* Add this to your styles.css */
 .sale-type-buttons-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
-    flex-wrap: wrap; /* Allows wrapping if there are too many buttons */
-    margin-top: 20px;
-    width: 100%; /* Ensure it takes the full width available */
-    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    align-items: flex-start;
+    margin-left: 20px;
 }
 
 .sale-type-button {
@@ -101,14 +98,11 @@ body {
     color: inherit;
     cursor: pointer;
     font-size: 16px;
-    flex: 1; /* Allows the buttons to grow and take equal space */
-    text-align: center; /* Center the text inside the buttons */
 }
 
 .sale-type-button.active {
     background-color: var(--color-quaternary);
 }
-
 
 .button {
     padding: 10px 20px;
