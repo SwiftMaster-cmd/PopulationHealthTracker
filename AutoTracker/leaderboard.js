@@ -26,6 +26,7 @@ function getCurrentMonthKey() {
 function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
+    const usersRef = database.ref('users'); // Reference to the users node to get email
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -35,33 +36,40 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     leaderboardSection.innerHTML = ''; // Clear previous leaderboard
 
-    salesCountsRef.once('value', snapshot => {
-        const salesData = snapshot.val();
+    salesCountsRef.once('value', salesSnapshot => {
+        const salesData = salesSnapshot.val();
         const users = [];
 
-        for (const userId in salesData) {
-            const userData = salesData[userId];
-            const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-            users.push({ userId, count });
-        }
+        usersRef.once('value', usersSnapshot => {
+            const usersData = usersSnapshot.val();
 
-        // Check if users array is populated correctly
-        console.log(`Users for ${period} - ${saleType}:`, users);
+            for (const userId in salesData) {
+                const userData = salesData[userId];
+                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                const email = usersData[userId] ? usersData[userId].email.split('@')[0] : 'Unknown User';
+                users.push({ email, count });
+            }
 
-        users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
+            // Check if users array is populated correctly
+            console.log(`Users for ${period} - ${saleType}:`, users);
 
-        const periodSaleTypeContainer = document.createElement('div');
-        periodSaleTypeContainer.classList.add('leaderboard-section');
-        periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleType} (${period})</h3>`;
+            users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
 
-        users.slice(0, 5).forEach((user, index) => {
-            const userElement = document.createElement('div');
-            userElement.classList.add('leaderboard-item');
-            userElement.innerHTML = `<strong>${index + 1}. User ID: ${user.userId} - ${saleType}: ${user.count}</strong>`;
-            periodSaleTypeContainer.appendChild(userElement);
+            const periodSaleTypeContainer = document.createElement('div');
+            periodSaleTypeContainer.classList.add('leaderboard-section');
+            periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleType} (${period})</h3>`;
+
+            users.slice(0, 5).forEach((user, index) => {
+                const userElement = document.createElement('div');
+                userElement.classList.add('leaderboard-item');
+                userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${saleType}: ${user.count}</strong>`;
+                periodSaleTypeContainer.appendChild(userElement);
+            });
+
+            leaderboardSection.appendChild(periodSaleTypeContainer);
+        }).catch(error => {
+            console.error('Error fetching user data:', error);
         });
-
-        leaderboardSection.appendChild(periodSaleTypeContainer);
     }).catch(error => {
         console.error('Error fetching sales data:', error);
     });
