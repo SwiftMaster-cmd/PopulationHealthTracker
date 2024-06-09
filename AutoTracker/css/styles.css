@@ -38,11 +38,11 @@ body {
     display: flex;
     justify-content: space-around;
     width: 100%; /* Make it take full width */
-    margin-bottom: 10px; /* Reduce space below the buttons */
+    margin-bottom: 5px; /* Reduce space below the buttons */
 }
 
 .period-button {
-    margin: 5px;
+    margin: 3px;
     padding: 10px 20px; /* Reduce padding */
     border: none;
     border-radius: 5px;
@@ -68,8 +68,6 @@ body {
     align-items: center;
     background-color: var(--color-tertiary);
     padding: 10px; /* Reduce padding */
-    padding-left: 20px;  /* Add padding on the left */
-    padding-right: 20px; /* Add padding on the right */
     border-radius: 10px;
     color: inherit;
     width: 100%;
@@ -80,8 +78,8 @@ body {
 .leaderboard-item {
     background-color: var(--color-tertiary);
     border-radius: 10px;
-    padding: 10px;
-    margin: 5px 0;
+    padding: 5px;
+    margin: 3px 0;
     color: inherit;
     width: 100%;
 }
@@ -90,11 +88,11 @@ body {
     display: flex;
     justify-content: space-around;
     width: 100%; /* Make it take full width */
-    margin-top: 10px; /* Reduce space above the buttons */
+    margin-top: 5px; /* Reduce space above the buttons */
 }
 
 .sale-type-button {
-    margin: 5px;
+    margin: 3px;
     padding: 10px 20px; /* Reduce padding */
     border: none;
     border-radius: 5px;
