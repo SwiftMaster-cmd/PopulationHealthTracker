@@ -82,10 +82,10 @@ body {
 }
 
 .sale-type-buttons-container {
-
+    display: flex; /* Ensures buttons are laid out horizontally */
     justify-content: center;
     margin-top: 20px;
-
+    flex-direction: row; /* Explicitly set flex-direction to row */
 }
 
 
