@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const colorPicker = document.getElementById('colorPicker');
     const applyColorButton = document.getElementById('applyColor');
 
+    // Apply the default color palette on page load
+    const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
+    applyColorPalette(defaultColor);
+
     applyColorButton.addEventListener('click', function () {
         const selectedColor = colorPicker.value;
         applyColorPalette(selectedColor);
