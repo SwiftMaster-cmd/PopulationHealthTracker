@@ -59,12 +59,12 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                 const periodSaleTypeContainer = document.createElement('div');
                 periodSaleTypeContainer.classList.add('leaderboard-section');
-                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleType.replace(/([A-Z])/g, ' $1').trim()} - Day</h3>`;
+                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${getReadableTitle(saleType)} - Day</h3>`;
 
                 users.slice(0, 5).forEach((user, index) => {
                     const userElement = document.createElement('div');
                     userElement.classList.add('leaderboard-item');
-                    userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${saleType.replace(/([A-Z])/g, ' $1').trim()}: ${user.count}</strong>`;
+                    userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
                     periodSaleTypeContainer.appendChild(userElement);
                 });
 
@@ -88,6 +88,21 @@ function getReadableSaleType(saleType) {
             return 'Partner';
         case 'selectPatientManagement':
             return 'S.P.M.';
+        default:
+            return saleType;
+    }
+}
+
+function getReadableTitle(saleType) {
+    switch (saleType) {
+        case 'selectRX':
+            return 'Select RX';
+        case 'billableHRA':
+            return 'Billable HRA';
+        case 'transfer':
+            return 'Transfer';
+        case 'selectPatientManagement':
+            return 'Select Patient Management';
         default:
             return saleType;
     }
