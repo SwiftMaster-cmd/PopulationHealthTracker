@@ -23,7 +23,6 @@ body {
 
 .leaderboard-container {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     margin: 20px;
@@ -63,6 +62,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     color: inherit;
+    flex-grow: 1;
 }
 
 .leaderboard-item {
@@ -77,7 +77,7 @@ body {
 .sale-type-buttons-container {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 20px;
 }
 
 .sale-type-button {
