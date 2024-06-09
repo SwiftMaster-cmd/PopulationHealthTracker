@@ -22,7 +22,7 @@ body {
 
 .leaderboard-container {
     display: flex;
-    justify-content: space-between; /* Adjust to fill space between elements */
+    justify-content: center; /* Center the gray container */
     align-items: center;
     margin: 20px auto;
     padding: 10px;
