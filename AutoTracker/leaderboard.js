@@ -82,13 +82,13 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 function getReadableSaleType(saleType) {
     switch (saleType) {
         case 'selectRX':
-            return 'Select RX';
+            return 'S.R.X.';
         case 'billableHRA':
-            return 'Billable HRA';
+            return 'H.R.A.';
         case 'transfer':
-            return 'Transfer';
+            return 'Partner';
         case 'selectPatientManagement':
-            return 'Select Patient Management';
+            return 'S.P.M.';
         default:
             return saleType;
     }
