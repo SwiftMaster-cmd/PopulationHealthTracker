@@ -39,24 +39,27 @@
 
 
             <div class="leaderboard-container">
-                <div class="time-buttons-container">
-                    <button class="period-button active" data-period="day">Day</button>
-                    <button class="period-button" data-period="week">Week</button>
-                    <button class="period-button" data-period="month">Month</button>
-                </div>
                 <div class="leaderboard-content">
                     <div id="leaderboard-section">
                         <h2>Leaderboard</h2>
                         <!-- Leaderboard items will be appended here -->
                     </div>
                 </div>
-                <div class="sale-type-buttons-container">
-                    <button class="sale-type-button active" data-sale-type="selectRX">S.R.X.</button>
-                    <button class="sale-type-button" data-sale-type="billableHRA">H.R.A.</button>
-                    <button class="sale-type-button" data-sale-type="transfer">Partner</button>
-                    <button class="sale-type-button" data-sale-type="selectPatientManagement">S.P.M.</button>
+                <div class="picker-container">
+                    <select id="period-picker" class="picker">
+                        <option value="day" selected>Day</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                    </select>
+                    <select id="sale-type-picker" class="picker">
+                        <option value="selectRX" selected>S.R.X.</option>
+                        <option value="billableHRA">H.R.A.</option>
+                        <option value="transfer">Partner</option>
+                        <option value="selectPatientManagement">S.P.M.</option>
+                    </select>
                 </div>
             </div>
+            
 
             <div class="color-picker-container">
                 <input type="color" id="colorPicker" />

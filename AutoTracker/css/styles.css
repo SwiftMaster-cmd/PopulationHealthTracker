@@ -1,11 +1,9 @@
 :root {
-    --color-primary: #212121; /* Darker shade for primary elements */
-    --color-secondary: #424242; /* Slightly lighter shade for secondary elements */
-    --color-tertiary: #616161; /* Lighter shade for tertiary elements */
-    --color-quaternary: #757575; /* Even lighter shade for quaternary elements */
-    --color-quinary: #9e9e9e; /* Lightest shade for quinary elements */
-    --text-color: #ffffff; /* White text for contrast */
-    --background-color: #000000; /* Default background color set to black */
+    --color-primary: #007bff; /* Default colors, will be overridden by JavaScript */
+    --color-secondary: #6c757d;
+    --color-tertiary: #28a745;
+    --color-quaternary: #17a2b8;
+    --color-quinary: #ffc107;
 }
 
 body {
@@ -13,7 +11,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--color-primary);
-    color: var(--text-color);
+    color: #ffffff;
 }
 
 .title {
@@ -42,37 +40,17 @@ body {
 
 .leaderboard-container {
     display: flex;
+    flex-direction: column;
     justify-content: center; /* Center the gray container content horizontally */
     align-items: center;
-    margin: 20px auto; /* Center the container itself horizontally */
+    margin: 0 auto; /* Center the container itself horizontally */
     padding: 10px;
     background-color: var(--color-secondary);
     border-radius: 10px;
     color: inherit;
     width: 100%;
     max-width: 750px;
-
-}
-
-.time-buttons-container {
-    display: flex;
-    justify-content: flex-start; /* Align to the left */
-    margin-right: 10px; /* Small margin to separate from the green container */
-}
-
-.period-button {
-    margin: 3px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: var(--color-primary);
-    color: inherit;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.period-button.active {
-    background-color: var(--color-quaternary);
+    box-sizing: border-box;
 }
 
 .leaderboard-content {
@@ -102,25 +80,22 @@ body {
     width: 100%;
 }
 
-.sale-type-buttons-container {
+.picker-container {
     display: flex;
-    justify-content: flex-end; /* Align to the right */
-    margin-left: 10px; /* Small margin to separate from the green container */
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    width: 100%;
 }
 
-.sale-type-button {
-    margin: 3px;
-    padding: 10px 20px;
-    border: none;
+.picker {
+    padding: 10px;
+    font-size: 16px;
     border-radius: 5px;
+    border: 1px solid #ccc;
     background-color: var(--color-primary);
     color: inherit;
     cursor: pointer;
-    font-size: 16px;
-}
-
-.sale-type-button.active {
-    background-color: var(--color-quaternary);
 }
 
 .button {
@@ -150,86 +125,13 @@ body {
     color: inherit;
 }
 
-.sales-outcomes-container {
-    margin: 20px auto;
-    padding: 10px;
-    background-color: var(--color-secondary);
-    border-radius: 10px;
-    color: var(--text-color);
-    width: 100%;
-    max-width: 750px;
-    box-sizing: border-box;
-}
-
-.sales-counts-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.sales-count-item {
-    background-color: var(--color-tertiary);
-    border-radius: 10px;
-    padding: 10px;
-    margin: 5px 0;
-    color: inherit;
-    width: 100%;
-    text-align: center;
-}
-
-.account-container {
-    margin-bottom: 20px;
-    border: 1px solid var(--color-quaternary);
-    border-radius: 10px;
-    padding: 10px;
-}
-
-.account-title {
-    background-color: var(--color-tertiary);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.account-content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.sales-info {
-    background-color: var(--color-tertiary);
-    border-radius: 10px;
-    padding: 10px;
-}
-
+.sales-outcomes-container,
 .customer-info-container {
-    background-color: var(--color-quaternary);
-    border-radius: 10px;
-    padding: 10px;
-}
-
-.outcome-item {
-    border: 1px solid var(--color-quaternary);
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
     background-color: var(--color-secondary);
-}
-
-.outcome-item .top-section, .outcome-item .bottom-section {
-    display: flex;
-    justify-content: space-between;
-}
-
-.outcome-item .action, .outcome-item .notes {
-    text-align: left;
-}
-
-.outcome-item .date-top, .outcome-item .time-bottom {
-    text-align: right;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+    color: inherit;
 }
 
 @media (max-width: 768px) {
@@ -237,13 +139,13 @@ body {
         flex-direction: column;
     }
 
-    .time-buttons-container {
-        flex-direction: row;
-        flex-wrap: wrap;
+    .picker-container {
+        flex-direction: column;
+        gap: 10px;
     }
 
-    .period-button, .sale-type-button {
+    .picker {
         font-size: 14px;
-        padding: 8px 16px;
+        padding: 8px;
     }
 }
