@@ -34,8 +34,7 @@ body {
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
     width: 90%;
-    max-width: 750px;
-    height: 500px;
+
     padding: 20px;
     border-radius: 10px;
     background-color: var(--color-secondary);
