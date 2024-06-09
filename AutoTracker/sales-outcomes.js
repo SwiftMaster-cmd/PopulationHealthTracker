@@ -179,18 +179,6 @@ function displaySalesOutcomes(user) {
             const outcomesContainer = document.getElementById('sales-outcomes-container');
             outcomesContainer.innerHTML = '';
 
-            const salesCountsContainer = document.createElement('div');
-            salesCountsContainer.classList.add('sales-counts-container');
-            for (const period in salesCounts) {
-                for (const action in salesCounts[period]) {
-                    const countElement = document.createElement('div');
-                    countElement.classList.add('sales-count-item');
-                    countElement.innerHTML = `<strong>${action} (${period}):</strong> ${salesCounts[period][action]}`;
-                    salesCountsContainer.appendChild(countElement);
-                }
-            }
-            outcomesContainer.appendChild(salesCountsContainer);
-
             const groupedOutcomes = {};
 
             for (const key in outcomes) {
