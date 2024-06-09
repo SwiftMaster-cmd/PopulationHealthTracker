@@ -90,10 +90,16 @@ function loadChart(period = 'day', saleType = 'selectRX') {
                 console.log(`Sales counts for ${period} - ${saleType}:`, salesCounts);
 
                 const ctx = document.getElementById('salesChart').getContext('2d');
-                const chart = new Chart(ctx, {
+                
+                // If chart instance already exists, destroy it before creating a new one
+                if (window.salesChart) {
+                    window.salesChart.destroy();
+                }
+
+                window.salesChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['Day', 'Week', 'Month'], // You can adjust labels as needed
+                        labels: ['Sales Count'], // Adjust labels as needed
                         datasets: [{
                             label: `${getReadableTitle(saleType)} Sales`,
                             data: [salesCounts], // Adjust data to match the period and sale type
