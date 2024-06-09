@@ -1,0 +1,118 @@
+/* styles.css */
+:root {
+    --color-primary: #007bff; /* Default colors, will be overridden by JavaScript */
+    --color-secondary: #6c757d;
+    --color-tertiary: #28a745;
+    --color-quaternary: #17a2b8;
+    --color-quinary: #ffc107;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-primary);
+    color: #ffffff;
+}
+
+.title {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2em;
+}
+
+.leaderboard-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin: 20px;
+    padding: 20px;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    color: inherit;
+}
+
+.time-buttons-container, .sale-type-buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.period-button, .sale-type-button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    color: inherit;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.period-button.active, .sale-type-button.active {
+    background-color: var(--color-quaternary);
+}
+
+#leaderboard-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-tertiary);
+    padding: 20px;
+    border-radius: 10px;
+    color: inherit;
+}
+
+.leaderboard-item {
+    background-color: var(--color-tertiary);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    color: inherit;
+    width: 100%;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    color: inherit;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+.color-picker-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.outcomes-chart-container {
+    padding: 20px;
+    background-color: var(--color-quaternary);
+    border-radius: 10px;
+    color: inherit;
+}
+
+@media (max-width: 768px) {
+    .leaderboard-container {
+        flex-direction: column;
+    }
+
+    .time-buttons-container, .sale-type-buttons-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .period-button, .sale-type-button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
