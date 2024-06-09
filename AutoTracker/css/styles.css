@@ -14,13 +14,20 @@ body {
     color: #ffffff;
 }
 
+
 .main-container {
     display: flex;
-
+    flex-direction: column;
     width: 100%;
-    min-height: 100vh;
-    background-color: var(--color-primary);
+    max-width: 750px;
+    height: 500px;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Enables vertical scrolling */
 }
+
 
 .content-container {
     width: 90%;
