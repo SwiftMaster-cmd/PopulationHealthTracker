@@ -82,11 +82,12 @@ body {
 }
 
 .sale-type-buttons-container {
-    display: flex;
+
     justify-content: center;
     margin-top: 20px;
-    flex-direction: row; /* Ensure the buttons are in a row */
+
 }
+
 
 .sale-type-button {
     margin: 5px;
