@@ -22,28 +22,27 @@ body {
 
 .leaderboard-container {
     display: flex;
-    flex-direction: column; /* Change to column to center align the content */
-    align-items: center; /* Center align the content */
-    margin: 20px auto; /* Center the container */
-    padding: 10px; /* Reduce padding */
+    justify-content: space-between; /* Adjust to fill space between elements */
+    align-items: center;
+    margin: 20px auto;
+    padding: 10px;
     background-color: var(--color-secondary);
     border-radius: 10px;
     color: inherit;
     width: 100%;
-    max-width: 750px; /* Set max width */
+    max-width: 750px;
     box-sizing: border-box;
 }
 
 .time-buttons-container {
     display: flex;
-    justify-content: space-around;
-    width: 100%; /* Make it take full width */
-    margin-bottom: 5px; /* Reduce space below the buttons */
+    justify-content: flex-start; /* Align to the left */
+    margin-right: 10px; /* Small margin to separate from the green container */
 }
 
 .period-button {
     margin: 3px;
-    padding: 10px 20px; /* Reduce padding */
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     background-color: var(--color-primary);
@@ -59,7 +58,7 @@ body {
 .leaderboard-content {
     display: flex;
     justify-content: center; /* Center the leaderboard content */
-    width: 100%; /* Make it take full width */
+    flex-grow: 1; /* Allow it to fill the remaining space */
 }
 
 #leaderboard-section {
@@ -67,12 +66,11 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: var(--color-tertiary);
-    padding: 10px; /* Reduce padding */
+    padding: 10px;
     border-radius: 10px;
     color: inherit;
     width: 100%;
-    max-width: 500px; /* Set maximum width */
-    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+    box-sizing: border-box;
 }
 
 .leaderboard-item {
@@ -86,14 +84,13 @@ body {
 
 .sale-type-buttons-container {
     display: flex;
-    justify-content: space-around;
-    width: 100%; /* Make it take full width */
-    margin-top: 5px; /* Reduce space above the buttons */
+    justify-content: flex-end; /* Align to the right */
+    margin-left: 10px; /* Small margin to separate from the green container */
 }
 
 .sale-type-button {
     margin: 3px;
-    padding: 10px 20px; /* Reduce padding */
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     background-color: var(--color-primary);
