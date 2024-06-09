@@ -20,6 +20,24 @@ body {
     font-size: 2em;
 }
 
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh; /* Full viewport height */
+    background-color: var(--color-primary);
+}
+
+.content-container {
+    width: 90%;
+    max-width: 1200px;
+    background-color: var(--color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
 .leaderboard-container {
     display: flex;
     justify-content: center; /* Center the gray container content horizontally */
@@ -33,7 +51,6 @@ body {
     max-width: 750px;
     box-sizing: border-box;
 }
-
 
 .time-buttons-container {
     display: flex;
@@ -128,6 +145,15 @@ body {
     padding: 20px;
     background-color: var(--color-quaternary);
     border-radius: 10px;
+    color: inherit;
+}
+
+.sales-outcomes-container,
+.customer-info-container {
+    background-color: var(--color-secondary);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
     color: inherit;
 }
 

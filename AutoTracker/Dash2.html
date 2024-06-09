@@ -32,43 +32,43 @@
     </style>
 </head>
 <body>
-    <h1>Sales Outcomes</h1>
-    <div class="leaderboard-container">
-        <div class="time-buttons-container">
-            <button class="period-button active" data-period="day">Day</button>
-            <button class="period-button" data-period="week">Week</button>
-            <button class="period-button" data-period="month">Month</button>
-        </div>
-        <div class="leaderboard-content">
-            <div id="leaderboard-section">
-                <h2>Leaderboard</h2>
-                <!-- Leaderboard items will be appended here -->
+    <div class="main-container">
+        <h1>Sales Outcomes</h1>
+        <div class="content-container">
+            <div class="leaderboard-container">
+                <div class="time-buttons-container">
+                    <button class="period-button active" data-period="day">Day</button>
+                    <button class="period-button" data-period="week">Week</button>
+                    <button class="period-button" data-period="month">Month</button>
+                </div>
+                <div class="leaderboard-content">
+                    <div id="leaderboard-section">
+                        <h2>Leaderboard</h2>
+                        <!-- Leaderboard items will be appended here -->
+                    </div>
+                </div>
+                <div class="sale-type-buttons-container">
+                    <button class="sale-type-button active" data-sale-type="selectRX">S.R.X.</button>
+                    <button class="sale-type-button" data-sale-type="billableHRA">H.R.A.</button>
+                    <button class="sale-type-button" data-sale-type="transfer">Partner</button>
+                    <button class="sale-type-button" data-sale-type="selectPatientManagement">S.P.M.</button>
+                </div>
             </div>
-        </div>
-        <div class="sale-type-buttons-container">
-            <button class="sale-type-button active" data-sale-type="selectRX">S.R.X.</button>
-            <button class="sale-type-button" data-sale-type="billableHRA">H.R.A.</button>
-            <button class="sale-type-button" data-sale-type="transfer">Partner</button>
-            <button class="sale-type-button" data-sale-type="selectPatientManagement">S.P.M.</button>
+
+            <div class="color-picker-container">
+                <input type="color" id="colorPicker" />
+                <button id="applyColor" class="button">Apply Color Palette</button>
+            </div>
+
+            <div id="sales-outcomes-container" class="sales-outcomes-container">
+                <!-- Sales outcomes content will be appended here -->
+            </div>
+            <div id="customer-info-container" class="customer-info-container">
+                <!-- Customer information content will be appended here -->
+            </div>
+            <canvas id="sales-bar-chart" width="400" height="200"></canvas>
         </div>
     </div>
-
-    <div class="color-picker-container">
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-    </div>
-
-
-
-        <div id="sales-outcomes-container" class="sales-outcomes-container">
-            <!-- Sales outcomes content will be appended here -->
-        </div>
-        <div id="customer-info-container" class="customer-info-container">
-            <!-- Customer information content will be appended here -->
-        </div>
-        <canvas id="sales-bar-chart" width="400" height="200"></canvas>
-
-
     <h4>To add the auto tracker: click the button, copy the text and put it in the URL part of the bookmark, name it AutoTracker or whatever you would like, then save. The bookmark must be pressed every time the URL changes or you work on a new sale, so there's a visual indicator to show if the tracker is active in the Actions Tab.</h4>
     <h4>
         <button class="navigate-button button" onclick="window.location.href='AutoTracker/Dash2.html'">AutoTracker Dashboard</button>
