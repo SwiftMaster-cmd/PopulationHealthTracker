@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.displaySalesOutcomes(user); // Call the global function
             }).catch((error) => {
                 console.error('Authentication error:', error);
-            });
+            }); 
         }
     });
 });
