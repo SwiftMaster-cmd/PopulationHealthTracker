@@ -59,7 +59,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                 const periodSaleTypeContainer = document.createElement('div');
                 periodSaleTypeContainer.classList.add('leaderboard-section');
-                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${getReadableTitle(saleType)} - Day</h3>`;
+                periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
 
                 users.slice(0, 5).forEach((user, index) => {
                     const userElement = document.createElement('div');
