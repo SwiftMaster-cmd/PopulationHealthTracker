@@ -1,87 +1,105 @@
-/* General Styles */
+/* styles.css */
+:root {
+    --color-primary: #007bff; /* Default colors, will be overridden by JavaScript */
+    --color-secondary: #6c757d;
+    --color-tertiary: #28a745;
+    --color-quaternary: #17a2b8;
+    --color-quinary: #ffc107;
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #3498DB; /* Change background color to primary */
-    color: #ECF0F1; /* Light text color */
+    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    background-color: var(--color-primary);
+    color: #ffffff;
 }
 
-/* Header */
-h1 {
-    font-size: 28px;
-    color: #ECF0F1; /* Light text color */
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-/* Invisible Container */
 .container {
-    background-color: transparent; /* Make container background invisible */
-    border: none; /* Remove border */
     padding: 20px;
+    margin: 10px auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    background-color: var(--color-tertiary);
+    color: inherit;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    color: inherit;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+h1, h2, h4 {
+    text-align: center;
     margin-bottom: 20px;
 }
 
-/* Outcome Item */
-.outcome-item {
-    background-color: #1E1E1E; /* Fixed dark background */
-    color: #ECF0F1; /* Fixed light text color */
-    border: 1px solid #34495E; /* Fixed border color */
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 5px;
-    position: relative;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+.button-container {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.outcome-item:hover {
-    background-color: #34495E; /* Hover background color */
-    border-color: #1ABC9C; /* Hover border color */
+.period-button, .sale-type-button, .navigate-button {
+    background-color: var(--color-secondary);
+    color: inherit;
 }
 
-/* Top Section */
-.top-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+.period-button.active, .sale-type-button.active {
+    background-color: var(--color-quaternary);
+    color: inherit;
 }
 
-/* Action */
-.action {
+.color-picker-container {
     text-align: center;
-    font-size: 1.1em;
-    width: 250px; /* Set the width of the action container */
-    margin: 0 auto; /* Center the action container */
+    margin: 20px 0;
 }
 
-/* Bottom Section */
-.bottom-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.outcomes-chart-container {
+    padding: 20px;
+    background-color: var(--color-quaternary);
+    border-radius: 10px;
+    color: inherit;
 }
 
-/* Notes */
-.notes {
-    text-align: left;
-    flex-grow: 1;
-    color: #ECF0F1; /* Fixed light text color */
+.leaderboard-container {
+    padding: 20px;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    color: inherit;
 }
 
-/* Date Top */
-.date-top {
-    text-align: right;
-    font-size: 0.9em;
-    color: #BDC3C7; /* Lighter color for dates */
+.leaderboard-item, .outcome-item, .sales-counts-container, .account-container, .customer-info {
+    background-color: var(--color-tertiary);
+    border-radius: 10px;
+    color: inherit;
+    padding: 10px;
+    margin: 10px 0;
 }
 
-/* Time Bottom */
-.time-bottom {
-    text-align: right;
-    font-size: 0.9em;
-    color: #BDC3C7; /* Lighter color for times */
+input[type="color"] {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--color-primary);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
 }
