@@ -22,21 +22,23 @@ body {
 
 .leaderboard-container {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 20px;
+    flex-direction: column; /* Change to column to center align the content */
+    align-items: center; /* Center align the content */
+    margin: 20px auto; /* Center the container */
     padding: 20px;
     background-color: var(--color-secondary);
     border-radius: 10px;
     color: inherit;
+    width: 100%;
+    max-width: 750px; /* Set max width */
+    box-sizing: border-box;
 }
 
 .time-buttons-container {
     display: flex;
-    flex-direction: column;
     justify-content: space-around;
-    align-items: center;
-    margin-right: 20px; /* Add margin to the right to add space between the time buttons and the leaderboard */
+    width: 100%; /* Make it take full width */
+    margin-bottom: 20px; /* Add some space below the buttons */
 }
 
 .period-button {
@@ -56,9 +58,8 @@ body {
 
 .leaderboard-content {
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin-left: 20px;
+    justify-content: center; /* Center the leaderboard content */
+    width: 100%; /* Make it take full width */
 }
 
 #leaderboard-section {
@@ -87,10 +88,9 @@ body {
 
 .sale-type-buttons-container {
     display: flex;
-    flex-direction: column;
     justify-content: space-around;
-    align-items: flex-start;
-    margin-left: 20px;
+    width: 100%; /* Make it take full width */
+    margin-top: 20px;
 }
 
 .sale-type-button {
