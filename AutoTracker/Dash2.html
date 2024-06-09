@@ -40,17 +40,20 @@
             <button class="period-button" data-period="week">Week</button>
             <button class="period-button" data-period="month">Month</button>
         </div>
-        <div id="leaderboard-section">
-            <h2>Leaderboard</h2>
-            <!-- Leaderboard items will be appended here -->
+        <div class="leaderboard-content">
+            <div id="leaderboard-section">
+                <h2>Leaderboard</h2>
+                <!-- Leaderboard items will be appended here -->
+            </div>
+            <div class="sale-type-buttons-container">
+                <button class="sale-type-button active" data-sale-type="selectRX">Select RX</button>
+                <button class="sale-type-button" data-sale-type="billableHRA">Billable HRA</button>
+                <button class="sale-type-button" data-sale-type="transfer">Transfer</button>
+                <button class="sale-type-button" data-sale-type="selectPatientManagement">Select Patient Management</button>
+            </div>
         </div>
     </div>
-    <div class="sale-type-buttons-container">
-        <button class="sale-type-button active" data-sale-type="selectRX">Select RX</button>
-        <button class="sale-type-button" data-sale-type="billableHRA">Billable HRA</button>
-        <button class="sale-type-button" data-sale-type="transfer">Transfer</button>
-        <button class="sale-type-button" data-sale-type="selectPatientManagement">Select Patient Management</button>
-    </div>
+
 
     <div class="color-picker-container">
         <input type="color" id="colorPicker" />
