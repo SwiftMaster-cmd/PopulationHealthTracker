@@ -12,14 +12,19 @@ body {
 }
 
 .sales-outcomes-container {
-    margin: 20px auto;
-    padding: 10px;
-    background-color: var(--color-secondary);
-    border-radius: 10px;
-    color: var(--text-color);
+  
+
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-width: 750px;
+    height: 500px;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    padding: 20px;
     box-sizing: border-box;
+    overflow-y: auto; /* Enables vertical scrolling */
+
 }
 
 .sales-counts-container {
