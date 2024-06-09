@@ -31,8 +31,7 @@ body {
 
 .content-container {
     width: 90%;
-    justify-content: center;
-    align-items: center;
+
     max-width: 1200px;
     padding: 20px;
     border-radius: 10px;
