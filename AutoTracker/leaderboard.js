@@ -6,14 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners to the pickers
     periodPicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        loadChart(periodPicker.value, saleTypePicker.value);
     });
 
     saleTypePicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        loadChart(periodPicker.value, saleTypePicker.value);
     });
 
-    // Load the default leaderboard
+    // Load the default leaderboard and chart
     loadLeaderboard();
+    loadChart();
 });
 
 function loadLeaderboard(period = 'day', saleType = 'selectRX') {
@@ -71,19 +74,60 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-function getReadableSaleType(saleType) {
-    switch (saleType) {
-        case 'selectRX':
-            return 'S.R.X.';
-        case 'billableHRA':
-            return 'H.R.A.';
-        case 'transfer':
-            return 'Partner';
-        case 'selectPatientManagement':
-            return 'S.P.M.';
-        default:
-            return saleType;
-    }
+let salesChart; // Declare salesChart variable
+
+function loadChart(period = 'day', saleType = 'selectRX') {
+    const database = firebase.database();
+    const salesCountsRef = database.ref('salesCounts');
+
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            const currentUserId = user.uid;
+
+            salesCountsRef.child(currentUserId).once('value', salesSnapshot => {
+                const salesData = salesSnapshot.val();
+                const salesCounts = salesData[period] && salesData[period][saleType] ? salesData[period][saleType] : 0;
+                
+                // Check if salesCounts array is populated correctly
+                console.log(`Sales counts for ${period} - ${saleType}:`, salesCounts);
+
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                
+                if (!salesChart) {
+                    // Initialize the chart
+                    salesChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Sales Count'], // Adjust labels as needed
+                            datasets: [{
+                                label: `${getReadableTitle(saleType)} Sales`,
+                                data: [salesCounts], // Adjust data to match the period and sale type
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    // Update the chart data
+                    salesChart.data.datasets[0].data = [salesCounts];
+                    salesChart.data.datasets[0].label = `${getReadableTitle(saleType)} Sales`;
+                    salesChart.update();
+                }
+            }).catch(error => {
+                console.error('Error fetching sales data:', error);
+            });
+        } else {
+            console.error('No user is signed in.');
+        }
+    });
 }
 
 function getReadableTitle(saleType) {
