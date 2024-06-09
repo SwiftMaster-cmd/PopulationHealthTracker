@@ -1,27 +1,20 @@
-// Helper functions
-function getCurrentDayKey() {
-    const now = new Date();
-    return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // Create the dropdown pickers
+    const periodPicker = document.getElementById('periodPicker');
+    const saleTypePicker = document.getElementById('saleTypePicker');
 
-function getCurrentWeekKey() {
-    const now = new Date();
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
-    return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
-}
+    // Add event listeners to the pickers
+    periodPicker.addEventListener('change', () => {
+        loadLeaderboard(periodPicker.value, saleTypePicker.value);
+    });
 
-Date.prototype.getWeekNumber = function() {
-    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-};
+    saleTypePicker.addEventListener('change', () => {
+        loadLeaderboard(periodPicker.value, saleTypePicker.value);
+    });
 
-function getCurrentMonthKey() {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
-}
+    // Load the default leaderboard
+    loadLeaderboard();
+});
 
 function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
@@ -107,55 +100,3 @@ function getReadableTitle(saleType) {
             return saleType;
     }
 }
-
-// Create buttons for period and sale types
-function createButtons() {
-    const timeButtonsContainer = document.querySelector('.time-buttons-container');
-    const saleTypeButtonsContainer = document.querySelector('.sale-type-buttons-container');
-
-    if (!timeButtonsContainer || !saleTypeButtonsContainer) {
-        console.error('Button container element not found');
-        return;
-    }
-
-    // Check if buttons already exist and clear them before creating new ones
-    timeButtonsContainer.innerHTML = '';
-    saleTypeButtonsContainer.innerHTML = '';
-
-    const periods = ['day', 'week', 'month'];
-    const saleTypes = ['selectRX', 'billableHRA', 'transfer', 'selectPatientManagement'];
-
-    periods.forEach(period => {
-        const periodButton = document.createElement('button');
-        periodButton.textContent = period.charAt(0).toUpperCase() + period.slice(1);
-        periodButton.onclick = () => {
-            loadLeaderboard(period, document.querySelector('.sale-type-button.active').dataset.saleType);
-            document.querySelectorAll('.period-button').forEach(btn => btn.classList.remove('active'));
-            periodButton.classList.add('active');
-        };
-        periodButton.classList.add('period-button');
-        periodButton.dataset.period = period;
-        if (period === 'day') periodButton.classList.add('active');
-        timeButtonsContainer.appendChild(periodButton);
-    });
-
-    saleTypes.forEach(type => {
-        const typeButton = document.createElement('button');
-        typeButton.textContent = getReadableSaleType(type);
-        typeButton.onclick = () => {
-            loadLeaderboard(document.querySelector('.period-button.active').dataset.period, type);
-            document.querySelectorAll('.sale-type-button').forEach(btn => btn.classList.remove('active'));
-            typeButton.classList.add('active');
-        };
-        typeButton.classList.add('sale-type-button');
-        typeButton.dataset.saleType = type;
-        if (type === 'selectRX') typeButton.classList.add('active');
-        saleTypeButtonsContainer.appendChild(typeButton);
-    });
-}
-
-// Ensure the DOM is fully loaded before running the script
-document.addEventListener('DOMContentLoaded', () => {
-    createButtons();
-    loadLeaderboard(); // Load default leaderboard
-});
