@@ -77,6 +77,11 @@ function createButtons() {
         return;
     }
 
+    if (timeButtonsContainer.children.length > 0 || saleTypeButtonsContainer.children.length > 0) {
+        console.warn('Buttons already created');
+        return;
+    }
+
     const periods = ['day', 'week', 'month'];
     const saleTypes = ['selectRX', 'billableHRA', 'transfer', 'selectPatientManagement'];
 
