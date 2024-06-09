@@ -78,7 +78,7 @@ function isSameMonth(date1, date2) {
            date1.getMonth() === date2.getMonth();
 }
 
-function displaySalesOutcomes(user) {
+function displaySalesOutcomes(period) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
     const salesCountsRef = database.ref('salesCounts/' + user.uid);
@@ -91,24 +91,10 @@ function displaySalesOutcomes(user) {
 
         if (outcomes) {
             const salesCounts = {
-                day: {
-                    billableHRA: 0,
-                    selectRX: 0,
-                    selectPatientManagement: 0,
-                    transfer: 0
-                },
-                week: {
-                    billableHRA: 0,
-                    selectRX: 0,
-                    selectPatientManagement: 0,
-                    transfer: 0
-                },
-                month: {
-                    billableHRA: 0,
-                    selectRX: 0,
-                    selectPatientManagement: 0,
-                    transfer: 0
-                }
+                billableHRA: 0,
+                selectRX: 0,
+                selectPatientManagement: 0,
+                transfer: 0
             };
 
             for (const key in outcomes) {
@@ -122,39 +108,35 @@ function displaySalesOutcomes(user) {
                 const saleType = getSaleType(action, notes);
                 console.log(`Identified Sale Type: ${saleType}`);
 
-                if (isSameDay(outcomeTime, now)) {
+                if (period === 'day' && isSameDay(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
-                        salesCounts.day.billableHRA++;
+                        salesCounts.billableHRA++;
                     } else if (saleType === 'Select RX') {
-                        salesCounts.day.selectRX++;
+                        salesCounts.selectRX++;
                     } else if (saleType === 'Select Patient Management') {
-                        salesCounts.day.selectPatientManagement++;
+                        salesCounts.selectPatientManagement++;
                     } else if (saleType === 'Transfer') {
-                        salesCounts.day.transfer++;
+                        salesCounts.transfer++;
                     }
-                }
-
-                if (isSameWeek(outcomeTime, now)) {
+                } else if (period === 'week' && isSameWeek(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
-                        salesCounts.week.billableHRA++;
+                        salesCounts.billableHRA++;
                     } else if (saleType === 'Select RX') {
-                        salesCounts.week.selectRX++;
+                        salesCounts.selectRX++;
                     } else if (saleType === 'Select Patient Management') {
-                        salesCounts.week.selectPatientManagement++;
+                        salesCounts.selectPatientManagement++;
                     } else if (saleType === 'Transfer') {
-                        salesCounts.week.transfer++;
+                        salesCounts.transfer++;
                     }
-                }
-
-                if (isSameMonth(outcomeTime, now)) {
+                } else if (period === 'month' && isSameMonth(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
-                        salesCounts.month.billableHRA++;
+                        salesCounts.billableHRA++;
                     } else if (saleType === 'Select RX') {
-                        salesCounts.month.selectRX++;
+                        salesCounts.selectRX++;
                     } else if (saleType === 'Select Patient Management') {
-                        salesCounts.month.selectPatientManagement++;
+                        salesCounts.selectPatientManagement++;
                     } else if (saleType === 'Transfer') {
-                        salesCounts.month.transfer++;
+                        salesCounts.transfer++;
                     }
                 }
 
@@ -164,9 +146,7 @@ function displaySalesOutcomes(user) {
             console.log('Final Sales Counts:', salesCounts);
 
             const updates = {};
-            updates[`day`] = salesCounts.day;
-            updates[`week`] = salesCounts.week;
-            updates[`month`] = salesCounts.month;
+            updates[period] = salesCounts;
 
             salesCountsRef.update(updates, (error) => {
                 if (error) {
@@ -176,19 +156,19 @@ function displaySalesOutcomes(user) {
                 }
             });
 
-            const outcomesContainer = document.getElementById('sales-outcomes-container');
+            const outcomesContainer = document.getElementById('sales-outcomes-section');
             outcomesContainer.innerHTML = '';
 
             const salesCountsContainer = document.createElement('div');
             salesCountsContainer.classList.add('sales-counts-container');
-            for (const period in salesCounts) {
-                for (const action in salesCounts[period]) {
-                    const countElement = document.createElement('div');
-                    countElement.classList.add('sales-count-item');
-                    countElement.innerHTML = `<strong>${action} (${period}):</strong> ${salesCounts[period][action]}`;
-                    salesCountsContainer.appendChild(countElement);
-                }
+
+            for (const action in salesCounts) {
+                const countElement = document.createElement('div');
+                countElement.classList.add('sales-count-item');
+                countElement.innerHTML = `<strong>${action} (${period}):</strong> ${salesCounts[action]}`;
+                salesCountsContainer.appendChild(countElement);
             }
+
             outcomesContainer.appendChild(salesCountsContainer);
 
             const groupedOutcomes = {};
