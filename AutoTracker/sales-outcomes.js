@@ -1,84 +1,7 @@
-// Helper functions
-function formatDate(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleDateString();
-}
+import { formatDate, formatTime, getSaleType, isSameDay, isSameWeek, isSameMonth } from './helpers.js';
 
-function formatTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleTimeString();
-}
 
-function formatDateTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    });
-}
-
-function getSaleType(action, notes) {
-    const normalizedAction = action.toLowerCase();
-
-    if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-        return 'Select RX';
-    } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-        return 'Billable HRA';
-    } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-        return 'Transfer';
-    } else if (normalizedAction.includes('select patient management')) {
-        return 'Select Patient Management';
-    }
-    return action;
-}
-
-function getCurrentDayKey() {
-    const now = new Date();
-    return now.toISOString().split('T')[0];
-}
-
-function getCurrentWeekKey() {
-    const now = new Date();
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
-    return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
-}
-
-Date.prototype.getWeekNumber = function() {
-    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-};
-
-function getCurrentMonthKey() {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-}
-
-function isSameDay(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth() &&
-           date1.getDate() === date2.getDate();
-}
-
-function isSameWeek(date1, date2) {
-    const week1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate() - date1.getDay() + (date1.getDay() === 0 ? -6 : 1));
-    const week2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate() - date2.getDay() + (date2.getDay() === 0 ? -6 : 1));
-    return week1.getTime() === week2.getTime();
-}
-
-function isSameMonth(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth();
-}
-
-function displaySalesOutcomes(period) {
+function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
     const salesCountsRef = database.ref('salesCounts/' + user.uid);
@@ -91,10 +14,24 @@ function displaySalesOutcomes(period) {
 
         if (outcomes) {
             const salesCounts = {
-                billableHRA: 0,
-                selectRX: 0,
-                selectPatientManagement: 0,
-                transfer: 0
+                day: {
+                    billableHRA: 0,
+                    selectRX: 0,
+                    selectPatientManagement: 0,
+                    transfer: 0
+                },
+                week: {
+                    billableHRA: 0,
+                    selectRX: 0,
+                    selectPatientManagement: 0,
+                    transfer: 0
+                },
+                month: {
+                    billableHRA: 0,
+                    selectRX: 0,
+                    selectPatientManagement: 0,
+                    transfer: 0
+                }
             };
 
             for (const key in outcomes) {
@@ -108,35 +45,39 @@ function displaySalesOutcomes(period) {
                 const saleType = getSaleType(action, notes);
                 console.log(`Identified Sale Type: ${saleType}`);
 
-                if (period === 'day' && isSameDay(outcomeTime, now)) {
+                if (isSameDay(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
-                        salesCounts.billableHRA++;
+                        salesCounts.day.billableHRA++;
                     } else if (saleType === 'Select RX') {
-                        salesCounts.selectRX++;
+                        salesCounts.day.selectRX++;
                     } else if (saleType === 'Select Patient Management') {
-                        salesCounts.selectPatientManagement++;
+                        salesCounts.day.selectPatientManagement++;
                     } else if (saleType === 'Transfer') {
-                        salesCounts.transfer++;
+                        salesCounts.day.transfer++;
                     }
-                } else if (period === 'week' && isSameWeek(outcomeTime, now)) {
+                }
+
+                if (isSameWeek(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
-                        salesCounts.billableHRA++;
+                        salesCounts.week.billableHRA++;
                     } else if (saleType === 'Select RX') {
-                        salesCounts.selectRX++;
+                        salesCounts.week.selectRX++;
                     } else if (saleType === 'Select Patient Management') {
-                        salesCounts.selectPatientManagement++;
+                        salesCounts.week.selectPatientManagement++;
                     } else if (saleType === 'Transfer') {
-                        salesCounts.transfer++;
+                        salesCounts.week.transfer++;
                     }
-                } else if (period === 'month' && isSameMonth(outcomeTime, now)) {
+                }
+
+                if (isSameMonth(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
-                        salesCounts.billableHRA++;
+                        salesCounts.month.billableHRA++;
                     } else if (saleType === 'Select RX') {
-                        salesCounts.selectRX++;
+                        salesCounts.month.selectRX++;
                     } else if (saleType === 'Select Patient Management') {
-                        salesCounts.selectPatientManagement++;
+                        salesCounts.month.selectPatientManagement++;
                     } else if (saleType === 'Transfer') {
-                        salesCounts.transfer++;
+                        salesCounts.month.transfer++;
                     }
                 }
 
@@ -146,7 +87,9 @@ function displaySalesOutcomes(period) {
             console.log('Final Sales Counts:', salesCounts);
 
             const updates = {};
-            updates[period] = salesCounts;
+            updates[`day`] = salesCounts.day;
+            updates[`week`] = salesCounts.week;
+            updates[`month`] = salesCounts.month;
 
             salesCountsRef.update(updates, (error) => {
                 if (error) {
@@ -156,19 +99,19 @@ function displaySalesOutcomes(period) {
                 }
             });
 
-            const outcomesContainer = document.getElementById('sales-outcomes-section');
+            const outcomesContainer = document.getElementById('sales-outcomes-container');
             outcomesContainer.innerHTML = '';
 
             const salesCountsContainer = document.createElement('div');
             salesCountsContainer.classList.add('sales-counts-container');
-
-            for (const action in salesCounts) {
-                const countElement = document.createElement('div');
-                countElement.classList.add('sales-count-item');
-                countElement.innerHTML = `<strong>${action} (${period}):</strong> ${salesCounts[action]}`;
-                salesCountsContainer.appendChild(countElement);
+            for (const period in salesCounts) {
+                for (const action in salesCounts[period]) {
+                    const countElement = document.createElement('div');
+                    countElement.classList.add('sales-count-item');
+                    countElement.innerHTML = `<strong>${action} (${period}):</strong> ${salesCounts[period][action]}`;
+                    salesCountsContainer.appendChild(countElement);
+                }
             }
-
             outcomesContainer.appendChild(salesCountsContainer);
 
             const groupedOutcomes = {};

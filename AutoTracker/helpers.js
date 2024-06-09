@@ -1,16 +1,15 @@
-// helpers.js
-
-export function formatDate(dateTime) {
+// Helper functions
+function formatDate(dateTime) {
     const date = new Date(dateTime);
     return date.toLocaleDateString();
 }
 
-export function formatTime(dateTime) {
+function formatTime(dateTime) {
     const date = new Date(dateTime);
     return date.toLocaleTimeString();
 }
 
-export function formatDateTime(dateTime) {
+function formatDateTime(dateTime) {
     const date = new Date(dateTime);
     return date.toLocaleString('en-US', {
         year: 'numeric',
@@ -23,7 +22,7 @@ export function formatDateTime(dateTime) {
     });
 }
 
-export function getSaleType(action, notes) {
+function getSaleType(action, notes) {
     const normalizedAction = action.toLowerCase();
 
     if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
@@ -38,19 +37,43 @@ export function getSaleType(action, notes) {
     return action;
 }
 
-export function isSameDay(date1, date2) {
+function getCurrentDayKey() {
+    const now = new Date();
+    return now.toISOString().split('T')[0];
+}
+
+function getCurrentWeekKey() {
+    const now = new Date();
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
+    return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
+}
+
+Date.prototype.getWeekNumber = function() {
+    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+};
+
+function getCurrentMonthKey() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function isSameDay(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() &&
            date1.getMonth() === date2.getMonth() &&
            date1.getDate() === date2.getDate();
 }
 
-export function isSameWeek(date1, date2) {
+function isSameWeek(date1, date2) {
     const week1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate() - date1.getDay() + (date1.getDay() === 0 ? -6 : 1));
     const week2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate() - date2.getDay() + (date2.getDay() === 0 ? -6 : 1));
     return week1.getTime() === week2.getTime();
 }
 
-export function isSameMonth(date1, date2) {
+function isSameMonth(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() &&
            date1.getMonth() === date2.getMonth();
 }
