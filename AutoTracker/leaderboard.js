@@ -59,13 +59,12 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                 const periodSaleTypeContainer = document.createElement('div');
                 periodSaleTypeContainer.classList.add('leaderboard-section');
-                const saleTypeReadable = getReadableSaleType(saleType);
-                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleTypeReadable} - Day</h3>`;
+                periodSaleTypeContainer.innerHTML = `<h3>Top 5 ${saleType.replace(/([A-Z])/g, ' $1').trim()} - Day</h3>`;
 
                 users.slice(0, 5).forEach((user, index) => {
                     const userElement = document.createElement('div');
                     userElement.classList.add('leaderboard-item');
-                    userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${saleTypeReadable}: ${user.count}</strong>`;
+                    userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${saleType.replace(/([A-Z])/g, ' $1').trim()}: ${user.count}</strong>`;
                     periodSaleTypeContainer.appendChild(userElement);
                 });
 
