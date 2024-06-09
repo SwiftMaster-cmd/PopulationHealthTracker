@@ -18,6 +18,18 @@ body {
     margin: 0;
 }
 
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    max-width: 800px;
+    width: 100%;
+}
+
 .button-container {
     display: flex;
     flex-direction: column;
@@ -30,6 +42,14 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+}
+
+.time-buttons-container {
+    flex-direction: column;
+}
+
+.sale-type-buttons-container {
+    flex-direction: row;
 }
 
 .time-buttons-container button,
@@ -49,12 +69,11 @@ body {
     background-color: var(--color-quaternary);
 }
 
-.container {
+#leaderboard-container {
     background-color: var(--color-secondary);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    max-width: 800px;
     width: 100%;
 }
 
@@ -63,7 +82,7 @@ h2 {
     margin-bottom: 20px;
 }
 
-.leaderboard-section {
+#leaderboard-section {
     background-color: var(--color-tertiary);
     padding: 20px;
     border-radius: 10px;
@@ -77,6 +96,7 @@ h2 {
     border-radius: 5px;
     color: var(--color-primary);
 }
+
 
 
 .leaderboard-item.current-user {
