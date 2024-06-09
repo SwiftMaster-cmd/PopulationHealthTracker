@@ -7,70 +7,69 @@
     --text-color: #ECF0F1;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: var(--color-primary);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+/* General Container Style */
+#leaderboard-container {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--color-primary); /* Darker background for contrast */
+    border-radius: 5px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+    max-width: 1200px;
+    color: var(--text-color); /* Light color for text */
 }
 
-.container {
-    background-color: var(--color-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    max-width: 800px;
+#leaderboard-container h3 {
+    text-align: center;
+    color: var(--text-color); /* Light color for text */
+}
+
+#leaderboard-types-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+}
+
+.leaderboard-container {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary); /* Slightly lighter than main container */
+    color: var(--text-color); /* Light text color */
+    border: 1px solid var(--text-color);
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    min-width: 250px;
+    text-align: center; /* Center align the text */
+}
+
+.leaderboard-container h2 {
+    margin-bottom: 10px;
+    text-align: center;
+    color: var(--text-color); /* Light color for text */
+}
+
+.leaderboard-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
     width: 100%;
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.time-buttons-container,
-.sale-type-buttons-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.time-buttons-container button,
-.sale-type-buttons-container button {
-    background-color: var(--color-primary);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.time-buttons-container button:hover,
-.sale-type-buttons-container button:hover {
-    background-color: var(--color-quaternary);
-}
-
-.leaderboard-section {
-    background-color: var(--color-tertiary);
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
 .leaderboard-item {
-    background-color: var(--color-quinary);
-    margin: 10px 0;
+    background-color: var(--color-tertiary); /* Contrasting color for items */
+    color: var(--color-primary); /* Dark text for readability */
+    border: 1px solid var(--color-quaternary);
     padding: 10px;
+    margin: 5px 0;
     border-radius: 5px;
-    color: var(--color-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    text-align: center; /* Center align the text */
 }
-
 
 .leaderboard-item.current-user {
     text-decoration: underline;

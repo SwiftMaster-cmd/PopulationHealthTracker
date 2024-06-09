@@ -27,9 +27,9 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
 
-    const leaderboardContainer = document.getElementById('leaderboard-section');
+    const leaderboardContainer = document.getElementById('leaderboard-container');
     if (!leaderboardContainer) {
-        console.error('Leaderboard section element not found');
+        console.error('Leaderboard container element not found');
         return;
     }
 
@@ -69,10 +69,8 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 // Create buttons for period and sale types
 function createButtons() {
-    const timeButtonsContainer = document.querySelector('.time-buttons-container');
-    const saleTypeButtonsContainer = document.querySelector('.sale-type-buttons-container');
-
-    if (!timeButtonsContainer || !saleTypeButtonsContainer) {
+    const buttonContainer = document.getElementById('button-container');
+    if (!buttonContainer) {
         console.error('Button container element not found');
         return;
     }
@@ -89,9 +87,8 @@ function createButtons() {
             periodButton.classList.add('active');
         };
         periodButton.classList.add('period-button');
-        periodButton.dataset.period = period;
         if (period === 'day') periodButton.classList.add('active');
-        timeButtonsContainer.appendChild(periodButton);
+        buttonContainer.appendChild(periodButton);
     });
 
     saleTypes.forEach(type => {
@@ -105,12 +102,16 @@ function createButtons() {
         typeButton.classList.add('sale-type-button');
         typeButton.dataset.saleType = type;
         if (type === 'selectRX') typeButton.classList.add('active');
-        saleTypeButtonsContainer.appendChild(typeButton);
+        buttonContainer.appendChild(typeButton);
     });
 }
 
 // Ensure the DOM is fully loaded before running the script
 document.addEventListener('DOMContentLoaded', () => {
     createButtons();
-    loadLeaderboard(); // Load default leaderboard
+    if (firebase.apps.length) {
+        loadLeaderboard();
+    } else {
+        document.addEventListener('firebaseInitialized', () => loadLeaderboard());
+    }
 });
