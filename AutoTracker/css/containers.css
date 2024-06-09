@@ -1,0 +1,94 @@
+:root {
+    --color-primary: #007bff;
+    --color-secondary: #6c757d;
+    --color-tertiary: #28a745;
+    --color-quaternary: #17a2b8;
+    --color-quinary: #ffc107;
+    --text-color: #ffffff;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.sales-outcomes-container {
+    margin: 20px auto;
+    padding: 10px;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    color: var(--text-color);
+    width: 100%;
+    max-width: 750px;
+    box-sizing: border-box;
+}
+
+.sales-counts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sales-count-item {
+    background-color: var(--color-tertiary);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    color: inherit;
+    width: 100%;
+    text-align: center;
+}
+
+.account-container {
+    margin-bottom: 20px;
+    border: 1px solid var(--color-quaternary);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.account-title {
+    background-color: var(--color-tertiary);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.account-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sales-info {
+    background-color: var(--color-tertiary);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.customer-info-container {
+    background-color: var(--color-quaternary);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.outcome-item {
+    border: 1px solid var(--color-quaternary);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: var(--color-secondary);
+}
+
+.outcome-item .top-section, .outcome-item .bottom-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.outcome-item .action, .outcome-item .notes {
+    text-align: left;
+}
+
+.outcome-item .date-top, .outcome-item .time-bottom {
+    text-align: right;
+}
