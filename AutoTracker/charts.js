@@ -1,12 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
+document.addEventListener('DOMContentLoaded', function () {
+    const colorPicker = document.getElementById('colorPicker');
+    const applyColorButton = document.getElementById('applyColor');
 
-    chartPeriodPicker.addEventListener('change', () => {
-        loadChart(chartPeriodPicker.value);
-    });
-
-    loadChart();
-
+    // Apply the saved color palette on page load if it exists
     const savedColor = localStorage.getItem('baseColor');
     if (savedColor) {
         applyColorPalette(savedColor);
@@ -15,12 +11,77 @@ document.addEventListener('DOMContentLoaded', () => {
         applyColorPalette(defaultColor);
     }
 
-    const applyColorButton = document.getElementById('applyColor');
-    applyColorButton.addEventListener('click', () => {
-        const selectedColor = document.getElementById('colorPicker').value;
+    applyColorButton.addEventListener('click', function () {
+        const selectedColor = colorPicker.value;
         applyColorPalette(selectedColor);
-        localStorage.setItem('baseColor', selectedColor);
+        localStorage.setItem('baseColor', selectedColor); // Save the selected color to local storage
     });
+
+    function applyColorPalette(baseColor) {
+        const isDark = chroma(baseColor).luminance() < 0.5;
+        const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode('lab').colors(5);
+
+        document.documentElement.style.setProperty('--color-primary', palette[0]);
+        document.documentElement.style.setProperty('--color-secondary', palette[1]);
+        document.documentElement.style.setProperty('--color-tertiary', palette[2]);
+        document.documentElement.style.setProperty('--color-quaternary', palette[3]);
+        document.documentElement.style.setProperty('--color-quinary', palette[4]);
+
+        document.body.style.backgroundColor = palette[0]; // Update body background color
+
+        updateStyles(isDark);
+        loadChart(); // Ensure the chart updates with the new colors
+    }
+
+    function updateStyles(isDark) {
+        const styles = document.documentElement.style;
+        const textColor = isDark ? '#ffffff' : '#000000';
+
+        document.body.style.color = textColor;
+
+        document.querySelectorAll('.button').forEach(btn => {
+            btn.style.backgroundColor = styles.getPropertyValue('--color-primary');
+            btn.style.color = textColor;
+        });
+
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            container.style.color = textColor;
+        });
+
+        document.querySelectorAll('.leaderboard-container').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-secondary');
+            container.style.color = textColor;
+        });
+
+        document.querySelectorAll('.leaderboard-item').forEach(item => {
+            item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            item.style.color = textColor;
+        });
+
+        document.querySelectorAll('.outcome-item').forEach(item => {
+            item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            item.style.color = textColor;
+        });
+
+        document.querySelectorAll('.sales-counts-container').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+            container.style.color = textColor;
+        });
+
+        document.querySelectorAll('.account-container').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+            container.style.color = textColor;
+        });
+
+        document.querySelectorAll('.customer-info').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            container.style.color = textColor;
+        });
+    }
+
+    // Load the chart initially with the default period
+    loadChart();
 });
 
 let salesChart;
@@ -49,7 +110,6 @@ function loadChart(period = 'day') {
                 }
 
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-                const borderColor = chroma(primaryColor).darken().hex();
                 const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
 
                 const ctx = document.getElementById('salesChart').getContext('2d');
@@ -58,10 +118,7 @@ function loadChart(period = 'day') {
                     salesChart.data = chartData;
                     salesChart.options.scales.x.ticks.color = textColor;
                     salesChart.options.scales.y.ticks.color = textColor;
-                    salesChart.options.scales.x.ticks.font.size = 24;
-                    salesChart.options.scales.y.ticks.font.size = 24;
-                    salesChart.options.plugins.legend.labels.color = textColor;
-                    salesChart.options.plugins.legend.labels.font.size = 24;
+                    salesChart.options.plugins.tooltip.callbacks.label = tooltipLabelCallback;
                     salesChart.update();
                 } else {
                     salesChart = new Chart(ctx, {
@@ -71,19 +128,43 @@ function loadChart(period = 'day') {
                             scales: {
                                 y: {
                                     beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.2)'
+                                    },
                                     ticks: {
                                         color: textColor,
                                         font: {
-                                            size: 24
+                                            size: 14
+                                        },
+                                        beginAtZero: true
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Number/Quantity',
+                                        color: textColor,
+                                        font: {
+                                            size: 16,
+                                            weight: 'bold'
                                         }
                                     }
                                 },
                                 x: {
+                                    grid: {
+                                        display: false
+                                    },
                                     ticks: {
                                         color: textColor,
                                         font: {
-                                            size: 24,
-                                            family: 'Arial',
+                                            size: 14,
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Time',
+                                        color: textColor,
+                                        font: {
+                                            size: 16,
                                             weight: 'bold'
                                         }
                                     }
@@ -94,8 +175,13 @@ function loadChart(period = 'day') {
                                     labels: {
                                         color: textColor,
                                         font: {
-                                            size: 24
+                                            size: 14
                                         }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: tooltipLabelCallback
                                     }
                                 }
                             }
@@ -140,35 +226,40 @@ function getMonthlyChartData(salesData) {
 }
 
 function createDatasets(labels, salesData, period) {
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-    const secondaryColor = chroma(primaryColor).brighten(1).hex();
-    const tertiaryColor = chroma(primaryColor).brighten(2).hex();
-    const quaternaryColor = chroma(primaryColor).brighten(3).hex();
+    const colorBlindFriendlyPalette = ['#377eb8', '#e41a1c', '#4daf4a', '#984ea3'];
 
     const datasets = [
         {
             label: 'Billable HRA',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
-            borderColor: primaryColor,
-            fill: false
+            borderColor: colorBlindFriendlyPalette[0],
+            backgroundColor: colorBlindFriendlyPalette[0],
+            fill: false,
+            pointStyle: 'circle'
         },
         {
             label: 'Select RX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
-            borderColor: secondaryColor,
-            fill: false
+            borderColor: colorBlindFriendlyPalette[1],
+            backgroundColor: colorBlindFriendlyPalette[1],
+            fill: false,
+            pointStyle: 'triangle'
         },
         {
             label: 'Select Patient Management',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
-            borderColor: tertiaryColor,
-            fill: false
+            borderColor: colorBlindFriendlyPalette[2],
+            backgroundColor: colorBlindFriendlyPalette[2],
+            fill: false,
+            pointStyle: 'rect'
         },
         {
             label: 'Transfer',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
-            borderColor: quaternaryColor,
-            fill: false
+            borderColor: colorBlindFriendlyPalette[3],
+            backgroundColor: colorBlindFriendlyPalette[3],
+            fill: false,
+            pointStyle: 'star'
         }
     ];
 
@@ -208,65 +299,6 @@ function formatDay(date) {
     return days[date.getDay()];
 }
 
-function applyColorPalette(baseColor) {
-    const isDark = chroma(baseColor).luminance() < 0.5;
-    const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode('lab').colors(5);
-
-    document.documentElement.style.setProperty('--color-primary', palette[0]);
-    document.documentElement.style.setProperty('--color-secondary', palette[1]);
-    document.documentElement.style.setProperty('--color-tertiary', palette[2]);
-    document.documentElement.style.setProperty('--color-quaternary', palette[3]);
-    document.documentElement.style.setProperty('--color-quinary', palette[4]);
-
-    document.body.style.backgroundColor = palette[0];
-
-    updateStyles(isDark);
-    loadChart();
-}
-
-function updateStyles(isDark) {
-    const styles = document.documentElement.style;
-    const textColor = isDark ? '#ffffff' : '#000000';
-
-    document.body.style.color = textColor;
-
-    document.querySelectorAll('.button').forEach(btn => {
-        btn.style.backgroundColor = styles.getPropertyValue('--color-primary');
-        btn.style.color = textColor;
-    });
-
-    document.querySelectorAll('.container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.leaderboard-container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-secondary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.leaderboard-item').forEach(item => {
-        item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        item.style.color = textColor;
-    });
-
-    document.querySelectorAll('.outcome-item').forEach(item => {
-        item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        item.style.color = textColor;
-    });
-
-    document.querySelectorAll('.sales-counts-container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.account-container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.customer-info').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        container.style.color = textColor;
-    });
+function tooltipLabelCallback(tooltipItem) {
+    return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
 }
