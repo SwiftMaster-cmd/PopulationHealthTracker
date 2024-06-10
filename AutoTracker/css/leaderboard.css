@@ -19,17 +19,17 @@ body {
     margin-top: 20px;
     font-size: 2em;
 }
-
 .main-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
     width: 90%;
-    padding: 20px;
+    padding: 35px 20px; /* Vertical padding of 35px, horizontal padding of 20px */
     border-radius: 10px;
     background-color: var(--color-secondary);
     box-sizing: border-box;
     overflow-y: auto; /* Enables vertical scrolling if needed */
+    margin: 0 auto; /* Center the container */
 }
 
 .content-container {
