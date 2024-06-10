@@ -41,11 +41,11 @@ function loadChart(period = 'day') {
                 };
 
                 if (period === 'day') {
-                    chartData = getDailyChartData(salesData);
+                    chartData = getDailyChartData(salesData.day);
                 } else if (period === 'week') {
-                    chartData = getWeeklyChartData(salesData);
+                    chartData = getWeeklyChartData(salesData.week);
                 } else if (period === 'month') {
-                    chartData = getMonthlyChartData(salesData);
+                    chartData = getMonthlyChartData(salesData.month);
                 }
 
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
@@ -115,7 +115,7 @@ function getDailyChartData(salesData) {
     const hours = Array.from({ length: 13 }, (_, i) => `${i + 8}am`);
     const data = {
         labels: hours,
-        datasets: createDatasets(hours, salesData, 'day')
+        datasets: createDatasets(hours, salesData, 'hour')
     };
     return data;
 }
@@ -124,7 +124,7 @@ function getWeeklyChartData(salesData) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const data = {
         labels: days,
-        datasets: createDatasets(days, salesData, 'week')
+        datasets: createDatasets(days, salesData, 'day')
     };
     return data;
 }
@@ -133,7 +133,7 @@ function getMonthlyChartData(salesData) {
     const daysInMonth = Array.from({ length: 30 }, (_, i) => (i + 1).toString());
     const data = {
         labels: daysInMonth,
-        datasets: createDatasets(daysInMonth, salesData, 'month')
+        datasets: createDatasets(daysInMonth, salesData, 'day')
     };
     return data;
 }
@@ -147,25 +147,25 @@ function createDatasets(labels, salesData, period) {
     const datasets = [
         {
             label: 'Billable HRA',
-            data: labels.map(label => salesData[period]?.billableHRA[label] || 0),
+            data: labels.map(label => salesData[label] ? salesData[label].billableHRA : 0),
             borderColor: primaryColor,
             fill: false
         },
         {
             label: 'Select RX',
-            data: labels.map(label => salesData[period]?.selectRX[label] || 0),
+            data: labels.map(label => salesData[label] ? salesData[label].selectRX : 0),
             borderColor: secondaryColor,
             fill: false
         },
         {
             label: 'Select Patient Management',
-            data: labels.map(label => salesData[period]?.selectPatientManagement[label] || 0),
+            data: labels.map(label => salesData[label] ? salesData[label].selectPatientManagement : 0),
             borderColor: tertiaryColor,
             fill: false
         },
         {
             label: 'Transfer',
-            data: labels.map(label => salesData[period]?.transfer[label] || 0),
+            data: labels.map(label => salesData[label] ? salesData[label].transfer : 0),
             borderColor: quaternaryColor,
             fill: false
         }
