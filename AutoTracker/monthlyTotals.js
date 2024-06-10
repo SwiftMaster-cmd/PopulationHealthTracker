@@ -9,10 +9,8 @@ function loadMonthlyTotals() {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             const currentUserId = user.uid;
-            const currentDate = new Date();
-            const currentMonth = currentDate.getMonth() + 1; // Months are 0-based in JavaScript
-            const currentYear = currentDate.getFullYear();
-            const monthlyTotalsRef = salesCountsRef.child(currentUserId).child(`${currentYear}-${currentMonth}`);
+            const currentMonthKey = getCurrentMonthKey();
+            const monthlyTotalsRef = salesCountsRef.child(currentUserId).child('month');
 
             monthlyTotalsRef.once('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
@@ -23,19 +21,11 @@ function loadMonthlyTotals() {
                 }
 
                 const salesTotals = {
-                    billableHRA: 0,
-                    selectRX: 0,
-                    selectPatientManagement: 0,
-                    transfer: 0
+                    billableHRA: salesData.billableHRA || 0,
+                    selectRX: salesData.selectRX || 0,
+                    selectPatientManagement: salesData.selectPatientManagement || 0,
+                    transfer: salesData.transfer || 0
                 };
-
-                for (const day in salesData) {
-                    const dayData = salesData[day];
-                    salesTotals.billableHRA += dayData.billableHRA || 0;
-                    salesTotals.selectRX += dayData.selectRX || 0;
-                    salesTotals.selectPatientManagement += dayData.selectPatientManagement || 0;
-                    salesTotals.transfer += dayData.transfer || 0;
-                }
 
                 const monthlySalesTotalsDiv = document.getElementById('monthlySalesTotals');
                 monthlySalesTotalsDiv.innerHTML = `
@@ -55,4 +45,48 @@ function loadMonthlyTotals() {
             console.error('No user is signed in.');
         }
     });
+}
+
+// Helper functions
+function formatDate(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleDateString();
+}
+
+function formatTime(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString();
+}
+
+function formatDateTime(dateTime) {
+    const date = new Date(dateTime);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+}
+
+function getSaleType(action, notes) {
+    const normalizedAction = action.toLowerCase();
+
+    if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
+        return 'Select RX';
+    } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+        return 'Billable HRA';
+    } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+        return 'Transfer';
+    } else if (normalizedAction.includes('select patient management')) {
+        return 'Select Patient Management';
+    }
+    return action;
+}
+
+function getCurrentMonthKey() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
