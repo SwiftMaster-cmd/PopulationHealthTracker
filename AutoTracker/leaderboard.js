@@ -1,19 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Get the chart period picker
-    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
+    // Create the dropdown pickers
+    const periodPicker = document.getElementById('periodPicker');
+    const saleTypePicker = document.getElementById('saleTypePicker');
 
-    // Add event listener to the chart period picker
-    chartPeriodPicker.addEventListener('change', () => {
-        loadChart(chartPeriodPicker.value);
+    // Add event listeners to the pickers
+    periodPicker.addEventListener('change', () => {
+        loadChart(periodPicker.value, saleTypePicker.value);
+    });
+
+    saleTypePicker.addEventListener('change', () => {
+        loadChart(periodPicker.value, saleTypePicker.value);
     });
 
     // Load the default chart
     loadChart();
 });
 
-let salesChart;
+let salesChart; // Declare salesChart variable
 
-function loadChart(period = 'day') {
+function loadChart(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
 
@@ -23,51 +28,27 @@ function loadChart(period = 'day') {
 
             salesCountsRef.child(currentUserId).once('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
-                const salesCounts = salesData && salesData[period] ? salesData[period] : {
-                    billableHRA: 0,
-                    selectRX: 0,
-                    selectPatientManagement: 0,
-                    transfer: 0
-                };
-
-                // Prepare the data for the chart
-                const chartData = {
-                    labels: ['Billable HRA', 'Select RX', 'Select Patient Management', 'Transfer'],
-                    datasets: [{
-                        label: `Sales Counts (${period})`,
-                        data: [
-                            salesCounts.billableHRA,
-                            salesCounts.selectRX,
-                            salesCounts.selectPatientManagement,
-                            salesCounts.transfer
-                        ],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(153, 102, 255, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(153, 102, 255, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                };
+                const salesCounts = salesData[period] && salesData[period][saleType] ? salesData[period][saleType] : 0;
+                
+                // Check if salesCounts array is populated correctly
+                console.log(`Sales counts for ${period} - ${saleType}:`, salesCounts);
 
                 const ctx = document.getElementById('salesChart').getContext('2d');
-
-                if (salesChart instanceof Chart) {
-                    // Update the chart data
-                    salesChart.data = chartData;
-                    salesChart.update();
-                } else {
+                
+                if (!salesChart) {
                     // Initialize the chart
                     salesChart = new Chart(ctx, {
                         type: 'bar',
-                        data: chartData,
+                        data: {
+                            labels: ['Sales Count'], // Adjust labels as needed
+                            datasets: [{
+                                label: `${getReadableTitle(saleType)} Sales`,
+                                data: [salesCounts], // Adjust data to match the period and sale type
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
                         options: {
                             scales: {
                                 y: {
@@ -76,6 +57,11 @@ function loadChart(period = 'day') {
                             }
                         }
                     });
+                } else {
+                    // Update the chart data
+                    salesChart.data.datasets[0].data = [salesCounts];
+                    salesChart.data.datasets[0].label = `${getReadableTitle(saleType)} Sales`;
+                    salesChart.update();
                 }
             }).catch(error => {
                 console.error('Error fetching sales data:', error);
