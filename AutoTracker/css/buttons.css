@@ -14,3 +14,16 @@
 #monthlySalesTotals {
     font-size: 20px; /* Adjust as needed */
 }
+.level-picker-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.level-picker-container label {
+    margin-right: 10px;
+}
+
+.level-picker-container select {
+    padding: 5px;
+    font-size: 16px;
+}
