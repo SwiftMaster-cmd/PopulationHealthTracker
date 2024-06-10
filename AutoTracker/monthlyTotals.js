@@ -1,6 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
+    createLevelPicker();
     loadMonthlyTotals();
 });
+
+function createLevelPicker() {
+    const levelPickerContainer = document.createElement('div');
+    levelPickerContainer.className = 'level-picker-container';
+
+    const levelLabel = document.createElement('label');
+    levelLabel.for = 'levelPicker';
+    levelLabel.textContent = 'Select Level:';
+
+    const levelPicker = document.createElement('select');
+    levelPicker.id = 'levelPicker';
+    levelPicker.innerHTML = `
+        <option value="1">Level 1</option>
+        <option value="2">Level 2</option>
+        <option value="3">Level 3</option>
+    `;
+
+    levelPickerContainer.appendChild(levelLabel);
+    levelPickerContainer.appendChild(levelPicker);
+
+    document.querySelector('.monthly-totals-container').prepend(levelPickerContainer);
+
+    levelPicker.addEventListener('change', loadMonthlyTotals);
+}
 
 function loadMonthlyTotals() {
     const database = firebase.database();
@@ -27,17 +52,17 @@ function loadMonthlyTotals() {
                     transfer: salesData.transfer || 0
                 };
 
+                const level = parseInt(document.getElementById('levelPicker').value);
+                const commission = calculateCommission(salesTotals, level);
+
                 const monthlySalesTotalsDiv = document.getElementById('monthlySalesTotals');
                 monthlySalesTotalsDiv.innerHTML = `
                     <p>HRA: ${salesTotals.billableHRA}</p>
                     <p>SRX: ${salesTotals.selectRX}</p>
                     <p>SPM: ${salesTotals.selectPatientManagement}</p>
                     <p>Transfer: ${salesTotals.transfer}</p>
+                    <p>Commission: $${commission.toFixed(2)}</p>
                 `;
-
-                // Placeholder for commission details
-                // Once you provide the commission details, we can update this section to calculate and display the commission
-                // monthlySalesTotalsDiv.innerHTML += `<p>Commission: $0.00</p>`;
             }).catch(error => {
                 console.error('Error fetching sales data:', error);
             });
@@ -45,6 +70,50 @@ function loadMonthlyTotals() {
             console.error('No user is signed in.');
         }
     });
+}
+
+function calculateCommission(salesTotals, level) {
+    let srxPayout;
+
+    if (level === 1) {
+        srxPayout = getPayout(salesTotals.selectRX, [
+            { min: 75, max: Infinity, payout: 17.00 },
+            { min: 65, max: 74, payout: 16.50 },
+            { min: 30, max: 64, payout: 16.00 },
+            { min: 15, max: 29, payout: 15.50 },
+            { min: 0, max: 14, payout: 15.00 }
+        ]);
+    } else if (level === 2) {
+        srxPayout = getPayout(salesTotals.selectRX, [
+            { min: 75, max: Infinity, payout: 18.00 },
+            { min: 65, max: 74, payout: 17.50 },
+            { min: 30, max: 64, payout: 17.00 },
+            { min: 15, max: 29, payout: 16.50 },
+            { min: 0, max: 14, payout: 16.00 }
+        ]);
+    } else if (level === 3) {
+        srxPayout = getPayout(salesTotals.selectRX, [
+            { min: 75, max: Infinity, payout: 19.00 },
+            { min: 65, max: 74, payout: 18.50 },
+            { min: 30, max: 64, payout: 18.00 },
+            { min: 15, max: 29, payout: 17.50 },
+            { min: 0, max: 14, payout: 17.00 }
+        ]);
+    }
+
+    const spmPayout = salesTotals.selectPatientManagement * 11.00;
+    // Add additional commission calculations for other sales types if needed
+
+    return srxPayout + spmPayout;
+}
+
+function getPayout(count, tiers) {
+    for (const tier of tiers) {
+        if (count >= tier.min && count <= tier.max) {
+            return count * tier.payout;
+        }
+    }
+    return 0;
 }
 
 // Helper functions
