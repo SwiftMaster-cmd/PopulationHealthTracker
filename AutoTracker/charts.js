@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Get the chart period picker
     const chartPeriodPicker = document.getElementById('chartPeriodPicker');
 
+    // Add event listener to the chart period picker
     chartPeriodPicker.addEventListener('change', () => {
         loadChart(chartPeriodPicker.value);
     });
 
+    // Load the default chart
     loadChart();
 
+    // Apply the saved color palette on page load if it exists
     const savedColor = localStorage.getItem('baseColor');
     if (savedColor) {
         applyColorPalette(savedColor);
@@ -15,11 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         applyColorPalette(defaultColor);
     }
 
+    // Add event listener to the apply color button
     const applyColorButton = document.getElementById('applyColor');
     applyColorButton.addEventListener('click', () => {
         const selectedColor = document.getElementById('colorPicker').value;
         applyColorPalette(selectedColor);
-        localStorage.setItem('baseColor', selectedColor);
+        localStorage.setItem('baseColor', selectedColor); // Save the selected color to local storage
     });
 });
 
@@ -35,57 +40,77 @@ function loadChart(period = 'day') {
 
             salesCountsRef.child(currentUserId).once('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
-                let chartData = {
-                    labels: [],
-                    datasets: []
+                const salesCounts = salesData && salesData[period] ? salesData[period] : {
+                    billableHRA: 0,
+                    selectRX: 0,
+                    selectPatientManagement: 0,
+                    transfer: 0
                 };
 
-                if (period === 'day') {
-                    chartData = getDailyChartData(salesData.day);
-                } else if (period === 'week') {
-                    chartData = getWeeklyChartData(salesData.week);
-                } else if (period === 'month') {
-                    chartData = getMonthlyChartData(salesData.month);
-                }
-
+                // Prepare the data for the chart
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
                 const borderColor = chroma(primaryColor).darken().hex();
                 const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
+                const chartData = {
+                    labels: ['HRA', 'SRX', 'SPM', 'Transfer'],
+                    datasets: [{
+                        label: `Sales Counts (${period})`,
+                        data: [
+                            salesCounts.billableHRA,
+                            salesCounts.selectRX,
+                            salesCounts.selectPatientManagement,
+                            salesCounts.transfer
+                        ],
+                        backgroundColor: primaryColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    }]
+                };
 
                 const ctx = document.getElementById('salesChart').getContext('2d');
 
                 if (salesChart instanceof Chart) {
+                    // Update the chart data
                     salesChart.data = chartData;
                     salesChart.options.scales.x.ticks.color = textColor;
                     salesChart.options.scales.y.ticks.color = textColor;
-                    salesChart.options.scales.x.ticks.font.size = 24;
-                    salesChart.options.scales.y.ticks.font.size = 24;
+                    salesChart.options.scales.x.ticks.font.size = 24; // Adjust text size
+                    salesChart.options.scales.y.ticks.font.size = 24; // Adjust text size
                     salesChart.options.plugins.legend.labels.color = textColor;
-                    salesChart.options.plugins.legend.labels.font.size = 24;
+                    salesChart.options.plugins.legend.labels.font.size = 24; // Adjust legend text size
                     salesChart.update();
                 } else {
+                    // Initialize the chart
                     salesChart = new Chart(ctx, {
-                        type: 'line',
+                        type: 'bar',
                         data: chartData,
                         options: {
                             scales: {
                                 y: {
                                     beginAtZero: true,
+                                    grid: {
+                                        display: false
+                                    },
                                     ticks: {
                                         color: textColor,
                                         font: {
-                                            size: 24
+                                            size: 24 // Adjust text size
                                         }
                                     }
                                 },
                                 x: {
+                                    grid: {
+                                        display: false
+                                    },
                                     ticks: {
                                         color: textColor,
                                         font: {
-                                            size: 24,
+                                            size: 24, // Adjust text size
                                             family: 'Arial',
-                                            weight: 'bold'
-                                        }
+                                            weight: 'bold',
+                                        },
+                                        maxRotation: 0,
+                                        minRotation: 0
                                     }
                                 }
                             },
@@ -94,7 +119,7 @@ function loadChart(period = 'day') {
                                     labels: {
                                         color: textColor,
                                         font: {
-                                            size: 24
+                                            size: 24 // Adjust legend text size
                                         }
                                     }
                                 }
@@ -111,69 +136,6 @@ function loadChart(period = 'day') {
     });
 }
 
-function getDailyChartData(salesData) {
-    const hours = Array.from({ length: 13 }, (_, i) => `${i + 8}am`);
-    const data = {
-        labels: hours,
-        datasets: createDatasets(hours, salesData, 'hour')
-    };
-    return data;
-}
-
-function getWeeklyChartData(salesData) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const data = {
-        labels: days,
-        datasets: createDatasets(days, salesData, 'day')
-    };
-    return data;
-}
-
-function getMonthlyChartData(salesData) {
-    const daysInMonth = Array.from({ length: 30 }, (_, i) => (i + 1).toString());
-    const data = {
-        labels: daysInMonth,
-        datasets: createDatasets(daysInMonth, salesData, 'day')
-    };
-    return data;
-}
-
-function createDatasets(labels, salesData, period) {
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-    const secondaryColor = chroma(primaryColor).brighten(1).hex();
-    const tertiaryColor = chroma(primaryColor).brighten(2).hex();
-    const quaternaryColor = chroma(primaryColor).brighten(3).hex();
-
-    const datasets = [
-        {
-            label: 'Billable HRA',
-            data: labels.map(label => salesData[label] ? salesData[label].billableHRA : 0),
-            borderColor: primaryColor,
-            fill: false
-        },
-        {
-            label: 'Select RX',
-            data: labels.map(label => salesData[label] ? salesData[label].selectRX : 0),
-            borderColor: secondaryColor,
-            fill: false
-        },
-        {
-            label: 'Select Patient Management',
-            data: labels.map(label => salesData[label] ? salesData[label].selectPatientManagement : 0),
-            borderColor: tertiaryColor,
-            fill: false
-        },
-        {
-            label: 'Transfer',
-            data: labels.map(label => salesData[label] ? salesData[label].transfer : 0),
-            borderColor: quaternaryColor,
-            fill: false
-        }
-    ];
-
-    return datasets;
-}
-
 function applyColorPalette(baseColor) {
     const isDark = chroma(baseColor).luminance() < 0.5;
     const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode('lab').colors(5);
@@ -184,10 +146,10 @@ function applyColorPalette(baseColor) {
     document.documentElement.style.setProperty('--color-quaternary', palette[3]);
     document.documentElement.style.setProperty('--color-quinary', palette[4]);
 
-    document.body.style.backgroundColor = palette[0];
+    document.body.style.backgroundColor = palette[0]; // Update body background color
 
     updateStyles(isDark);
-    loadChart();
+    loadChart(); // Reload the chart with new colors
 }
 
 function updateStyles(isDark) {

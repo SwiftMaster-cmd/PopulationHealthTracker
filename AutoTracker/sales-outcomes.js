@@ -82,6 +82,7 @@ function displaySalesOutcomes(user) {
     const database = firebase.database();
     const outcomesRef = database.ref('salesOutcomes/' + user.uid);
     const salesCountsRef = database.ref('salesCounts/' + user.uid);
+    const salesTimeFramesRef = database.ref('salesTimeFrames/' + user.uid);
 
     const now = new Date();
 
@@ -111,6 +112,8 @@ function displaySalesOutcomes(user) {
                 }
             };
 
+            const salesTimeFrames = {};
+
             for (const key in outcomes) {
                 const outcome = outcomes[key];
                 const action = outcome.assignAction;
@@ -121,6 +124,16 @@ function displaySalesOutcomes(user) {
 
                 const saleType = getSaleType(action, notes);
                 console.log(`Identified Sale Type: ${saleType}`);
+
+                if (!salesTimeFrames[outcome.accountNumber]) {
+                    salesTimeFrames[outcome.accountNumber] = {};
+                }
+
+                if (!salesTimeFrames[outcome.accountNumber][saleType]) {
+                    salesTimeFrames[outcome.accountNumber][saleType] = [];
+                }
+
+                salesTimeFrames[outcome.accountNumber][saleType].push(outcomeTime.toISOString());
 
                 if (isSameDay(outcomeTime, now)) {
                     if (saleType === 'Billable HRA') {
@@ -173,6 +186,14 @@ function displaySalesOutcomes(user) {
                     console.error('Failed to update sales counts:', error);
                 } else {
                     console.log('Sales counts updated successfully:', salesCounts);
+                }
+            });
+
+            salesTimeFramesRef.set(salesTimeFrames, (error) => {
+                if (error) {
+                    console.error('Failed to update sales timeframes:', error);
+                } else {
+                    console.log('Sales timeframes updated successfully:', salesTimeFrames);
                 }
             });
 
