@@ -74,10 +74,10 @@ function loadChart(period = 'day') {
                     salesChart.data = chartData;
                     salesChart.options.scales.x.ticks.color = textColor;
                     salesChart.options.scales.y.ticks.color = textColor;
-                    salesChart.options.scales.x.ticks.font.size = 28; // Increase text size 2x
-                    salesChart.options.scales.y.ticks.font.size = 28; // Increase text size 2x
+                    salesChart.options.scales.x.ticks.font.size = 18; // Increase text size 2x
+                    salesChart.options.scales.y.ticks.font.size = 18; // Increase text size 2x
                     salesChart.options.plugins.legend.labels.color = textColor;
-                    salesChart.options.plugins.legend.labels.font.size = 32; // Increase legend text size 2x
+                    salesChart.options.plugins.legend.labels.font.size = 24; // Increase legend text size 2x
                     salesChart.update();
                 } else {
                     // Initialize the chart
