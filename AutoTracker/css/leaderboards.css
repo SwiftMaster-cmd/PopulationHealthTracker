@@ -7,7 +7,7 @@
 }
 
 .chart-container {
-    background-color: var(--color-tertiary);
+    background-color: var(--color-secondary);
     padding: 20px;
     border-radius: 10px;
     color: #ffffff;

@@ -176,21 +176,6 @@ body {
     margin: 20px 0;
 }
 
-.outcomes-chart-container {
-    padding: 20px;
-    background-color: var(--color-quaternary);
-    border-radius: 10px;
-    color: inherit;
-}
-
-.sales-outcomes-container,
-.customer-info-container {
-    background-color: var(--color-secondary);
-    padding: 10px;
-    border-radius: 10px;
-    margin: 10px 0;
-    color: inherit;
-}
 
 @media (max-width: 768px) {
     .leaderboard-container {
