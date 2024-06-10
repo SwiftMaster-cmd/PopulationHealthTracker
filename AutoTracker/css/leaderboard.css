@@ -25,7 +25,6 @@ body {
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
     width: 90%;
-
     padding: 20px;
     border-radius: 10px;
     background-color: var(--color-secondary);
@@ -37,8 +36,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    min-height: 100vh; /* Full viewport height */
+    width: 750px; /* Set the width to 750px */
+    height: 500px; /* Set the height to 500px */
     background-color: var(--color-primary);
 }
 
