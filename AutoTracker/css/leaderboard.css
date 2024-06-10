@@ -36,7 +36,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 750px; /* Set the width to 750px */
+    width: 700px; /* Set the width to 750px */
     height: 500px; /* Set the height to 500px */
     background-color: var(--color-primary);
 }
