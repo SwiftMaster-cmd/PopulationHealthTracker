@@ -1,8 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
+    const container = document.createElement('div');
+    container.classList.add('main-container');
+    document.body.appendChild(container);
+
+    const chartContainer = document.createElement('div');
+    chartContainer.classList.add('chart-container');
+    container.appendChild(chartContainer);
+
+    const chartPeriodPicker = document.createElement('select');
+    chartPeriodPicker.id = 'chartPeriodPicker';
+    chartContainer.appendChild(chartPeriodPicker);
+
+    const periods = ['day', 'week', 'month'];
+    periods.forEach(period => {
+        const option = document.createElement('option');
+        option.value = period;
+        option.text = period.charAt(0).toUpperCase() + period.slice(1);
+        chartPeriodPicker.appendChild(option);
+    });
 
     // Set default picker value to 'month'
     chartPeriodPicker.value = 'month';
+
+    const salesChartCanvas = document.createElement('canvas');
+    salesChartCanvas.id = 'salesChart';
+    chartContainer.appendChild(salesChartCanvas);
 
     chartPeriodPicker.addEventListener('change', () => {
         loadChart(chartPeriodPicker.value);
