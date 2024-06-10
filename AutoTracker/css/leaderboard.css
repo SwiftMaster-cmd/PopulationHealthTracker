@@ -21,15 +21,6 @@ body {
 }
 
 .main-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100vh; /* Full viewport height */
-    background-color: var(--color-primary);
-}
-
-.content-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
@@ -40,6 +31,15 @@ body {
     background-color: var(--color-secondary);
     box-sizing: border-box;
     overflow-y: auto; /* Enables vertical scrolling if needed */
+}
+
+.content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh; /* Full viewport height */
+    background-color: var(--color-primary);
 }
 
 
