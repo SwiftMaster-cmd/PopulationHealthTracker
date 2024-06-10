@@ -1,11 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const chartPeriodPicker = document.getElementById('chartPeriodPicker');
 
+    // Set default picker value to 'month'
+    chartPeriodPicker.value = 'month';
+
     chartPeriodPicker.addEventListener('change', () => {
         loadChart(chartPeriodPicker.value);
     });
 
-    loadChart();
+    loadChart('month');
 
     const savedColor = localStorage.getItem('baseColor');
     if (savedColor) {
@@ -25,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let salesChart;
 
-function loadChart(period = 'day') {
+function loadChart(period = 'month') {
     const database = firebase.database();
     const salesTimeFramesRef = database.ref('salesTimeFrames');
 
@@ -49,7 +52,6 @@ function loadChart(period = 'day') {
                 }
 
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-                const borderColor = chroma(primaryColor).darken().hex();
                 const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
 
                 const ctx = document.getElementById('salesChart').getContext('2d');
@@ -140,35 +142,43 @@ function getMonthlyChartData(salesData) {
 }
 
 function createDatasets(labels, salesData, period) {
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-    const secondaryColor = chroma(primaryColor).brighten(1).hex();
-    const tertiaryColor = chroma(primaryColor).brighten(2).hex();
-    const quaternaryColor = chroma(primaryColor).brighten(3).hex();
+    const primaryColor = '#ffffff';
+    const secondaryColor = chroma(primaryColor).darken(0.3).hex();
+    const tertiaryColor = chroma(primaryColor).darken(0.6).hex();
+    const quaternaryColor = chroma(primaryColor).darken(0.9).hex();
 
     const datasets = [
         {
             label: 'Billable HRA',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: primaryColor,
-            fill: false
+            backgroundColor: primaryColor,
+            fill: false,
+            pointStyle: 'circle'
         },
         {
             label: 'Select RX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: secondaryColor,
-            fill: false
+            backgroundColor: secondaryColor,
+            fill: false,
+            pointStyle: 'triangle'
         },
         {
             label: 'Select Patient Management',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: tertiaryColor,
-            fill: false
+            backgroundColor: tertiaryColor,
+            fill: false,
+            pointStyle: 'rect'
         },
         {
             label: 'Transfer',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
             borderColor: quaternaryColor,
-            fill: false
+            backgroundColor: quaternaryColor,
+            fill: false,
+            pointStyle: 'star'
         }
     ];
 
@@ -208,65 +218,6 @@ function formatDay(date) {
     return days[date.getDay()];
 }
 
-function applyColorPalette(baseColor) {
-    const isDark = chroma(baseColor).luminance() < 0.5;
-    const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode('lab').colors(5);
-
-    document.documentElement.style.setProperty('--color-primary', palette[0]);
-    document.documentElement.style.setProperty('--color-secondary', palette[1]);
-    document.documentElement.style.setProperty('--color-tertiary', palette[2]);
-    document.documentElement.style.setProperty('--color-quaternary', palette[3]);
-    document.documentElement.style.setProperty('--color-quinary', palette[4]);
-
-    document.body.style.backgroundColor = palette[0];
-
-    updateStyles(isDark);
-    loadChart();
-}
-
-function updateStyles(isDark) {
-    const styles = document.documentElement.style;
-    const textColor = isDark ? '#ffffff' : '#000000';
-
-    document.body.style.color = textColor;
-
-    document.querySelectorAll('.button').forEach(btn => {
-        btn.style.backgroundColor = styles.getPropertyValue('--color-primary');
-        btn.style.color = textColor;
-    });
-
-    document.querySelectorAll('.container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.leaderboard-container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-secondary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.leaderboard-item').forEach(item => {
-        item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        item.style.color = textColor;
-    });
-
-    document.querySelectorAll('.outcome-item').forEach(item => {
-        item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        item.style.color = textColor;
-    });
-
-    document.querySelectorAll('.sales-counts-container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.account-container').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
-        container.style.color = textColor;
-    });
-
-    document.querySelectorAll('.customer-info').forEach(container => {
-        container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
-        container.style.color = textColor;
-    });
+function tooltipLabelCallback(tooltipItem) {
+    return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
 }
