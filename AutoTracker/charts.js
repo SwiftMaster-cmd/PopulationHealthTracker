@@ -48,7 +48,8 @@ function loadChart(period = 'day') {
                 };
 
                 // Prepare the data for the chart
-                const colors = getBarColors();
+                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+                const borderColor = chroma(primaryColor).darken().hex();
                 const chartData = {
                     labels: ['Billable HRA', 'Select RX', 'Select Patient Management', 'Transfer'],
                     datasets: [{
@@ -59,8 +60,8 @@ function loadChart(period = 'day') {
                             salesCounts.selectPatientManagement,
                             salesCounts.transfer
                         ],
-                        backgroundColor: colors,
-                        borderColor: colors.map(color => chroma(color).darken().hex()),
+                        backgroundColor: primaryColor,
+                        borderColor: borderColor,
                         borderWidth: 1
                     }]
                 };
@@ -79,7 +80,22 @@ function loadChart(period = 'day') {
                         options: {
                             scales: {
                                 y: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: primaryColor
+                                    }
                                 }
                             }
                         }
@@ -108,15 +124,6 @@ function applyColorPalette(baseColor) {
 
     updateStyles(isDark);
     loadChart(); // Reload the chart with new colors
-}
-
-function getBarColors() {
-    return [
-        getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(),
-        getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim(),
-        getComputedStyle(document.documentElement).getPropertyValue('--color-tertiary').trim(),
-        getComputedStyle(document.documentElement).getPropertyValue('--color-quaternary').trim()
-    ];
 }
 
 function updateStyles(isDark) {
