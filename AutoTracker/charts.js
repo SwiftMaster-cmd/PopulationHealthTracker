@@ -50,6 +50,7 @@ function loadChart(period = 'day') {
                 // Prepare the data for the chart
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
                 const borderColor = chroma(primaryColor).darken().hex();
+                const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
                 const chartData = {
                     labels: ['Billable HRA', 'Select RX', 'Select Patient Management', 'Transfer'],
                     datasets: [{
@@ -71,6 +72,9 @@ function loadChart(period = 'day') {
                 if (salesChart instanceof Chart) {
                     // Update the chart data
                     salesChart.data = chartData;
+                    salesChart.options.scales.x.ticks.color = textColor;
+                    salesChart.options.scales.y.ticks.color = textColor;
+                    salesChart.options.plugins.legend.labels.color = textColor;
                     salesChart.update();
                 } else {
                     // Initialize the chart
@@ -83,18 +87,33 @@ function loadChart(period = 'day') {
                                     beginAtZero: true,
                                     grid: {
                                         display: false
+                                    },
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 14 // Increase text size
+                                        }
                                     }
                                 },
                                 x: {
                                     grid: {
                                         display: false
+                                    },
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 14 // Increase text size
+                                        }
                                     }
                                 }
                             },
                             plugins: {
                                 legend: {
                                     labels: {
-                                        color: primaryColor
+                                        color: textColor,
+                                        font: {
+                                            size: 16 // Increase legend text size
+                                        }
                                     }
                                 }
                             }
