@@ -130,7 +130,8 @@ function getWeeklyChartData(salesData) {
 }
 
 function getMonthlyChartData(salesData) {
-    const daysInMonth = Array.from({ length: 30 }, (_, i) => (i + 1).toString());
+    const today = new Date().getDate();
+    const daysInMonth = Array.from({ length: today }, (_, i) => (i + 1).toString());
     const data = {
         labels: daysInMonth,
         datasets: createDatasets(daysInMonth, salesData, 'month')
