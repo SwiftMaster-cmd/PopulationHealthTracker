@@ -1,9 +1,13 @@
 :root {
-    --color-primary: #007bff;
-    --color-secondary: #6c757d;
-    --color-tertiary: #28a745;
-    --color-quaternary: #17a2b8;
-    --color-quinary: #ffc107;
+    --line-color-1: #FFD700; /* Light color for dark background */
+    --line-color-2: #00FF00;
+    --line-color-3: #1E90FF;
+    --line-color-4: #FF69B4;
+
+    --line-color-1-dark: #8B0000; /* Dark color for light background */
+    --line-color-2-dark: #006400;
+    --line-color-3-dark: #00008B;
+    --line-color-4-dark: #800080;
 }
 
 .chart-container {

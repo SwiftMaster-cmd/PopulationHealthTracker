@@ -17,13 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
         applyColorPalette(defaultColor);
     }
-
-    const applyColorButton = document.getElementById('applyColor');
-    applyColorButton.addEventListener('click', () => {
-        const selectedColor = document.getElementById('colorPicker').value;
-        applyColorPalette(selectedColor);
-        localStorage.setItem('baseColor', selectedColor);
-    });
 });
 
 let salesChart;
@@ -142,41 +135,41 @@ function getMonthlyChartData(salesData) {
 }
 
 function createDatasets(labels, salesData, period) {
-    const primaryColor = '#ffffff';
-    const secondaryColor = chroma(primaryColor).darken(0.3).hex();
-    const tertiaryColor = chroma(primaryColor).darken(0.6).hex();
-    const quaternaryColor = chroma(primaryColor).darken(0.9).hex();
+    const lineColor1 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-1').trim();
+    const lineColor2 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-2').trim();
+    const lineColor3 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-3').trim();
+    const lineColor4 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-4').trim();
 
     const datasets = [
         {
             label: 'Billable HRA',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
-            borderColor: primaryColor,
-            backgroundColor: primaryColor,
+            borderColor: lineColor1,
+            backgroundColor: lineColor1,
             fill: false,
             pointStyle: 'circle'
         },
         {
             label: 'Select RX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
-            borderColor: secondaryColor,
-            backgroundColor: secondaryColor,
+            borderColor: lineColor2,
+            backgroundColor: lineColor2,
             fill: false,
             pointStyle: 'triangle'
         },
         {
             label: 'Select Patient Management',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
-            borderColor: tertiaryColor,
-            backgroundColor: tertiaryColor,
+            borderColor: lineColor3,
+            backgroundColor: lineColor3,
             fill: false,
             pointStyle: 'rect'
         },
         {
             label: 'Transfer',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
-            borderColor: quaternaryColor,
-            backgroundColor: quaternaryColor,
+            borderColor: lineColor4,
+            backgroundColor: lineColor4,
             fill: false,
             pointStyle: 'star'
         }
