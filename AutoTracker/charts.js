@@ -9,6 +9,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load the default chart
     loadChart();
+
+    // Apply the saved color palette on page load if it exists
+    const savedColor = localStorage.getItem('baseColor');
+    if (savedColor) {
+        applyColorPalette(savedColor);
+    } else {
+        const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
+        applyColorPalette(defaultColor);
+    }
+
+    // Add event listener to the apply color button
+    const applyColorButton = document.getElementById('applyColor');
+    applyColorButton.addEventListener('click', () => {
+        const selectedColor = document.getElementById('colorPicker').value;
+        applyColorPalette(selectedColor);
+        localStorage.setItem('baseColor', selectedColor); // Save the selected color to local storage
+    });
 });
 
 let salesChart;
@@ -31,6 +48,7 @@ function loadChart(period = 'day') {
                 };
 
                 // Prepare the data for the chart
+                const colors = getBarColors();
                 const chartData = {
                     labels: ['Billable HRA', 'Select RX', 'Select Patient Management', 'Transfer'],
                     datasets: [{
@@ -41,18 +59,8 @@ function loadChart(period = 'day') {
                             salesCounts.selectPatientManagement,
                             salesCounts.transfer
                         ],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(153, 102, 255, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(153, 102, 255, 1)'
-                        ],
+                        backgroundColor: colors,
+                        borderColor: colors.map(color => chroma(color).darken().hex()),
                         borderWidth: 1
                     }]
                 };
@@ -86,17 +94,74 @@ function loadChart(period = 'day') {
     });
 }
 
-function getReadableTitle(saleType) {
-    switch (saleType) {
-        case 'selectRX':
-            return 'Select RX';
-        case 'billableHRA':
-            return 'Billable HRA';
-        case 'transfer':
-            return 'Transfer';
-        case 'selectPatientManagement':
-            return 'Select Patient Management';
-        default:
-            return saleType;
-    }
+function applyColorPalette(baseColor) {
+    const isDark = chroma(baseColor).luminance() < 0.5;
+    const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode('lab').colors(5);
+
+    document.documentElement.style.setProperty('--color-primary', palette[0]);
+    document.documentElement.style.setProperty('--color-secondary', palette[1]);
+    document.documentElement.style.setProperty('--color-tertiary', palette[2]);
+    document.documentElement.style.setProperty('--color-quaternary', palette[3]);
+    document.documentElement.style.setProperty('--color-quinary', palette[4]);
+
+    document.body.style.backgroundColor = palette[0]; // Update body background color
+
+    updateStyles(isDark);
+    loadChart(); // Reload the chart with new colors
+}
+
+function getBarColors() {
+    return [
+        getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--color-tertiary').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--color-quaternary').trim()
+    ];
+}
+
+function updateStyles(isDark) {
+    const styles = document.documentElement.style;
+    const textColor = isDark ? '#ffffff' : '#000000';
+
+    document.body.style.color = textColor;
+
+    document.querySelectorAll('.button').forEach(btn => {
+        btn.style.backgroundColor = styles.getPropertyValue('--color-primary');
+        btn.style.color = textColor;
+    });
+
+    document.querySelectorAll('.container').forEach(container => {
+        container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+        container.style.color = textColor;
+    });
+
+    document.querySelectorAll('.leaderboard-container').forEach(container => {
+        container.style.backgroundColor = styles.getPropertyValue('--color-secondary');
+        container.style.color = textColor;
+    });
+
+    document.querySelectorAll('.leaderboard-item').forEach(item => {
+        item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+        item.style.color = textColor;
+    });
+
+    document.querySelectorAll('.outcome-item').forEach(item => {
+        item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+        item.style.color = textColor;
+    });
+
+    document.querySelectorAll('.sales-counts-container').forEach(container => {
+        container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+        container.style.color = textColor;
+    });
+
+    document.querySelectorAll('.account-container').forEach(container => {
+        container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+        container.style.color = textColor;
+    });
+
+    document.querySelectorAll('.customer-info').forEach(container => {
+        container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+        container.style.color = textColor;
+    });
 }
