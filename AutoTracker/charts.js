@@ -52,7 +52,7 @@ function loadChart(period = 'day') {
                 const borderColor = chroma(primaryColor).darken().hex();
                 const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
                 const chartData = {
-                    labels: ['Billable HRA', 'Select RX', 'Select Patient Management', 'Transfer'],
+                    labels: ['HRA', 'SRX', 'SPM', 'Transfer'],
                     datasets: [{
                         label: `Sales Counts (${period})`,
                         data: [
@@ -74,10 +74,10 @@ function loadChart(period = 'day') {
                     salesChart.data = chartData;
                     salesChart.options.scales.x.ticks.color = textColor;
                     salesChart.options.scales.y.ticks.color = textColor;
-                    salesChart.options.scales.x.ticks.font.size = 18; // Increase text size 2x
-                    salesChart.options.scales.y.ticks.font.size = 18; // Increase text size 2x
+                    salesChart.options.scales.x.ticks.font.size = 24; // Adjust text size
+                    salesChart.options.scales.y.ticks.font.size = 24; // Adjust text size
                     salesChart.options.plugins.legend.labels.color = textColor;
-                    salesChart.options.plugins.legend.labels.font.size = 24; // Increase legend text size 2x
+                    salesChart.options.plugins.legend.labels.font.size = 24; // Adjust legend text size
                     salesChart.update();
                 } else {
                     // Initialize the chart
@@ -94,7 +94,7 @@ function loadChart(period = 'day') {
                                     ticks: {
                                         color: textColor,
                                         font: {
-                                            size: 28 // Increase text size 2x
+                                            size: 24 // Adjust text size
                                         }
                                     }
                                 },
@@ -105,8 +105,12 @@ function loadChart(period = 'day') {
                                     ticks: {
                                         color: textColor,
                                         font: {
-                                            size: 28 // Increase text size 2x
-                                        }
+                                            size: 24, // Adjust text size
+                                            family: 'Arial',
+                                            weight: 'bold',
+                                        },
+                                        maxRotation: 0,
+                                        minRotation: 0
                                     }
                                 }
                             },
@@ -115,7 +119,7 @@ function loadChart(period = 'day') {
                                     labels: {
                                         color: textColor,
                                         font: {
-                                            size: 32 // Increase legend text size 2x
+                                            size: 24 // Adjust legend text size
                                         }
                                     }
                                 }
