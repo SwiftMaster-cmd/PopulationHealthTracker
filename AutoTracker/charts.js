@@ -1,24 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Create the dropdown pickers
-    const periodPicker = document.getElementById('periodPicker');
-    const saleTypePicker = document.getElementById('saleTypePicker');
+    // Get the chart period picker
+    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
 
-    // Add event listeners to the pickers
-    periodPicker.addEventListener('change', () => {
-        loadChart(periodPicker.value, saleTypePicker.value);
-    });
-
-    saleTypePicker.addEventListener('change', () => {
-        loadChart(periodPicker.value, saleTypePicker.value);
+    // Add event listener to the chart period picker
+    chartPeriodPicker.addEventListener('change', () => {
+        loadChart(chartPeriodPicker.value);
     });
 
     // Load the default chart
     loadChart();
 });
 
-let salesChart; // Declare salesChart variable
+let salesChart;
 
-function loadChart(period = 'day', saleType = 'billableHRA') {
+function loadChart(period = 'day') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
 
@@ -34,33 +29,45 @@ function loadChart(period = 'day', saleType = 'billableHRA') {
                     selectPatientManagement: 0,
                     transfer: 0
                 };
-                
+
                 // Prepare the data for the chart
-                const saleTypeLabel = getReadableTitle(saleType);
-                const salesCount = salesCounts[saleType];
+                const chartData = {
+                    labels: ['Billable HRA', 'Select RX', 'Select Patient Management', 'Transfer'],
+                    datasets: [{
+                        label: `Sales Counts (${period})`,
+                        data: [
+                            salesCounts.billableHRA,
+                            salesCounts.selectRX,
+                            salesCounts.selectPatientManagement,
+                            salesCounts.transfer
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(153, 102, 255, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                };
 
                 const ctx = document.getElementById('salesChart').getContext('2d');
-                
+
                 if (salesChart instanceof Chart) {
                     // Update the chart data
-                    salesChart.data.labels = [saleTypeLabel];
-                    salesChart.data.datasets[0].data = [salesCount];
-                    salesChart.data.datasets[0].label = `${saleTypeLabel} Sales (${period})`;
+                    salesChart.data = chartData;
                     salesChart.update();
                 } else {
                     // Initialize the chart
                     salesChart = new Chart(ctx, {
                         type: 'bar',
-                        data: {
-                            labels: [saleTypeLabel], // Adjust labels as needed
-                            datasets: [{
-                                label: `${saleTypeLabel} Sales (${period})`,
-                                data: [salesCount], // Adjust data to match the period and sale type
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1
-                            }]
-                        },
+                        data: chartData,
                         options: {
                             scales: {
                                 y: {
@@ -77,19 +84,4 @@ function loadChart(period = 'day', saleType = 'billableHRA') {
             console.error('No user is signed in.');
         }
     });
-}
-
-function getReadableTitle(saleType) {
-    switch (saleType) {
-        case 'selectRX':
-            return 'Select RX';
-        case 'billableHRA':
-            return 'Billable HRA';
-        case 'transfer':
-            return 'Transfer';
-        case 'selectPatientManagement':
-            return 'Select Patient Management';
-        default:
-            return saleType;
-    }
 }
