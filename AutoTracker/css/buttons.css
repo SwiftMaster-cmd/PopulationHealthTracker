@@ -1,0 +1,16 @@
+.monthly-totals-container {
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow for better visibility */
+}
+
+.monthly-totals-container h2 {
+    margin-top: 0;
+}
+
+#monthlySalesTotals {
+    font-size: 20px; /* Adjust as needed */
+}
