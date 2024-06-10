@@ -1,3 +1,21 @@
+.level-picker-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.level-picker-container label {
+    margin-right: 10px;
+}
+
+.level-picker-container select {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: var(--color-primary);
+    color: #ffffff;
+}
+
 .monthly-totals-container {
     background-color: var(--color-secondary);
     padding: 20px;
@@ -13,17 +31,4 @@
 
 #monthlySalesTotals {
     font-size: 20px; /* Adjust as needed */
-}
-.level-picker-container {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.level-picker-container label {
-    margin-right: 10px;
-}
-
-.level-picker-container select {
-    padding: 5px;
-    font-size: 16px;
 }

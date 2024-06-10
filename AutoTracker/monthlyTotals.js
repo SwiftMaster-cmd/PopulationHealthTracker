@@ -19,12 +19,34 @@ function createLevelPicker() {
         <option value="3">Level 3</option>
     `;
 
+    // Apply Chroma.js colors
+    applyChromaColors(levelPicker);
+
+    // Set the saved level if exists
+    const savedLevel = localStorage.getItem('userLevel');
+    if (savedLevel) {
+        levelPicker.value = savedLevel;
+    }
+
     levelPickerContainer.appendChild(levelLabel);
     levelPickerContainer.appendChild(levelPicker);
 
     document.querySelector('.monthly-totals-container').prepend(levelPickerContainer);
 
-    levelPicker.addEventListener('change', loadMonthlyTotals);
+    levelPicker.addEventListener('change', () => {
+        localStorage.setItem('userLevel', levelPicker.value);
+        loadMonthlyTotals();
+    });
+}
+
+function applyChromaColors(levelPicker) {
+    const baseColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+    const palette = chroma.scale([baseColor, chroma(baseColor).darken(2)]).mode('lab').colors(3);
+
+    Array.from(levelPicker.options).forEach((option, index) => {
+        option.style.backgroundColor = palette[index];
+        option.style.color = chroma(palette[index]).luminance() < 0.5 ? '#ffffff' : '#000000';
+    });
 }
 
 function loadMonthlyTotals() {
