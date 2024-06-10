@@ -27,13 +27,13 @@ let salesChart;
 
 function loadChart(period = 'day') {
     const database = firebase.database();
-    const salesCountsRef = database.ref('salesCounts');
+    const salesTimeFramesRef = database.ref('salesTimeFrames');
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             const currentUserId = user.uid;
 
-            salesCountsRef.child(currentUserId).once('value', salesSnapshot => {
+            salesTimeFramesRef.child(currentUserId).once('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
                 let chartData = {
                     labels: [],
@@ -147,31 +147,64 @@ function createDatasets(labels, salesData, period) {
     const datasets = [
         {
             label: 'Billable HRA',
-            data: labels.map(label => salesData[period]?.billableHRA[label] || 0),
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: primaryColor,
             fill: false
         },
         {
             label: 'Select RX',
-            data: labels.map(label => salesData[period]?.selectRX[label] || 0),
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: secondaryColor,
             fill: false
         },
         {
             label: 'Select Patient Management',
-            data: labels.map(label => salesData[period]?.selectPatientManagement[label] || 0),
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: tertiaryColor,
             fill: false
         },
         {
             label: 'Transfer',
-            data: labels.map(label => salesData[period]?.transfer[label] || 0),
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
             borderColor: quaternaryColor,
             fill: false
         }
     ];
 
     return datasets;
+}
+
+function getSaleCountForLabel(salesData, period, saleType, label) {
+    let count = 0;
+
+    for (const account in salesData) {
+        const sales = salesData[account][saleType];
+
+        if (sales) {
+            sales.forEach(saleTime => {
+                const saleDate = new Date(saleTime);
+                if (period === 'day' && formatHour(saleDate) === label) {
+                    count++;
+                } else if (period === 'week' && formatDay(saleDate) === label) {
+                    count++;
+                } else if (period === 'month' && saleDate.getDate().toString() === label) {
+                    count++;
+                }
+            });
+        }
+    }
+
+    return count;
+}
+
+function formatHour(date) {
+    const hours = date.getHours();
+    return hours < 12 ? `${hours}am` : `${hours - 12}pm`;
+}
+
+function formatDay(date) {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
 }
 
 function applyColorPalette(baseColor) {
