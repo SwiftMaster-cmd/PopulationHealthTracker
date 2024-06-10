@@ -85,3 +85,18 @@ function loadChart(period = 'day') {
         }
     });
 }
+
+function getReadableTitle(saleType) {
+    switch (saleType) {
+        case 'selectRX':
+            return 'Select RX';
+        case 'billableHRA':
+            return 'Billable HRA';
+        case 'transfer':
+            return 'Transfer';
+        case 'selectPatientManagement':
+            return 'Select Patient Management';
+        default:
+            return saleType;
+    }
+}
