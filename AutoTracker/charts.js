@@ -142,7 +142,7 @@ function createDatasets(labels, salesData, period) {
 
     const datasets = [
         {
-            label: 'Billable HRA',
+            label: 'HRA',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: lineColor1,
             backgroundColor: lineColor1,
@@ -150,7 +150,7 @@ function createDatasets(labels, salesData, period) {
             pointStyle: 'circle'
         },
         {
-            label: 'Select RX',
+            label: 'SRX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: lineColor2,
             backgroundColor: lineColor2,
@@ -158,7 +158,7 @@ function createDatasets(labels, salesData, period) {
             pointStyle: 'triangle'
         },
         {
-            label: 'Select Patient Management',
+            label: 'SPM',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: lineColor3,
             backgroundColor: lineColor3,
