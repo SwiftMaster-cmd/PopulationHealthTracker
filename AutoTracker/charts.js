@@ -98,6 +98,11 @@ function loadChart(period = 'month') {
                                 line: {
                                     tension: 0.4, // smooth curves
                                     fill: true // enable area fill
+                                },
+                                point: {
+                                    backgroundColor: '#ffffff', // white dots
+                                    borderColor: '#000000', // black border for contrast
+                                    borderWidth: 2
                                 }
                             }
                         }
@@ -152,6 +157,9 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: lineColor1,
             backgroundColor: lineColor1,
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: lineColor1, // border color same as line
+            pointBorderWidth: 2,
             fill: 'origin'
         },
         {
@@ -159,6 +167,9 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: lineColor2,
             backgroundColor: lineColor2,
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: lineColor2, // border color same as line
+            pointBorderWidth: 2,
             fill: 'origin'
         },
         {
@@ -166,6 +177,9 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: lineColor3,
             backgroundColor: lineColor3,
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: lineColor3, // border color same as line
+            pointBorderWidth: 2,
             fill: 'origin'
         },
         {
@@ -173,6 +187,9 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
             borderColor: lineColor4,
             backgroundColor: lineColor4,
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: lineColor4, // border color same as line
+            pointBorderWidth: 2,
             fill: 'origin'
         }
     ];
