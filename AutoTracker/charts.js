@@ -93,12 +93,6 @@ function loadChart(period = 'month') {
                                         }
                                     }
                                 }
-                            },
-                            elements: {
-                                line: {
-                                    tension: 0.4, // smooth curves
-                                    fill: true // enable area fill
-                                }
                             }
                         }
                     });
@@ -152,28 +146,32 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: lineColor1,
             backgroundColor: lineColor1,
-            fill: 'origin'
+            fill: false,
+            pointStyle: 'circle'
         },
         {
             label: 'SRX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: lineColor2,
             backgroundColor: lineColor2,
-            fill: 'origin'
+            fill: false,
+            pointStyle: 'triangle'
         },
         {
             label: 'SPM',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: lineColor3,
             backgroundColor: lineColor3,
-            fill: 'origin'
+            fill: false,
+            pointStyle: 'rect'
         },
         {
             label: 'Transfer',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
             borderColor: lineColor4,
             backgroundColor: lineColor4,
-            fill: 'origin'
+            fill: false,
+            pointStyle: 'star'
         }
     ];
 
