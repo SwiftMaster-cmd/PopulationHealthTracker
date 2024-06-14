@@ -105,7 +105,22 @@ function loadChart(period = 'month') {
                             elements: {
                                 line: {
                                     tension: 0.4, // smooth curves
-                                    fill: true // enable area fill
+                                    borderWidth: 2, // set line width
+                                    borderColor: function(context) {
+                                        return context.dataset.borderColor;
+                                    },
+                                    fill: 'origin', // fill only the area below
+                                    backgroundColor: function(context) {
+                                        const color = context.dataset.backgroundColor;
+                                        return color.replace('0.25', '0.1'); // reduce fill opacity
+                                    }
+                                },
+                                point: {
+                                    backgroundColor: '#ffffff', // white dots
+                                    borderColor: function(context) {
+                                        return context.dataset.borderColor;
+                                    },
+                                    borderWidth: 2
                                 }
                             }
                         }
@@ -158,7 +173,7 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(255, 0, 0, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: 'origin'
+            fill: '-1'
         },
         {
             label: 'Transfer',
@@ -168,7 +183,7 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(0, 0, 255, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: 'origin'
+            fill: '-1'
         },
         {
             label: 'HRA',
@@ -178,7 +193,7 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(0, 128, 0, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: 'origin'
+            fill: '-1'
         },
         {
             label: 'SRX',
@@ -188,7 +203,7 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(255, 255, 0, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: 'origin'
+            fill: '-1'
         }
     ];
 
@@ -231,6 +246,8 @@ function formatDay(date) {
 function tooltipLabelCallback(tooltipItem) {
     return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
 }
+
+
 
 function hexToRgba(hex, alpha) {
     const r = parseInt(hex.slice(1, 3), 16);
