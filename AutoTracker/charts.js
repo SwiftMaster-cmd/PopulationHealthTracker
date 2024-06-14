@@ -66,7 +66,6 @@ function loadChart(period = 'month') {
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    stacked: true,
                                     ticks: {
                                         color: textColor,
                                         font: {
@@ -75,7 +74,6 @@ function loadChart(period = 'month') {
                                     }
                                 },
                                 x: {
-                                    stacked: true,
                                     ticks: {
                                         color: textColor,
                                         font: {
@@ -98,7 +96,8 @@ function loadChart(period = 'month') {
                             },
                             elements: {
                                 line: {
-                                    tension: 0.4 // smooth curves
+                                    tension: 0.4, // smooth curves
+                                    fill: true // enable area fill
                                 }
                             }
                         }
@@ -153,28 +152,28 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: lineColor1,
             backgroundColor: lineColor1,
-            fill: '-1'
+            fill: 'origin'
         },
         {
             label: 'SRX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: lineColor2,
             backgroundColor: lineColor2,
-            fill: '-1'
+            fill: 'origin'
         },
         {
             label: 'SPM',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: lineColor3,
             backgroundColor: lineColor3,
-            fill: '-1'
+            fill: 'origin'
         },
         {
             label: 'Transfer',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
             borderColor: lineColor4,
             backgroundColor: lineColor4,
-            fill: '-1'
+            fill: 'origin'
         }
     ];
 
