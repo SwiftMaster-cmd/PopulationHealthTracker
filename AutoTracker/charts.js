@@ -73,7 +73,7 @@ function loadChart(period = 'month') {
                                         }
                                     },
                                     grid: {
-                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        color: 'rgba(255, 255, 255, 0.75)', // White grid lines with 0.75 opacity
                                         lineWidth: 1
                                     }
                                 },
@@ -87,7 +87,7 @@ function loadChart(period = 'month') {
                                         }
                                     },
                                     grid: {
-                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        color: 'rgba(255, 255, 255, 0.75)', // White grid lines with 0.75 opacity
                                         lineWidth: 1
                                     }
                                 }
