@@ -93,6 +93,11 @@ function loadChart(period = 'month') {
                                         }
                                     }
                                 }
+                            },
+                            elements: {
+                                line: {
+                                    fill: true
+                                }
                             }
                         }
                     });
@@ -146,7 +151,7 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: lineColor1,
             backgroundColor: lineColor1,
-            fill: false,
+            fill: true,
             pointStyle: 'circle'
         },
         {
@@ -154,7 +159,7 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: lineColor2,
             backgroundColor: lineColor2,
-            fill: false,
+            fill: true,
             pointStyle: 'triangle'
         },
         {
@@ -162,7 +167,7 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: lineColor3,
             backgroundColor: lineColor3,
-            fill: false,
+            fill: true,
             pointStyle: 'rect'
         },
         {
@@ -170,7 +175,7 @@ function createDatasets(labels, salesData, period) {
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
             borderColor: lineColor4,
             backgroundColor: lineColor4,
-            fill: false,
+            fill: true,
             pointStyle: 'star'
         }
     ];
