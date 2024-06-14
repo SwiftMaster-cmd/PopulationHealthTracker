@@ -145,26 +145,6 @@ function createDatasets(labels, salesData, period) {
         {
             label: 'SPM',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
-            borderColor: 'rgba(128, 0, 128, 1)', // Purple
-            backgroundColor: 'rgba(128, 0, 128, 0.5)',
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(128, 0, 128, 1)', // border color same as line
-            pointBorderWidth: 2,
-            fill: 'origin'
-        },
-        {
-            label: 'Transfer',
-            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
-            borderColor: 'rgba(255, 255, 0, 1)', // Yellow
-            backgroundColor: 'rgba(255, 255, 0, 0.5)',
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(255, 255, 0, 1)', // border color same as line
-            pointBorderWidth: 2,
-            fill: 'origin'
-        },
-        {
-            label: 'HRA',
-            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: 'rgba(255, 0, 0, 1)', // Red
             backgroundColor: 'rgba(255, 0, 0, 0.5)',
             pointBackgroundColor: '#ffffff', // white dots
@@ -173,12 +153,32 @@ function createDatasets(labels, salesData, period) {
             fill: 'origin'
         },
         {
-            label: 'SRX',
-            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
+            label: 'Transfer',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
+            borderColor: 'rgba(0, 128, 0, 1)', // Green
+            backgroundColor: 'rgba(0, 128, 0, 0.5)',
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgba(0, 128, 0, 1)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin'
+        },
+        {
+            label: 'HRA',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: 'rgba(0, 0, 255, 1)', // Blue
             backgroundColor: 'rgba(0, 0, 255, 0.5)',
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(0, 0, 255, 1)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin'
+        },
+        {
+            label: 'SRX',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
+            borderColor: 'rgba(255, 255, 0, 1)', // Yellow
+            backgroundColor: 'rgba(255, 255, 0, 0.5)',
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgba(255, 255, 0, 1)', // border color same as line
             pointBorderWidth: 2,
             fill: 'origin'
         }
