@@ -98,11 +98,6 @@ function loadChart(period = 'month') {
                                 line: {
                                     tension: 0.4, // smooth curves
                                     fill: true // enable area fill
-                                },
-                                point: {
-                                    backgroundColor: '#ffffff', // white dots
-                                    borderColor: '#000000', // black border for contrast
-                                    borderWidth: 2
                                 }
                             }
                         }
@@ -156,7 +151,7 @@ function createDatasets(labels, salesData, period) {
             label: 'HRA',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
             borderColor: lineColor1,
-            backgroundColor: lineColor1,
+            backgroundColor: hexToRgba(lineColor1, 0.5),
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: lineColor1, // border color same as line
             pointBorderWidth: 2,
@@ -166,7 +161,7 @@ function createDatasets(labels, salesData, period) {
             label: 'SRX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
             borderColor: lineColor2,
-            backgroundColor: lineColor2,
+            backgroundColor: hexToRgba(lineColor2, 0.5),
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: lineColor2, // border color same as line
             pointBorderWidth: 2,
@@ -176,7 +171,7 @@ function createDatasets(labels, salesData, period) {
             label: 'SPM',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: lineColor3,
-            backgroundColor: lineColor3,
+            backgroundColor: hexToRgba(lineColor3, 0.5),
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: lineColor3, // border color same as line
             pointBorderWidth: 2,
@@ -186,7 +181,7 @@ function createDatasets(labels, salesData, period) {
             label: 'Transfer',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
             borderColor: lineColor4,
-            backgroundColor: lineColor4,
+            backgroundColor: hexToRgba(lineColor4, 0.5),
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: lineColor4, // border color same as line
             pointBorderWidth: 2,
@@ -232,4 +227,12 @@ function formatDay(date) {
 
 function tooltipLabelCallback(tooltipItem) {
     return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
+}
+
+function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
