@@ -106,9 +106,6 @@ function loadChart(period = 'month') {
                                 line: {
                                     tension: 0.4, // smooth curves
                                     borderWidth: 2, // set line width
-                                    borderColor: function(context) {
-                                        return context.dataset.borderColor;
-                                    },
                                     fill: 'origin', // fill only the area below
                                     backgroundColor: function(context) {
                                         const color = context.dataset.backgroundColor;
@@ -178,20 +175,20 @@ function createDatasets(labels, salesData, period) {
         {
             label: 'Transfer',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
-            borderColor: 'rgba(0, 0, 255, 1)', // Blue
-            backgroundColor: 'rgba(0, 0, 255, 0.25)', // Blue with 0.25 opacity
+            borderColor: 'rgba(0, 255, 255, 1)', // Cyan (Light Blue)
+            backgroundColor: 'rgba(0, 255, 255, 0.25)', // Cyan with 0.25 opacity
             pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(0, 0, 255, 1)', // border color same as line
+            pointBorderColor: 'rgba(0, 255, 255, 1)', // border color same as line
             pointBorderWidth: 2,
             fill: '-1'
         },
         {
             label: 'HRA',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
-            borderColor: 'rgba(0, 128, 0, 1)', // Green
-            backgroundColor: 'rgba(0, 128, 0, 0.25)', // Green with 0.25 opacity
+            borderColor: 'rgba(0, 255, 0, 1)', // Lime (Bright Green)
+            backgroundColor: 'rgba(0, 255, 0, 0.25)', // Lime with 0.25 opacity
             pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(0, 128, 0, 1)', // border color same as line
+            pointBorderColor: 'rgba(0, 255, 0, 1)', // border color same as line
             pointBorderWidth: 2,
             fill: '-1'
         },
@@ -244,8 +241,7 @@ function formatDay(date) {
 }
 
 function tooltipLabelCallback(tooltipItem) {
-    return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
-}
+    return `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue}`;
 
 
 
