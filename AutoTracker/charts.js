@@ -71,10 +71,6 @@ function loadChart(period = 'month') {
                                         font: {
                                             size: 24
                                         }
-                                    },
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.75)', // White grid lines with 0.75 opacity
-                                        lineWidth: 1
                                     }
                                 },
                                 x: {
@@ -85,10 +81,6 @@ function loadChart(period = 'month') {
                                             family: 'Arial',
                                             weight: 'bold'
                                         }
-                                    },
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.75)', // White grid lines with 0.75 opacity
-                                        lineWidth: 1
                                     }
                                 }
                             },
@@ -105,19 +97,7 @@ function loadChart(period = 'month') {
                             elements: {
                                 line: {
                                     tension: 0.4, // smooth curves
-                                    borderWidth: 2, // set line width
-                                    fill: 'origin', // fill only the area below
-                                    backgroundColor: function(context) {
-                                        const color = context.dataset.backgroundColor;
-                                        return color.replace('0.25', '0.1'); // reduce fill opacity
-                                    }
-                                },
-                                point: {
-                                    backgroundColor: '#ffffff', // white dots
-                                    borderColor: function(context) {
-                                        return context.dataset.borderColor;
-                                    },
-                                    borderWidth: 2
+                                    fill: true // enable area fill
                                 }
                             }
                         }
@@ -161,46 +141,39 @@ function getMonthlyChartData(salesData) {
 }
 
 function createDatasets(labels, salesData, period) {
+    const lineColor1 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-1').trim();
+    const lineColor2 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-2').trim();
+    const lineColor3 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-3').trim();
+    const lineColor4 = getComputedStyle(document.documentElement).getPropertyValue('--line-color-4').trim();
+
     const datasets = [
-        {
-            label: 'SPM',
-            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
-            borderColor: 'rgba(255, 0, 0, 1)', // Red
-            backgroundColor: 'rgba(255, 0, 0, 0.25)', // Red with 0.25 opacity
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(255, 0, 0, 1)', // border color same as line
-            pointBorderWidth: 2,
-            fill: '-1'
-        },
-        {
-            label: 'Transfer',
-            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
-            borderColor: 'rgba(0, 255, 255, 1)', // Cyan (Light Blue)
-            backgroundColor: 'rgba(0, 255, 255, 0.25)', // Cyan with 0.25 opacity
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(0, 255, 255, 1)', // border color same as line
-            pointBorderWidth: 2,
-            fill: '-1'
-        },
         {
             label: 'HRA',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
-            borderColor: 'rgba(0, 255, 0, 1)', // Lime (Bright Green)
-            backgroundColor: 'rgba(0, 255, 0, 0.25)', // Lime with 0.25 opacity
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(0, 255, 0, 1)', // border color same as line
-            pointBorderWidth: 2,
-            fill: '-1'
+            borderColor: lineColor1,
+            backgroundColor: lineColor1,
+            fill: 'origin'
         },
         {
             label: 'SRX',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
-            borderColor: 'rgba(255, 255, 0, 1)', // Yellow
-            backgroundColor: 'rgba(255, 255, 0, 0.25)', // Yellow with 0.25 opacity
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: 'rgba(255, 255, 0, 1)', // border color same as line
-            pointBorderWidth: 2,
-            fill: '-1'
+            borderColor: lineColor2,
+            backgroundColor: lineColor2,
+            fill: 'origin'
+        },
+        {
+            label: 'SPM',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
+            borderColor: lineColor3,
+            backgroundColor: lineColor3,
+            fill: 'origin'
+        },
+        {
+            label: 'Transfer',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
+            borderColor: lineColor4,
+            backgroundColor: lineColor4,
+            fill: 'origin'
         }
     ];
 
@@ -241,14 +214,5 @@ function formatDay(date) {
 }
 
 function tooltipLabelCallback(tooltipItem) {
-    return `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue}`;
-
-
-
-function hexToRgba(hex, alpha) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
 }
