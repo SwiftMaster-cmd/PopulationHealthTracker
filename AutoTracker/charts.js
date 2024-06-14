@@ -71,6 +71,10 @@ function loadChart(period = 'month') {
                                         font: {
                                             size: 24
                                         }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.3)', // White grid lines
+                                        lineWidth: 1
                                     }
                                 },
                                 x: {
@@ -81,6 +85,10 @@ function loadChart(period = 'month') {
                                             family: 'Arial',
                                             weight: 'bold'
                                         }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.3)', // White grid lines
+                                        lineWidth: 1
                                     }
                                 }
                             },
