@@ -148,26 +148,6 @@ function createDatasets(labels, salesData, period) {
 
     const datasets = [
         {
-            label: 'HRA',
-            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
-            borderColor: lineColor1,
-            backgroundColor: hexToRgba(lineColor1, 0.5),
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: lineColor1, // border color same as line
-            pointBorderWidth: 2,
-            fill: 'origin'
-        },
-        {
-            label: 'SRX',
-            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
-            borderColor: lineColor2,
-            backgroundColor: hexToRgba(lineColor2, 0.5),
-            pointBackgroundColor: '#ffffff', // white dots
-            pointBorderColor: lineColor2, // border color same as line
-            pointBorderWidth: 2,
-            fill: 'origin'
-        },
-        {
             label: 'SPM',
             data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
             borderColor: lineColor3,
@@ -184,6 +164,26 @@ function createDatasets(labels, salesData, period) {
             backgroundColor: hexToRgba(lineColor4, 0.5),
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: lineColor4, // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin'
+        },
+        {
+            label: 'HRA',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
+            borderColor: lineColor1,
+            backgroundColor: hexToRgba(lineColor1, 0.5),
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: lineColor1, // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin'
+        },
+        {
+            label: 'SRX',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
+            borderColor: lineColor2,
+            backgroundColor: hexToRgba(lineColor2, 0.5),
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: lineColor2, // border color same as line
             pointBorderWidth: 2,
             fill: 'origin'
         }
