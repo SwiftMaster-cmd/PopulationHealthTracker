@@ -105,7 +105,7 @@ function loadChart(period = 'month') {
                             elements: {
                                 line: {
                                     tension: 0.4, // smooth curves
-                                    borderWidth: 2, // set line width
+                                    borderWidth: 3, // set line width to 3 for thicker lines
                                     fill: 'origin', // fill only the area below
                                     backgroundColor: function(context) {
                                         const color = context.dataset.backgroundColor;
@@ -170,7 +170,8 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(255, 0, 255, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: '-1'
+            fill: '-1',
+            order: 4 // Ensure this dataset is always in front
         },
         {
             label: 'Transfer',
@@ -180,7 +181,8 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(0, 255, 255, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: '-1'
+            fill: '-1',
+            order: 3 // Ensure this dataset is behind SPM but in front of others
         },
         {
             label: 'HRA',
@@ -190,7 +192,8 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(0, 255, 0, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: '-1'
+            fill: '-1',
+            order: 2 // Ensure this dataset is behind Transfer but in front of SRX
         },
         {
             label: 'SRX',
@@ -200,7 +203,8 @@ function createDatasets(labels, salesData, period) {
             pointBackgroundColor: '#ffffff', // white dots
             pointBorderColor: 'rgba(0, 255, 127, 1)', // border color same as line
             pointBorderWidth: 2,
-            fill: '-1'
+            fill: '-1',
+            order: 1 // Ensure this dataset is at the back
         }
     ];
 
