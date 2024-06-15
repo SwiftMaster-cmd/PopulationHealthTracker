@@ -200,6 +200,9 @@ function displaySalesOutcomes(user) {
             const outcomesContainer = document.getElementById('sales-outcomes-container');
             outcomesContainer.innerHTML = '';
 
+            const customerInfoContainer = document.getElementById('customer-info-container');
+            customerInfoContainer.innerHTML = '';
+
             const groupedOutcomes = {};
 
             for (const key in outcomes) {
@@ -233,7 +236,6 @@ function displaySalesOutcomes(user) {
                 const accountContent = document.createElement('div');
                 accountContent.classList.add('account-content');
                 accountContainer.appendChild(accountContent);
-
                 const salesInfoContainer = document.createElement('div');
                 salesInfoContainer.classList.add('sales-info');
                 accountContent.appendChild(salesInfoContainer);
@@ -277,3 +279,16 @@ function displaySalesOutcomes(user) {
 
 // Attach the function to the window object
 window.displaySalesOutcomes = displaySalesOutcomes;
+
+function displayCustomerInfo(customerInfo) {
+    // Placeholder function to display customer info
+    // Customize this function based on the structure of customerInfo
+    return `
+        <div class="customer-info">
+            <p>Name: ${customerInfo.name || 'N/A'}</p>
+            <p>Email: ${customerInfo.email || 'N/A'}</p>
+            <p>Phone: ${customerInfo.phone || 'N/A'}</p>
+            <!-- Add more fields as needed -->
+        </div>
+    `;
+}

@@ -61,11 +61,34 @@
    
 
 
-     
-            <!-- Sales Outcomes Container -->
-            <div id="sales-outcomes-container" class="sales-outcomes-container"></div>
-      
-
+            <div class="sales-history-container">
+                <div class="header-section">
+                    <h2>Sales History</h2>
+                    <div class="search-container">
+                        <input type="text" id="searchById" placeholder="Search by lead ID">
+                    </div>
+                </div>
+                <div class="sales-history-content">
+                    <div class="sales-history-item">
+                        <div class="details">
+                            <span>Select RX</span>
+                        </div>
+                        <div class="date-time">
+                            <span>12/12/24</span>
+                            <span>12:47 PM</span>
+                        </div>
+                    </div>
+                    <!-- Repeat sales-history-item as needed -->
+                </div>
+                <div class="customer-info-container" id="customer-info-container">
+                    <!-- Customer info will be dynamically added here -->
+                </div>
+                <div class="navigation-container">
+                    <button id="prev">Prev</button>
+                    <span id="counter">1 of 3</span>
+                    <button id="next">Next</button>
+                </div>
+            </div>
 
         
 
