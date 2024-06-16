@@ -52,7 +52,9 @@ body {
 .lead-id-container {
     text-align: center;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced margin */
+    padding: 10px;
+    border-radius: 10px;
     color: var(--text-color);
     background-color: var(--color-secondary);
 }
@@ -60,16 +62,16 @@ body {
 .sales-history-content {
     background-color: var(--color-secondary);
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px; /* Reduced padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 .sales-history-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 5px 0; /* Reduced padding */
     border-bottom: 1px solid var(--color-quaternary);
 }
 
@@ -101,9 +103,9 @@ body {
 .customer-info-container {
     background-color: var(--color-secondary);
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px; /* Reduced padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 .navigation-container {
