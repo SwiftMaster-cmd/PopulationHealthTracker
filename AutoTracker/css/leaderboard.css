@@ -23,14 +23,23 @@ body {
     margin-top: 20px;
     font-size: 2em;
 }
+
+
 .main-container {
- display: flex; /* Enables flexbox */
-    flex-direction: row ; /* Stacks child elements vertically */
-    align-items: center; /* Aligns children to the center horizontally */
-    width: 90%; /* Takes 90% of the parent's width */
-    padding: 20px; /* Adds spacing inside the container */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
-    border-radius: 15px; /* Rounds the corners */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+        "leaderboard chart"
+        "salesHistory colorPalette";
+    grid-gap: 20px;
+    width: 90%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--color-secondary);
+    box-sizing: border-box;
+    overflow-y: auto;
+    margin: 75px auto 0 auto;
 }
 
 
