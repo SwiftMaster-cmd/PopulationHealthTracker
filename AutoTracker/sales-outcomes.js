@@ -236,6 +236,7 @@ function displaySalesOutcomes(user) {
                 const accountContent = document.createElement('div');
                 accountContent.classList.add('account-content');
                 accountContainer.appendChild(accountContent);
+
                 const salesInfoContainer = document.createElement('div');
                 salesInfoContainer.classList.add('sales-info');
                 accountContent.appendChild(salesInfoContainer);
@@ -281,8 +282,9 @@ function displaySalesOutcomes(user) {
 window.displaySalesOutcomes = displaySalesOutcomes;
 
 function displayCustomerInfo(customerInfo) {
-    // Placeholder function to display customer info
-    // Customize this function based on the structure of customerInfo
+    if (!customerInfo) {
+        return '<p>No customer information available.</p>';
+    }
     return `
         <div class="customer-info">
             <p>Name: ${customerInfo.name || 'N/A'}</p>
