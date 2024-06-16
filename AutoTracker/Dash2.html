@@ -1,35 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Outcomes</title>
-    <link rel="stylesheet" href="css/charts.css">
-    <link rel="stylesheet" href="css/outcomes.css">
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/leaderboard.css">
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
-    <script src="firebase-init.js" defer></script>
-    <script src="auth.js" defer></script>
-    <script src="customer-info.js" defer></script>
-
-    <script src="sales-outcomes.js" defer></script>
-    
-    <script src="color-palette.js" defer></script>
-    <script src="leaderboard.js" defer></script>
-    <script src="monthlyTotals.js" defer></script>
-    <script src="charts.js" defer></script>
-    <style>
-        .color-picker-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-    </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sales History</title>
+        <link rel="stylesheet" href="css/charts.css">
+        <link rel="stylesheet" href="css/outcomes.css">
+        <link rel="stylesheet" href="css/buttons.css">
+        <link rel="stylesheet" href="css/leaderboard.css">
+        <link rel="stylesheet" href="css/sales-history.css">
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+        <script src="firebase-init.js" defer></script>
+        <script src="auth.js" defer></script>
+        <script src="customer-info.js" defer></script>
+        <script src="sales-outcomes.js" defer></script>
+        <script src="color-palette.js" defer></script>
+        <script src="leaderboard.js" defer></script>
+        <script src="monthlyTotals.js" defer></script>
+        <script src="charts.js" defer></script>
+    </head>
 <body>
     <div class="header-container">
         <h1>Dashboard</h1>
@@ -68,17 +61,8 @@
                         <input type="text" id="searchById" placeholder="Search by lead ID">
                     </div>
                 </div>
-                <div class="sales-history-content">
-                    <div class="sales-history-item">
-                        <div class="details">
-                            <span>Select RX</span>
-                        </div>
-                        <div class="date-time">
-                            <span>12/12/24</span>
-                            <span>12:47 PM</span>
-                        </div>
-                    </div>
-                    <!-- Repeat sales-history-item as needed -->
+                <div class="sales-history-content" id="sales-outcomes-container">
+                    <!-- Sales outcomes will be dynamically added here -->
                 </div>
                 <div class="customer-info-container" id="customer-info-container">
                     <!-- Customer info will be dynamically added here -->
@@ -88,6 +72,10 @@
                     <span id="counter">1 of 3</span>
                     <button id="next">Next</button>
                 </div>
+            </div>
+            <div class="color-picker-container">
+                <input type="color" id="colorPicker" />
+                <button id="applyColor" class="button">Apply Color Palette</button>
             </div>
 
         
@@ -132,5 +120,38 @@
     <h4>
         <button class="navigate-button button" onclick="window.location.href='AutoTracker/Dash2.html'">AutoTracker Dashboard</button>
     </h4>
+</body>
+</html>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <div class="sales-history-container">
+        <div class="header-section">
+            <h2>Sales History</h2>
+            <div class="search-container">
+                <input type="text" id="searchById" placeholder="Search by lead ID">
+            </div>
+        </div>
+        <div class="sales-history-content" id="sales-outcomes-container">
+            <!-- Sales outcomes will be dynamically added here -->
+        </div>
+        <div class="customer-info-container" id="customer-info-container">
+            <!-- Customer info will be dynamically added here -->
+        </div>
+        <div class="navigation-container">
+            <button id="prev">Prev</button>
+            <span id="counter">1 of 3</span>
+            <button id="next">Next</button>
+        </div>
+    </div>
+    <div class="color-picker-container">
+        <input type="color" id="colorPicker" />
+        <button id="applyColor" class="button">Apply Color Palette</button>
+    </div>
 </body>
 </html>
