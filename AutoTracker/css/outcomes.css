@@ -50,7 +50,7 @@ body {
 }
 
 .sales-history-content {
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -91,7 +91,7 @@ body {
 }
 
 .customer-info-container {
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
