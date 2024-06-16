@@ -21,7 +21,7 @@ body {
 }
 .main-container {
     display: flex;
-    grid-template-columns: 2fr 2fr;
+  
     grid-gap: 20px;
     width: 90%;
     padding: 20px; /* Vertical padding of 35px, horizontal padding of 20px */
