@@ -25,7 +25,7 @@ body {
 }
 .main-container {
  display: flex; /* Enables flexbox */
-    flex-direction: column ; /* Stacks child elements vertically */
+    flex-direction: row ; /* Stacks child elements vertically */
     align-items: center; /* Aligns children to the center horizontally */
     width: 90%; /* Takes 90% of the parent's width */
     padding: 20px; /* Adds spacing inside the container */
