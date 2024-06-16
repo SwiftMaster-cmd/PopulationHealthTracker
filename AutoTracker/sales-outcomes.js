@@ -45,15 +45,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (salesData.length === 0) return;
 
         const sale = salesData[currentSaleIndex];
+        const leadIdContainer = document.getElementById('lead-id-container');
         const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
         const customerInfoContainer = document.getElementById('customer-info-container');
         const counter = document.getElementById('counter');
+
+        if (leadIdContainer) {
+            leadIdContainer.textContent = `Lead ID: ${sale.accountNumber || 'N/A'}`;
+        }
 
         if (salesOutcomesContainer) {
             salesOutcomesContainer.innerHTML = `
                 <div class="sales-history-item">
                     <div class="details">
-                        <p>Account Number: ${sale.accountNumber || 'N/A'}</p>
                         <p>Sale Type: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
                         <p>Notes: ${sale.notesValue || 'No notes'}</p>
                     </div>

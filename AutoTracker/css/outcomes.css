@@ -49,6 +49,13 @@ body {
     color: var(--text-color);
 }
 
+.lead-id-container {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
 .sales-history-content {
     background-color: var(--color-secondary);
     border-radius: 10px;
