@@ -6,15 +6,18 @@
     --color-quinary: #ffc107;
     --text-color: #ffffff;
 }
+
 body {
     font-family: Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--color-primary);
 }
 
 .sales-history-container {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    background-color: #f8f9fa;
+    background-color: var(--color-secondary);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -31,7 +34,7 @@ body {
 .header-section h2 {
     margin: 0;
     font-size: 24px;
-    color: #343a40;
+    color: var(--text-color);
 }
 
 .search-container {
@@ -40,12 +43,14 @@ body {
 
 .search-container input {
     padding: 5px 10px;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--color-quaternary);
     border-radius: 5px;
+    background-color: var(--color-tertiary);
+    color: var(--text-color);
 }
 
 .sales-history-content {
-    background-color: #ffffff;
+    background-color: var(--color-secondary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -57,7 +62,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--color-quaternary);
 }
 
 .sales-history-item:last-child {
@@ -71,7 +76,7 @@ body {
 
 .sales-history-item .details span {
     font-size: 14px;
-    color: #6c757d;
+    color: var(--text-color);
 }
 
 .sales-history-item .date-time {
@@ -82,11 +87,11 @@ body {
 
 .sales-history-item .date-time span {
     font-size: 14px;
-    color: #6c757d;
+    color: var(--text-color);
 }
 
 .customer-info-container {
-    background-color: #ffffff;
+    background-color: var(--color-secondary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -105,16 +110,16 @@ body {
     margin: 0 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: var(--color-primary);
+    color: var(--text-color);
     cursor: pointer;
 }
 
 .navigation-container button:disabled {
-    background-color: #ced4da;
+    background-color: var(--color-quaternary);
 }
 
 .navigation-container span {
     font-size: 14px;
-    color: #6c757d;
+    color: var(--text-color);
 }
