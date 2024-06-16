@@ -31,7 +31,7 @@ body {
     grid-template-rows: auto auto;
     grid-template-areas: 
         "leaderboard chart"
-        "salesHistory colorPalette";
+        "salesHistory monthlyTotals";
     grid-gap: 20px;
     width: 90%;
     padding: 20px;
@@ -39,7 +39,7 @@ body {
     background-color: var(--color-secondary);
     box-sizing: border-box;
     overflow-y: auto;
-    margin: 75px auto 0 auto;
+
 }
 
 
