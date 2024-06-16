@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
             salesOutcomesContainer.innerHTML = `
                 <div class="sales-history-item">
                     <div class="details">
-                        <p>Sale Type: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
+                        <p>Sale: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
                         <p>Notes: ${sale.notesValue || 'No notes'}</p>
                     </div>
                     <div class="date-time">
