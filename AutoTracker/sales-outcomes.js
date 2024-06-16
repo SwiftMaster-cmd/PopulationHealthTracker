@@ -53,7 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
             salesOutcomesContainer.innerHTML = `
                 <div class="sales-history-item">
                     <div class="details">
-                        <span>${getSaleType(sale.assignAction, sale.notesValue)}</span>
+                        <p>Account Number: ${sale.accountNumber || 'N/A'}</p>
+                        <p>Sale Type: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
+                        <p>Notes: ${sale.notesValue || 'No notes'}</p>
                     </div>
                     <div class="date-time">
                         <span>${formatDate(sale.outcomeTime)}</span>
@@ -101,9 +103,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!customerInfo) {
             return '<p>No customer information available.</p>';
         }
+        const name = `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`.trim() || 'N/A';
         return `
             <div class="customer-info">
-                <p>Name: ${customerInfo.name || 'N/A'}</p>
+                <p>Name: ${name}</p>
                 <p>Email: ${customerInfo.email || 'N/A'}</p>
                 <p>Phone: ${customerInfo.phone || 'N/A'}</p>
                 <!-- Add more fields as needed -->
