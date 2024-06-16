@@ -62,7 +62,7 @@ body {
 .sales-history-content {
     background-color: var(--color-secondary);
     border-radius: 10px;
-    padding: 15px; /* Reduced padding */
+    padding: 10px; /* Reduced padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     margin-bottom: 10px; /* Reduced margin */
 }
@@ -84,7 +84,8 @@ body {
     flex-direction: column;
 }
 
-.sales-history-item .details span {
+.sales-history-item .details p {
+    margin: 2px 0; /* Reduced margin between texts */
     font-size: 14px;
     color: var(--text-color);
 }
@@ -103,9 +104,13 @@ body {
 .customer-info-container {
     background-color: var(--color-secondary);
     border-radius: 10px;
-    padding: 15px; /* Reduced padding */
+    padding: 10px; /* Reduced padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     margin-bottom: 10px; /* Reduced margin */
+}
+
+.customer-info-container p {
+    margin: 2px 0; /* Reduced margin between texts */
 }
 
 .navigation-container {
