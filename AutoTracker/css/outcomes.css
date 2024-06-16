@@ -47,6 +47,19 @@ body {
     border-radius: 5px;
     background-color: var(--color-tertiary);
     color: var(--text-color);
+    width: 200px; /* Set a fixed width */
+}
+
+.search-container button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-quaternary);
+    font-size: 20px;
+    cursor: pointer;
 }
 
 .lead-id-container {
