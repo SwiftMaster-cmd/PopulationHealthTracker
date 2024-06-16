@@ -54,6 +54,7 @@ body {
     font-weight: bold;
     margin-bottom: 20px;
     color: var(--text-color);
+    background-color: var(--color-secondary);
 }
 
 .sales-history-content {
