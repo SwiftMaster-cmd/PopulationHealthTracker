@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function createLevelPicker() {
     const levelPickerContainer = document.createElement('div');
-    levelPickerContainer.className = 'level-picker-container';
+    levelPickerContainer.className = 'select-level-container';
 
     const levelLabel = document.createElement('label');
-    levelLabel.for = 'levelPicker';
-    levelLabel.textContent = 'Select Level:';
+    levelLabel.htmlFor = 'levelPicker';
+    levelLabel.textContent = 'Select Level';
 
     const levelPicker = document.createElement('select');
     levelPicker.id = 'levelPicker';
@@ -31,7 +31,7 @@ function createLevelPicker() {
     levelPickerContainer.appendChild(levelLabel);
     levelPickerContainer.appendChild(levelPicker);
 
-    document.querySelector('.monthly-totals-container').prepend(levelPickerContainer);
+    document.querySelector('.monthly-sales-totals-container').prepend(levelPickerContainer);
 
     levelPicker.addEventListener('change', () => {
         localStorage.setItem('userLevel', levelPicker.value);
@@ -63,7 +63,12 @@ function loadMonthlyTotals() {
                 const salesData = salesSnapshot.val();
                 if (!salesData) {
                     console.log("No sales data for the current month.");
-                    document.getElementById('monthlySalesTotals').innerHTML = "No sales data available for this month.";
+                    updateSalesDisplay({
+                        billableHRA: 0,
+                        selectRX: 0,
+                        selectPatientManagement: 0,
+                        transfer: 0
+                    });
                     return;
                 }
 
@@ -77,14 +82,7 @@ function loadMonthlyTotals() {
                 const level = parseInt(document.getElementById('levelPicker').value);
                 const commission = calculateCommission(salesTotals, level);
 
-                const monthlySalesTotalsDiv = document.getElementById('monthlySalesTotals');
-                monthlySalesTotalsDiv.innerHTML = `
-                    <p>HRA: ${salesTotals.billableHRA}</p>
-                    <p>SRX: ${salesTotals.selectRX}</p>
-                    <p>SPM: ${salesTotals.selectPatientManagement}</p>
-                    <p>Transfer: ${salesTotals.transfer}</p>
-                    <p>Commission: $${commission.toFixed(2)}</p>
-                `;
+                updateSalesDisplay(salesTotals, commission);
             }).catch(error => {
                 console.error('Error fetching sales data:', error);
             });
@@ -92,6 +90,26 @@ function loadMonthlyTotals() {
             console.error('No user is signed in.');
         }
     });
+}
+
+function updateSalesDisplay(salesTotals, commission) {
+    document.getElementById('srx-value').textContent = `$${(salesTotals.selectRX * commission).toFixed(2)}`;
+    document.getElementById('srx-count').textContent = salesTotals.selectRX;
+
+    document.getElementById('transfer-value').textContent = `$${salesTotals.transfer}`;
+    document.getElementById('transfer-count').textContent = salesTotals.transfer;
+
+    document.getElementById('hra-value').textContent = `$${salesTotals.billableHRA}`;
+    document.getElementById('hra-count').textContent = salesTotals.billableHRA;
+
+    document.getElementById('spm-value').textContent = `$${salesTotals.selectPatientManagement}`;
+    document.getElementById('spm-count').textContent = salesTotals.selectPatientManagement;
+
+    const totalSales = salesTotals.selectRX + salesTotals.transfer + salesTotals.billableHRA + salesTotals.selectPatientManagement;
+    document.getElementById('total-value').textContent = `$${totalSales.toFixed(2)}`;
+
+    const averageSales = totalSales / 4; // Assuming 4 types of sales
+    document.getElementById('average-value').textContent = `$${averageSales.toFixed(2)}`;
 }
 
 function calculateCommission(salesTotals, level) {
