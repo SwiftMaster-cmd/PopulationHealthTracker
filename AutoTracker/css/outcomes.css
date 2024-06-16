@@ -10,14 +10,14 @@
 body {
     font-family: Arial, sans-serif;
     color: var(--text-color);
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
 }
 
 .sales-history-container {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -50,7 +50,7 @@ body {
 }
 
 .sales-history-content {
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -91,7 +91,7 @@ body {
 }
 
 .customer-info-container {
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -110,7 +110,7 @@ body {
     margin: 0 10px;
     border: none;
     border-radius: 5px;
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     color: var(--text-color);
     cursor: pointer;
 }
