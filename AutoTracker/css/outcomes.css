@@ -16,6 +16,8 @@ body {
 .sales-history-container {
     width: 100%;
     max-width: 500px;
+    height: 100%;
+    max-height: 500px;
     margin: 0 auto;
     background-color: var(--color-primary);
     border-radius: 10px;
