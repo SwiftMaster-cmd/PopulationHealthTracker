@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         updateStyles(isDark);
     }
-
+ 
     function updateStyles(isDark) {
         const styles = document.documentElement.style;
         const textColor = isDark ? '#ffffff' : '#000000';
