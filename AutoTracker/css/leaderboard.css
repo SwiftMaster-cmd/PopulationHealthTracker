@@ -19,7 +19,18 @@ body {
     margin-top: 20px;
     font-size: 2em;
 }
-
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    width: 90%;
+    padding: 20px; /* Vertical padding of 35px, horizontal padding of 20px */
+    border-radius: 10px;
+    background-color: var(--color-secondary);
+    box-sizing: border-box;
+    overflow-y: auto; /* Enables vertical scrolling if needed */
+    margin: 75px auto 0 auto; /* 75px top margin, centered horizontally */
+}
 
 
 
