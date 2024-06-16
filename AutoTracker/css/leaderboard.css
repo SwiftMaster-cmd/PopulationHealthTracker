@@ -29,7 +29,7 @@ body {
     background-color: var(--color-secondary);
     box-sizing: border-box;
     overflow-y: auto; /* Enables vertical scrolling if needed */
-    margin: 75px auto 0 auto; /* 75px top margin, centered horizontally */
+
 }
 
 
