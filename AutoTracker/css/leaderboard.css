@@ -6,6 +6,15 @@
     --color-quinary: #ffc107;
 }
 
+
+.containers-wrapper {
+    display: flex; /* Enables flexbox layout */
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    justify-content: flex-start; /* Aligns children to the start of the flex line */
+    gap: 0px; /* Adds space between the containers */
+}
+
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -20,16 +29,13 @@ body {
     font-size: 2em;
 }
 .main-container {
-    display: flex;
-  
-    grid-gap: 20px;
-    width: 90%;
-    padding: 20px; /* Vertical padding of 35px, horizontal padding of 20px */
-    border-radius: 10px;
-    background-color: var(--color-secondary);
-    box-sizing: border-box;
-    overflow-y: auto; /* Enables vertical scrolling if needed */
-
+ display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks child elements vertically */
+    align-items: center; /* Aligns children to the center horizontally */
+    width: 90%; /* Takes 90% of the parent's width */
+    padding: 20px; /* Adds spacing inside the container */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Adds depth with a shadow */
+    border-radius: 15px; /* Rounds the corners */
 }
 
 
