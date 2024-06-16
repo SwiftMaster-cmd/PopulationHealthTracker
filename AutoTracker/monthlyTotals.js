@@ -68,7 +68,7 @@ function loadMonthlyTotals() {
                         selectRX: 0,
                         selectPatientManagement: 0,
                         transfer: 0
-                    });
+                    }, 0, 'N/A');
                     return;
                 }
 
@@ -82,7 +82,18 @@ function loadMonthlyTotals() {
                 const level = parseInt(document.getElementById('levelPicker').value);
                 const commission = calculateCommission(salesTotals, level);
 
-                updateSalesDisplay(salesTotals, commission);
+                const previousMonthKey = getPreviousMonthKey();
+                salesCountsRef.child(currentUserId).child('month').child(previousMonthKey).once('value', prevSnapshot => {
+                    const prevSalesData = prevSnapshot.val();
+                    const prevTotal = prevSalesData ? calculateTotal(prevSalesData, level) : 'N/A';
+
+                    salesCountsRef.child(currentUserId).once('value', allSnapshot => {
+                        const allSalesData = allSnapshot.val();
+                        const average = calculateAverage(allSalesData, level);
+
+                        updateSalesDisplay(salesTotals, commission, prevTotal, average);
+                    });
+                });
             }).catch(error => {
                 console.error('Error fetching sales data:', error);
             });
@@ -92,28 +103,33 @@ function loadMonthlyTotals() {
     });
 }
 
-function updateSalesDisplay(salesTotals, commission) {
-    document.getElementById('srx-value').textContent = `$${(salesTotals.selectRX * commission).toFixed(2)}`;
+function updateSalesDisplay(salesTotals, commission, prevTotal, average) {
+    const total = (salesTotals.selectRX * commission.srxPayout) + (salesTotals.transfer * commission.transferPayout) + (salesTotals.billableHRA * commission.hraPayout) + (salesTotals.selectPatientManagement * commission.spmPayout);
+
+    document.getElementById('srx-value').textContent = `$${(salesTotals.selectRX * commission.srxPayout).toFixed(2)}`;
     document.getElementById('srx-count').textContent = salesTotals.selectRX;
 
-    document.getElementById('transfer-value').textContent = `$${salesTotals.transfer}`;
+    document.getElementById('transfer-value').textContent = `$${(salesTotals.transfer * commission.transferPayout).toFixed(2)}`;
     document.getElementById('transfer-count').textContent = salesTotals.transfer;
 
-    document.getElementById('hra-value').textContent = `$${salesTotals.billableHRA}`;
+    document.getElementById('hra-value').textContent = `$${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)}`;
     document.getElementById('hra-count').textContent = salesTotals.billableHRA;
 
-    document.getElementById('spm-value').textContent = `$${salesTotals.selectPatientManagement}`;
+    document.getElementById('spm-value').textContent = `$${(salesTotals.selectPatientManagement * commission.spmPayout).toFixed(2)}`;
     document.getElementById('spm-count').textContent = salesTotals.selectPatientManagement;
 
-    const totalSales = salesTotals.selectRX + salesTotals.transfer + salesTotals.billableHRA + salesTotals.selectPatientManagement;
-    document.getElementById('total-value').textContent = `$${totalSales.toFixed(2)}`;
+    document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
 
-    const averageSales = totalSales / 4; // Assuming 4 types of sales
-    document.getElementById('average-value').textContent = `$${averageSales.toFixed(2)}`;
+    document.getElementById('last-month-value').textContent = prevTotal === 'N/A' ? 'N/A' : `$${prevTotal.toFixed(2)}`;
+    
+    document.getElementById('average-value').textContent = `$${average.toFixed(2)}`;
 }
 
 function calculateCommission(salesTotals, level) {
     let srxPayout;
+    let transferPayout = 10;  // Example value, adjust accordingly
+    let hraPayout = 12;  // Example value, adjust accordingly
+    let spmPayout = 11;  // Example value, adjust accordingly
 
     if (level === 1) {
         srxPayout = getPayout(salesTotals.selectRX, [
@@ -141,30 +157,52 @@ function calculateCommission(salesTotals, level) {
         ]);
     }
 
-    const spmPayout = salesTotals.selectPatientManagement * 11.00;
-    // Add additional commission calculations for other sales types if needed
-
-    return srxPayout + spmPayout;
+    return { srxPayout, transferPayout, hraPayout, spmPayout };
 }
 
 function getPayout(count, tiers) {
     for (const tier of tiers) {
         if (count >= tier.min && count <= tier.max) {
-            return count * tier.payout;
+            return tier.payout;
         }
     }
     return 0;
+}
+
+function calculateTotal(salesData, level) {
+    const commission = calculateCommission(salesData, level);
+    const total = (salesData.selectRX * commission.srxPayout) + (salesData.transfer * commission.transferPayout) + (salesData.billableHRA * commission.hraPayout) + (salesData.selectPatientManagement * commission.spmPayout);
+    return total;
+}
+
+function calculateAverage(allSalesData, level) {
+    if (!allSalesData) return 0;
+
+    let totalSum = 0;
+    let monthCount = 0;
+
+    Object.keys(allSalesData).forEach(monthKey => {
+        if (monthKey !== getCurrentMonthKey()) {
+            const monthData = allSalesData[monthKey];
+            totalSum += calculateTotal(monthData, level);
+            monthCount++;
+        }
+    });
+
+    if (monthCount === 0) return 0;
+    return totalSum / monthCount;
+}
+
+function getPreviousMonthKey() {
+    const now = new Date();
+    now.setMonth(now.getMonth() - 1);
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
 // Helper functions
 function formatDate(dateTime) {
     const date = new Date(dateTime);
     return date.toLocaleDateString();
-}
-
-function formatTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleTimeString();
 }
 
 function formatDateTime(dateTime) {
