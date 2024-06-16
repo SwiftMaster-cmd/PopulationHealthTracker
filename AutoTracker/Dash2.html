@@ -35,7 +35,7 @@
     <div class="main-container">
 
         <!-- Leaderboard Container -->
-        <div class="picker-leaderboard-container">
+        <div class="picker-leaderboard-container" container>
             <div class="picker-container">
                 <select id="periodPicker" class="picker">
                     <option value="day">Day</option>
@@ -56,7 +56,7 @@
 
 
         <!-- Chart Container -->
-        <div class="picker-chart-container">
+        <div class="picker-chart-container" container>
             <div class="picker-container">
                 <select id="chartPeriodPicker" class="picker">
                     <option value="day">Day</option>
@@ -64,14 +64,14 @@
                     <option value="month">Month</option>
                 </select>
             </div>
-            <div id="chart-container">
+            <div id="chart-container" container>
                 <canvas id="salesChart"></canvas>
             </div>
 
             <!-- Monthly Sales Totals Container -->
             <div class="monthly-sales-totals-container">
                 <h2>Monthly Sales Totals</h2>
-                <div class="sales-container">
+                <div class="sales-container" container>
                     <div class="sales-item">
                         <p class="sales-label">SRX</p>
                         <p class="sales-value" id="srx-value">$0</p>
@@ -111,7 +111,7 @@
         </div>
 
      <!-- Sales History Container -->
-     <div class="sales-history-container">
+     <div class="sales-history-container" container>
         <div class="header-section">
             <h2>Sales History</h2>
             <div class="search-container">
@@ -138,7 +138,7 @@
 
 </div>
       <!-- Color Picker Container -->
-      <div class="color-picker-container">
+      <div class="color-picker-container" container>
         <input type="color" id="colorPicker" />
         <button id="applyColor" class="button">Apply Color Palette</button>
     </div>
