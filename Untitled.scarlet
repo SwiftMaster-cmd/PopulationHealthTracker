@@ -1,0 +1,34 @@
+{
+  "folders" : [
+    {
+      "issueIDs" : [
+
+      ],
+      "color" : "ffff3b30",
+      "title" : "Untitled Tag",
+      "identifier" : "283E5B16-B4F7-4C5C-A325-FD583F11C595"
+    }
+  ],
+  "issues" : [
+    {
+      "modified" : 740216245.673466,
+      "body" : "",
+      "title" : "New Issue",
+      "created" : 740216215.668688,
+      "number" : 1,
+      "identifier" : "E7A4A7F7-7C34-4AFB-BE70-D57013A9FB4C",
+      "due" : 740216215.668688,
+      "closed" : true
+    },
+    {
+      "created" : 740216255.083996,
+      "due" : 740216255.083996,
+      "identifier" : "07E29776-C2A0-47A9-BD82-877A07DC63BE",
+      "closed" : false,
+      "modified" : 740216255.083996,
+      "number" : 2,
+      "body" : "",
+      "title" : "New Issue"
+    }
+  ]
+}
