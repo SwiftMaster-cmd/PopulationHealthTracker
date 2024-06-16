@@ -127,8 +127,8 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average) {
 
 function calculateCommission(salesTotals, level) {
     let srxPayout;
-    let transferPayout = 10;  // Example value, adjust accordingly
-    let hraPayout = 12;  // Example value, adjust accordingly
+    let transferPayout;
+    let hraPayout;
     let spmPayout = 11;  // Example value, adjust accordingly
 
     if (level === 1) {
@@ -139,6 +139,20 @@ function calculateCommission(salesTotals, level) {
             { min: 15, max: 29, payout: 15.50 },
             { min: 0, max: 14, payout: 15.00 }
         ]);
+        transferPayout = getPayout(salesTotals.transfer, [
+            { min: 50, max: Infinity, payout: 11.00 },
+            { min: 35, max: 49, payout: 10.00 },
+            { min: 20, max: 34, payout: 9.00 },
+            { min: 10, max: 19, payout: 8.00 },
+            { min: 0, max: 9, payout: 7.00 }
+        ]);
+        hraPayout = getPayout(salesTotals.billableHRA, [
+            { min: 50, max: Infinity, payout: 6.00 },
+            { min: 35, max: 49, payout: 5.00 },
+            { min: 20, max: 34, payout: 4.00 },
+            { min: 10, max: 19, payout: 3.00 },
+            { min: 0, max: 9, payout: 2.00 }
+        ]);
     } else if (level === 2) {
         srxPayout = getPayout(salesTotals.selectRX, [
             { min: 75, max: Infinity, payout: 18.00 },
@@ -147,6 +161,20 @@ function calculateCommission(salesTotals, level) {
             { min: 15, max: 29, payout: 16.50 },
             { min: 0, max: 14, payout: 16.00 }
         ]);
+        transferPayout = getPayout(salesTotals.transfer, [
+            { min: 40, max: Infinity, payout: 10.00 },
+            { min: 30, max: 39, payout: 9.25 },
+            { min: 15, max: 29, payout: 8.50 },
+            { min: 10, max: 14, payout: 7.75 },
+            { min: 0, max: 9, payout: 7.00 }
+        ]);
+        hraPayout = getPayout(salesTotals.billableHRA, [
+            { min: 45, max: Infinity, payout: 5.00 },
+            { min: 30, max: 44, payout: 4.25 },
+            { min: 20, max: 29, payout: 3.50 },
+            { min: 10, max: 19, payout: 2.75 },
+            { min: 0, max: 9, payout: 2.00 }
+        ]);
     } else if (level === 3) {
         srxPayout = getPayout(salesTotals.selectRX, [
             { min: 75, max: Infinity, payout: 19.00 },
@@ -154,86 +182,105 @@ function calculateCommission(salesTotals, level) {
             { min: 30, max: 64, payout: 18.00 },
             { min: 15, max: 29, payout: 17.50 },
             { min: 0, max: 14, payout: 17.00 }
-        ]);
-    }
-
-    return { srxPayout, transferPayout, hraPayout, spmPayout };
-}
-
-function getPayout(count, tiers) {
-    for (const tier of tiers) {
-        if (count >= tier.min && count <= tier.max) {
-            return tier.payout;
-        }
-    }
-    return 0;
-}
-
-function calculateTotal(salesData, level) {
-    const commission = calculateCommission(salesData, level);
-    const total = (salesData.selectRX * commission.srxPayout) + (salesData.transfer * commission.transferPayout) + (salesData.billableHRA * commission.hraPayout) + (salesData.selectPatientManagement * commission.spmPayout);
-    return total;
-}
-
-function calculateAverage(allSalesData, level) {
-    if (!allSalesData) return 0;
-
-    let totalSum = 0;
-    let monthCount = 0;
-
-    Object.keys(allSalesData).forEach(monthKey => {
-        if (monthKey !== getCurrentMonthKey()) {
-            const monthData = allSalesData[monthKey];
-            totalSum += calculateTotal(monthData, level);
-            monthCount++;
-        }
-    });
-
-    if (monthCount === 0) return 0;
-    return totalSum / monthCount;
-}
-
-function getPreviousMonthKey() {
-    const now = new Date();
-    now.setMonth(now.getMonth() - 1);
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-}
-
-// Helper functions
-function formatDate(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleDateString();
-}
-
-function formatDateTime(dateTime) {
-    const date = new Date(dateTime);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    });
-}
-
-function getSaleType(action, notes) {
-    const normalizedAction = action.toLowerCase();
-
-    if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-        return 'Select RX';
-    } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-        return 'Billable HRA';
-    } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-        return 'Transfer';
-    } else if (normalizedAction.includes('select patient management')) {
-        return 'Select Patient Management';
-    }
-    return action;
-}
-
-function getCurrentMonthKey() {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-}
+                    ]);
+                    transferPayout = getPayout(salesTotals.transfer, [
+                        { min: 25, max: Infinity, payout: 8.00 },
+                        { min: 20, max: 24, payout: 7.50 },
+                        { min: 10, max: 19, payout: 7.00 },
+                        { min: 5, max: 9, payout: 6.50 },
+                        { min: 0, max: 4, payout: 6.00 }
+                    ]);
+                    hraPayout = getPayout(salesTotals.billableHRA, [
+                        { min: 40, max: Infinity, payout: 4.00 },
+                        { min: 30, max: 39, payout: 3.50 },
+                        { min: 15, max: 29, payout: 3.00 },
+                        { min: 5, max: 14, payout: 2.50 },
+                        { min: 0, max: 4, payout: 2.00 }
+                    ]);
+                }
+            
+                return { srxPayout, transferPayout, hraPayout, spmPayout };
+            }
+            
+            function getPayout(count, tiers) {
+                for (const tier of tiers) {
+                    if (count >= tier.min && count <= tier.max) {
+                        return tier.payout;
+                    }
+                }
+                return 0;
+            }
+            
+            function calculateTotal(salesData, level) {
+                const commission = calculateCommission(salesData, level);
+                const total = (salesData.selectRX * commission.srxPayout) + (salesData.transfer * commission.transferPayout) + (salesData.billableHRA * commission.hraPayout) + (salesData.selectPatientManagement * commission.spmPayout);
+                return total;
+            }
+            
+            function calculateAverage(allSalesData, level) {
+                if (!allSalesData) return 0;
+            
+                let totalSum = 0;
+                let monthCount = 0;
+            
+                Object.keys(allSalesData).forEach(monthKey => {
+                    if (monthKey !== getCurrentMonthKey()) {
+                        const monthData = allSalesData[monthKey];
+                        totalSum += calculateTotal(monthData, level);
+                        monthCount++;
+                    }
+                });
+            
+                if (monthCount === 0) return 0;
+                return totalSum / monthCount;
+            }
+            
+            function getPreviousMonthKey() {
+                const now = new Date();
+                now.setMonth(now.getMonth() - 1);
+                return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            }
+            
+            // Helper functions
+            function formatDate(dateTime) {
+                const date = new Date(dateTime);
+                return date.toLocaleDateString();
+            }
+            
+            function formatTime(dateTime) {
+                const date = new Date(dateTime);
+                return date.toLocaleTimeString();
+            }
+            
+            function formatDateTime(dateTime) {
+                const date = new Date(dateTime);
+                return date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+            }
+            
+            function getSaleType(action, notes) {
+                const normalizedAction = action.toLowerCase();
+            
+                if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
+                    return 'Select RX';
+                } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+                    return 'Billable HRA';
+                } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+                    return 'Transfer';
+                } else if (normalizedAction.includes('select patient management')) {
+                    return 'Select Patient Management';
+                }
+                return action;
+            }
+            
+            function getCurrentMonthKey() {
+                const now = new Date();
+                return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            }
