@@ -32,42 +32,4 @@ body, html {
     color: #ffffff;
 }
 
-.picker-leaderboard-container {
-    grid-area: leaderboard;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--color-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-}
-
-.picker-chart-container {
-    grid-area: chart;
-    background-color: var(--color-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-}
-
-.monthly-sales-totals-container {
-    grid-area: monthlyTotals;
-    background-color: var(--color-primary);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-}
-
-.sales-history-container {
-    grid-area: salesHistory;
-    background-color: var(--color-primary);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
 

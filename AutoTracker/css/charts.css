@@ -13,6 +13,15 @@
 
 
 
+.picker-chart-container {
+    grid-area: chart;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
 .chart-picker-container {
     display: flex;
     justify-content: center;
