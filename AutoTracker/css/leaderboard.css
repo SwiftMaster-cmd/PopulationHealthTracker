@@ -6,10 +6,6 @@
     --color-quinary: #ffc107;
 }
 
-
-
-
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -24,17 +20,16 @@ body {
     font-size: 2em;
 }
 
-
-
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: 45% 45%;
+    grid-template-rows: 40% 40%;
     grid-template-areas: 
         "leaderboard chart"
         "salesHistory monthlyTotals";
-    grid-gap: 20px;
+    grid-gap: 10%;
     width: 90%;
+    height: 80%; /* Adjust height as needed */
     padding: 20px;
     border-radius: 10px;
     background-color: var(--color-secondary);
@@ -42,7 +37,6 @@ body {
     overflow-y: auto;
     margin: 75px auto 0 auto;
 }
-
 
 .header-container {
     display: flex;
@@ -85,8 +79,6 @@ body {
     background-color: var(--color-quaternary);
 }
 
-
-
 .picker-leaderboard-container {
     grid-area: leaderboard;
     display: flex;
@@ -96,6 +88,8 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 .picker-container {
@@ -134,7 +128,54 @@ body {
     width: 100%;
 }
 
+.picker-chart-container {
+    grid-area: chart;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
 
+#chart-container {
+    width: 100%;
+    height: 100%;
+}
+
+#salesChart {
+    width: 100%;
+    height: 100%;
+}
+
+.sales-history-container {
+    grid-area: salesHistory;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
+.monthly-sales-totals-container {
+    grid-area: monthlyTotals;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
 
 .picker-container {
     display: flex;
@@ -184,11 +225,11 @@ body {
             "salesHistory"
             "monthlyTotals";
     }
-    
+
     .picker-container {
         flex-direction: column;
     }
-    
+
     .picker {
         font-size: 14px;
         padding: 8px;
