@@ -84,10 +84,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let filteredSalesData = [];
 
     function updateSalesDisplay() {
-        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
-        if (salesToDisplay.length === 0) return;
+        if (salesData.length === 0) return;
 
-        const sale = salesToDisplay[currentSaleIndex];
+        const sale = salesData[currentSaleIndex];
         const leadIdContainer = document.getElementById('lead-id-container');
         const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
         const customerInfoContainer = document.getElementById('customer-info-container');
@@ -118,16 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (counter) {
-            counter.textContent = `${currentSaleIndex + 1} of ${salesToDisplay.length}`;
+            counter.textContent = `${currentSaleIndex + 1} of ${salesData.length}`;
         }
-    }
-
-    function updateMonthlySalesTotals(salesCounts) {
-        document.getElementById('srx-value').textContent = salesCounts.month.selectRX;
-        document.getElementById('transfer-value').textContent = salesCounts.month.transfer;
-        document.getElementById('hra-value').textContent = salesCounts.month.billableHRA;
-        document.getElementById('spm-value').textContent = salesCounts.month.selectPatientManagement;
-        // Add logic to update last month, total, and average if necessary
     }
 
     function displaySalesOutcomes(user) {
@@ -228,17 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 console.log('Final Sales Counts:', salesCounts);
 
-                const updates = {};
-                updates[`day`] = salesCounts.day;
-                updates[`week`] = salesCounts.week;
-                updates[`month`] = salesCounts.month;
-
-                salesCountsRef.update(updates, (error) => {
+                salesCountsRef.update(salesCounts, (error) => {
                     if (error) {
                         console.error('Failed to update sales counts:', error);
                     } else {
                         console.log('Sales counts updated successfully:', salesCounts);
-                        updateMonthlySalesTotals(salesCounts);
                     }
                 });
 
