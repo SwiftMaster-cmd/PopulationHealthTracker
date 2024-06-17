@@ -27,15 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const normalizedAction = action.toLowerCase();
 
         if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-            return 'Select RX';
+            return 'selectRX';
         } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-            return 'Billable HRA';
+            return 'billableHRA';
         } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-            return 'Transfer';
+            return 'transfer';
         } else if (normalizedAction.includes('select patient management')) {
-            return 'Select Patient Management';
+            return 'selectPatientManagement';
         }
-        return action;
+        return 'other';
     }
 
     let currentSaleIndex = 0;
