@@ -40,13 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentSaleIndex = 0;
     let salesData = [];
-    let filteredSalesData = [];
 
     function updateSalesDisplay() {
-        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
-        if (salesToDisplay.length === 0) return;
+        if (salesData.length === 0) return;
 
-        const sale = salesToDisplay[currentSaleIndex];
+        const sale = salesData[currentSaleIndex];
         const leadIdContainer = document.getElementById('lead-id-container');
         const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
         const customerInfoContainer = document.getElementById('customer-info-container');
@@ -77,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (counter) {
-            counter.textContent = `${currentSaleIndex + 1} of ${salesToDisplay.length}`;
+            counter.textContent = `${currentSaleIndex + 1} of ${salesData.length}`;
         }
     }
 
@@ -92,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (outcomes) {
                 salesData = Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--");
                 salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-                filteredSalesData = [];
                 currentSaleIndex = 0;  // Reset to the latest sale
                 updateSalesDisplay();
             } else {
@@ -123,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event listeners for prev and next buttons
     document.getElementById('prev').addEventListener('click', function() {
-        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
         if (currentSaleIndex > 0) {
             currentSaleIndex--;
             updateSalesDisplay();
@@ -131,35 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('next').addEventListener('click', function() {
-        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
-        if (currentSaleIndex < salesToDisplay.length - 1) {
+        if (currentSaleIndex < salesData.length - 1) {
             currentSaleIndex++;
             updateSalesDisplay();
         }
-    });
-
-    // Search functionality
-    const searchInput = document.getElementById('searchById');
-    const clearSearchButton = document.getElementById('clearSearch');
-
-    searchInput.addEventListener('input', function() {
-        const query = searchInput.value.trim().toLowerCase();
-        if (query) {
-            clearSearchButton.style.display = 'inline';
-            filteredSalesData = salesData.filter(sale => sale.accountNumber.toLowerCase().includes(query));
-        } else {
-            clearSearchButton.style.display = 'none';
-            filteredSalesData = [];
-        }
-        currentSaleIndex = 0;
-        updateSalesDisplay();
-    });
-
-    clearSearchButton.addEventListener('click', function() {
-        searchInput.value = '';
-        clearSearchButton.style.display = 'none';
-        filteredSalesData = [];
-        currentSaleIndex = 0;
-        updateSalesDisplay();
     });
 });
