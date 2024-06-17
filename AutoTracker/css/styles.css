@@ -9,8 +9,8 @@ body, html {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
     grid-template-areas: 
-        "leaderboard salesHistory monthlyTotals "
-        "chart ";
+        "leaderboard monthlyTotals "
+        "chart salesHistory";
     grid-gap: 20px;
     width: 95%;
     height: 95%;
