@@ -81,11 +81,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentSaleIndex = 0;
     let salesData = [];
+    let filteredSalesData = [];
 
     function updateSalesDisplay() {
-        if (salesData.length === 0) return;
+        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
+        if (salesToDisplay.length === 0) return;
 
-        const sale = salesData[currentSaleIndex];
+        const sale = salesToDisplay[currentSaleIndex];
         const leadIdContainer = document.getElementById('lead-id-container');
         const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
         const customerInfoContainer = document.getElementById('customer-info-container');
@@ -116,19 +118,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (counter) {
-            counter.textContent = `${currentSaleIndex + 1} of ${salesData.length}`;
+            counter.textContent = `${currentSaleIndex + 1} of ${salesToDisplay.length}`;
         }
     }
 
     function updateMonthlySalesTotals(salesCounts) {
-        document.getElementById('srx-value').textContent = `$${salesCounts.month.selectRX}`;
-        document.getElementById('srx-count').textContent = salesCounts.month.selectRX;
-        document.getElementById('transfer-value').textContent = `$${salesCounts.month.transfer}`;
-        document.getElementById('transfer-count').textContent = salesCounts.month.transfer;
-        document.getElementById('hra-value').textContent = `$${salesCounts.month.billableHRA}`;
-        document.getElementById('hra-count').textContent = salesCounts.month.billableHRA;
-        document.getElementById('spm-value').textContent = `$${salesCounts.month.selectPatientManagement}`;
-        document.getElementById('spm-count').textContent = salesCounts.month.selectPatientManagement;
+        document.getElementById('srx-value').textContent = salesCounts.month.selectRX;
+        document.getElementById('transfer-value').textContent = salesCounts.month.transfer;
+        document.getElementById('hra-value').textContent = salesCounts.month.billableHRA;
+        document.getElementById('spm-value').textContent = salesCounts.month.selectPatientManagement;
+        // Add logic to update last month, total, and average if necessary
     }
 
     function displaySalesOutcomes(user) {
@@ -253,7 +252,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 salesData = Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--");
                 salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-                currentSaleIndex = 0; // Reset to the latest sale
+                filteredSalesData = [];
+                currentSaleIndex = 0;  // Reset to the latest sale
                 updateSalesDisplay();
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
@@ -262,6 +262,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching sales outcomes:', error);
         });
     }
+
+    // Attach the function to the window object
+    window.displaySalesOutcomes = displaySalesOutcomes;
 
     function displayCustomerInfo(customerInfo) {
         if (!customerInfo) {
@@ -280,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event listeners for prev and next buttons
     document.getElementById('prev').addEventListener('click', function() {
+        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
         if (currentSaleIndex > 0) {
             currentSaleIndex--;
             updateSalesDisplay();
@@ -287,7 +291,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('next').addEventListener('click', function() {
-        if (currentSaleIndex < salesData.length - 1) {
+        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
+        if (currentSaleIndex < salesToDisplay.length - 1) {
             currentSaleIndex++;
             updateSalesDisplay();
         }
@@ -317,7 +322,4 @@ document.addEventListener('DOMContentLoaded', function() {
         currentSaleIndex = 0;
         updateSalesDisplay();
     });
-
-    // Attach the function to the window object
-    window.displaySalesOutcomes = displaySalesOutcomes;
 });
