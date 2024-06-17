@@ -79,6 +79,47 @@ document.addEventListener('DOMContentLoaded', function() {
                date1.getMonth() === date2.getMonth();
     }
 
+    let currentSaleIndex = 0;
+    let salesData = [];
+
+    function updateSalesDisplay() {
+        if (salesData.length === 0) return;
+
+        const sale = salesData[currentSaleIndex];
+        const leadIdContainer = document.getElementById('lead-id-container');
+        const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
+        const customerInfoContainer = document.getElementById('customer-info-container');
+        const counter = document.getElementById('counter');
+
+        if (leadIdContainer) {
+            leadIdContainer.textContent = `Lead ID: ${sale.accountNumber || 'N/A'}`;
+        }
+
+        if (salesOutcomesContainer) {
+            salesOutcomesContainer.innerHTML = `
+                <div class="sales-history-item">
+                    <div class="details">
+                        <p>Sale: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
+                        <p>Notes: ${sale.notesValue || 'No notes'}</p>
+                    </div>
+                    <div class="date-time">
+                        <span>${formatDate(sale.outcomeTime)}</span>
+                        <span>${formatTime(sale.outcomeTime)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (customerInfoContainer) {
+            const customerInfoHtml = displayCustomerInfo(sale.customerInfo);
+            customerInfoContainer.innerHTML = customerInfoHtml;
+        }
+
+        if (counter) {
+            counter.textContent = `${currentSaleIndex + 1} of ${salesData.length}`;
+        }
+    }
+
     function displaySalesOutcomes(user) {
         const database = firebase.database();
         const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -198,76 +239,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                const outcomesContainer = document.getElementById('sales-outcomes-container');
-                outcomesContainer.innerHTML = '';
-
-                const groupedOutcomes = {};
-
-                for (const key in outcomes) {
-                    const outcome = outcomes[key];
-                    const accountNumber = outcome.accountNumber;
-
-                    if (outcome.assignAction.trim() === "--") {
-                        continue;
-                    }
-                    if (!groupedOutcomes[accountNumber]) {
-                        groupedOutcomes[accountNumber] = { customerInfo: outcome.customerInfo || {}, actions: {} };
-                    }
-                    groupedOutcomes[accountNumber].actions[outcome.assignAction] = outcome;
-                }
-
-                const sortedAccounts = Object.keys(groupedOutcomes).sort((a, b) => {
-                    const latestA = Object.values(groupedOutcomes[a].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
-                    const latestB = Object.values(groupedOutcomes[b].actions).reduce((latest, current) => new Date(current.outcomeTime) > new Date(latest.outcomeTime) ? current : latest);
-                    return new Date(latestB.outcomeTime) - new Date(latestA.outcomeTime);
-                });
-
-                for (const accountNumber of sortedAccounts) {
-                    const accountContainer = document.createElement('div');
-                    accountContainer.classList.add('account-container');
-
-                    const accountTitle = document.createElement('div');
-                    accountTitle.classList.add('account-title');
-                    accountTitle.textContent = `Account Number: ${accountNumber}`;
-                    accountContainer.appendChild(accountTitle);
-
-                    const accountContent = document.createElement('div');
-                    accountContent.classList.add                    ('account-content');
-                    accountContainer.appendChild(accountContent);
-
-                    const salesInfoContainer = document.createElement('div');
-                    salesInfoContainer.classList.add('sales-info');
-                    accountContent.appendChild(salesInfoContainer);
-
-                    const customerInfoContainer = document.createElement('div');
-                    customerInfoContainer.classList.add('customer-info-container');
-                    accountContent.appendChild(customerInfoContainer);
-
-                    const customerInfoHtml = displayCustomerInfo(groupedOutcomes[accountNumber].customerInfo);
-                    customerInfoContainer.innerHTML = customerInfoHtml;
-
-                    const accountOutcomes = Object.values(groupedOutcomes[accountNumber].actions);
-                    accountOutcomes.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-
-                    for (const outcome of accountOutcomes) {
-                        if (outcome.assignAction.trim() === "--") continue;
-                        const outcomeElement = document.createElement('div');
-                        outcomeElement.classList.add('outcome-item');
-                        outcomeElement.innerHTML = `
-                            <div class="top-section">
-                                <div class="action" style="float:left;">${outcome.assignAction}</div>
-                                <div class="date-top" style="float:right;">${formatDate(outcome.outcomeTime)}</div>
-                            </div>
-                            <div class="bottom-section">
-                                <div class="notes" style="float:left;">${outcome.notesValue || 'No notes'}</div>
-                                <div class="time-bottom" style="float:right;">${formatTime(outcome.outcomeTime)}</div>
-                            </div>
-                        `;
-                        salesInfoContainer.appendChild(outcomeElement);
-                    }
-
-                    outcomesContainer.appendChild(accountContainer);
-                }
+                salesData = Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--");
+                salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
+                currentSaleIndex = 0;  // Reset to the latest sale
+                updateSalesDisplay();
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
             }
@@ -333,4 +308,43 @@ document.addEventListener('DOMContentLoaded', function() {
         currentSaleIndex = 0;
         updateSalesDisplay();
     });
+
+    function updateSalesDisplay() {
+        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
+        if (salesToDisplay.length === 0) return;
+
+        const sale = salesToDisplay[currentSaleIndex];
+        const leadIdContainer = document.getElementById('lead-id-container');
+        const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
+        const customerInfoContainer = document.getElementById('customer-info-container');
+        const counter = document.getElementById('counter');
+
+        if (leadIdContainer) {
+            leadIdContainer.textContent = `Lead ID: ${sale.accountNumber || 'N/A'}`;
+        }
+
+        if (salesOutcomesContainer) {
+            salesOutcomesContainer.innerHTML = `
+                <div class="sales-history-item">
+                    <div class="details">
+                        <p>Sale: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
+                        <p>Notes: ${sale.notesValue || 'No notes'}</p>
+                    </div>
+                    <div class="date-time">
+                        <span>${formatDate(sale.outcomeTime)}</span>
+                        <span>${formatTime(sale.outcomeTime)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (customerInfoContainer) {
+            const customerInfoHtml = displayCustomerInfo(sale.customerInfo);
+            customerInfoContainer.innerHTML = customerInfoHtml;
+        }
+
+        if (counter) {
+            counter.textContent = `${currentSaleIndex + 1} of ${salesToDisplay.length}`;
+        }
+    }
 });
