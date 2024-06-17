@@ -163,3 +163,15 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSalesDisplay();
     });
 });
+
+function saveSaleData(user, saleData) {
+    const database = firebase.database();
+    const salesCountsRef = database.ref('salesCounts/' + user.uid);
+    const saleType = getSaleType(saleData.assignAction, saleData.notesValue);
+
+    // Save data based on the sale type
+    salesCountsRef.child(saleType).push({
+        ...saleData,
+        outcomeTime: new Date().toISOString()
+    });
+}
