@@ -27,15 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const normalizedAction = action.toLowerCase();
 
         if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-            return 'selectRX';
+            return 'Select RX';
         } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-            return 'billableHRA';
+            return 'Billable HRA';
         } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-            return 'transfer';
+            return 'Transfer';
         } else if (normalizedAction.includes('select patient management')) {
-            return 'selectPatientManagement';
+            return 'Select Patient Management';
         }
-        return 'other';
+        return action;
     }
 
     let currentSaleIndex = 0;
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
             salesOutcomesContainer.innerHTML = `
                 <div class="sales-history-item">
                     <div class="details">
-                        <p>Sale: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
+                        <p>Sale Type: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
                         <p>Notes: ${sale.notesValue || 'No notes'}</p>
                     </div>
                     <div class="date-time">
@@ -162,16 +162,4 @@ document.addEventListener('DOMContentLoaded', function() {
         currentSaleIndex = 0;
         updateSalesDisplay();
     });
-});
-
-function saveSaleData(user, saleData) {
-    const database = firebase.database();
-    const salesCountsRef = database.ref('salesCounts/' + user.uid);
-    const saleType = getSaleType(saleData.assignAction, saleData.notesValue);
-
-    // Save data based on the sale type
-    salesCountsRef.child(saleType).push({
-        ...saleData,
-        outcomeTime: new Date().toISOString()
-    });
-}
+}});
