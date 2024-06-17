@@ -66,12 +66,12 @@ body {
     grid-area: leaderboard;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align items to the start (top) */
-        background-color: var(--color-secondary);
+    align-items: center;
+    background-color: var(--color-secondary);
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
-    width: 100%;
+    width: 500px;
     height: 100%;
     justify-content: flex-start; /* Ensures the content starts from the top */
 }
@@ -120,7 +120,8 @@ body {
     grid-area: chart;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align items to the start (top) */    background-color: var(--color-secondary);
+    align-items: center;
+    background-color: var(--color-secondary);
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
