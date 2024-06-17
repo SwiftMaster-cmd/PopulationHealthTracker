@@ -230,7 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Final Sales Counts:', salesCounts);
 
                 const updates = {};
-                updates[`day`]
                 updates[`day`] = salesCounts.day;
                 updates[`week`] = salesCounts.week;
                 updates[`month`] = salesCounts.month;
