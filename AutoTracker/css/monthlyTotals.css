@@ -21,15 +21,7 @@ body {
     margin: 0;
 }
 
-.monthly-sales-totals-container {
-    background-color: var(--color-primary);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-}
+
 
 .monthly-sales-totals-container h2 {
     margin: 0 0 20px;

@@ -13,18 +13,7 @@ body {
     background-color: var(--color-secondary);
 }
 
-.sales-history-container {
-    width: 100%;
-    max-width: 500px;
-    height: 100%;
-    max-height: 500px;
-    margin: 0 auto;
-    background-color: var(--color-primary);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    box-sizing: border-box;
-}
+
 
 .header-section {
     display: flex;

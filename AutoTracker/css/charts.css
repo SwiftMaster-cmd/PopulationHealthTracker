@@ -11,16 +11,7 @@
     --line-color-4: #FF69B4;
 }
 
-.chart-container {
-    background-color: var(--color-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    width: 100%;
-    max-width: 500px;
-    height: 100%;
-    max-height: 500px;
-    color: #ffffff;
-}
+
 
 .chart-picker-container {
     display: flex;
