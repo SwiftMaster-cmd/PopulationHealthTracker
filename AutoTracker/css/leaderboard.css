@@ -20,23 +20,6 @@ body {
     font-size: 2em;
 }
 
-.main-container {
-    display: grid;
-    grid-template-columns: 45% 45%;
-    grid-template-rows: 40% 40%;
-    grid-template-areas: 
-        "leaderboard chart"
-        "salesHistory monthlyTotals";
-    grid-gap: 10%;
-    width: 90%;
-    height: 80%; /* Adjust height as needed */
-    padding: 20px;
-    border-radius: 10px;
-    background-color: var(--color-secondary);
-    box-sizing: border-box;
-    overflow-y: auto;
-    margin: 75px auto 0 auto;
-}
 
 .header-container {
     display: flex;
