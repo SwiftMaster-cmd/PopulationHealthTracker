@@ -162,4 +162,4 @@ document.addEventListener('DOMContentLoaded', function() {
         currentSaleIndex = 0;
         updateSalesDisplay();
     });
-}});
+});
