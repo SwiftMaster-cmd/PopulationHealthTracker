@@ -18,8 +18,8 @@ body {
     text-align: center;
     margin-top: 20px;
     font-size: 2em;
+    font-weight: bold;
 }
-
 
 .header-container {
     display: flex;
@@ -100,6 +100,7 @@ body {
     border-radius: 10px;
     color: inherit;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .leaderboard-item {
@@ -109,6 +110,8 @@ body {
     margin: 3px 0;
     color: inherit;
     width: 100%;
+    text-align: center;
+    font-size: 1.2em;
 }
 
 .picker-chart-container {
