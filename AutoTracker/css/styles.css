@@ -6,14 +6,13 @@ body, html {
 
 .main-container {
     display: grid;
-    grid-template-columns: 45% 45%;
-    grid-template-rows: 40% 40%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
     grid-template-areas: 
         "leaderboard chart"
         "salesHistory monthlyTotals";
-    grid-gap: 10%;
+    grid-gap: 20px;
     width: 90%;
-    height: 80%; /* Adjust height as needed */
     padding: 20px;
     border-radius: 10px;
     background-color: var(--color-secondary);
@@ -72,16 +71,3 @@ body, html {
     justify-content: space-between;
 }
 
-
-.picker-leaderboard-container {
-    grid-area: leaderboard;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--color-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-}
