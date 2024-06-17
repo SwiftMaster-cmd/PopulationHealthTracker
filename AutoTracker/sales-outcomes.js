@@ -120,6 +120,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function updateMonthlySalesTotals(salesCounts) {
+        document.getElementById('srx-value').textContent = `$${salesCounts.month.selectRX}`;
+        document.getElementById('srx-count').textContent = salesCounts.month.selectRX;
+        document.getElementById('transfer-value').textContent = `$${salesCounts.month.transfer}`;
+        document.getElementById('transfer-count').textContent = salesCounts.month.transfer;
+        document.getElementById('hra-value').textContent = `$${salesCounts.month.billableHRA}`;
+        document.getElementById('hra-count').textContent = salesCounts.month.billableHRA;
+        document.getElementById('spm-value').textContent = `$${salesCounts.month.selectPatientManagement}`;
+        document.getElementById('spm-count').textContent = salesCounts.month.selectPatientManagement;
+    }
+
     function displaySalesOutcomes(user) {
         const database = firebase.database();
         const outcomesRef = database.ref('salesOutcomes/' + user.uid);
@@ -219,6 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Final Sales Counts:', salesCounts);
 
                 const updates = {};
+                updates[`day`]
                 updates[`day`] = salesCounts.day;
                 updates[`week`] = salesCounts.week;
                 updates[`month`] = salesCounts.month;
@@ -228,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('Failed to update sales counts:', error);
                     } else {
                         console.log('Sales counts updated successfully:', salesCounts);
+                        updateMonthlySalesTotals(salesCounts);
                     }
                 });
 
@@ -241,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 salesData = Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--");
                 salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-                currentSaleIndex = 0;  // Reset to the latest sale
+                currentSaleIndex = 0; // Reset to the latest sale
                 updateSalesDisplay();
             } else {
                 console.log('No sales outcomes found for user:', user.displayName);
@@ -250,9 +263,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching sales outcomes:', error);
         });
     }
-
-    // Attach the function to the window object
-    window.displaySalesOutcomes = displaySalesOutcomes;
 
     function displayCustomerInfo(customerInfo) {
         if (!customerInfo) {
@@ -309,42 +319,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSalesDisplay();
     });
 
-    function updateSalesDisplay() {
-        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
-        if (salesToDisplay.length === 0) return;
-
-        const sale = salesToDisplay[currentSaleIndex];
-        const leadIdContainer = document.getElementById('lead-id-container');
-        const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
-        const customerInfoContainer = document.getElementById('customer-info-container');
-        const counter = document.getElementById('counter');
-
-        if (leadIdContainer) {
-            leadIdContainer.textContent = `Lead ID: ${sale.accountNumber || 'N/A'}`;
-        }
-
-        if (salesOutcomesContainer) {
-            salesOutcomesContainer.innerHTML = `
-                <div class="sales-history-item">
-                    <div class="details">
-                        <p>Sale: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
-                        <p>Notes: ${sale.notesValue || 'No notes'}</p>
-                    </div>
-                    <div class="date-time">
-                        <span>${formatDate(sale.outcomeTime)}</span>
-                        <span>${formatTime(sale.outcomeTime)}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        if (customerInfoContainer) {
-            const customerInfoHtml = displayCustomerInfo(sale.customerInfo);
-            customerInfoContainer.innerHTML = customerInfoHtml;
-        }
-
-        if (counter) {
-            counter.textContent = `${currentSaleIndex + 1} of ${salesToDisplay.length}`;
-        }
-    }
+    // Attach the function to the window object
+    window.displaySalesOutcomes = displaySalesOutcomes;
 });
