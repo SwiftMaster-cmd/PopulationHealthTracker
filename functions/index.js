@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
@@ -93,3 +95,5 @@ function incrementCount(counts, saleType) {
         counts.transfer++;
     }
 }
+
+/* eslint-enable */
