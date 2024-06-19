@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -30,6 +30,12 @@ async function googleSignIn() {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
+        // Save user email to the database
+        const userRef = ref(database, 'users/' + user.uid);
+        await set(userRef, {
+            email: user.email
+        });
+
         // Fetch user role from Firebase Realtime Database correctly
         const roleRef = ref(database, `users/${user.uid}/role`);
         const snapshot = await get(roleRef);
@@ -57,14 +63,6 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
 });
 
-
-
-
-
-
-
-
-
 // User Registration Function
 async function registerUser(email, password, additionalData) {
     try {
@@ -86,103 +84,5 @@ async function loginUser(email, password) {
         console.log('User logged in:', userCredential.user);
     } catch (error) {
         console.error('Login error:', error);
-    }
-}
-
-
-
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
-
-exports.processSalesOutcomes = functions.database.ref('/salesOutcomes/{userId}')
-    .onWrite((change, context) => {
-        const userId = context.params.userId;
-        const outcomes = change.after.val();
-        if (!outcomes) return null;
-
-        const now = new Date();
-        const salesCounts = {
-            day: { billableHRA: 0, selectRX: 0, selectPatientManagement: 0, transfer: 0 },
-            week: { billableHRA: 0, selectRX: 0, selectPatientManagement: 0, transfer: 0 },
-            month: { billableHRA: 0, selectRX: 0, selectPatientManagement: 0, transfer: 0 }
-        };
-        const salesTimeFrames = {};
-
-        for (const key in outcomes) {
-            const outcome = outcomes[key];
-            const action = outcome.assignAction;
-            const notes = outcome.notesValue;
-            const outcomeTime = new Date(outcome.outcomeTime);
-            const saleType = getSaleType(action, notes);
-
-            if (!salesTimeFrames[outcome.accountNumber]) {
-                salesTimeFrames[outcome.accountNumber] = {};
-            }
-            if (!salesTimeFrames[outcome.accountNumber][saleType]) {
-                salesTimeFrames[outcome.accountNumber][saleType] = [];
-            }
-            salesTimeFrames[outcome.accountNumber][saleType].push(outcomeTime.toISOString());
-
-            if (isSameDay(outcomeTime, now)) {
-                incrementCount(salesCounts.day, saleType);
-            }
-            if (isSameWeek(outcomeTime, now)) {
-                incrementCount(salesCounts.week, saleType);
-            }
-            if (isSameMonth(outcomeTime, now)) {
-                incrementCount(salesCounts.month, saleType);
-            }
-        }
-
-        const salesCountsRef = admin.database().ref(`salesCounts/${userId}`);
-        const salesTimeFramesRef = admin.database().ref(`salesTimeFrames/${userId}`);
-
-        return Promise.all([
-            salesCountsRef.set(salesCounts),
-            salesTimeFramesRef.set(salesTimeFrames)
-        ]);
-    });
-
-function getSaleType(action, notes) {
-    const normalizedAction = action.toLowerCase();
-    if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-        return 'Select RX';
-    } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-        return 'Billable HRA';
-    } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-        return 'Transfer';
-    } else if (normalizedAction.includes('select patient management')) {
-        return 'Select Patient Management';
-    }
-    return action;
-}
-
-function isSameDay(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth() &&
-           date1.getDate() === date2.getDate();
-}
-
-function isSameWeek(date1, date2) {
-    const week1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate() - date1.getDay() + (date1.getDay() === 0 ? -6 : 1));
-    const week2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate() - date2.getDay() + (date2.getDay() === 0 ? -6 : 1));
-    return week1.getTime() === week2.getTime();
-}
-
-function isSameMonth(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth();
-}
-
-function incrementCount(counts, saleType) {
-    if (saleType === 'Billable HRA') {
-        counts.billableHRA++;
-    } else if (saleType === 'Select RX') {
-        counts.selectRX++;
-    } else if (saleType === 'Select Patient Management') {
-        counts.selectPatientManagement++;
-    } else if (saleType === 'Transfer') {
-        counts.transfer++;
     }
 }
