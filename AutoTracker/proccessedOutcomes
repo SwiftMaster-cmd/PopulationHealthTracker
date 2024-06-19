@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let currentSaleIndex = 0;
-    let salesData = [];
-    let filteredSalesData = [];
-
+    // Helper functions
     function formatDate(dateTime) {
         const date = new Date(dateTime);
         return date.toLocaleDateString();
@@ -12,6 +9,38 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(dateTime);
         return date.toLocaleTimeString();
     }
+
+    function formatDateTime(dateTime) {
+        const date = new Date(dateTime);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+    }
+
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+
+        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
+            return 'Select RX';
+        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+            return 'Billable HRA';
+        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+            return 'Transfer';
+        } else if (normalizedAction.includes('select patient management')) {
+            return 'Select Patient Management';
+        }
+        return action;
+    }
+
+    let currentSaleIndex = 0;
+    let salesData = [];
+    let filteredSalesData = [];
 
     function updateSalesDisplay() {
         if (salesData.length === 0) return;
@@ -30,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
             salesOutcomesContainer.innerHTML = `
                 <div class="sales-history-item">
                     <div class="details">
-                        <p>Sale: ${sale.saleType}</p>
+                        <p>Sale: ${getSaleType(sale.assignAction, sale.notesValue)}</p>
                         <p>Notes: ${sale.notesValue || 'No notes'}</p>
                     </div>
                     <div class="date-time">
@@ -61,39 +90,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Name: ${name}</p>
                 <p>Email: ${customerInfo.email || 'N/A'}</p>
                 <p>Phone: ${customerInfo.phone || 'N/A'}</p>
+                <!-- Add more fields as needed -->
             </div>
         `;
     }
 
-    function loadProcessedSalesData(user) {
-        const database = firebase.database();
-        const salesCountsRef = database.ref('salesCounts/' + user.uid);
-
-        salesCountsRef.once('value', snapshot => {
-            const data = snapshot.val();
-            if (data) {
-                salesData = Object.values(data).flatMap(dayData => Object.values(dayData));
-                salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-                filteredSalesData = [];
-                currentSaleIndex = 0;
-                updateSalesDisplay();
-            } else {
-                console.log('No processed sales data found.');
-            }
-        }).catch(error => {
-            console.error('Error fetching processed sales data:', error);
-        });
-    }
-
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            loadProcessedSalesData(user);
-        } else {
-            console.log('No user is signed in.');
-        }
-    });
-
+    // Event listeners for prev and next buttons
     document.getElementById('prev').addEventListener('click', function() {
+        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
         if (currentSaleIndex > 0) {
             currentSaleIndex--;
             updateSalesDisplay();
@@ -101,12 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('next').addEventListener('click', function() {
-        if (currentSaleIndex < salesData.length - 1) {
+        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
+        if (currentSaleIndex < salesToDisplay.length - 1) {
             currentSaleIndex++;
             updateSalesDisplay();
         }
     });
 
+    // Search functionality
     const searchInput = document.getElementById('searchById');
     const clearSearchButton = document.getElementById('clearSearch');
 
