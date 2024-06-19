@@ -95,5 +95,3 @@ function incrementCount(counts, saleType) {
         counts.transfer++;
     }
 }
-
-/* eslint-enable */
