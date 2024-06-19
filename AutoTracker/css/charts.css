@@ -11,16 +11,19 @@
     --line-color-4: #FF69B4;
 }
 
-.chart-container {
+
+
+.picker-chart-container {
+    grid-area: chart;
     background-color: var(--color-secondary);
     padding: 20px;
+    width: 750px;
+    height: 500px;
+    
     border-radius: 10px;
-    width: 100%;
-    max-width: 500px;
-    height: 100%;
-    max-height: 500px;
-    color: #ffffff;
+    box-sizing: border-box;
 }
+
 
 .chart-picker-container {
     display: flex;

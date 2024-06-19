@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -30,12 +30,6 @@ async function googleSignIn() {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        // Save user email to the database
-        const userRef = ref(database, 'users/' + user.uid);
-        await set(userRef, {
-            email: user.email
-        });
-
         // Fetch user role from Firebase Realtime Database correctly
         const roleRef = ref(database, `users/${user.uid}/role`);
         const snapshot = await get(roleRef);
@@ -63,6 +57,14 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
 });
 
+
+
+
+
+
+
+
+
 // User Registration Function
 async function registerUser(email, password, additionalData) {
     try {
@@ -86,3 +88,4 @@ async function loginUser(email, password) {
         console.error('Login error:', error);
     }
 }
+
