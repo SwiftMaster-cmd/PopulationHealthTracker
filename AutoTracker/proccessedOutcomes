@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Name: ${name}</p>
                 <p>Email: ${customerInfo.email || 'N/A'}</p>
                 <p>Phone: ${customerInfo.phone || 'N/A'}</p>
-                <!-- Add more fields as needed -->
             </div>
         `;
     }
