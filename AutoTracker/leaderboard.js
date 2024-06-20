@@ -46,7 +46,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                        const email = usersData[userId] && usersData[userId].email ? usersData[userId].email.split('@')[0] : 'Unknown User';
+                        const email = usersData && usersData[userId] ? usersData[userId].email.split('@')[0] : 'Unknown User';
                         users.push({ email, count });
                     }
 
