@@ -6,10 +6,6 @@
     --color-quinary: #ffc107;
 }
 
-
-
-
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -22,27 +18,8 @@ body {
     text-align: center;
     margin-top: 20px;
     font-size: 2em;
+    font-weight: bold;
 }
-
-
-
-.main-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    grid-template-areas: 
-        "leaderboard chart"
-        "salesHistory monthlyTotals";
-    grid-gap: 20px;
-    width: 90%;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: var(--color-secondary);
-    box-sizing: border-box;
-    overflow-y: auto;
-    margin: 75px auto 0 auto;
-}
-
 
 .header-container {
     display: flex;
@@ -85,22 +62,18 @@ body {
     background-color: var(--color-quaternary);
 }
 
-
-
 .picker-leaderboard-container {
+    grid-area: leaderboard;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 505px;
-    height: 100%;
-    max-height: 500px;
     background-color: var(--color-secondary);
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
-    margin: 75px auto 0 auto;
-    padding-top: 70px
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
 }
 
 .picker-container {
@@ -128,6 +101,8 @@ body {
     border-radius: 10px;
     color: inherit;
     box-sizing: border-box;
+    text-align: center;
+    margin-top: 20px; /* Space between pickers and leaderboard */
 }
 
 .leaderboard-item {
@@ -137,9 +112,61 @@ body {
     margin: 3px 0;
     color: inherit;
     width: 100%;
+    text-align: center;
+    font-size: 1.2em;
 }
 
+.picker-chart-container {
+    grid-area: chart;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
+}
 
+#chart-container {
+    width: 100%;
+    height: 100%;
+}
+
+#salesChart {
+    width: 100%;
+    height: 100%;
+}
+
+.sales-history-container {
+    grid-area: salesHistory;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
+}
+
+.monthly-sales-totals-container {
+    grid-area: monthlyTotals;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
+}
 
 .picker-container {
     display: flex;
@@ -189,11 +216,11 @@ body {
             "salesHistory"
             "monthlyTotals";
     }
-    
+
     .picker-container {
         flex-direction: column;
     }
-    
+
     .picker {
         font-size: 14px;
         padding: 8px;
