@@ -34,6 +34,10 @@ async function googleSignIn() {
         const userRef = ref(database, 'users/' + user.uid);
         await set(userRef, {
             email: user.email
+        }).then(() => {
+            console.log('User email saved successfully:', user.email);
+        }).catch((error) => {
+            console.error('Error saving user email:', error);
         });
 
         // Log user data to ensure it's set correctly
