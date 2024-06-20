@@ -41,6 +41,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
+                    console.log('Users data:', usersData);
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
