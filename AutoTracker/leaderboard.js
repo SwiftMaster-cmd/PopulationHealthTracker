@@ -43,6 +43,8 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         users.push({ email, count });
                     }
 
+                    console.log('Leaderboard users:', users);
+
                     users.sort((a, b) => b.count - a.count);
 
                     const periodSaleTypeContainer = document.createElement('div');
