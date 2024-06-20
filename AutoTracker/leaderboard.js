@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Create the dropdown pickers for leaderboard
     const periodPicker = document.getElementById('periodPicker');
     const saleTypePicker = document.getElementById('saleTypePicker');
 
-    // Add event listeners to the pickers for leaderboard
     periodPicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
     });
@@ -12,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
     });
 
-    // Load the default leaderboard
     loadLeaderboard();
 });
 
@@ -27,18 +24,14 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         return;
     }
 
-    // Clear previous leaderboard
     leaderboardSection.innerHTML = '';
 
-    // Listen for real-time updates
     salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         const users = [];
 
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                const currentUserId = user.uid;
-
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
                     console.log('Users data:', usersData);
@@ -46,13 +39,11 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                        const email = usersData && usersData[userId] ? usersData[userId].email.split('@')[0] : 'Unknown User';
+                        const email = usersData && usersData[userId] && usersData[userId].email ? usersData[userId].email.split('@')[0] : 'Unknown User';
                         users.push({ email, count });
                     }
 
-                    console.log('Leaderboard users:', users);
-
-                    users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
+                    users.sort((a, b) => b.count - a.count);
 
                     const periodSaleTypeContainer = document.createElement('div');
                     periodSaleTypeContainer.classList.add('leaderboard-section');
