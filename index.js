@@ -20,12 +20,6 @@ const database = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
 async function googleSignIn() {
-    const token = grecaptcha.getResponse();
-    if (!token) {
-        alert('Please complete the reCAPTCHA.');
-        return;
-    }
-
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -34,14 +28,7 @@ async function googleSignIn() {
         const userRef = ref(database, 'users/' + user.uid);
         await set(userRef, {
             email: user.email
-        }).then(() => {
-            console.log('User email saved successfully:', user.email);
-        }).catch((error) => {
-            console.error('Error saving user email:', error);
         });
-
-        // Log user data to ensure it's set correctly
-        console.log('User data saved:', { uid: user.uid, email: user.email });
 
         // Fetch user role from Firebase Realtime Database correctly
         const roleRef = ref(database, `users/${user.uid}/role`);
@@ -61,8 +48,6 @@ async function googleSignIn() {
         }
     } catch (error) {
         console.error('Error during Google sign-in:', error);
-    } finally {
-        grecaptcha.reset(); // Reset reCAPTCHA
     }
 }
 
