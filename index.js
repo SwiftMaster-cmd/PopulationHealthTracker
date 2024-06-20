@@ -63,6 +63,10 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
 });
 
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
+});
+
 // User Registration Function
 async function registerUser(email, password, additionalData) {
     try {
