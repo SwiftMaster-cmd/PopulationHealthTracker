@@ -1,10 +1,22 @@
 /* styles.css */
 
+/* Define custom CSS variables */
+:root {
+    --color-primary: #6200ea;
+    --color-secondary: #8e24aa;
+    --color-tertiary: #d81b60;
+    --color-quaternary: #ff7043;
+    --color-quinary: #ffab40;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --text-color-light: #ffffff;
+}
+
 /* General styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: var(--background-color);
+    color: var(--text-color);
     margin: 0;
     padding: 0;
 }
@@ -12,14 +24,15 @@ body {
 .container {
     margin: 20px;
     padding: 20px;
-    background-color: #fff;
+    background-color: var(--color-tertiary);
+    color: var(--text-color-light);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-container {
-    background-color: #6200ea;
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--text-color-light);
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -32,8 +45,8 @@ body {
 }
 
 .profile-button {
-    background-color: #fff;
-    color: #6200ea;
+    background-color: var(--text-color-light);
+    color: var(--color-primary);
     padding: 10px;
     border-radius: 50%;
     cursor: pointer;
@@ -56,12 +69,14 @@ body {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ddd;
+    background-color: var(--color-quinary);
+    color: var(--text-color);
 }
 
 h2 {
     margin-bottom: 10px;
     font-size: 1.5em;
-    color: #6200ea;
+    color: var(--color-primary);
 }
 
 .sales-container, .summary-container {
@@ -71,17 +86,18 @@ h2 {
 }
 
 .sales-item, .summary-item {
-    background-color: #f9f9f9;
+    background-color: var(--color-quaternary);
     border: 1px solid #ddd;
     padding: 20px;
     border-radius: 8px;
     text-align: center;
     width: 20%;
+    color: var(--text-color-light);
 }
 
 .sales-label, .summary-label {
     font-size: 1em;
-    color: #6200ea;
+    color: var(--text-color-light);
 }
 
 .sales-value, .summary-value {
@@ -92,7 +108,7 @@ h2 {
 
 .sales-count {
     font-size: 1em;
-    color: #999;
+    color: var(--text-color-light);
 }
 
 .search-container {
@@ -106,13 +122,15 @@ h2 {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ddd;
+    background-color: var(--color-quinary);
+    color: var(--text-color);
     width: 100%;
 }
 
 .search-container button {
     padding: 10px;
-    background-color: #6200ea;
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--text-color-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -131,8 +149,8 @@ h2 {
 
 .navigation-container button {
     padding: 10px 20px;
-    background-color: #6200ea;
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--text-color-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -141,7 +159,7 @@ h2 {
 
 .navigation-container span {
     font-size: 1em;
-    color: #333;
+    color: var(--text-color);
 }
 
 .color-picker-container {
@@ -155,12 +173,14 @@ h2 {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ddd;
+    background-color: var(--color-quinary);
+    color: var(--text-color);
 }
 
 .color-picker-container button {
     padding: 10px 20px;
-    background-color: #6200ea;
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--text-color-light);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -177,13 +197,17 @@ h2 {
 }
 
 #leaderboard-section .leaderboard-section {
-    background-color: #f1f1f1;
+    background-color: var(--color-secondary);
     padding: 20px;
     border-radius: 8px;
 }
 
 #leaderboard-section .leaderboard-item {
     margin-top: 10px;
+    background-color: var(--color-quaternary);
+    color: var(--text-color-light);
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .picker-chart-container {
