@@ -139,7 +139,7 @@ function calculateCommission(salesTotals, level) {
     let hraPayout;
     let spmPayout = 11;  // Example value, adjust accordingly
 
-    if (level === 1) {
+    if (level === 3) {
         srxPayout = getPayout(salesTotals.selectRX, [
             { min: 75, max: Infinity, payout: 17.00 },
             { min: 65, max: 74, payout: 16.50 },
@@ -183,7 +183,7 @@ function calculateCommission(salesTotals, level) {
             { min: 10, max: 19, payout: 2.75 },
             { min: 0, max: 9, payout: 2.00 }
         ]);
-    } else if (level === 3) {
+    } else if (level === 1) {
         srxPayout = getPayout(salesTotals.selectRX, [
             { min:             75, max: Infinity, payout: 19.00 },
             { min: 65, max: 74, payout: 18.50 },
