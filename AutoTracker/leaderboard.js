@@ -10,8 +10,30 @@ document.addEventListener('DOMContentLoaded', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
     });
 
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            checkAndSetUserName(user.uid);
+        }
+    });
+
     loadLeaderboard();
 });
+
+function checkAndSetUserName(userId) {
+    const usersRef = firebase.database().ref('users/' + userId);
+
+    usersRef.once('value', snapshot => {
+        if (!snapshot.exists() || !snapshot.val().name) {
+            const name = prompt("Please enter your name:");
+            if (name) {
+                usersRef.set({ name: name });
+            } else {
+                alert("Name is required to proceed.");
+                firebase.auth().signOut();
+            }
+        }
+    });
+}
 
 function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
@@ -39,8 +61,8 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                        const email = usersData && usersData[userId] && usersData[userId].email ? usersData[userId].email.split('@')[0] : 'Unknown User';
-                        users.push({ email, count });
+                        const name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                        users.push({ name, count });
                     }
 
                     console.log('Leaderboard users:', users);
@@ -54,7 +76,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     users.slice(0, 5).forEach((user, index) => {
                         const userElement = document.createElement('div');
                         userElement.classList.add('leaderboard-item');
-                        userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
+                        userElement.innerHTML = `<strong>${index + 1}. ${user.name} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
                         periodSaleTypeContainer.appendChild(userElement);
                     });
 
