@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         updateStyles(isDark);
     }
-
+ 
     function updateStyles(isDark) {
         const styles = document.documentElement.style;
         const textColor = isDark ? '#ffffff' : '#000000';
@@ -48,35 +48,34 @@ document.addEventListener('DOMContentLoaded', function () {
             container.style.color = textColor;
         });
 
-        document.querySelectorAll('.picker-container, .picker-leaderboard-container, .picker-chart-container, .sales-history-container, .monthly-sales-totals-container').forEach(container => {
+        document.querySelectorAll('.leaderboard-container').forEach(container => {
             container.style.backgroundColor = styles.getPropertyValue('--color-secondary');
             container.style.color = textColor;
         });
 
-        document.querySelectorAll('.leaderboard-item, .outcome-item, .sales-item').forEach(item => {
-            item.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+        document.querySelectorAll('.leaderboard-item').forEach(item => {
+            item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
             item.style.color = textColor;
         });
 
-        document.querySelectorAll('.navigation-container button').forEach(button => {
-            button.style.backgroundColor = styles.getPropertyValue('--color-primary');
-            button.style.color = textColor;
+        document.querySelectorAll('.outcome-item').forEach(item => {
+            item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            item.style.color = textColor;
         });
 
-        document.querySelectorAll('.search-container input').forEach(input => {
-            input.style.backgroundColor = styles.getPropertyValue('--color-quinary');
-            input.style.color = textColor;
-            input.style.border = `1px solid ${textColor}`;
+        document.querySelectorAll('.sales-counts-container').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+            container.style.color = textColor;
         });
 
-        document.querySelectorAll('.search-container button').forEach(button => {
-            button.style.backgroundColor = styles.getPropertyValue('--color-primary');
-            button.style.color = textColor;
+        document.querySelectorAll('.account-container').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+            container.style.color = textColor;
         });
 
-        document.querySelectorAll('.profile-button').forEach(button => {
-            button.style.backgroundColor = styles.getPropertyValue('--color-primary');
-            button.style.color = textColor;
+        document.querySelectorAll('.customer-info').forEach(container => {
+            container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            container.style.color = textColor;
         });
     }
 });
