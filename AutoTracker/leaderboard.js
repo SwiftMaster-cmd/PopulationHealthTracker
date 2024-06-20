@@ -34,7 +34,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
             if (user) {
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
-                    console.log('Users data:', usersData);
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
@@ -42,8 +41,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         const email = usersData && usersData[userId] && usersData[userId].email ? usersData[userId].email.split('@')[0] : 'Unknown User';
                         users.push({ email, count });
                     }
-
-                    console.log('Leaderboard users:', users);
 
                     users.sort((a, b) => b.count - a.count);
 
