@@ -36,6 +36,9 @@ async function googleSignIn() {
             email: user.email
         });
 
+        // Log user data to ensure it's set correctly
+        console.log('User data saved:', { uid: user.uid, email: user.email });
+
         // Fetch user role from Firebase Realtime Database correctly
         const roleRef = ref(database, `users/${user.uid}/role`);
         const snapshot = await get(roleRef);
@@ -58,6 +61,10 @@ async function googleSignIn() {
         grecaptcha.reset(); // Reset reCAPTCHA
     }
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
+});
 
 window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);

@@ -50,6 +50,8 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         users.push({ email, count });
                     }
 
+                    console.log('Leaderboard users:', users);
+
                     users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
 
                     const periodSaleTypeContainer = document.createElement('div');
