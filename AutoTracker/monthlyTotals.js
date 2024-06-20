@@ -59,7 +59,8 @@ function loadMonthlyTotals() {
             const currentMonthKey = getCurrentMonthKey();
             const monthlyTotalsRef = salesCountsRef.child(currentUserId).child('month');
 
-            monthlyTotalsRef.once('value', salesSnapshot => {
+            // Listen for real-time updates
+            monthlyTotalsRef.on('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
                 if (!salesData) {
                     console.log("No sales data for the current month.");
@@ -185,7 +186,7 @@ function calculateCommission(salesTotals, level) {
         ]);
     } else if (level === 3) {
         srxPayout = getPayout(salesTotals.selectRX, [
-            { min:             75, max: Infinity, payout: 19.00 },
+            { min: 75, max: Infinity, payout: 19.00 },
             { min: 65, max: 74, payout: 18.50 },
             { min: 30, max: 64, payout: 18.00 },
             { min: 15, max: 29, payout: 17.50 },

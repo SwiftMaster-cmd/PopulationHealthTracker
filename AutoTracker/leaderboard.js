@@ -26,9 +26,11 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         return;
     }
 
-    leaderboardSection.innerHTML = ''; // Clear previous leaderboard
+    // Clear previous leaderboard
+    leaderboardSection.innerHTML = '';
 
-    salesCountsRef.once('value', salesSnapshot => {
+    // Listen for real-time updates
+    salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         const users = [];
 
@@ -63,7 +65,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                 console.error('No user is signed in.');
             }
         });
-    }).catch(error => {
+    }, error => {
         console.error('Error fetching sales data:', error);
     });
 }
