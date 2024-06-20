@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
+    const usersRef = database.ref('users');
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -37,30 +38,32 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 const currentUserId = user.uid;
-                const currentUserEmail = user.email.split('@')[0]; // Get email without domain
-                console.log('Current user email:', currentUserEmail);
 
-                for (const userId in salesData) {
-                    const userData = salesData[userId];
-                    const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                    const email = (userId === currentUserId) ? currentUserEmail : 'Unknown User';
-                    users.push({ email, count });
-                }
+                usersRef.once('value', usersSnapshot => {
+                    const usersData = usersSnapshot.val();
 
-                users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
+                    for (const userId in salesData) {
+                        const userData = salesData[userId];
+                        const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                        const email = usersData[userId] ? usersData[userId].email.split('@')[0] : 'Unknown User';
+                        users.push({ email, count });
+                    }
 
-                const periodSaleTypeContainer = document.createElement('div');
-                periodSaleTypeContainer.classList.add('leaderboard-section');
-                periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
+                    users.sort((a, b) => b.count - a.count); // Sort users by count in descending order
 
-                users.slice(0, 5).forEach((user, index) => {
-                    const userElement = document.createElement('div');
-                    userElement.classList.add('leaderboard-item');
-                    userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
-                    periodSaleTypeContainer.appendChild(userElement);
+                    const periodSaleTypeContainer = document.createElement('div');
+                    periodSaleTypeContainer.classList.add('leaderboard-section');
+                    periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
+
+                    users.slice(0, 5).forEach((user, index) => {
+                        const userElement = document.createElement('div');
+                        userElement.classList.add('leaderboard-item');
+                        userElement.innerHTML = `<strong>${index + 1}. ${user.email} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
+                        periodSaleTypeContainer.appendChild(userElement);
+                    });
+
+                    leaderboardSection.appendChild(periodSaleTypeContainer);
                 });
-
-                leaderboardSection.appendChild(periodSaleTypeContainer);
             } else {
                 console.error('No user is signed in.');
             }
