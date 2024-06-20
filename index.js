@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -54,35 +54,3 @@ async function googleSignIn() {
 window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
 });
-
-window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
-});
-
-window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
-});
-
-// User Registration Function
-async function registerUser(email, password, additionalData) {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User registered:', userCredential.user);
-
-        // Save additional user data in Realtime Database
-        const userDataRef = ref(database, 'users/' + userCredential.user.uid);
-        await set(userDataRef, additionalData);
-    } catch (error) {
-        console.error('Registration error:', error);
-    }
-}
-
-// User Login Function
-async function loginUser(email, password) {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('User logged in:', userCredential.user);
-    } catch (error) {
-        console.error('Login error:', error);
-    }
-}
