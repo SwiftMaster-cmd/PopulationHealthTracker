@@ -30,11 +30,14 @@ async function googleSignIn() {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        // Save user email to the database
+        // Save user email to the database under the 'users' node
         const userRef = ref(database, 'users/' + user.uid);
         await set(userRef, {
             email: user.email
         });
+
+        // Log user data to ensure it's set correctly
+        console.log('User data saved:', { uid: user.uid, email: user.email });
 
         // Fetch user role from Firebase Realtime Database correctly
         const roleRef = ref(database, `users/${user.uid}/role`);
@@ -62,6 +65,7 @@ async function googleSignIn() {
 window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
 });
+
 
 // User Registration Function
 async function registerUser(email, password, additionalData) {
