@@ -29,7 +29,7 @@ function loadChart(period = 'month') {
         if (user) {
             const currentUserId = user.uid;
 
-            salesTimeFramesRef.child(currentUserId).once('value', salesSnapshot => {
+            salesTimeFramesRef.child(currentUserId).on('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
                 let chartData = {
                     labels: [],
@@ -123,7 +123,7 @@ function loadChart(period = 'month') {
                         }
                     });
                 }
-            }).catch(error => {
+            }, error => {
                 console.error('Error fetching sales data:', error);
             });
         } else {
@@ -248,3 +248,31 @@ function hexToRgba(hex, alpha) {
     const [r, g, b] = hex.match(/\d+/g).map(Number);
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
+
+// Apply color palette to the chart
+function applyColorPalette(color) {
+    document.documentElement.style.setProperty('--color-primary', color);
+    document.documentElement.style.setProperty('--color-secondary', chroma(color).darken(1.5).hex());
+    document.documentElement.style.setProperty('--background-color', chroma(color).brighten(3).hex());
+
+    if (salesChart instanceof Chart) {
+        const textColor = chroma(color).luminance() < 0.5 ? '#ffffff' : '#000000';
+        salesChart.options.scales.x.ticks.color = textColor;
+        salesChart.options.scales.y.ticks.color = textColor;
+        salesChart.options.plugins.legend.labels.color = textColor;
+        salesChart.update();
+    }
+}
+
+// Save the color palette
+function saveColorPalette(color) {
+    localStorage.setItem('baseColor', color);
+    applyColorPalette(color);
+}
+
+// Initialize color picker
+document.getElementById('applyColor').addEventListener('click', () => {
+    const colorPicker = document.getElementById('colorPicker');
+    const selectedColor = colorPicker.value;
+    saveColorPalette(selectedColor);
+});
