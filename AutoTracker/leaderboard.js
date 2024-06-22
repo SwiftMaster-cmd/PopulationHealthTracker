@@ -13,10 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             checkAndSetUserName(user.uid);
+            loadLeaderboard(); // Ensure leaderboard loads after authentication
         }
     });
-
-    loadLeaderboard();
 });
 
 function checkAndSetUserName(userId) {
@@ -46,7 +45,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         return;
     }
 
-    leaderboardSection.innerHTML = '';
+    leaderboardSection.innerHTML = ''; // Clear previous entries
 
     salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
