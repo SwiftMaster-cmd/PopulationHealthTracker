@@ -47,6 +47,9 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     leaderboardSection.innerHTML = ''; // Clear previous entries
 
+    // Detach previous listeners
+    salesCountsRef.off('value');
+
     salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         const users = [];
