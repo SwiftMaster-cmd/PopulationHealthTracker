@@ -6,11 +6,13 @@ body, html {
 
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
     grid-template-areas: 
-        "leaderboard   salesHistory "
-        "chart monthlyTotals";
+        "leaderboard"
+        "salesHistory"
+        "chart"
+        "monthlyTotals";
     grid-gap: 20px;
     width: 95%;
     height: 95%;
@@ -33,11 +35,6 @@ body, html {
     align-items: center;
     color: #ffffff;
 }
-
-
-
-
-
 
 /* Add this to your CSS file */
 
