@@ -4,12 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales History</title>
-    <link rel="stylesheet" href="css/charts.css">
-    <link rel="stylesheet" href="css/outcomes.css">
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/leaderboard.css">
-    <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
@@ -25,118 +20,111 @@
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
     <script src="profilePopup.js" defer></script>
-
 </head>
-<body>
-    <div class="header-container">
-        <h1>Dashboard</h1>
-        <div class="profile-button">P</div>
+<body class="bg-gray-100 text-gray-900">
+    <div class="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <h1 class="text-2xl">Dashboard</h1>
+        <div class="bg-blue-500 p-2 rounded-full">P</div>
     </div>
 
-    <div class="main-container">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
 
         <!-- Leaderboard Container -->
-        <div class="picker-leaderboard-container container">
-            <div class="picker-container">
-                <select id="periodPicker" class="picker">
+        <div class="bg-gray-200 p-4 rounded-lg shadow">
+            <div class="flex justify-between mb-4">
+                <select id="periodPicker" class="p-2 rounded border border-gray-300">
                     <option value="day">Day</option>
                     <option value="week">Week</option>
                     <option value="month">Month</option>
                 </select>
-                <select id="saleTypePicker" class="picker">
+                <select id="saleTypePicker" class="p-2 rounded border border-gray-300">
                     <option value="selectRX">S.R.X.</option>
                     <option value="billableHRA">H.R.A.</option>
                     <option value="transfer">Partner</option>
                     <option value="selectPatientManagement">S.P.M.</option>
                 </select>
             </div>
-            <div id="leaderboard-section"></div>
+            <div id="leaderboard-section" class="bg-white p-4 rounded-lg shadow"></div>
         </div>
 
         <!-- Chart Container -->
-        <div class="picker-chart-container container">
-            <div class="picker-container">
-                <select id="chartPeriodPicker" class="picker">
+        <div class="bg-gray-200 p-4 rounded-lg shadow">
+            <div class="flex justify-center mb-4">
+                <select id="chartPeriodPicker" class="p-2 rounded border border-gray-300">
                     <option value="day">Day</option>
                     <option value="week">Week</option>
                     <option value="month">Month</option>
                 </select>
             </div>
-            <div id="chart-container">
+            <div id="chart-container" class="bg-white p-4 rounded-lg shadow">
                 <canvas id="salesChart"></canvas>
             </div>
         </div>
 
         <!-- Sales History Container -->
-        <div class="sales-history-container container">
-            <div class="header-section">
-                <h2>Sales History</h2>
-                <div class="search-container">
-                    <input type="text" id="searchById" placeholder="Search by lead ID">
-                    <button id="clearSearch" style="display: none;">&times;</button>
+        <div class="bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl">Sales History</h2>
+                <div class="relative w-full max-w-xs">
+                    <input type="text" id="searchById" placeholder="Search by lead ID" class="w-full p-2 rounded border border-gray-300">
+                    <button id="clearSearch" class="absolute right-2 top-2 text-gray-600" style="display: none;">&times;</button>
                 </div>
             </div>
-            <div id="lead-id-container" class="lead-id-container">
-                <!-- Lead ID will be dynamically added here -->
-            </div>
-            <div class="sales-history-content" id="sales-outcomes-container">
-                <!-- Sales outcomes will be dynamically added here -->
-            </div>
-            <div class="customer-info-container" id="customer-info-container">
-                <!-- Customer info will be dynamically added here -->
-            </div>
-            <div class="navigation-container">
-                <button id="prev">Prev</button>
+            <div id="lead-id-container" class="bg-white p-4 rounded-lg shadow mb-4"></div>
+            <div id="sales-outcomes-container" class="bg-white p-4 rounded-lg shadow mb-4"></div>
+            <div id="customer-info-container" class="bg-white p-4 rounded-lg shadow mb-4"></div>
+            <div class="flex justify-between items-center">
+                <button id="prev" class="p-2 bg-gray-300 rounded">Prev</button>
                 <span id="counter">1 of 3</span>
-                <button id="next">Next</button>
+                <button id="next" class="p-2 bg-gray-300 rounded">Next</button>
             </div>
         </div>
 
         <!-- Monthly Sales Totals Container -->
-        <div class="monthly-sales-totals-container container">
-            <h2>Monthly Sales Totals</h2>
-            <div class="sales-container">
-                <div class="sales-item">
-                    <p class="sales-label">SRX</p>
-                    <p class="sales-value" id="srx-value">$0</p>
-                    <p class="sales-count" id="srx-count">0</p>
+        <div class="bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2">
+            <h2 class="text-xl mb-4">Monthly Sales Totals</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <p class="font-bold">SRX</p>
+                    <p class="text-2xl" id="srx-value">$0</p>
+                    <p class="text-gray-500" id="srx-count">0</p>
                 </div>
-                <div class="sales-item">
-                    <p class="sales-label">Transfer</p>
-                    <p class="sales-value" id="transfer-value">$0</p>
-                    <p class="sales-count" id="transfer-count">0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <p class="font-bold">Transfer</p>
+                    <p class="text-2xl" id="transfer-value">$0</p>
+                    <p class="text-gray-500" id="transfer-count">0</p>
                 </div>
-                <div class="sales-item">
-                    <p class="sales-label">HRA</p>
-                    <p class="sales-value" id="hra-value">$0</p>
-                    <p class="sales-count" id="hra-count">0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <p class="font-bold">HRA</p>
+                    <p class="text-2xl" id="hra-value">$0</p>
+                    <p class="text-gray-500" id="hra-count">0</p>
                 </div>
-                <div class="sales-item">
-                    <p class="sales-label">SPM</p>
-                    <p class="sales-value" id="spm-value">$0</p>
-                    <p class="sales-count" id="spm-count">0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <p class="font-bold">SPM</p>
+                    <p class="text-2xl" id="spm-value">$0</p>
+                    <p class="text-gray-500" id="spm-count">0</p>
                 </div>
             </div>
-            <div class="summary-container">
-                <div class="summary-item">
-                    <p class="summary-label">Last Month</p>
-                    <p class="summary-value" id="last-month-value">$0</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <p class="font-bold">Last Month</p>
+                    <p class="text-2xl text-red-500" id="last-month-value">$0</p>
                 </div>
-                <div class="summary-item">
-                    <p class="summary-label">TOTAL</p>
-                    <p class="summary-value" id="total-value">$0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <p class="font-bold">TOTAL</p>
+                    <p class="text-2xl" id="total-value">$0</p>
                 </div>
-                <div class="summary-item">
-                    <p class="summary-label">Average</p>
-                    <p class="summary-value" id="average-value">$0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center">
+                    <p class="font-bold">Average</p>
+                    <p class="text-2xl" id="average-value">$0</p>
                 </div>
             </div>
         </div>
 
         <!-- Color Picker Container -->
-        <div class="color-picker-container">
-            <input type="color" id="colorPicker" />
-            <button id="applyColor" class="button">Apply Color Palette</button>
+        <div class="bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2 text-center">
+            <input type="color" id="colorPicker" class="mb-4">
+            <button id="applyColor" class="p-2 bg-blue-500 text-white rounded">Apply Color Palette</button>
         </div>
     </div>
 </body>
