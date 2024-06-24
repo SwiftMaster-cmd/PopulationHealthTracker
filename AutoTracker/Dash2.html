@@ -48,7 +48,7 @@
         </div>
 
         <!-- Chart Container -->
-        <div class="bg-gray-200 p-4 rounded-lg shadow">
+        <div class="chart-container bg-gray-200 p-4 rounded-lg shadow">
             <div class="flex justify-center mb-4">
                 <select id="chartPeriodPicker" class="p-2 rounded border border-gray-300">
                     <option value="day">Day</option>
@@ -122,7 +122,7 @@
         </div>
 
         <!-- Color Picker Container -->
-        <div class="bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2 text-center">
+        <div class="color-picker-container bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2 text-center">
             <input type="color" id="colorPicker" class="mb-4">
             <button id="applyColor" class="p-2 bg-blue-500 text-white rounded button">Apply Color Palette</button>
         </div>
@@ -150,7 +150,7 @@
 
             function applyColorPalette(baseColor) {
                 const isDark = chroma(baseColor).luminance() < 0.5;
-                const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma (baseColor).darken(3)]).mode('lab').colors(5);
+                const palette = chroma.scale([baseColor, isDark                 ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode('lab').colors(5);
 
 document.documentElement.style.setProperty('--color-primary', palette[0]);
 document.documentElement.style.setProperty('--color-secondary', palette[1]);
@@ -199,6 +199,11 @@ document.querySelectorAll('.monthly-sales-totals-container').forEach(container =
     container.style.color = textColor;
 });
 
+document.querySelectorAll('.sales-item').forEach(item => {
+    item.style.backgroundColor = styles.getPropertyValue('--color-primary');
+    item.style.color = textColor;
+});
+
 document.querySelectorAll('.summary-item').forEach(item => {
     item.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
     item.style.color = textColor;
@@ -206,6 +211,16 @@ document.querySelectorAll('.summary-item').forEach(item => {
 
 document.querySelectorAll('.customer-info-container').forEach(container => {
     container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+    container.style.color = textColor;
+});
+
+document.querySelectorAll('.chart-container').forEach(container => {
+    container.style.backgroundColor = styles.getPropertyValue('--color-quinary');
+    container.style.color = textColor;
+});
+
+document.querySelectorAll('.color-picker-container').forEach(container => {
+    container.style.backgroundColor = styles.getPropertyValue('--color-quinary');
     container.style.color = textColor;
 });
 }
