@@ -150,7 +150,7 @@
 
             function applyColorPalette(baseColor) {
                 const isDark = chroma(baseColor).luminance() < 0.5;
-                const palette = chroma.scale([baseColor, isDark                 ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode('lab').colors(5);
+                const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma(baseColor).darken(3)]).mode ('lab').colors(5);
 
 document.documentElement.style.setProperty('--color-primary', palette[0]);
 document.documentElement.style.setProperty('--color-secondary', palette[1]);
@@ -190,7 +190,7 @@ document.querySelectorAll('.leaderboard-item').forEach(item => {
 });
 
 document.querySelectorAll('.sales-outcomes-container').forEach(item => {
-    item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+    item.style.backgroundColor = styles.getPropertyValue('--color-primary');
     item.style.color = textColor;
 });
 
@@ -200,7 +200,7 @@ document.querySelectorAll('.monthly-sales-totals-container').forEach(container =
 });
 
 document.querySelectorAll('.sales-item').forEach(item => {
-    item.style.backgroundColor = styles.getPropertyValue('--color-primary');
+    item.style.backgroundColor = styles.getPropertyValue('--color-secondary');
     item.style.color = textColor;
 });
 
@@ -221,6 +221,11 @@ document.querySelectorAll('.chart-container').forEach(container => {
 
 document.querySelectorAll('.color-picker-container').forEach(container => {
     container.style.backgroundColor = styles.getPropertyValue('--color-quinary');
+    container.style.color = textColor;
+});
+
+document.querySelectorAll('.lead-id-container').forEach(container => {
+    container.style.backgroundColor = styles.getPropertyValue('--color-primary');
     container.style.color = textColor;
 });
 }
