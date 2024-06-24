@@ -14,7 +14,7 @@
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="customer-info.js" defer></script>
-    <script src="proccessedOutcomes" defer></script>
+    <script src="proccessedOutcomes.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="leaderboard.js" defer></script>
     <script src="monthlyTotals.js" defer></script>
@@ -30,7 +30,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
 
         <!-- Leaderboard Container -->
-        <div class="bg-gray-200 p-4 rounded-lg shadow">
+        <div class="leaderboard-container bg-gray-200 p-4 rounded-lg shadow">
             <div class="flex justify-between mb-4">
                 <select id="periodPicker" class="p-2 rounded border border-gray-300">
                     <option value="day">Day</option>
@@ -62,7 +62,7 @@
         </div>
 
         <!-- Sales History Container -->
-        <div class="bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2">
+        <div class="sales-history-container bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl">Sales History</h2>
                 <div class="relative w-full max-w-xs">
@@ -70,53 +70,53 @@
                     <button id="clearSearch" class="absolute right-2 top-2 text-gray-600" style="display: none;">&times;</button>
                 </div>
             </div>
-            <div id="lead-id-container" class="bg-white p-4 rounded-lg shadow mb-4"></div>
-            <div id="sales-outcomes-container" class="bg-white p-4 rounded-lg shadow mb-4"></div>
-            <div id="customer-info-container" class="bg-white p-4 rounded-lg shadow mb-4"></div>
+            <div id="lead-id-container" class="lead-id-container bg-white p-4 rounded-lg shadow mb-4"></div>
+            <div id="sales-outcomes-container" class="sales-outcomes-container bg-white p-4 rounded-lg shadow mb-4"></div>
+            <div id="customer-info-container" class="customer-info-container bg-white p-4 rounded-lg shadow mb-4"></div>
             <div class="flex justify-between items-center">
-                <button id="prev" class="p-2 bg-gray-300 rounded">Prev</button>
+                <button id="prev" class="p-2 bg-gray-300 rounded button">Prev</button>
                 <span id="counter">1 of 3</span>
-                <button id="next" class="p-2 bg-gray-300 rounded">Next</button>
+                <button id="next" class="p-2 bg-gray-300 rounded button">Next</button>
             </div>
         </div>
 
         <!-- Monthly Sales Totals Container -->
-        <div class="bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2">
+        <div class="monthly-sales-totals-container bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2">
             <h2 class="text-xl mb-4">Monthly Sales Totals</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <p class="font-bold">SRX</p>
-                    <p class="text-2xl" id="srx-value">$0</p>
-                    <p class="text-gray-500" id="srx-count">0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center sales-item">
+                    <p class="font-bold sales-label">SRX</p>
+                    <p class="text-2xl sales-value" id="srx-value">$0</p>
+                    <p class="text-gray-500 sales-count" id="srx-count">0</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <p class="font-bold">Transfer</p>
-                    <p class="text-2xl" id="transfer-value">$0</p>
-                    <p class="text-gray-500" id="transfer-count">0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center sales-item">
+                    <p class="font-bold sales-label">Transfer</p>
+                    <p class="text-2xl sales-value" id="transfer-value">$0</p>
+                    <p class="text-gray-500 sales-count" id="transfer-count">0</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <p class="font-bold">HRA</p>
-                    <p class="text-2xl" id="hra-value">$0</p>
-                    <p class="text-gray-500" id="hra-count">0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center sales-item">
+                    <p class="font-bold sales-label">HRA</p>
+                    <p class="text-2xl sales-value" id="hra-value">$0</p>
+                    <p class="text-gray-500 sales-count" id="hra-count">0</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <p class="font-bold">SPM</p>
-                    <p class="text-2xl" id="spm-value">$0</p>
-                    <p class="text-gray-500" id="spm-count">0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center sales-item">
+                    <p class="font-bold sales-label">SPM</p>
+                    <p class="text-2xl sales-value" id="spm-value">$0</p>
+                    <p class="text-gray-500 sales-count" id="spm-count">0</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <p class="font-bold">Last Month</p>
-                    <p class="text-2xl text-red-500" id="last-month-value">$0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center summary-item">
+                    <p class="font-bold summary-label">Last Month</p>
+                    <p class="text-2xl text-red-500 summary-value" id="last-month-value">$0</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <p class="font-bold">TOTAL</p>
-                    <p class="text-2xl" id="total-value">$0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center summary-item">
+                    <p class="font-bold summary-label">TOTAL</p>
+                    <p class="text-2xl summary-value" id="total-value">$0</p>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <p class="font-bold">Average</p>
-                    <p class="text-2xl" id="average-value">$0</p>
+                <div class="bg-white p-4 rounded-lg shadow text-center summary-item">
+                    <p class="font-bold summary-label">Average</p>
+                    <p class="text-2xl summary-value" id="average-value">$0</p>
                 </div>
             </div>
         </div>
@@ -124,8 +124,92 @@
         <!-- Color Picker Container -->
         <div class="bg-gray-200 p-4 rounded-lg shadow col-span-1 md:col-span-2 text-center">
             <input type="color" id="colorPicker" class="mb-4">
-            <button id="applyColor" class="p-2 bg-blue-500 text-white rounded">Apply Color Palette</button>
+            <button id="applyColor" class="p-2 bg-blue-500 text-white rounded button">Apply Color Palette</button>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorPicker = document.getElementById('colorPicker');
+            const applyColorButton = document.getElementById('applyColor');
+
+            // Apply the saved color palette on page load if it exists
+            const savedColor = localStorage.getItem('baseColor');
+            if (savedColor) {
+                applyColorPalette(savedColor);
+            } else {
+                const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
+                applyColorPalette(defaultColor);
+            }
+
+            applyColorButton.addEventListener('click', function () {
+                const selectedColor = colorPicker.value;
+                applyColorPalette(selectedColor);
+                localStorage.setItem('baseColor', selectedColor); // Save the selected color to local storage
+            });
+
+            function applyColorPalette(baseColor) {
+                const isDark = chroma(baseColor).luminance() < 0.5;
+                const palette = chroma.scale([baseColor, isDark ? chroma(baseColor).brighten(3) : chroma (baseColor).darken(3)]).mode('lab').colors(5);
+
+document.documentElement.style.setProperty('--color-primary', palette[0]);
+document.documentElement.style.setProperty('--color-secondary', palette[1]);
+document.documentElement.style.setProperty('--color-tertiary', palette[2]);
+document.documentElement.style.setProperty('--color-quaternary', palette[3]);
+document.documentElement.style.setProperty('--color-quinary', palette[4]);
+
+document.body.style.backgroundColor = palette[0]; // Update body background color
+
+updateStyles(isDark);
+}
+
+function updateStyles(isDark) {
+const styles = document.documentElement.style;
+const textColor = isDark ? '#ffffff' : '#000000';
+
+document.body.style.color = textColor;
+
+document.querySelectorAll('.button').forEach(btn => {
+    btn.style.backgroundColor = styles.getPropertyValue('--color-primary');
+    btn.style.color = textColor;
+});
+
+document.querySelectorAll('.container').forEach(container => {
+    container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+    container.style.color = textColor;
+});
+
+document.querySelectorAll('.leaderboard-container').forEach(container => {
+    container.style.backgroundColor = styles.getPropertyValue('--color-secondary');
+    container.style.color = textColor;
+});
+
+document.querySelectorAll('.leaderboard-item').forEach(item => {
+    item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+    item.style.color = textColor;
+});
+
+document.querySelectorAll('.sales-outcomes-container').forEach(item => {
+    item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+    item.style.color = textColor;
+});
+
+document.querySelectorAll('.monthly-sales-totals-container').forEach(container => {
+    container.style.backgroundColor = styles.getPropertyValue('--color-primary');
+    container.style.color = textColor;
+});
+
+document.querySelectorAll('.summary-item').forEach(item => {
+    item.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+    item.style.color = textColor;
+});
+
+document.querySelectorAll('.customer-info-container').forEach(container => {
+    container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+    container.style.color = textColor;
+});
+}
+});
+</script>
 </body>
 </html>
