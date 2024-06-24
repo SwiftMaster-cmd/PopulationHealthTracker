@@ -11,6 +11,7 @@ body {
     font-family: Arial, sans-serif;
     color: var(--text-color);
     background-color: var(--color-secondary);
+    font-size: 18px; /* Increased base font size */
 }
 
 .sales-history-container {
@@ -33,7 +34,7 @@ body {
 
 .header-section h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: 30px; /* Increased heading size */
     color: var(--text-color);
 }
 
@@ -43,13 +44,14 @@ body {
 }
 
 .search-container input {
-    padding: 5px 10px;
+    padding: 10px 15px; /* Increased padding */
     border: 1px solid var(--color-quaternary);
     border-radius: 5px;
     background-color: var(--color-tertiary);
     color: var(--text-color);
     width: 100%; /* Make the input take the full width */
     box-sizing: border-box; /* Include padding and border in the element's total width */
+    font-size: 18px; /* Increased font size */
 }
 
 .search-container button {
@@ -60,7 +62,7 @@ body {
     background: none;
     border: none;
     color: var(--color-quaternary);
-    font-size: 20px;
+    font-size: 24px; /* Increased font size */
     cursor: pointer;
 }
 
@@ -68,29 +70,31 @@ body {
     text-align: center;
     font-weight: bold;
     margin-bottom: 10px; /* Reduced margin */
-    padding: 10px;
+    padding: 15px; /* Increased padding */
     border-radius: 10px;
     color: var(--text-color);
     background-color: var(--color-secondary);
     width: 100%; /* Make the container take the full width */
     box-sizing: border-box; /* Include padding and border in the element's total width */
+    font-size: 20px; /* Increased font size */
 }
 
 .sales-history-content {
     background-color: var(--color-secondary);
     border-radius: 10px;
-    padding: 10px; /* Reduced padding */
+    padding: 15px; /* Increased padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     margin-bottom: 10px; /* Reduced margin */
     width: 100%; /* Make the container take the full width */
     box-sizing: border-box; /* Include padding and border in the element's total width */
+    font-size: 18px; /* Increased font size */
 }
 
 .sales-history-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 0; /* Reduced padding */
+    padding: 10px 0; /* Increased padding */
     border-bottom: 1px solid var(--color-quaternary);
 }
 
@@ -104,8 +108,8 @@ body {
 }
 
 .sales-history-item .details p {
-    margin: 2px 0; /* Reduced margin between texts */
-    font-size: 14px;
+    margin: 4px 0; /* Increased margin between texts */
+    font-size: 18px; /* Increased font size */
     color: var(--text-color);
 }
 
@@ -116,22 +120,24 @@ body {
 }
 
 .sales-history-item .date-time span {
-    font-size: 14px;
+    font-size: 18px; /* Increased font size */
     color: var(--text-color);
 }
 
 .customer-info-container {
     background-color: var(--color-secondary);
     border-radius: 10px;
-    padding: 10px; /* Reduced padding */
+    padding: 15px; /* Increased padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     margin-bottom: 10px; /* Reduced margin */
     width: 100%; /* Make the container take the full width */
     box-sizing: border-box; /* Include padding and border in the element's total width */
+    font-size: 18px; /* Increased font size */
 }
 
 .customer-info-container p {
-    margin: 2px 0; /* Reduced margin between texts */
+    margin: 4px 0; /* Increased margin between texts */
+    font-size: 18px; /* Increased font size */
 }
 
 .navigation-container {
@@ -142,13 +148,14 @@ body {
 }
 
 .navigation-container button {
-    padding: 5px 10px;
+    padding: 10px 15px; /* Increased padding */
     margin: 0 10px;
     border: none;
     border-radius: 5px;
     background-color: var(--color-secondary);
     color: var(--text-color);
     cursor: pointer;
+    font-size: 18px; /* Increased font size */
 }
 
 .navigation-container button:disabled {
@@ -156,6 +163,6 @@ body {
 }
 
 .navigation-container span {
-    font-size: 14px;
+    font-size: 18px; /* Increased font size */
     color: var(--text-color);
 }
