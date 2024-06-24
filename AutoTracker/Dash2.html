@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales History</title>
-    <link rel="stylesheet" href="css/charts.css">
-    <link rel="stylesheet" href="css/outcomes.css">
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/leaderboard.css">
-    <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css"> <!-- Custom CSS for additional styles -->
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
@@ -19,7 +16,7 @@
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="customer-info.js" defer></script>
-    <script src="proccessedOutcomes" defer></script>
+    <script src="proccessedOutcomes.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="leaderboard.js" defer></script>
     <script src="monthlyTotals.js" defer></script>
@@ -28,116 +25,118 @@
 
 </head>
 <body>
-    <div class="header-container">
-        <h1>Dashboard</h1>
-        <div class="profile-button">P</div>
-    </div>
-
-    <div class="main-container">
-
-        <!-- Leaderboard Container -->
-        <div class="picker-leaderboard-container container">
-            <div class="picker-container">
-                <select id="periodPicker" class="picker">
-                    <option value="day">Day</option>
-                    <option value="week">Week</option>
-                    <option value="month">Month</option>
-                </select>
-                <select id="saleTypePicker" class="picker">
-                    <option value="selectRX">S.R.X.</option>
-                    <option value="billableHRA">H.R.A.</option>
-                    <option value="transfer">Partner</option>
-                    <option value="selectPatientManagement">S.P.M.</option>
-                </select>
-            </div>
-            <div id="leaderboard-section"></div>
+    <div class="container">
+        <div class="header-container text-center my-4">
+            <h1>Dashboard</h1>
+            <div class="profile-button btn btn-primary">P</div>
         </div>
 
-        <!-- Chart Container -->
-        <div class="picker-chart-container container">
-            <div class="picker-container">
-                <select id="chartPeriodPicker" class="picker">
-                    <option value="day">Day</option>
-                    <option value="week">Week</option>
-                    <option value="month">Month</option>
-                </select>
-            </div>
-            <div id="chart-container">
-                <canvas id="salesChart"></canvas>
-            </div>
-        </div>
+        <div class="main-container">
 
-        <!-- Sales History Container -->
-        <div class="sales-history-container container">
-            <div class="header-section">
-                <h2>Sales History</h2>
-                <div class="search-container">
-                    <input type="text" id="searchById" placeholder="Search by lead ID">
-                    <button id="clearSearch" style="display: none;">&times;</button>
+            <!-- Leaderboard Container -->
+            <div class="picker-leaderboard-container container mb-4">
+                <div class="picker-container mb-2">
+                    <select id="periodPicker" class="form-control">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                    </select>
+                    <select id="saleTypePicker" class="form-control mt-2">
+                        <option value="selectRX">S.R.X.</option>
+                        <option value="billableHRA">H.R.A.</option>
+                        <option value="transfer">Partner</option>
+                        <option value="selectPatientManagement">S.P.M.</option>
+                    </select>
                 </div>
+                <div id="leaderboard-section"></div>
             </div>
-            <div id="lead-id-container" class="lead-id-container">
-                <!-- Lead ID will be dynamically added here -->
-            </div>
-            <div class="sales-history-content" id="sales-outcomes-container">
-                <!-- Sales outcomes will be dynamically added here -->
-            </div>
-            <div class="customer-info-container" id="customer-info-container">
-                <!-- Customer info will be dynamically added here -->
-            </div>
-            <div class="navigation-container">
-                <button id="prev">Prev</button>
-                <span id="counter">1 of 3</span>
-                <button id="next">Next</button>
-            </div>
-        </div>
 
-        <!-- Monthly Sales Totals Container -->
-        <div class="monthly-sales-totals-container container">
-            <h2>Monthly Sales Totals</h2>
-            <div class="sales-container">
-                <div class="sales-item">
-                    <p class="sales-label">SRX</p>
-                    <p class="sales-value" id="srx-value">$0</p>
-                    <p class="sales-count" id="srx-count">0</p>
+            <!-- Chart Container -->
+            <div class="picker-chart-container container mb-4">
+                <div class="picker-container mb-2">
+                    <select id="chartPeriodPicker" class="form-control">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                    </select>
                 </div>
-                <div class="sales-item">
-                    <p class="sales-label">Transfer</p>
-                    <p class="sales-value" id="transfer-value">$0</p>
-                    <p class="sales-count" id="transfer-count">0</p>
-                </div>
-                <div class="sales-item">
-                    <p class="sales-label">HRA</p>
-                    <p class="sales-value" id="hra-value">$0</p>
-                    <p class="sales-count" id="hra-count">0</p>
-                </div>
-                <div class="sales-item">
-                    <p class="sales-label">SPM</p>
-                    <p class="sales-value" id="spm-value">$0</p>
-                    <p class="sales-count" id="spm-count">0</p>
+                <div id="chart-container">
+                    <canvas id="salesChart"></canvas>
                 </div>
             </div>
-            <div class="summary-container">
-                <div class="summary-item">
-                    <p class="summary-label">Last Month</p>
-                    <p class="summary-value" id="last-month-value">$0</p>
-                </div>
-                <div class="summary-item">
-                    <p class="summary-label">TOTAL</p>
-                    <p class="summary-value" id="total-value">$0</p>
-                </div>
-                <div class="summary-item">
-                    <p class="summary-label">Average</p>
-                    <p class="summary-value" id="average-value">$0</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Color Picker Container -->
-        <div class="color-picker-container">
-            <input type="color" id="colorPicker" />
-            <button id="applyColor" class="button">Apply Color Palette</button>
+            <!-- Sales History Container -->
+            <div class="sales-history-container container mb-4">
+                <div class="header-section mb-2">
+                    <h2>Sales History</h2>
+                    <div class="search-container input-group">
+                        <input type="text" id="searchById" class="form-control" placeholder="Search by lead ID">
+                        <div class="input-group-append">
+                            <button id="clearSearch" class="btn btn-outline-secondary" style="display: none;">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="lead-id-container" class="lead-id-container"></div>
+                <div class="sales-history-content" id="sales-outcomes-container"></div>
+                <div class="customer-info-container" id="customer-info-container"></div>
+                <div class="navigation-container text-center mt-3">
+                    <button id="prev" class="btn btn-primary">Prev</button>
+                    <span id="counter">1 of 3</span>
+                    <button id="next" class="btn btn-primary">Next</button>
+                </div>
+            </div>
+
+            <!-- Monthly Sales Totals Container -->
+            <div class="monthly-sales-totals-container container mb-4">
+                <h2>Monthly Sales Totals</h2>
+                <div class="sales-container row">
+                    <div class="sales-item col-md-3">
+                        <p class="sales-label">SRX</p>
+                        <p class="sales-value" id="srx-value">$0</p>
+                        <p class="sales-count" id="srx-count">0</p>
+                    </div>
+                    <div class="sales-item col-md-3">
+                        <p class="sales-label">Transfer</p>
+                        <p class="sales-value" id="transfer-value">$0</p>
+                        <p class="sales-count" id="transfer-count">0</p>
+                    </div>
+                    <div class="sales-item col-md-3">
+                        <p class="sales-label">HRA</p>
+                        <p class="sales-value" id="hra-value">$0</p>
+                        <p class="sales-count" id="hra-count">0</p>
+                    </div>
+                    <div class="sales-item col-md-3">
+                        <p class="sales-label">SPM</p>
+                        <p class="sales-value" id="spm-value">$0</p>
+                        <p class="sales-count" id="spm-count">0</p>
+                    </div>
+                </div>
+                <div class="summary-container row mt-3">
+                    <div class="summary-item col-md-4">
+                        <p class="summary-label">Last Month</p>
+                        <p class="summary-value" id="last-month-value">$0</p>
+                    </div>
+                    <div class="summary-item col-md-4">
+                        <p class="summary-label">TOTAL</p>
+                        <p class="summary-value" id="total-value">$0</p>
+                    </div>
+                    <div class="summary-item col-md-4">
+                        <p class="summary-label">Average</p>
+                        <p class="summary-value" id="average-value">$0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color Picker Container -->
+            <div class="color-picker-container text-center">
+                <input type="color" id="colorPicker" class="form-control w-auto d-inline-block" />
+                <button id="applyColor" class="btn btn-primary ml-2">Apply Color Palette</button>
+            </div>
         </div>
     </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
