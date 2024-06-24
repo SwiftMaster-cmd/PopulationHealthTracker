@@ -1,0 +1,56 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+        "leaderboard"
+        "salesHistory"
+        "chart"
+        "monthlyTotals";
+    grid-gap: 20px;
+    width: 95%;
+    height: 95%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--color-secondary);
+    box-sizing: border-box;
+    overflow-y: auto;
+    margin: 75px auto 0 auto;
+}
+
+.container {
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+}
+
+/* Add this to your CSS file */
+.popup-container {
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.sign-out-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sign-out-button:hover {
+    background-color: #d32f2f;
+}
