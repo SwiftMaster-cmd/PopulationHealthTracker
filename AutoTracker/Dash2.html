@@ -22,19 +22,18 @@
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
     <script src="profilePopup.js" defer></script>
-
 </head>
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <div class="header-container text-center my-4">
             <h1>Dashboard</h1>
             <div class="profile-button btn btn-primary">P</div>
         </div>
 
-
+        <div class="main-container">
 
             <!-- Leaderboard Container -->
-            <div class="picker-leaderboard-container  mb-4">
+            <div class="picker-leaderboard-container container mb-4">
                 <div class="picker-container mb-2">
                     <select id="periodPicker" class="form-control">
                         <option value="day">Day</option>
@@ -52,7 +51,7 @@
             </div>
 
             <!-- Chart Container -->
-            <div class="picker-chart-container  mb-4">
+            <div class="picker-chart-container container mb-4">
                 <div class="picker-container mb-2">
                     <select id="chartPeriodPicker" class="form-control">
                         <option value="day">Day</option>
@@ -66,7 +65,7 @@
             </div>
 
             <!-- Sales History Container -->
-            <div class="sales-history-container  mb-4">
+            <div class="sales-history-container container mb-4">
                 <div class="header-section mb-2">
                     <h2>Sales History</h2>
                     <div class="search-container input-group">
@@ -87,7 +86,7 @@
             </div>
 
             <!-- Monthly Sales Totals Container -->
-            <div class="monthly-sales-totals-container  mb-4">
+            <div class="monthly-sales-totals-container container mb-4">
                 <h2>Monthly Sales Totals</h2>
                 <div class="sales-container row">
                     <div class="sales-item col-md-3">
@@ -133,7 +132,7 @@
                 <button id="applyColor" class="btn btn-primary ml-2">Apply Color Palette</button>
             </div>
         </div>
-
+    </div>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
