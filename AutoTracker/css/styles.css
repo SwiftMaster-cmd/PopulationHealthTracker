@@ -20,9 +20,7 @@ html, body {
     border-radius: 10px;
     background-color: var(--color-secondary);
     box-sizing: border-box;
-    overflow-y: auto;
     margin: 75px auto 0 auto;
-    font-size: 14px; /* Smaller text */
 }
 
 .container {
@@ -31,9 +29,9 @@ html, body {
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     color: #ffffff;
-    font-size: 14px; /* Smaller text */
 }
 
+/* Add this to your CSS file */
 .popup-container {
     background-color: white;
     border: 1px solid #ccc;
@@ -41,7 +39,6 @@ html, body {
     padding: 10px;
     border-radius: 4px;
     z-index: 1000;
-    font-size: 14px; /* Smaller text */
 }
 
 .sign-out-button {
@@ -51,7 +48,6 @@ html, body {
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px; /* Smaller text */
 }
 
 .sign-out-button:hover {
