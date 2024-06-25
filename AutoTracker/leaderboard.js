@@ -45,8 +45,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         return;
     }
 
-    leaderboardSection.innerHTML = ''; // Clear previous entries
-
     // Detach previous listeners
     salesCountsRef.off('value');
 
@@ -70,6 +68,8 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     console.log('Leaderboard users:', users);
 
                     users.sort((a, b) => b.count - a.count);
+
+                    leaderboardSection.innerHTML = ''; // Clear previous entries
 
                     const periodSaleTypeContainer = document.createElement('div');
                     periodSaleTypeContainer.classList.add('leaderboard-section');
