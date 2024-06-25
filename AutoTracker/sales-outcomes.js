@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return sales.filter(sale => {
             const identifier = `${sale.accountNumber}-${sale.assignAction}-${sale.notesValue}-${sale.outcomeTime}`;
             if (seen.has(identifier)) {
+                console.log(`Duplicate found: ${identifier}`);
                 return false;
             } else {
                 seen.add(identifier);
@@ -244,12 +245,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (error) {
                         console.error('Failed to update sales timeframes:', error);
                     } else {
-                        console.log('Sales timeframes updated successfully:', salesTimeframes);
+                        console.log('Sales timeframes updated successfully:', salesTimeFrames);
                     }
                 });
 
                 // Filter and sort sales data
                 salesData = removeDuplicateSales(Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--"));
+                console.log('Filtered Sales Data:', salesData);
                 salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
                 filteredSalesData = [];
                 currentSaleIndex = 0;  // Reset to the latest sale
