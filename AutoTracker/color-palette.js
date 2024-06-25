@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         updateStyles(isDark);
     }
- 
+
     function updateStyles(isDark) {
         const styles = document.documentElement.style;
         const textColor = isDark ? '#ffffff' : '#000000';
@@ -39,42 +39,42 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.color = textColor;
 
         document.querySelectorAll('.button').forEach(btn => {
-            btn.style.backgroundColor = styles.getPropertyValue('--color-primary');
+            btn.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-primary')}, ${chroma(styles.getPropertyValue('--color-primary')).darken(1).hex()})`;
             btn.style.color = textColor;
         });
 
         document.querySelectorAll('.container').forEach(container => {
-            container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-primary')}, ${chroma(styles.getPropertyValue('--color-primary')).darken(1).hex()})`;
             container.style.color = textColor;
         });
 
         document.querySelectorAll('.leaderboard-container').forEach(container => {
-            container.style.backgroundColor = styles.getPropertyValue('--color-secondary');
+            container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-secondary')}, ${chroma(styles.getPropertyValue('--color-secondary')).darken(1).hex()})`;
             container.style.color = textColor;
         });
 
         document.querySelectorAll('.leaderboard-item').forEach(item => {
-            item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            item.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
             item.style.color = textColor;
         });
 
         document.querySelectorAll('.outcome-item').forEach(item => {
-            item.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            item.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
             item.style.color = textColor;
         });
 
         document.querySelectorAll('.sales-counts-container').forEach(container => {
-            container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+            container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-quaternary')}, ${chroma(styles.getPropertyValue('--color-quaternary')).darken(1).hex()})`;
             container.style.color = textColor;
         });
 
         document.querySelectorAll('.account-container').forEach(container => {
-            container.style.backgroundColor = styles.getPropertyValue('--color-quaternary');
+            container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-quaternary')}, ${chroma(styles.getPropertyValue('--color-quaternary')).darken(1).hex()})`;
             container.style.color = textColor;
         });
 
         document.querySelectorAll('.customer-info').forEach(container => {
-            container.style.backgroundColor = styles.getPropertyValue('--color-tertiary');
+            container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
             container.style.color = textColor;
         });
     }
