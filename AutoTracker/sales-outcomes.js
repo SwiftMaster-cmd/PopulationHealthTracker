@@ -232,16 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 console.log('Final Sales Counts:', salesCounts);
 
-                salesCountsRef.update(salesCounts, (error) => {
-                    if (error) {
-                        console.error('Failed to update sales counts:', error);
-                    } else {
-                        console.log('Sales counts updated successfully:', salesCounts);
-                    }
-                });
-
-                salesTimeFramesRef.set
-                (salesTimeFrames, (error) => {
+                salesTimeFramesRef.set(salesTimeFrames, (error) => {
                     if (error) {
                         console.error('Failed to update sales timeframes:', error);
                     } else {
