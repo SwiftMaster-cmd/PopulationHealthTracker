@@ -79,6 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
                date1.getMonth() === date2.getMonth();
     }
 
+
+
     function removeDuplicateSales(sales) {
         const seen = new Set();
         return sales.filter(sale => {
@@ -91,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
 
     let currentSaleIndex = 0;
     let salesData = [];
@@ -232,6 +235,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 console.log('Final Sales Counts:', salesCounts);
 
+                salesCountsRef.update(salesCounts, (error) => {
+                    if (error) {
+                        console.error('Failed to update sales counts:', error);
+                    } else {
+                        console.log('Sales counts updated successfully:', salesCounts);
+                    }
+                });
+
                 salesTimeFramesRef.set(salesTimeFrames, (error) => {
                     if (error) {
                         console.error('Failed to update sales timeframes:', error);
@@ -240,8 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // Filter and sort sales data
-                salesData = removeDuplicateSales(Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--"));
+                salesData = Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--");
                 salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
                 filteredSalesData = [];
                 currentSaleIndex = 0;  // Reset to the latest sale
