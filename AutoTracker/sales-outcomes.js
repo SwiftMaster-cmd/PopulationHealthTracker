@@ -79,19 +79,42 @@ document.addEventListener('DOMContentLoaded', function() {
                date1.getMonth() === date2.getMonth();
     }
 
-    function removeDuplicates(sales) {
-        const uniqueSales = [];
-        const seen = new Set();
+    function removeDuplicatesFromFirebase(user) {
+        const database = firebase.database();
+        const outcomesRef = database.ref('salesOutcomes/' + user.uid);
 
-        sales.forEach(sale => {
-            const uniqueKey = `${sale.accountNumber}_${sale.outcomeTime}`;
-            if (!seen.has(uniqueKey)) {
-                seen.add(uniqueKey);
-                uniqueSales.push(sale);
-            }
+        outcomesRef.once('value', (snapshot) => {
+            const outcomes = snapshot.val();
+            if (!outcomes) return;
+
+            const seen = new Set();
+            const duplicates = [];
+
+            Object.keys(outcomes).forEach(key => {
+                const outcome = outcomes[key];
+                const customerName = `${outcome.customerInfo.firstName} ${outcome.customerInfo.lastName}`;
+                const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+                const uniqueKey = `${customerName}_${saleType}`;
+
+                if (seen.has(uniqueKey)) {
+                    duplicates.push({ key, outcome });
+                } else {
+                    seen.add(uniqueKey);
+                }
+            });
+
+            duplicates.sort((a, b) => new Date(b.outcome.outcomeTime) - new Date(a.outcome.outcomeTime));
+
+            duplicates.forEach((duplicate, index) => {
+                if (index > 0) { // Keep the oldest entry and remove the newer ones
+                    outcomesRef.child(duplicate.key).remove().then(() => {
+                        console.log(`Removed duplicate sale: ${duplicate.key}`);
+                    }).catch((error) => {
+                        console.error(`Failed to remove duplicate sale: ${duplicate.key}`, error);
+                    });
+                }
+            });
         });
-
-        return uniqueSales;
     }
 
     let currentSaleIndex = 0;
@@ -172,86 +195,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const salesTimeFrames = {};
 
-                const uniqueOutcomes = removeDuplicates(Object.values(outcomes));
+                const uniqueOutcomes = Object.values(outcomes).reduce((acc, outcome) => {
+                    const customerName = `${outcome.customerInfo.firstName} ${outcome.customerInfo.lastName}`;
+                    const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+                    const uniqueKey = `${customerName}_${saleType}`;
 
-                uniqueOutcomes.forEach(outcome => {
-                    const action = outcome.assignAction;
-                    const notes = outcome.notesValue;
-                    const outcomeTime = new Date(outcome.outcomeTime);
-
-                    console.log(`Processing outcome - Action: "${action}", Notes: "${notes}"`);
-
-                    const saleType = getSaleType(action, notes);
-                    console.log(`Identified Sale Type: ${saleType}`);
-
-                    if (!salesTimeFrames[outcome.accountNumber]) {
-                        salesTimeFrames[outcome.accountNumber] = {};
-                    }
-
-                    if (!salesTimeFrames[outcome.accountNumber][saleType]) {
-                        salesTimeFrames[outcome.accountNumber][saleType] = [];
-                    }
-
-                    salesTimeFrames[outcome.accountNumber][saleType].push(outcomeTime.toISOString());
-
-                    if (isSameDay(outcomeTime, now)) {
-                        if (saleType === 'Billable HRA') {
-                            salesCounts.day.billableHRA++;
-                        } else if (saleType === 'Select RX') {
-                            salesCounts.day.selectRX++;
-                        } else if (saleType === 'Select Patient Management') {
-                            salesCounts.day.selectPatientManagement++;
-                        } else if (saleType === 'Transfer') {
-                            salesCounts.day.transfer++;
-                        }
-                    }
-
-                    if (isSameWeek(outcomeTime, now)) {
-                        if (saleType === 'Billable HRA') {
-                            salesCounts.week.billableHRA++;
-                        } else if (saleType === 'Select RX') {
-                            salesCounts.week.selectRX++;
-                        } else if (saleType === 'Select Patient Management') {
-                            salesCounts.week.selectPatientManagement++;
-                        } else if (saleType === 'Transfer') {
-                            salesCounts.week.transfer++;
-                        }
-                    }
-
-                    if (isSameMonth(outcomeTime, now)) {
-                        if (saleType === 'Billable HRA') {
-                            salesCounts.month.billableHRA++;
-                        } else if (saleType === 'Select RX') {
-                            salesCounts.month.selectRX++;
-                        } else if (saleType === 'Select Patient Management') {
-                            salesCounts.month.selectPatientManagement++;
-                        } else if (saleType === 'Transfer') {
-                            salesCounts.month.transfer++;
-                        }
-                    }
-
-                    console.log('Updated salesCounts:', salesCounts);
-                });
-
-                console.log('Final Sales Counts:', salesCounts);
-
-                salesCountsRef.update(salesCounts, (error) => {
-                    if (error) {
-                        console.error('Failed to update sales counts:', error);
+                    if (!acc[uniqueKey]) {
+                        acc[uniqueKey] = [outcome];
                     } else {
-                        console.log('Sales counts updated successfully:', salesCounts);
+                        acc[uniqueKey].push(outcome);
                     }
-                });
 
-                salesTimeFramesRef.set(salesTimeFrames, (error) => {
-                    if (error) {
-                        console.error('Failed to update sales timeframes:', error);
-                    } else {
-                        console.log('Sales timeframes updated successfully:', salesTimeFrames);
+                    return acc;
+                }, {});
+
+                for (const key in uniqueOutcomes) {
+                    if (uniqueOutcomes[key].length > 1) {
+                        uniqueOutcomes[key].sort((a, b) => new Date(a.outcomeTime) - new Date(b.outcomeTime)).slice(1).forEach(duplicate => {
+                            outcomesRef.child(duplicate.key).remove().then(() => {
+                                console.log(`Removed duplicate sale: ${duplicate.key}`);
+                            }).catch((error) => {
+                                console.error(`Failed to remove duplicate sale: ${duplicate.key}`, error);
+                            });
+                        });
                     }
-                });
+                }
 
-                salesData = uniqueOutcomes.filter(outcome => outcome.assignAction.trim() !== "--");
+                salesData = Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--");
                 salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
                 filteredSalesData = [];
                 currentSaleIndex = 0;  // Reset to the latest sale
@@ -323,4 +293,133 @@ document.addEventListener('DOMContentLoaded', function() {
         currentSaleIndex = 0;
         updateSalesDisplay();
     });
+
+    // Initialize Firebase and attach event listeners
+    function initializeFirebase() {
+        loadScript('https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js', function() {
+            loadScript('https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js', function() {
+                loadScript('https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js', function() {
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+                        authDomain: "track-dac15.firebaseapp.com",
+                        databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+                        projectId: "track-dac15",
+                        storageBucket: "track-dac15.appspot.com",
+                        messagingSenderId: "495156821305",
+                        appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+                        measurementId: "G-RVBYB0RR06"
+                    };
+                    firebase.initializeApp(firebaseConfig);
+
+                    firebase.auth().onAuthStateChanged(user => {
+                        if (user) {
+                            console.log('Authenticated user:', user.displayName);
+                            removeDuplicatesFromFirebase(user);
+                            displaySalesOutcomes(user);
+                            showActiveIndicator();
+                        } else {
+                            console.log("Prompting user to sign in");
+                            const provider = new firebase.auth.GoogleAuthProvider();
+                            firebase.auth().signInWithPopup(provider).then((result) => {
+                                const user = result.user;
+                                console.log('Authenticated user:', user.displayName);
+                                removeDuplicatesFromFirebase(user);
+                                displaySalesOutcomes(user);
+                                showActiveIndicator();
+                            }).catch((error) => {
+                                console.error('Authentication error:', error);
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    function loadScript(src, callback) {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = callback;
+        script.onerror = function() {
+            console.error('Failed to load script:', src);
+        };
+        document.head.appendChild(script);
+    }
+
+    function showActiveIndicator() {
+        const existingIndicator = document.getElementById('tracker-active-indicator');
+        if (existingIndicator) {
+            existingIndicator.style.display = 'block';
+        } else {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                #tracker-active-indicator {
+                    padding: 8px 20px;
+                    color: #000;
+                    font-size: 18px;
+                    font-family: 'Georgia', serif;
+                    border-radius: 8px;
+                    margin: 0 auto;
+                    display: block;
+                    width: 90%;
+                    text-align: center;
+                    position: relative;
+                    transition: all 0.5s ease;
+                    font-weight: bold;
+                }
+                #tracker-active-indicator:hover {
+                    color: #28a745;
+                }
+                #tracker-active-indicator .icon {
+                    display: inline-block;
+                    margin-right: 10px;
+                    transition: color 0.5s ease;
+                    color: #28a745;
+                    font-size: 22px;
+                }
+                #tracker-active-indicator .version {
+                    font-size: 14px;
+                    color: #666;
+                    margin-left: 10px;
+                }
+                #sale-notification {
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background-color: #28a745;
+                    color: #fff;
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    display: none;
+                    z-index: 1000;
+                }
+            `;
+            document.head.appendChild(style);
+            const indicator = document.createElement('div');
+            indicator.id = 'tracker-active-indicator';
+            indicator.innerHTML = '<span class="icon">✔</span> Tracker Active<span class="version">V-2.1</span>';
+            const actionsHeader = document.evaluate("//h3[text()='Actions']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            if (actionsHeader) {
+                actionsHeader.parentElement.appendChild(indicator);
+            } else {
+                console.error('Actions header element not found');
+            }
+            const notification = document.createElement('div');
+            notification.id = 'sale-notification';
+            notification.textContent = 'Sale added successfully!';
+            document.body.appendChild(notification);
+        }
+    }
+
+    function showNotification() {
+        const notification = document.getElementById('sale-notification');
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3600);
+    }
+
+    initializeFirebase();
 });
