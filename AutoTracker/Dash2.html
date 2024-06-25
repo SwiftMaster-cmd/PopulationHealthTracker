@@ -35,7 +35,6 @@
 
     <div class="main-container">
 
-        <!-- Leaderboard Container -->
         <div class="picker-leaderboard-container container">
             <div class="picker-container">
                 <select id="periodPicker" class="picker">
@@ -43,15 +42,38 @@
                     <option value="week">Week</option>
                     <option value="month">Month</option>
                 </select>
-                <select id="saleTypePicker" class="picker">
-                    <option value="selectRX">S.R.X.</option>
-                    <option value="billableHRA">H.R.A.</option>
-                    <option value="transfer">Partner</option>
-                    <option value="selectPatientManagement">S.P.M.</option>
-                </select>
+            </div>
+            <div class="sale-type-radio-container">
+                <label>
+                    <input type="checkbox" class="sale-type" value="selectRX"> S.R.X.
+                </label>
+                <label>
+                    <input type="checkbox" class="sale-type" value="billableHRA"> H.R.A.
+                </label>
+                <label>
+                    <input type="checkbox" class="sale-type" value="transfer"> Partner
+                </label>
+                <label>
+                    <input type="checkbox" class="sale-type" value="selectPatientManagement"> S.P.M.
+                </label>
             </div>
             <div id="leaderboard-section"></div>
         </div>
+
+        <!-- Chart Container -->
+        <div class="picker-chart-container container">
+            <div class="picker-container">
+                <select id="chartPeriodPicker" class="picker">
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                </select>
+            </div>
+            <div id="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
 
         <!-- Chart Container -->
         <div class="picker-chart-container container">

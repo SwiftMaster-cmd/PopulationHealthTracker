@@ -96,7 +96,7 @@ body {
 
 #leaderboard-section {
     width: 100%;
-    background-color: var(--color-tertiary);
+    background-color: var(--color-secondary);
     padding: 10px;
     border-radius: 10px;
     color: inherit;
@@ -113,7 +113,7 @@ body {
 }
 
 .leaderboard-item {
-    background-color: var(--color-secondary);
+    background-color: var(--color-quaternary);
     border-radius: 10px;
     padding: 5px;
     margin: 3px;
