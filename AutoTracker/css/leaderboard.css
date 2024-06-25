@@ -226,3 +226,24 @@ body {
         padding: 8px;
     }
 }
+
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+        "leaderboard"
+        "salesHistory"
+        "chart"
+        "monthlyTotals";
+    grid-gap: 20px;
+    width: 95%;
+    height: 95%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--color-secondary);
+    box-sizing: border-box;
+    overflow-y: auto;
+    margin: 75px auto 0 auto;
+    max-height: 750px; /* Set maximum height */
+}
