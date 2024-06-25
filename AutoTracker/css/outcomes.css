@@ -48,8 +48,8 @@ body {
     padding: 10px 15px; /* Adjusted padding */
     border: 1px solid var(--color-quaternary);
     border-radius: 5px;
-    background-color: var(--color-tertiary);
-    color: var(--text-color);
+    background-color: var(--color-secondary);
+    color: var(--color-tertiary);
     width: 100%; /* Make the input take the full width */
     box-sizing: border-box; /* Include padding and border in the element's total width */
     font-size: 18px; /* Adjusted font size */
@@ -62,7 +62,7 @@ search-container button {
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: var(--color-quaternary);
+    color: var(--color-secondary);
     font-size: 24px; /* Adjusted font size */
     cursor: pointer;
 }
