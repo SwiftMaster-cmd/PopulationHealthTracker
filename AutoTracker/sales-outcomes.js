@@ -79,6 +79,21 @@ document.addEventListener('DOMContentLoaded', function() {
                date1.getMonth() === date2.getMonth();
     }
 
+    function removeDuplicates(sales) {
+        const uniqueSales = [];
+        const seen = new Set();
+
+        sales.forEach(sale => {
+            const uniqueKey = `${sale.accountNumber}_${sale.outcomeTime}`;
+            if (!seen.has(uniqueKey)) {
+                seen.add(uniqueKey);
+                uniqueSales.push(sale);
+            }
+        });
+
+        return uniqueSales;
+    }
+
     let currentSaleIndex = 0;
     let salesData = [];
     let filteredSalesData = [];
@@ -157,13 +172,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const salesTimeFrames = {};
 
-                for (const key in outcomes) {
-                    const outcome = outcomes[key];
+                const uniqueOutcomes = removeDuplicates(Object.values(outcomes));
+
+                uniqueOutcomes.forEach(outcome => {
                     const action = outcome.assignAction;
                     const notes = outcome.notesValue;
                     const outcomeTime = new Date(outcome.outcomeTime);
 
-                    console.log(`Processing outcome - Key: ${key}, Action: "${action}", Notes: "${notes}"`);
+                    console.log(`Processing outcome - Action: "${action}", Notes: "${notes}"`);
 
                     const saleType = getSaleType(action, notes);
                     console.log(`Identified Sale Type: ${saleType}`);
@@ -215,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     console.log('Updated salesCounts:', salesCounts);
-                }
+                });
 
                 console.log('Final Sales Counts:', salesCounts);
 
@@ -235,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                salesData = Object.values(outcomes).filter(outcome => outcome.assignAction.trim() !== "--");
+                salesData = uniqueOutcomes.filter(outcome => outcome.assignAction.trim() !== "--");
                 salesData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
                 filteredSalesData = [];
                 currentSaleIndex = 0;  // Reset to the latest sale
