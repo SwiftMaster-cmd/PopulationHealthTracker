@@ -18,9 +18,8 @@ html, body {
     height: 95%;
     padding: 20px;
     border-radius: 10px;
-    background-color: var(--color-secondary);
     box-sizing: border-box;
-    margin: 75px auto 0 auto;
+    margin: 100px auto 0 auto;
 }
 
 .container {
