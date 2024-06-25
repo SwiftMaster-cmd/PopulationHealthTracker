@@ -1,0 +1,59 @@
+:root {
+    --color-primary: #007bff;
+    --color-secondary: #6c757d;
+    --color-tertiary: #28a745;
+    --color-quaternary: #17a2b8;
+    --color-quinary: #ffc107;
+
+    --line-color-1: #FFD700;
+    --line-color-2: #00FF00;
+    --line-color-3: #1E90FF;
+    --line-color-4: #FF69B4;
+}
+
+
+
+.picker-chart-container {
+    grid-area: chart;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    width: 750px;
+    height: 500px;
+    
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+.chart-picker-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.chart-picker {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: var(--color-primary);
+    color: inherit;
+    cursor: pointer;
+}
+
+.chart-button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    color: inherit;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.chart-button:hover {
+    opacity: 0.8;
+}
