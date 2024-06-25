@@ -1,7 +1,19 @@
+:root {
+    --color-primary: #001f3f; /* Dark blue */
+    --color-secondary: #111111; /* Black */
+    --color-tertiary: #005f99; /* Lighter blue */
+    --color-quaternary: #333333; /* Dark grey */
+    --color-quinary: #666666; /* Lighter grey */
+    --text-color: #ffffff;
+}
+
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--color-secondary);
+    color: var(--text-color);
 }
 
 .main-container {
@@ -20,24 +32,27 @@ html, body {
     border-radius: 10px;
     box-sizing: border-box;
     margin: 100px auto 0 auto;
+    background: linear-gradient(to bottom, var(--color-secondary), var(--color-quaternary));
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
 }
 
 .container {
-    background-color: var(--color-primary);
+    background: linear-gradient(to bottom, var(--color-primary), var(--color-tertiary));
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    color: #ffffff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    color: var(--text-color);
 }
 
-/* Add this to your CSS file */
 .popup-container {
-    background-color: white;
+    background-color: #ffffff;
     border: 1px solid #ccc;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     padding: 10px;
     border-radius: 4px;
     z-index: 1000;
+    color: #000000;
 }
 
 .sign-out-button {
@@ -47,8 +62,426 @@ html, body {
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .sign-out-button:hover {
     background-color: #d32f2f;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.header-container h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.profile-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-tertiary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.profile-button:hover {
+    background-color: var(--color-quaternary);
+}
+
+.picker-leaderboard-container {
+    grid-area: leaderboard;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
+}
+
+.picker-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.picker {
+    width: 48%; /* Adjust width to fit within the container */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: var(--color-primary);
+    color: inherit;
+    cursor: pointer;
+}
+
+#leaderboard-section {
+    width: 100%;
+    background-color: var(--color-secondary);
+    padding: 10px;
+    border-radius: 10px;
+    color: inherit;
+    box-sizing: border-box;
+    text-align: center;
+    margin-top: 20px; /* Space between pickers and leaderboard */
+}
+
+.leaderboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center children horizontally */
+    align-items: center; /* Center children vertically */
+}
+
+.leaderboard-item {
+    background-color: var(--color-quaternary);
+    border-radius: 10px;
+    padding: 5px;
+    margin: 3px;
+    color: inherit;
+    width: 25%;
+    text-align: center;
+    font-size: 1.2em;
+    margin: 3px auto; /* Center each item */
+}
+
+.picker-chart-container {
+    grid-area: chart;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
+}
+
+#chart-container {
+    width: 100%;
+    height: 100%;
+}
+
+#salesChart {
+    width: 100%;
+    height: 100%;
+}
+
+.sales-history-container {
+    grid-area: salesHistory;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-section h2 {
+    margin: 0;
+    font-size: 30px;
+    color: var(--text-color);
+    flex: 1; /* Ensure the heading takes up remaining space */
+    text-align: left; /* Align the title to the left */
+}
+
+.search-container {
+    position: relative;
+    width: auto;
+    margin-left: auto; /* Align the search container to the right */
+}
+
+.search-container input {
+    padding: 10px 15px;
+    border: 1px solid var(--color-quaternary);
+    border-radius: 5px;
+    background-color: var(--color-secondary);
+    color: var(--text-color);
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+.search-container button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.lead-id-container {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    color: var(--text-color);
+    background-color: var(--color-secondary);
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 20px;
+}
+
+.sales-history-content {
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+.sales-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-quaternary);
+}
+
+.sales-history-item:last-child {
+    border-bottom: none;
+}
+
+.sales-history-item .details {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 70%;
+}
+
+.sales-history-item .details p {
+    margin: 4px 0;
+    font-size: 18px;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sales-history-item .date-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 30%;
+}
+
+.sales-history-item .date-time span {
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.customer-info-container {
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+.customer-info-container p {
+    margin: 4px 0;
+    font-size: 18px;
+}
+
+.navigation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.navigation-container button {
+    padding: 10px 15px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-secondary);
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.navigation-container button:disabled {
+    background-color: var(--color-quaternary);
+}
+
+.navigation-container span {
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.monthly-sales-totals-container {
+    grid-area: monthlyTotals;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Ensures the content starts from the top */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.monthly-sales-totals-container h2 {
+    margin: 0 0 20px;
+    font-size: 24px;
+    color: var(--text-color);
+}
+
+.select-level-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.select-level-container label {
+    margin-right: 10px;
+}
+
+.select-level-container select {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--color-secondary);
+    color: var(--text-color);
+}
+
+.sales-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.sales-item {
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+
+.sales-label {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.sales-value {
+    margin: 5px 0;
+    font-size: 24px;
+    color: var(--highlight-color);
+}
+
+.sales-count {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.summary-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.summary-item {
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+
+.summary-label {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.summary-value {
+    margin: 5px 0;
+    font-size: 24px;
+    color: var(--highlight-color);
+}
+
+#last-month-value {
+    color: var(--negative-color);
+}
+
+@media (max-width: 700px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: 
+            "leaderboard"
+            "chart"
+            "salesHistory"
+            "monthlyTotals";
+    }
+
+    .picker-container {
+        flex-direction: column;
+    }
+
+    .picker {
+        font-size: 14px;
+        padding: 8px;
+    }
 }
