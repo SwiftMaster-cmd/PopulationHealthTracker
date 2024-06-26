@@ -15,7 +15,7 @@ body, html {
 
 .main-container {
     display: grid;
-    grid-template-columns: 45% 45%; /* Adjusted column widths */
+    grid-template-columns: 48% 48%; /* Adjusted column widths */
     grid-template-rows: auto auto auto; /* Three rows */
     grid-template-areas: 
         "leaderboard salesHistory"
