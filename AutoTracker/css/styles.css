@@ -7,12 +7,16 @@
     --text-color: #ffffff;
 }
 
-body, html {
-    height: 100%;
+html, body {
+    min-height: 100%;
     margin: 0;
     padding: 0;
-    background-color: var(--color-secondary);
+}
 
+body {
+    background-color: var(--color-secondary);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
 }
 
 .main-container {
@@ -26,7 +30,6 @@ body, html {
         "monthlyTotals";
     grid-gap: 20px;
     width: 95%;
-    height: 95%;
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
