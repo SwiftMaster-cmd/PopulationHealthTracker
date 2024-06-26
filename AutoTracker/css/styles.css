@@ -1,3 +1,13 @@
+:root {
+    --color-primary: #007bff;
+    --color-secondary: #6c757d;
+    --color-tertiary: #28a745;
+    --color-quaternary: #17a2b8;
+    --color-quinary: #ffc107;
+    --text-color: #ffffff;
+}
+
+
 body, html {
     height: 100%;
     margin: 0;
