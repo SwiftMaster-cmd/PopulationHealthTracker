@@ -150,34 +150,6 @@ body {
     height: 100%;
 }
 
-.sales-history-container {
-    grid-area: salesHistory;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--color-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    justify-content: flex-start; /* Ensures the content starts from the top */
-}
-
-.monthly-sales-totals-container {
-    grid-area: monthlyTotals;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--color-primary);
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    justify-content: flex-start; /* Ensures the content starts from the top */
-}
-
 .button {
     padding: 10px 20px;
     margin: 5px;
