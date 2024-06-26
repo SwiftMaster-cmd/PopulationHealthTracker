@@ -169,24 +169,3 @@ body {
     text-align: center;
     margin: 20px 0;
 }
-
-@media (max-width: 700px) {
-    .main-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        grid-template-areas: 
-            "leaderboard"
-            "chart"
-            "salesHistory"
-            "monthlyTotals";
-    }
-
-    .picker-container {
-        flex-direction: column;
-    }
-
-    .picker {
-        font-size: 14px;
-        padding: 8px;
-    }
-}
