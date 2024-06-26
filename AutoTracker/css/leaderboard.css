@@ -125,6 +125,7 @@ body {
     text-align: center;
     font-size: 1.2em;
     margin: 3px auto; /* Center each item */
+    margin-bottom: 15px; /* Add spacing below each item */
 }
 
 .picker-chart-container {
