@@ -14,7 +14,7 @@ html, body {
 }
 
 body {
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     color: var(--text-color);
     font-family: Arial, sans-serif;
 }
