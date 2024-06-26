@@ -1,17 +1,7 @@
-:root {
-    --color-primary: #282c34; /* Dark background */
-    --color-secondary: #61dafb; /* Light blue */
-    --color-tertiary: #20232a; /* Darker background */
-    --color-quaternary: #ffffff; /* White for text */
-    --color-quinary: #888888; /* Light gray for subtle elements */
-}
-
 body, html {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: var(--color-primary);
-    color: var(--color-quaternary);
 }
 
 .main-container {
@@ -35,7 +25,7 @@ body, html {
 }
 
 .container {
-    background-color: var(--color-tertiary);
+    background-color: var(--color-primary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -43,22 +33,23 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--color-quaternary);
+    color: #ffffff;
 }
 
+/* Add this to your CSS file */
+
 .popup-container {
-    background-color: var(--color-quaternary);
+    background-color: white;
     border: 1px solid #ccc;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     padding: 10px;
     border-radius: 4px;
     z-index: 1000;
-    color: var(--color-primary);
 }
 
 .sign-out-button {
     background-color: #f44336;
-    color: var(--color-quaternary);
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
@@ -67,18 +58,4 @@ body, html {
 
 .sign-out-button:hover {
     background-color: #d32f2f;
-}
-
-/* Additional styling for contrast */
-.header-container h1, .header-container .profile-button {
-    color: var(--color-quaternary);
-}
-
-input, select, button {
-    color: var(--color-primary);
-    background-color: var(--color-quaternary);
-}
-
-input::placeholder, select option {
-    color: var(--color-quinary);
 }
