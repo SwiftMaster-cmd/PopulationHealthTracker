@@ -157,9 +157,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const salesTimeFrames = {};
 
-                // To keep track of unique sales
-                const uniqueSales = {};
-
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
                     const action = outcome.assignAction;
@@ -170,15 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const saleType = getSaleType(action, notes);
                     console.log(`Identified Sale Type: ${saleType}`);
-
-                    // Check for duplicates
-                    const saleKey = `${outcome.accountNumber}_${saleType}_${outcomeTime.toISOString()}`;
-                    if (uniqueSales[saleKey]) {
-                        console.log(`Duplicate sale found - Key: ${key}. Deleting...`);
-                        outcomesRef.child(key).remove();
-                        continue;
-                    }
-                    uniqueSales[saleKey] = true;
 
                     if (!salesTimeFrames[outcome.accountNumber]) {
                         salesTimeFrames[outcome.accountNumber] = {};
@@ -239,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                salesTimeFramesRef.set(salesTimeFrames,(error) => {
+                salesTimeFramesRef.set(salesTimeFrames, (error) => {
                     if (error) {
                         console.error('Failed to update sales timeframes:', error);
                     } else {
