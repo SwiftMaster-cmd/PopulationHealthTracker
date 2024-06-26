@@ -1,41 +1,22 @@
-document.addEventListener('firebaseInitialized', function() {
-    const db = firebase.database();
+document.addEventListener('DOMContentLoaded', function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+        authDomain: "track-dac15.firebaseapp.com",
+        databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+        projectId: "track-dac15",
+        storageBucket: "track-dac15.appspot.com",
+        messagingSenderId: "495156821305",
+        appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+        measurementId: "G-RVBYB0RR06"
+    };
 
-    async function removeDuplicates() {
-        const salesOutcomesRef = db.ref('salesOutcomes');
-        const snapshot = await salesOutcomesRef.once('value');
-        const salesOutcomes = snapshot.val();
-
-        if (!salesOutcomes) {
-            console.log('No sales outcomes found.');
-            return;
-        }
-
-        const uniqueEntries = new Set();
-        const duplicateKeys = [];
-
-        for (const [key, outcome] of Object.entries(salesOutcomes)) {
-            const uniqueIdentifier = `${outcome.accountNumber}-${outcome.assignAction}-${outcome.outcomeTime}-${outcome.userId}`;
-            if (uniqueEntries.has(uniqueIdentifier)) {
-                duplicateKeys.push(key);
-            } else {
-                uniqueEntries.add(uniqueIdentifier);
-            }
-        }
-
-        const promises = duplicateKeys.map(key => salesOutcomesRef.child(key).remove());
-
-        try {
-            await Promise.all(promises);
-            console.log(`Removed ${duplicateKeys.length} duplicate entries.`);
-        } catch (error) {
-            console.error('Error removing duplicates:', error);
-        }
+    // Check if Firebase has been initialized
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    } else {
+        firebase.app(); // if already initialized, use that one
     }
-
-    removeDuplicates().then(() => {
-        console.log('Duplicate removal process completed.');
-    }).catch(error => {
-        console.error('Error:', error);
-    });
+    
+    // Dispatch custom event to notify other scripts
+    document.dispatchEvent(new Event('firebaseInitialized'));
 });
