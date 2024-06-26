@@ -102,7 +102,7 @@ body {
     border-radius: 10px;
     color: var(--text-color);
     box-sizing: border-box;
-    text-align: center;
+    text-align: flex-start;
     margin-top: 20px; /* Space between pickers and leaderboard */
     flex-shrink: 0; /* Ensure it doesn't shrink */
 }
