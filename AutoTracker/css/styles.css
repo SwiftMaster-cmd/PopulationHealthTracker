@@ -30,7 +30,6 @@ body, html {
     border-radius: 10px;
     background-color: var(--color-secondary);
     box-sizing: border-box;
-    overflow-y: auto;
     margin: 75px auto 0 auto;
 }
 
