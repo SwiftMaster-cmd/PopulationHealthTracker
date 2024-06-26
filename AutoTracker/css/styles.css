@@ -7,29 +7,14 @@
     --text-color: #ffffff;
 }
 
-html, body {
-    min-height: 100%;
+
+body, html {
+
+    height: 100%;
     margin: 0;
     padding: 0;
-}
+    background-color: var(--color-se);
 
-body {
-    background-color: var(--color-secondary);
-    color: var(--text-color);
-    font-family: Arial, sans-serif;
-}
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: var(--color-primary);
-    color: var(--text-color);
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    text-align: center;
 }
 
 .main-container {
@@ -43,10 +28,11 @@ header {
         "monthlyTotals";
     grid-gap: 20px;
     width: 95%;
+    height: 95%;
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
-    margin: 120px auto 0 auto; /* Adjusted to account for fixed header height */
+    margin: 100px auto 0 auto;
 }
 
 .container {
@@ -54,11 +40,14 @@ header {
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--text-color);
+    color: #ffffff;
 }
+
+/* Add this to your CSS file */
 
 .popup-container {
     background-color: white;
@@ -80,24 +69,4 @@ header {
 
 .sign-out-button:hover {
     background-color: #d32f2f;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-    width: 12px; /* Width of the scrollbar */
-}
-
-::-webkit-scrollbar-track {
-    background: var(--color-secondary); /* Color of the scrollbar track */
-    border-radius: 10px; /* Rounded corners */
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--color-primary); /* Color of the scrollbar thumb */
-    border-radius: 10px; /* Rounded corners */
-    border: 3px solid var(--color-secondary); /* Space around the thumb */
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-tertiary); /* Change thumb color on hover */
 }
