@@ -105,6 +105,8 @@ body {
     box-sizing: border-box;
     text-align: center;
     margin-top: 20px; /* Space between pickers and leaderboard */
+
+    margin-bottom: 20px;
 }
 
 .leaderboard-container {
