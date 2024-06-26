@@ -1,11 +1,6 @@
 document.addEventListener('firebaseInitialized', function() {
     const db = firebase.database();
 
-    function roundToNearestMinute(dateTime, minutes = 1) {
-        const ms = 1000 * 60 * minutes; // convert minutes to milliseconds
-        return new Date(Math.round(new Date(dateTime).getTime() / ms) * ms).toISOString();
-    }
-
     async function removeDuplicates() {
         const salesOutcomesRef = db.ref('salesOutcomes');
         const snapshot = await salesOutcomesRef.once('value');
@@ -20,8 +15,7 @@ document.addEventListener('firebaseInitialized', function() {
         const duplicateKeys = [];
 
         for (const [key, outcome] of Object.entries(salesOutcomes)) {
-            const roundedOutcomeTime = roundToNearestMinute(outcome.outcomeTime, 1);
-            const uniqueIdentifier = `${outcome.accountNumber}-${outcome.assignAction}-${roundedOutcomeTime}-${outcome.userId}`;
+            const uniqueIdentifier = `${outcome.accountNumber}-${outcome.assignAction}-${outcome.userId}`;
             if (uniqueEntries.has(uniqueIdentifier)) {
                 duplicateKeys.push(key);
             } else {
