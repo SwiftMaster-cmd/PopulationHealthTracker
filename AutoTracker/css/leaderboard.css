@@ -99,14 +99,13 @@ body {
 #leaderboard-section {
     width: 100%;
     background-color: var(--color-secondary);
-    padding: 10px;
+    padding: 25px;
     border-radius: 10px;
     color: var(--text-color);
     box-sizing: border-box;
     text-align: center;
     margin-top: 20px; /* Space between pickers and leaderboard */
 
-    margin-bottom: 20px;
 }
 
 .leaderboard-container {
