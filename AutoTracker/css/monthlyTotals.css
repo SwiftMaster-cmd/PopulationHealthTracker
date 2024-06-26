@@ -1,0 +1,121 @@
+:root {
+    --color-primary: #007bff;
+    --color-secondary: #6c757d;
+    --color-tertiary: #28a745;
+    --color-quaternary: #17a2b8;
+    --color-quinary: #ffc107;
+    --text-color: #ffffff;
+    --background-color: #333333;
+    --highlight-color: #87ff87;
+    --negative-color: #ff8787;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+
+
+.monthly-sales-totals-container {
+    grid-area: monthlyTotals;
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    padding: 20px;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.monthly-sales-totals-container h2 {
+    margin: 0 0 20px;
+    font-size: 24px;
+    color: var(--text-color);
+}
+
+.select-level-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.select-level-container label {
+    margin-right: 10px;
+}
+
+.select-level-container select {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--color-secondary);
+    color: var(--text-color);
+}
+
+.sales-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.sales-item {
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+
+.sales-label {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.sales-value {
+    margin: 5px 0;
+    font-size: 24px;
+    color: var(--highlight-color);
+}
+
+.sales-count {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.summary-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.summary-item {
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+
+.summary-label {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.summary-value {
+    margin: 5px 0;
+    font-size: 24px;
+    color: var(--highlight-color);
+}
+
+#last-month-value {
+    color: var(--negative-color);
+}
