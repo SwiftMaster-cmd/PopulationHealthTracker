@@ -1,7 +1,7 @@
 :root {
-    --color-primary: #2C3E50;         /* Dark Blue */
-    --color-secondary: #7F8C8D;       /* Dark Gray */
-    --color-tertiary: #3498DB;        /* Accent Blue */
+    --color-primary: #2C3E50;         /* Dark Blue for background */
+    --color-secondary: #7F8C8D;       /* Dark Gray for containers */
+    --color-tertiary: #3498DB;        /* Accent Blue for one-off items */
     --color-quaternary: #BDC3C7;      /* Light Gray */
     --color-quinary: #ECF0F1;         /* Very Light Gray */
     --text-color: #FFFFFF;            /* White */
@@ -18,7 +18,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--background-color);
+    background-color: var(--color-primary);
     color: var(--text-color);
     display: flex;
     justify-content: center;
@@ -128,7 +128,7 @@ body {
 
 #leaderboard-section {
     width: 100%;
-    background-color: var(--color-tertiary);
+    background-color: var(--color-secondary);
     padding: 10px;
     border-radius: 10px;
     color: var(--text-color);
@@ -217,7 +217,7 @@ body {
     border: 1px solid var(--color-quaternary);
     border-radius: 5px;
     background-color: var(--color-secondary);
-    color: var(--color-tertiary);
+    color: var(--color-quinary);
     width: 100%;
     box-sizing: border-box;
     font-size: 18px;
@@ -338,12 +338,13 @@ body {
 
 .monthly-sales-totals-container {
     grid-area: monthlyTotals;
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
 }
+
 .monthly-sales-totals-container h2 {
     margin: 0 0 20px;
     font-size: 24px;
