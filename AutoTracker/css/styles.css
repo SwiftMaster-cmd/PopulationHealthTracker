@@ -18,8 +18,8 @@ body, html {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     grid-template-areas: 
-        "leaderboard"
-        "salesHistory"
+        "leaderboard salesHistory"
+
         "chart"
         "monthlyTotals";
     grid-gap: 20px;
