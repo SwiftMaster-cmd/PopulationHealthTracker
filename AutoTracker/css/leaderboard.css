@@ -98,7 +98,7 @@ body {
 
 #leaderboard-section {
     width: 100%;
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     padding: 10px;
     border-radius: 10px;
     color: var(--text-color);
