@@ -9,6 +9,7 @@
 
 
 body, html {
+
     height: 100%;
     margin: 0;
     padding: 0;
@@ -30,8 +31,7 @@ body, html {
     border-radius: 10px;
     background-color: var(--color-secondary);
     box-sizing: border-box;
-    overflow-y: auto;
-    margin: 75px auto 0 auto;
+    margin: 100px auto 0 auto;
 }
 
 .container {
