@@ -4,14 +4,16 @@
     --color-tertiary: #28a745;
     --color-quaternary: #17a2b8;
     --color-quinary: #ffc107;
+    --text-color: #ffffff;
+    --background-color: #282c34;
 }
 
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--color-primary);
-    color: #ffffff;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .title {
@@ -40,7 +42,7 @@ body {
 .header-container h1 {
     margin: 0;
     font-size: 24px;
-    color: #ffffff;
+    color: var(--text-color);
 }
 
 .profile-button {
@@ -51,7 +53,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #ffffff;
+    color: var(--text-color);
     font-size: 18px;
     cursor: pointer;
     border: none;
@@ -90,16 +92,16 @@ body {
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: var(--color-primary);
-    color: inherit;
+    color: var(--text-color);
     cursor: pointer;
 }
 
 #leaderboard-section {
     width: 100%;
-    background-color: var(--color-secondary);
+    background-color: var(--color-tertiary);
     padding: 10px;
     border-radius: 10px;
-    color: inherit;
+    color: var(--text-color);
     box-sizing: border-box;
     text-align: center;
     margin-top: 20px; /* Space between pickers and leaderboard */
@@ -113,11 +115,11 @@ body {
 }
 
 .leaderboard-item {
-    background-color: var(--color-quaternary);
+    background-color: var(--color-quinary);
     border-radius: 10px;
     padding: 5px;
     margin: 3px;
-    color: inherit;
+    color: var(--background-color);
     width: 25%;
     text-align: center;
     font-size: 1.2em;
@@ -176,31 +178,13 @@ body {
     justify-content: flex-start; /* Ensures the content starts from the top */
 }
 
-.picker-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 10px;
-    width: 100%;
-}
-
-.picker {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: var(--color-primary);
-    color: inherit;
-    cursor: pointer;
-}
-
 .button {
     padding: 10px 20px;
     margin: 5px;
     border: none;
     border-radius: 5px;
     background-color: var(--color-primary);
-    color: inherit;
+    color: var(--text-color);
     cursor: pointer;
     font-size: 16px;
 }
