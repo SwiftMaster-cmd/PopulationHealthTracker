@@ -53,12 +53,6 @@
         }
 
         async function registerUser(email, password) {
-    const token = grecaptcha.getResponse();
-    if (!token) {
-        alert('Please complete the reCAPTCHA.');
-        return;
-    }
-
     if (!email.includes('@') || !email.includes('.')) {
         alert('Please enter a valid email address.');
         return;
