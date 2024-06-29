@@ -4,8 +4,14 @@ document.getElementById('linkGoogleButton').addEventListener('click', async () =
 
     try {
         if (user) {
-            await user.linkWithPopup(provider);
-            alert('Successfully linked to Google account.');
+            // Check if already linked
+            const linkedProviders = user.providerData.map(provider => provider.providerId);
+            if (!linkedProviders.includes(firebase.auth.GoogleAuthProvider.PROVIDER_ID)) {
+                await user.linkWithPopup(provider);
+                alert('Successfully linked to Google account.');
+            } else {
+                alert('Google account already linked.');
+            }
             loadUserData(user.uid);
         }
     } catch (error) {
