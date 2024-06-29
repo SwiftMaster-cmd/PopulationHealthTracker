@@ -15,8 +15,7 @@ body, html {
     font-family: Arial, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
-    background-size: cover; /* Ensure background covers the entire area */
-    background-attachment: fixed; /* Fix the background in place */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .header-container {
@@ -39,6 +38,7 @@ body, html {
     padding: 100px 20px 20px; /* Top padding adjusted for header */
     max-width: 1200px;
     margin: 0 auto;
+    background-color: var(--background-color); /* Ensure consistent background */
 }
 
 .container {
