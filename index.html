@@ -7,8 +7,8 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -21,6 +21,7 @@
             measurementId: "G-RVBYB0RR06"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
@@ -66,45 +67,68 @@
         }
 
         async function registerUser(email, password, fullName, phoneNumber) {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User registered:', userCredential.user);
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                console.log('User registered:', userCredential.user);
 
-        await sendEmailVerification(userCredential.user);
-        alert('Verification email sent. Please check your inbox.');
+                await sendEmailVerification(userCredential.user);
+                alert('Verification email sent. Please check your inbox.');
 
-        const userDataRef = ref(database, 'users/' + userCredential.user.uid);
-        await set(userDataRef, {
-            email,
-            fullName,
-            phoneNumber
-        });
-    } catch (error) {
-        if (error.code === 'auth/email-already-in-use') {
-            alert('This email is already registered. Please use a different email or log in.');
-        } else {
-            console.error('Registration error:', error);
+                const userDataRef = ref(database, 'users/' + userCredential.user.uid);
+                await set(userDataRef, {
+                    email,
+                    fullName,
+                    phoneNumber
+                });
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('This email is already registered. Please use a different email or log in.');
+                } else {
+                    console.error('Registration error:', error);
+                }
+            }
         }
-    }
-}
 
-async function loginUser(email, password) {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('User logged in:', userCredential.user);
-        window.location.href = 'user-dashboard.html';
-    } catch (error) {
-        if (error.code === 'auth/invalid-email') {
-            alert('Invalid email format. Please check your email.');
-        } else if (error.code === 'auth/user-not-found') {
-            alert('No user found with this email. Please register first.');
-        } else if (error.code === 'auth/wrong-password') {
-            alert('Incorrect password. Please try again.');
-        } else {
-            console.error('Login error:', error);
+        async function handleLogin(email, password) {
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                console.log('User logged in:', user);
+
+                loadUserData(user.uid);
+            } catch (error) {
+                handleAuthError(error);
+            }
         }
-    }
-}
+
+        async function loadUserData(uid) {
+            const salesRef = ref(database, 'sales/' + uid);
+
+            try {
+                const snapshot = await get(salesRef);
+                if (snapshot.exists()) {
+                    const salesData = snapshot.val();
+                    console.log('Sales data:', salesData);
+                    // Display the sales data as needed
+                } else {
+                    console.log('No sales data found for this user.');
+                }
+            } catch (error) {
+                console.error('Error fetching sales data:', error);
+            }
+        }
+
+        function handleAuthError(error) {
+            if (error.code === 'auth/invalid-email') {
+                alert('Invalid email format. Please check your email.');
+            } else if (error.code === 'auth/user-not-found') {
+                alert('No user found with this email. Please register first.');
+            } else if (error.code === 'auth/wrong-password') {
+                alert('Incorrect password. Please try again.');
+            } else {
+                console.error('Login error:', error);
+            }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
@@ -118,7 +142,7 @@ async function loginUser(email, password) {
             document.getElementById('loginButton').addEventListener('click', () => {
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
-                loginUser(email, password);
+                handleLogin(email, password);
             });
             document.getElementById('toggleRegister').addEventListener('click', () => {
                 const registerForm = document.getElementById('registerForm');
