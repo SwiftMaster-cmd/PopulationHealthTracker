@@ -9,17 +9,17 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "your-api-key",
-            authDomain: "your-auth-domain",
-            databaseURL: "your-database-url",
-            projectId: "your-project-id",
-            storageBucket: "your-storage-bucket",
-            messagingSenderId: "your-sender-id",
-            appId: "your-app-id",
-            measurementId: "your-measurement-id"
+            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+            authDomain: "track-dac15.firebaseapp.com",
+            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+            projectId: "track-dac15",
+            storageBucket: "track-dac15.appspot.com",
+            messagingSenderId: "495156821305",
+            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+            measurementId: "G-RVBYB0RR06"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -52,29 +52,12 @@
             }
         }
 
-        async function registerWithEmailAndPassword(email, password) {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await sendEmailVerification(auth.currentUser);
-                alert('Registration successful. Please check your email for verification.');
-                // Optionally, you can redirect to a different page or handle the verification email prompt here.
-            } catch (error) {
-                console.error('Error during registration:', error);
-                alert('Failed to register. Please try again.');
-            }
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
             document.getElementById('emailSignInButton').addEventListener('click', () => {
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
                 emailPasswordSignIn(email, password);
-            });
-            document.getElementById('registerButton').addEventListener('click', () => {
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                registerWithEmailAndPassword(email, password);
             });
         });
     </script>
@@ -91,12 +74,6 @@
             <input type="email" id="loginEmail" placeholder="Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
             <button id="emailSignInButton">Login</button>
-        </div>
-        <h3>Register with Email</h3>
-        <div class="form-group">
-            <input type="email" id="registerEmail" placeholder="Email" required>
-            <input type="password" id="registerPassword" placeholder="Password" required>
-            <button id="registerButton">Register</button>
         </div>
     </div>
 </body>
