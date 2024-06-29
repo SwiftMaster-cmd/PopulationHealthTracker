@@ -3,12 +3,14 @@
 <head>
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
+    <script src="main.js" defer></script>
+
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -21,6 +23,7 @@
             measurementId: "G-RVBYB0RR06"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
@@ -35,193 +38,26 @@
 
             try {
                 const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-
-                const userRef = ref(database, 'users/' + user.uid);
-                await set(userRef, {
-                    email: user.email
-                });
-
-                console.log('User data saved:', { uid: user.uid, email: user.email });
-
-                const roleRef = ref(database, `users/${user.uid}/role`);
-                const snapshot = await get(roleRef);
-
-                if (snapshot.exists()) {
-                    const role = snapshot.val();
-                    if (role === 'manager') {
-                        window.location.href = 'owner-portal.html';
-                    } else {
-                        window.location.href = 'user-dashboard.html';
-                    }
-                } else {
-                    console.log('No specific role found, redirecting to user dashboard.');
-                    window.location.href = 'user-dashboard.html';
-                }
+                // Directly redirect to user dashboard after successful sign-in
+                window.location.href = 'user-dashboard.html';
             } catch (error) {
                 console.error('Error during Google sign-in:', error);
-            } finally {
-                grecaptcha.reset();
             }
         }
-
-        async function registerUser(email, password, fullName, phoneNumber) {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User registered:', userCredential.user);
-
-        await sendEmailVerification(userCredential.user);
-        alert('Verification email sent. Please check your inbox.');
-
-        const userDataRef = ref(database, 'users/' + userCredential.user.uid);
-        await set(userDataRef, {
-            email,
-            fullName,
-            phoneNumber
-        });
-    } catch (error) {
-        if (error.code === 'auth/email-already-in-use') {
-            alert('This email is already registered. Please use a different email or log in.');
-        } else {
-            console.error('Registration error:', error);
-        }
-    }
-}
-
-async function loginUser(email, password) {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        console.log('User logged in:', user);
-
-        const linkedProviders = user.providerData.map(provider => provider.providerId);
-        if (linkedProviders.includes(GoogleAuthProvider.PROVIDER_ID)) {
-            // Load data for the linked Google account
-            loadUserData(user.uid);
-        } else {
-            console.log('No linked Google account found.');
-        }
-
-        window.location.href = 'user-dashboard.html';
-    } catch (error) {
-        if (error.code === 'auth/invalid-email') {
-            alert('Invalid email format. Please check your email.');
-        } else if (error.code === 'auth/user-not-found') {
-            alert('No user found with this email. Please register first.');
-        } else if (error.code === 'auth/wrong-password') {
-            alert('Incorrect password. Please try again.');
-        } else {
-            console.error('Login error:', error);
-        }
-    }
-}
-
-async function loadUserData(uid) {
-    const salesRef = ref(database, 'sales/' + uid);
-
-    try {
-        const snapshot = await get(salesRef);
-        if (snapshot.exists()) {
-            const salesData = snapshot.val();
-            console.log('Sales data:', salesData);
-            // Display the sales data as needed
-        } else {
-            console.log('No sales data found for this user.');
-        }
-    } catch (error) {
-        console.error('Error fetching sales data:', error);
-    }
-}
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
-            document.getElementById('registerButton').addEventListener('click', () => {
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const fullName = document.getElementById('registerFullName').value;
-                const phoneNumber = document.getElementById('registerPhoneNumber').value;
-                registerUser(email, password, fullName, phoneNumber);
-            });
-            document.getElementById('loginButton').addEventListener('click', () => {
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                loginUser(email, password);
-            });
-            document.getElementById('toggleRegister').addEventListener('click', () => {
-                const registerForm = document.getElementById('registerForm');
-                registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
-            });
         });
     </script>
-    <style>
-        .login-container {
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            text-align: center;
-        }
-        #registerForm {
-            display: none;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            margin-top: 20px;
-        }
-        .form-group input {
-            display: block;
-            width: 100%;
-            max-width: 350px;
-            margin: 10px auto;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        .form-group button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .form-group button:hover {
-            background-color: #45a049;
-        }
-        @media (max-width: 600px) {
-            .login-container {
-                width: 90%;
-                padding: 10px;
-            }
-            .form-group input {
-                max-width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Please Sign In</h2>
         <div class="form-group">
+            <!-- reCAPTCHA widget -->
             <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
+            <!-- Google Sign-In Button -->
             <button id="googleSignInButton">Sign in with Google</button>
-        </div>
-        <h3>Or Login</h3>
-        <div class="form-group">
-            <input type="email" id="loginEmail" placeholder="Email" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button id="loginButton">Login</button>
-        </div>
-        <p><a href="#" id="toggleRegister">Don't have an account? Register Now!</a></p>
-        <div id="registerForm" class="form-group">
-            <h3>Register</h3>
-            <input type="text" id="registerFullName" placeholder="Full Name" required>
-            <input type="email" id="registerEmail" placeholder="Email" required>
-            <input type="password" id="registerPassword" placeholder="Password" required>
-            <input type="tel" id="registerPhoneNumber" placeholder="Phone Number" required>
-            <button id="registerButton">Register</button>
         </div>
     </div>
 </body>
