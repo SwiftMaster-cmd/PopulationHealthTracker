@@ -158,22 +158,23 @@ document.getElementById('linkAccountForm').addEventListener('submit', function(e
     event.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    
-    const user = firebase.auth().currentUser;
-    const credential = firebase.auth.EmailAuthProvider.credential(email, password);
-    
-    user.linkWithCredential(credential).then((usercred) => {
-        console.log('Accounts linked:', usercred.user);
-        usercred.user.sendEmailVerification().then(() => {
-            document.getElementById('linkStatus').textContent = 'Accounts linked. Verification email sent. Please verify your email.';
+
+    const auth = firebase.auth();
+    const user = auth.currentUser;
+
+    // Create a new user account
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((newUser) => {
+            // Send verification email
+            return newUser.user.sendEmailVerification();
+        })
+        .then(() => {
+            document.getElementById('linkStatus').textContent = 'Verification email sent. Please verify your email.';
+        })
+        .catch((error) => {
+            console.error('Error creating account or sending verification email:', error);
+            document.getElementById('linkStatus').textContent = 'Error: ' + error.message;
         });
-        const userRef = firebase.database().ref('users/' + user.uid);
-        userRef.update({ googleLinked: true });
-        checkLinkStatus();
-    }).catch((error) => {
-        console.error('Error linking accounts:', error);
-        document.getElementById('linkStatus').textContent = 'Error linking accounts: ' + error.message;
-    });
 });
 
 function checkLinkStatus() {
