@@ -175,32 +175,58 @@
         });
 
         function checkLinkStatus() {
-            const user = firebase.auth().currentUser;
-            user.reload().then(() => {
-                const linked = user.providerData.some(provider => provider.providerId === 'password');
-                document.getElementById('linkOption').style.display = linked ? 'none' : 'block';
-                document.getElementById('delinkOption').style.display = linked ? 'block' : 'none';
-            });
-        }
+    const user = firebase.auth().currentUser;
+    user.reload().then(() => {
+        const linked = user.providerData.some(provider => provider.providerId === 'password');
+        document.getElementById('linkOption').style.display = linked ? 'none' : 'block';
+        document.getElementById('delinkOption').style.display = linked ? 'block' : 'none';
+    });
+}
 
-        function delinkAccount() {
-            const user = firebase.auth().currentUser;
-            user.unlink('password').then(() => {
-                console.log('Account delinked.');
-                const userRef = firebase.database().ref('users/' + user.uid);
-                userRef.update({ googleLinked: false });
-                document.getElementById('linkStatus').textContent = 'Account delinked successfully.';
-                checkLinkStatus();
-            }).catch((error) => {
-                console.error('Error delinking account:', error);
-                document.getElementById('linkStatus').textContent = 'Error delinking account: ' + error.message;
-            });
-        }
+document.getElementById('linkAccountForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-        window.addEventListener('DOMContentLoaded', () => {
+    const user = firebase.auth().currentUser;
+    const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+
+    user.linkWithCredential(credential).then((usercred) => {
+        console.log('Accounts linked:', usercred.user);
+        const userRef = firebase.database().ref('users/' + user.uid);
+        userRef.update({ googleLinked: true });
+        document.getElementById('linkStatus').textContent = 'Accounts linked successfully.';
+        checkLinkStatus();
+    }).catch((error) => {
+        console.error('Error linking accounts:', error);
+        document.getElementById('linkStatus').textContent = 'Error linking accounts: ' + error.message;
+    });
+});
+
+function delinkAccount() {
+    const user = firebase.auth().currentUser;
+    user.unlink('password').then(() => {
+        console.log('Account delinked.');
+        const userRef = firebase.database().ref('users/' + user.uid);
+        userRef.update({ googleLinked: false });
+        document.getElementById('linkStatus').textContent = 'Account delinked successfully.';
+        checkLinkStatus();
+    }).catch((error) => {
+        console.error('Error delinking account:', error);
+        document.getElementById('linkStatus').textContent = 'Error delinking account: ' + error.message;
+    });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
             checkLinkStatus();
             document.getElementById('delinkButton').addEventListener('click', delinkAccount);
-        });
+        } else {
+            document.getElementById('linkStatus').textContent = 'No user signed in.';
+        }
+    });
+});
     </script>
 </body>
 </html>
