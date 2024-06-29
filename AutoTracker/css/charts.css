@@ -13,7 +13,18 @@
 
 
 
-.picker-chart-container {
+.picker-
+#chart-container {
+    width: 100%;
+    height: 100%;
+}
+
+#salesChart {
+    width: 100%;
+    height: 100%;
+}
+
+.chart-container {
     grid-area: chart;
     background-color: var(--color-secondary);
     padding: 20px;
