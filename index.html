@@ -9,7 +9,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "your-api-key",
@@ -54,8 +54,10 @@
 
         async function registerWithEmailAndPassword(email, password) {
             try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                window.location.href = 'user-dashboard.html';
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await sendEmailVerification(auth.currentUser);
+                alert('Registration successful. Please check your email for verification.');
+                // Optionally, you can redirect to a different page or handle the verification email prompt here.
             } catch (error) {
                 console.error('Error during registration:', error);
                 alert('Failed to register. Please try again.');
