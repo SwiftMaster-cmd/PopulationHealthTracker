@@ -37,19 +37,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Dispatch custom event to notify other scripts
     document.dispatchEvent(new Event('firebaseInitialized'));
 });
-async function loadUserData(uid) {
-    const salesRef = ref(database, 'sales/' + uid);
 
+
+async function setPassword(newPassword) {
     try {
-        const snapshot = await get(salesRef);
-        if (snapshot.exists()) {
-            const salesData = snapshot.val();
-            console.log('Sales data:', salesData);
-            // Display the sales data as needed
+        const user = auth.currentUser;
+        if (user) {
+            await updatePassword(user, newPassword);
+            alert('Password updated successfully. You can now log in using your email and password.');
         } else {
-            console.log('No sales data found for this user.');
+            alert('No user is currently signed in.');
         }
     } catch (error) {
-        console.error('Error fetching sales data:', error);
+        console.error('Error setting password:', error);
+        if (error.code === 'auth/requires-recent-login') {
+            alert('Please re-authenticate and try again.');
+        }
     }
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('setPasswordButton').addEventListener('click', () => {
+        const newPassword = document.getElementById('setPassword').value;
+        setPassword(newPassword);
+    });
+});
