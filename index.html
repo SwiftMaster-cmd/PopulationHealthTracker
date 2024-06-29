@@ -88,15 +88,23 @@
     }
 }
 
-        async function loginUser(email, password) {
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                console.log('User logged in:', userCredential.user);
-                window.location.href = 'user-dashboard.html';
-            } catch (error) {
-                console.error('Login error:', error);
-            }
+async function loginUser(email, password) {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log('User logged in:', userCredential.user);
+        window.location.href = 'user-dashboard.html';
+    } catch (error) {
+        if (error.code === 'auth/invalid-email') {
+            alert('Invalid email format. Please check your email.');
+        } else if (error.code === 'auth/user-not-found') {
+            alert('No user found with this email. Please register first.');
+        } else if (error.code === 'auth/wrong-password') {
+            alert('Incorrect password. Please try again.');
+        } else {
+            console.error('Login error:', error);
         }
+    }
+}
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
