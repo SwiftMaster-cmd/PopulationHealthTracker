@@ -1,13 +1,11 @@
 // uid-link.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Ensure Firebase is initialized
     if (!firebase.apps.length) {
         console.error('Firebase not initialized. Please ensure firebase-init.js is loaded first.');
         return;
     }
 
-    // Event listener for UID linking
     const linkUidButton = document.getElementById('linkUidButton');
     const uidInput = document.getElementById('uidInput');
 
@@ -28,9 +26,38 @@ document.addEventListener('DOMContentLoaded', function() {
             const userRef = firebase.database().ref(`users/${user.uid}/linkedAccount`);
             await userRef.set(uidToLink);
             alert('Account linked successfully.');
+
+            // Fetch and display data for the linked UID
+            fetchSalesData(uidToLink);
         } catch (error) {
             console.error('Error linking account:', error);
             alert('Error linking account. Please try again.');
         }
     });
+
+    async function fetchSalesData(uid) {
+        try {
+            const salesRef = firebase.database().ref(`sales/${uid}`);
+            const snapshot = await salesRef.get();
+
+            if (snapshot.exists()) {
+                const salesData = snapshot.val();
+                console.log('Sales data:', salesData);
+                // Display sales data on the page
+                displaySalesData(salesData);
+            } else {
+                console.log('No sales data found for linked account.');
+                alert('No sales data found for the linked account.');
+            }
+        } catch (error) {
+            console.error('Error fetching sales data:', error);
+        }
+    }
+
+    function displaySalesData(data) {
+        // Implement logic to display sales data on the page
+        // Example:
+        const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
+        salesOutcomesContainer.innerHTML = JSON.stringify(data, null, 2);
+    }
 });
