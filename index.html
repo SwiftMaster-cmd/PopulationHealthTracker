@@ -66,23 +66,27 @@
         }
 
         async function registerUser(email, password, fullName, phoneNumber) {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                console.log('User registered:', userCredential.user);
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log('User registered:', userCredential.user);
 
-                await sendEmailVerification(userCredential.user);
-                alert('Verification email sent. Please check your inbox.');
+        await sendEmailVerification(userCredential.user);
+        alert('Verification email sent. Please check your inbox.');
 
-                const userDataRef = ref(database, 'users/' + userCredential.user.uid);
-                await set(userDataRef, {
-                    email,
-                    fullName,
-                    phoneNumber
-                });
-            } catch (error) {
-                console.error('Registration error:', error);
-            }
+        const userDataRef = ref(database, 'users/' + userCredential.user.uid);
+        await set(userDataRef, {
+            email,
+            fullName,
+            phoneNumber
+        });
+    } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+            alert('This email is already registered. Please use a different email or log in.');
+        } else {
+            console.error('Registration error:', error);
         }
+    }
+}
 
         async function loginUser(email, password) {
             try {
