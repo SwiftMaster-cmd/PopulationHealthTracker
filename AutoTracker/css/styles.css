@@ -5,14 +5,24 @@
     --color-quaternary: #17a2b8;
     --color-quinary: #ffc107;
     --text-color: #ffffff;
+    --background-color: #282c34;
 }
 
 body, html {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
+.title {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2em;
+    font-weight: bold;
+}
 
 .header-container {
     display: flex;
@@ -55,16 +65,15 @@ body, html {
     background-color: var(--color-quaternary);
 }
 
-
 .main-container {
     display: grid;
-    grid-template-columns: 1fr; /* Single column layout */
-    grid-template-rows: auto auto auto; /* Three row */
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
     grid-template-areas: 
         "leaderboard"
         "salesHistory"
         "chart"
-        "monthlyTotals"; /* Stacked layout */
+        "monthlyTotals";
     grid-gap: 20px;
     width: 95%;
     height: 95%;
@@ -72,7 +81,7 @@ body, html {
     border-radius: 10px;
     box-sizing: border-box;
     margin: 100px auto 0 auto;
-    justify-content: center; /* Center the container */
+    justify-content: center;
 }
 
 .container {
@@ -84,22 +93,6 @@ body, html {
     justify-content: center;
     align-items: center;
     color: var(--text-color);
-}
-
-.leaderboard {
-    grid-area: leaderboard;
-}
-
-.salesHistory {
-    grid-area: salesHistory;
-}
-
-.chart {
-    grid-area: chart;
-}
-
-.monthlyTotals {
-    grid-area: monthlyTotals;
 }
 
 .popup-container {
@@ -126,20 +119,20 @@ body, html {
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-    width: 12px; /* Width of the scrollbar */
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--color-secondary); /* Color of the scrollbar track */
-    border-radius: 10px; /* Rounded corners */
+    background: var(--color-secondary);
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--color-primary); /* Color of the scrollbar thumb */
-    border-radius: 10px; /* Rounded corners */
-    border: 3px solid var(--color-secondary); /* Space around the thumb */
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    border: 3px solid var(--color-secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-tertiary); /* Change thumb color on hover */
+    background-color: var(--color-tertiary);
 }
