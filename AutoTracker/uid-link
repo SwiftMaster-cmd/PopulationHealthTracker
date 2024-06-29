@@ -10,87 +10,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const linkButton = document.getElementById('linkButton');
     const uidInput = document.getElementById('uidInput');
+    const loadButton = document.getElementById('loadButton');
 
-    if (linkButton && uidInput) {
-        linkButton.addEventListener('click', () => {
-            const newUid = uidInput.value.trim();
-            if (newUid) {
-                console.log('Linking account with UID:', newUid);
-                linkAccount(newUid);
+    if (loadButton && uidInput) {
+        loadButton.addEventListener('click', () => {
+            const inputUid = uidInput.value.trim();
+            if (inputUid) {
+                console.log('Loading data for UID:', inputUid);
+                loadUserData(inputUid);
             } else {
                 console.warn('Please enter a valid UID.');
                 alert('Please enter a valid UID.');
             }
         });
     } else {
-        console.error('Link button or UID input not found in the DOM.');
+        console.error('Load button or UID input not found in the DOM.');
     }
 });
 
-function linkAccount(newUid) {
-    const user = firebase.auth().currentUser;
-    if (user) {
-        const linkedAccountRef = firebase.database().ref('linkedAccounts/' + user.uid);
-        linkedAccountRef.set(newUid).then(() => {
-            console.log('Linked account successfully:', newUid);
-            loadUserData(user.uid);
-        }).catch(error => {
-            console.error('Error linking account:', error);
-        });
-    } else {
-        console.error('No user is currently signed in.');
-    }
-}
-
-function loadUserData(authenticatedUid) {
-    const linkedAccountRef = firebase.database().ref('linkedAccounts/' + authenticatedUid);
-
-    linkedAccountRef.once('value').then(snapshot => {
-        const linkedUid = snapshot.val() || authenticatedUid;
-        console.log('Using UID for data retrieval:', linkedUid);
-        displayUserData(linkedUid); // Use linked UID for all data fetching
-    }).catch(error => {
-        console.error('Error fetching linked account data:', error);
-    });
-}
-
-function displayUserData(uid) {
+function loadUserData(uid) {
     const salesRef = firebase.database().ref('sales/' + uid);
     const salesCountsRef = firebase.database().ref('salesCounts/' + uid);
     const salesOutcomesRef = firebase.database().ref('salesOutcomes/' + uid);
     const salesTimeFramesRef = firebase.database().ref('salesTimeFrames/' + uid);
 
-    salesRef.once('value').then(snapshot => {
+    salesRef.on('value', snapshot => {
         const salesData = snapshot.val();
-        console.log('Sales data:', salesData);
-        // Implement logic to display sales data
-    }).catch(error => {
-        console.error('Error fetching sales data:', error);
+        console.log('Real-time sales data:', salesData);
+        // Implement logic to update UI with sales data
     });
 
-    salesCountsRef.once('value').then(snapshot => {
+    salesCountsRef.on('value', snapshot => {
         const salesCounts = snapshot.val();
-        console.log('Sales counts data:', salesCounts);
-        // Implement logic to display sales counts data
-    }).catch(error => {
-        console.error('Error fetching sales counts data:', error);
+        console.log('Real-time sales counts data:', salesCounts);
+        // Implement logic to update UI with sales counts data
     });
 
-    salesOutcomesRef.once('value').then(snapshot => {
+    salesOutcomesRef.on('value', snapshot => {
         const salesOutcomes = snapshot.val();
-        console.log('Sales outcomes data:', salesOutcomes);
-        // Implement logic to display sales outcomes data
-    }).catch(error => {
-        console.error('Error fetching sales outcomes data:', error);
+        console.log('Real-time sales outcomes data:', salesOutcomes);
+        // Implement logic to update UI with sales outcomes data
     });
 
-    salesTimeFramesRef.once('value').then(snapshot => {
+    salesTimeFramesRef.on('value', snapshot => {
         const salesTimeFrames = snapshot.val();
-        console.log('Sales time frames data:', salesTimeFrames);
-        // Implement logic to display sales time frames data
-    }).catch(error => {
-        console.error('Error fetching sales time frames data:', error);
+        console.log('Real-time sales time frames data:', salesTimeFrames);
+        // Implement logic to update UI with sales time frames data
     });
 }
