@@ -9,7 +9,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -71,6 +71,9 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 console.log('User registered:', userCredential.user);
 
+                await sendEmailVerification(userCredential.user);
+                alert('Verification email sent. Please check your inbox.');
+
                 const userDataRef = ref(database, 'users/' + userCredential.user.uid);
                 await set(userDataRef, {
                     email,
@@ -106,8 +109,17 @@
                 const password = document.getElementById('loginPassword').value;
                 loginUser(email, password);
             });
+            document.getElementById('toggleRegister').addEventListener('click', () => {
+                const registerForm = document.getElementById('registerForm');
+                registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+            });
         });
     </script>
+    <style>
+        #registerForm {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
@@ -116,19 +128,20 @@
             <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
             <button id="googleSignInButton">Sign in with Google</button>
         </div>
-        <h3>Or Register</h3>
-        <div class="form-group">
-            <input type="text" id="registerFullName" placeholder="Full Name" required>
-            <input type="email" id="registerEmail" placeholder="Email" required>
-            <input type="password" id="registerPassword" placeholder="Password" required>
-            <input type="tel" id="registerPhoneNumber" placeholder="Phone Number" required>
-            <button id="registerButton">Register</button>
-        </div>
         <h3>Or Login</h3>
         <div class="form-group">
             <input type="email" id="loginEmail" placeholder="Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
             <button id="loginButton">Login</button>
+        </div>
+        <p><a href="#" id="toggleRegister">Don't have an account? Register Now!</a></p>
+        <div id="registerForm" class="form-group">
+            <h3>Register</h3>
+            <input type="text" id="registerFullName" placeholder="Full Name" required>
+            <input type="email" id="registerEmail" placeholder="Email" required>
+            <input type="password" id="registerPassword" placeholder="Password" required>
+            <input type="tel" id="registerPhoneNumber" placeholder="Phone Number" required>
+            <button id="registerButton">Register</button>
         </div>
     </div>
 </body>
