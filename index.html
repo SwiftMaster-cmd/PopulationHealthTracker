@@ -3,7 +3,6 @@
 <head>
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
-    <script src="main.js" defer></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="module">
@@ -116,6 +115,12 @@
         });
     </script>
     <style>
+        .login-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
         #registerForm {
             display: none;
             border: 1px solid #ccc;
@@ -127,21 +132,33 @@
         .form-group input {
             display: block;
             width: 100%;
-            margin-bottom: 10px;
+            max-width: 350px;
+            margin: 10px auto;
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
         .form-group button {
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 5px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            margin-top: 10px;
         }
         .form-group button:hover {
             background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            .login-container {
+                width: 90%;
+                padding: 10px;
+            }
+            .form-group input {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
