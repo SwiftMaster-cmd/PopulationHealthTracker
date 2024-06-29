@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded and parsed');
-    
+
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             console.log('User authenticated:', user.uid);
@@ -65,7 +65,7 @@ function displayUserData(uid) {
     salesRef.once('value').then(snapshot => {
         const salesData = snapshot.val();
         console.log('Sales data:', salesData);
-        // Display sales data
+        // Implement logic to display sales data
     }).catch(error => {
         console.error('Error fetching sales data:', error);
     });
@@ -73,7 +73,7 @@ function displayUserData(uid) {
     salesCountsRef.once('value').then(snapshot => {
         const salesCounts = snapshot.val();
         console.log('Sales counts data:', salesCounts);
-        // Display sales counts data
+        // Implement logic to display sales counts data
     }).catch(error => {
         console.error('Error fetching sales counts data:', error);
     });
@@ -81,7 +81,7 @@ function displayUserData(uid) {
     salesOutcomesRef.once('value').then(snapshot => {
         const salesOutcomes = snapshot.val();
         console.log('Sales outcomes data:', salesOutcomes);
-        // Display sales outcomes data
+        // Implement logic to display sales outcomes data
     }).catch(error => {
         console.error('Error fetching sales outcomes data:', error);
     });
@@ -89,7 +89,7 @@ function displayUserData(uid) {
     salesTimeFramesRef.once('value').then(snapshot => {
         const salesTimeFrames = snapshot.val();
         console.log('Sales time frames data:', salesTimeFrames);
-        // Display sales time frames data
+        // Implement logic to display sales time frames data
     }).catch(error => {
         console.error('Error fetching sales time frames data:', error);
     });
