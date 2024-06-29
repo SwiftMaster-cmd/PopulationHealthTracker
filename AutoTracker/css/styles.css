@@ -16,7 +16,7 @@ body, html {
 .main-container {
     display: grid;
     grid-template-columns: 1fr; /* Single column layout */
-    grid-template-rows: auto auto auto; /* Three rows */
+    grid-template-rows: auto auto auto; /* Three row */
     grid-template-areas: 
         "leaderboard"
         "salesHistory"
