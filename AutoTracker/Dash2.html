@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/leaderboard.css">
     <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
+    <link rel="stylesheet" href="css/styles.css">
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
@@ -18,7 +18,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
-
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="sales-outcomes.js" defer></script>
@@ -34,7 +33,6 @@
     </div>
 
     <div class="main-container">
-
         <!-- Leaderboard Container -->
         <div class="picker-leaderboard-container container">
             <div class="picker-container">
@@ -107,7 +105,6 @@
                     <p class="sales-count" id="transfer-count">0</p>
                 </div>
                 <div class="sales-item">
-
                     <p class="sales-value" id="hra-value">$0</p>
                     <p class="sales-count" id="hra-count">0</p>
                 </div>
@@ -138,71 +135,72 @@
             <input type="color" id="colorPicker" />
             <button id="applyColor" class="button">Apply Color Palette</button>
         </div>
-      
-        <script>
-          document.getElementById('linkAccountForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
 
-        const user = firebase.auth().currentUser;
-        const credential = firebase.auth.EmailAuthProvider.credential(email, password);
-
-        user.linkWithCredential(credential).then((usercred) => {
-            console.log('Accounts linked:', usercred.user);
-            const userRef = firebase.database().ref('users/' + user.uid);
-            userRef.update({ googleLinked: true });
-            document.getElementById('linkStatus').textContent = 'Accounts linked successfully.';
-        }).catch((error) => {
-            console.error('Error linking accounts:', error);
-        });
-    });
-
-    function checkLinkStatus() {
-        const user = firebase.auth().currentUser;
-        user.reload().then(() => {
-            const linked = user.providerData.some(provider => provider.providerId === 'password');
-            if (linked) {
-                document.getElementById('linkOption').style.display = 'none';
-                document.getElementById('delinkOption').style.display = 'block';
-            } else {
-                document.getElementById('linkOption').style.display = 'block';
-                document.getElementById('delinkOption').style.display = 'none';
-            }
-        });
-    }
-
-    function delinkAccount() {
-        const user = firebase.auth().currentUser;
-        user.unlink('password').then(() => {
-            console.log('Account delinked.');
-            const userRef = firebase.database().ref('users/' + user.uid);
-            userRef.update({ googleLinked: false });
-            document.getElementById('linkStatus').textContent = 'Account delinked successfully.';
-            checkLinkStatus();
-        }).catch((error) => {
-            console.error('Error delinking account:', error);
-        });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        checkLinkStatus();
-        document.getElementById('delinkButton').addEventListener('click', delinkAccount);
-    });
-        </script>
-
-<form id="linkAccountForm">
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button type="submit">Link Account</button>
-</form>
-<div id="linkOption">
-    <button id="linkButton">Link Account</button>
-</div>
-<div id="delinkOption" style="display: none;">
-    <button id="delinkButton">Delink Account</button>
-</div>
-<div id="linkStatus"></div>
+        <!-- Account Linking and Delinking -->
+        <div class="account-link-container">
+            <form id="linkAccountForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Link Account</button>
+            </form>
+            <div id="linkOption" style="display: none;">
+                <button id="linkButton">Link Account</button>
+            </div>
+            <div id="delinkOption" style="display: none;">
+                <button id="delinkButton">Delink Account</button>
+            </div>
+            <div id="linkStatus"></div>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('linkAccountForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const user = firebase.auth().currentUser;
+            const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+
+            user.linkWithCredential(credential).then((usercred) => {
+                console.log('Accounts linked:', usercred.user);
+                const userRef = firebase.database().ref('users/' + user.uid);
+                userRef.update({ googleLinked: true });
+                document.getElementById('linkStatus').textContent = 'Accounts linked successfully.';
+                checkLinkStatus();
+            }).catch((error) => {
+                console.error('Error linking accounts:', error);
+                document.getElementById('linkStatus').textContent = 'Error linking accounts: ' + error.message;
+            });
+        });
+
+        function checkLinkStatus() {
+            const user = firebase.auth().currentUser;
+            user.reload().then(() => {
+                const linked = user.providerData.some(provider => provider.providerId === 'password');
+                document.getElementById('linkOption').style.display = linked ? 'none' : 'block';
+                document.getElementById('delinkOption').style.display = linked ? 'block' : 'none';
+            });
+        }
+
+        function delinkAccount() {
+            const user = firebase.auth().currentUser;
+            user.unlink('password').then(() => {
+                console.log('Account delinked.');
+                const userRef = firebase.database().ref('users/' + user.uid);
+                userRef.update({ googleLinked: false });
+                document.getElementById('linkStatus').textContent = 'Account delinked successfully.';
+                checkLinkStatus();
+            }).catch((error) => {
+                console.error('Error delinking account:', error);
+                document.getElementById('linkStatus').textContent = 'Error delinking account: ' + error.message;
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkLinkStatus();
+            document.getElementById('delinkButton').addEventListener('click', delinkAccount);
+        });
+    </script>
 </body>
 </html>
