@@ -19,7 +19,6 @@
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
 
-    <script src="link" defer></script>
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="sales-outcomes.js" defer></script>
@@ -140,6 +139,41 @@
             <input type="color" id="colorPicker" />
             <button id="applyColor" class="button">Apply Color Palette</button>
         </div>
+        <div class="link-account-container">
+            <h2>Link Your Account</h2>
+            <form id="linkAccountForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit">Link Account</button>
+            </form>
+        </div>
+    
+    
+        <script>
+            document.getElementById('linkAccountForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+    
+                const user = firebase.auth().currentUser;
+                const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+    
+                user.linkWithCredential(credential).then((usercred) => {
+                    console.log('Accounts linked:', usercred.user);
+                    // Update database to indicate accounts are linked
+                    const userRef = firebase.database().ref('users/' + user.uid);
+                    userRef.update({ googleLinked: true });
+                }).catch((error) => {
+                    console.error('Error linking accounts:', error);
+                });
+            });
+        </script>
     </div>
 </body>
 </html>
