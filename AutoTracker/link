@@ -1,0 +1,35 @@
+
+
+    // Check Google link status
+    firebase.auth().onAuthStateChanged(async user => {
+        if (user) {
+            const userRef = firebase.database().ref('users/' + user.uid);
+            const snapshot = await userRef.once('value');
+            const userData = snapshot.val();
+
+            if (userData && userData.googleLinked) {
+                console.log('Google account is already linked.');
+            } else {
+                console.log('Google account is not linked.');
+
+                // Link Google account to email/password account
+                const email = prompt('Enter your email to link:');
+                const password = prompt('Enter your password to link:');
+                const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+
+                user.linkWithCredential(credential).then((usercred) => {
+                    console.log('Accounts linked:', usercred.user);
+                    // Update database to indicate accounts are linked
+                    userRef.update({ googleLinked: true });
+                }).catch((error) => {
+                    console.error('Error linking accounts:', error);
+                });
+            }
+        } else {
+            console.error('No user is signed in.');
+        }
+    });
+
+    // Dispatch custom event to notify other scripts
+    document.dispatchEvent(new Event('firebaseInitialized'));
+});
