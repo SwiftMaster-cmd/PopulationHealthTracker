@@ -53,21 +53,25 @@
         }
 
         async function registerUser(email, password) {
-            if (!email.includes('@') || !email.includes('.')) {
-                alert('Please enter a valid email address.');
-                return;
-            }
+    if (!email.includes('@') || !email.includes('.')) {
+        alert('Please enter a valid email address.');
+        return;
+    }
 
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await sendEmailVerification(userCredential.user);
-                alert('Registration successful. A verification email has been sent. Please check your email.');
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Error during registration:', error);
-                alert(`Registration failed: ${error.message}`);
-            }
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
+        alert('Registration successful. A verification email has been sent. Please check your email.');
+        window.location.href = 'index.html';
+    } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+            alert('This email is already in use. Please use a different email or reset your password.');
+        } else {
+            console.error('Error during registration:', error);
+            alert(`Registration failed: ${error.message}`);
         }
+    }
+}
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
