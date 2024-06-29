@@ -14,9 +14,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     } else {
-        firebase.app(); // if already initialized, use that one
+        firebase.app();
     }
-    
+
+    // Check Google link status
+    firebase.auth().onAuthStateChanged(async user => {
+        if (user) {
+            const userRef = firebase.database().ref('users/' + user.uid);
+            const snapshot = await userRef.once('value');
+            const userData = snapshot.val();
+
+            if (userData && userData.googleLinked) {
+                console.log('Google account is already linked.');
+            } else {
+                console.log('Google account is not linked.');
+            }
+        } else {
+            console.error('No user is signed in.');
+        }
+    });
+
     // Dispatch custom event to notify other scripts
     document.dispatchEvent(new Event('firebaseInitialized'));
 });
