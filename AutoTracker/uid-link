@@ -1,11 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed');
+    
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
+            console.log('User authenticated:', user.uid);
             loadUserData(user.uid);
         } else {
             console.error('No user is signed in.');
         }
     });
+
+    const linkButton = document.getElementById('linkButton');
+    const uidInput = document.getElementById('uidInput');
+
+    if (linkButton && uidInput) {
+        linkButton.addEventListener('click', () => {
+            const newUid = uidInput.value.trim();
+            if (newUid) {
+                console.log('Linking account with UID:', newUid);
+                linkAccount(newUid);
+            } else {
+                console.warn('Please enter a valid UID.');
+                alert('Please enter a valid UID.');
+            }
+        });
+    } else {
+        console.error('Link button or UID input not found in the DOM.');
+    }
 });
 
 function linkAccount(newUid) {
@@ -13,8 +34,8 @@ function linkAccount(newUid) {
     if (user) {
         const linkedAccountRef = firebase.database().ref('linkedAccounts/' + user.uid);
         linkedAccountRef.set(newUid).then(() => {
-            console.log('Linked account successfully.');
-            loadUserData(user.uid); // Reload data with the new linked UID
+            console.log('Linked account successfully:', newUid);
+            loadUserData(user.uid);
         }).catch(error => {
             console.error('Error linking account:', error);
         });
@@ -27,8 +48,8 @@ function loadUserData(authenticatedUid) {
     const linkedAccountRef = firebase.database().ref('linkedAccounts/' + authenticatedUid);
 
     linkedAccountRef.once('value').then(snapshot => {
-        const linkedUid = snapshot.val() || authenticatedUid; // Use linked UID if it exists
-
+        const linkedUid = snapshot.val() || authenticatedUid;
+        console.log('Using UID for data retrieval:', linkedUid);
         displayUserData(linkedUid);
     }).catch(error => {
         console.error('Error fetching linked account data:', error);
