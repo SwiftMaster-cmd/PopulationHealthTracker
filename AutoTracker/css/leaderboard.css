@@ -18,7 +18,7 @@ body {
 
 .title {
     text-align: center;
-    margin: 20px 0;
+    margin-top: 20px;
     font-size: 2em;
     font-weight: bold;
 }
@@ -64,46 +64,117 @@ body {
     background-color: var(--color-quaternary);
 }
 
-.main-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    box-sizing: border-box;
-    margin: 80px auto;
-    width: 95%;
-}
-
-.card {
-    background-color: var(--color-secondary);
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-}
-
-.picker-container,
-#leaderboard-section,
-.picker-chart-container,
-.sales-history-container,
-.monthly-sales-totals-container {
+.picker-leaderboard-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: var(--color-secondary);
     padding: 20px;
     border-radius: 10px;
     box-sizing: border-box;
     width: 100%;
+    height: 100%;
 }
 
 .picker-container {
-    background-color: var(--color-secondary);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
-#leaderboard-section,
-.sales-history-container,
-.monthly-sales-totals-container {
+.picker {
+    width: 48%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: var(--color-primary);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+#leaderboard-section {
+    width: 100%;
+    background-color: var(--color-secondary);
+    padding: 25px;
+    border-radius: 10px;
+    color: var(--text-color);
+    box-sizing: border-box;
+    text-align: center;
+    margin-top: 20px;
+    flex-shrink: 0;
+}
+
+.leaderboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding-top: 10px;
+    flex-grow: 1;
+}
+
+.leaderboard-item {
     background-color: var(--color-quinary);
+    border-radius: 10px;
+    padding: 5px;
+    margin: 3px;
+    color: var(--text-color);
+    width: 66%;
+    text-align: center;
+    font-size: 1.2em;
+    margin: 3px auto;
+    margin-bottom: 15px;
+}
+
+.picker-chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
+#chart-container {
+    width: 100%;
+    height: 100%;
+}
+
+#salesChart {
+    width: 100%;
+    height: 100%;
+}
+
+.sales-history-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
+.monthly-sales-totals-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-primary);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 .button {
@@ -121,9 +192,15 @@ body {
     opacity: 0.8;
 }
 
+.color-picker-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
 @media (max-width: 700px) {
     .main-container {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
     }
 
     .picker-container {
