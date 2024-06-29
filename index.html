@@ -9,7 +9,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -53,21 +53,21 @@
         }
 
         async function registerUser(email, password) {
-    if (!email.includes('@') || !email.includes('.')) {
-        alert('Please enter a valid email address.');
-        return;
-    }
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
 
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await userCredential.user.sendEmailVerification();
-        alert('Registration successful. A verification email has been sent. Please check your email.');
-        window.location.href = 'index.html';
-    } catch (error) {
-        console.error('Error during registration:', error);
-        alert(`Registration failed: ${error.message}`);
-    }
-}
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await sendEmailVerification(userCredential.user);
+                alert('Registration successful. A verification email has been sent. Please check your email.');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error during registration:', error);
+                alert(`Registration failed: ${error.message}`);
+            }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
@@ -102,7 +102,7 @@
         <h2>Create an Account</h2>
         <div class="form-group">
             <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
-            <input type="email" id="registerEmail" placeholdxer="Email" required>
+            <input type="email" id="registerEmail" placeholder="Email" required>
             <input type="password" id="registerPassword" placeholder="Password" required>
             <button id="registerButton">Register</button>
         </div>
