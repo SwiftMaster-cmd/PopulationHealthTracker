@@ -53,26 +53,27 @@
         }
 
         async function registerUser(email, password) {
-            const token = grecaptcha.getResponse();
-            if (!token) {
-                alert('Please complete the reCAPTCHA.');
-                return;
-            }
+    const token = grecaptcha.getResponse();
+    if (!token) {
+        alert('Please complete the reCAPTCHA.');
+        return;
+    }
 
-            if (!email.includes('@') || !email.includes('.')) {
-                alert('Please enter a valid email address.');
-                return;
-            }
+    if (!email.includes('@') || !email.includes('.')) {
+        alert('Please enter a valid email address.');
+        return;
+    }
 
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                alert('Registration successful. You can now log in.');
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Error during registration:', error);
-                alert('Failed to register. Please check your email and password.');
-            }
-        }
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await userCredential.user.sendEmailVerification();
+        alert('Registration successful. A verification email has been sent. Please check your email.');
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Error during registration:', error);
+        alert('Failed to register. Please check your email and password.');
+    }
+}
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
@@ -107,7 +108,7 @@
         <h2>Create an Account</h2>
         <div class="form-group">
             <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
-            <input type="email" id="registerEmail" placeholder="Email" required>
+            <input type="email" id="registerEmail" placeholdxer="Email" required>
             <input type="password" id="registerPassword" placeholder="Password" required>
             <button id="registerButton">Register</button>
         </div>
