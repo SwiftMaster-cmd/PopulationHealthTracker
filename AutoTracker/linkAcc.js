@@ -10,9 +10,8 @@ document.getElementById('linkGoogleButton').addEventListener('click', async () =
         }
     } catch (error) {
         if (error.code === 'auth/credential-already-in-use') {
-            const credential = firebase.auth.GoogleAuthProvider.credentialFromError(error);
+            const credential = error.credential;
             try {
-                // Merge the accounts by signing in with the Google credentials
                 const result = await firebase.auth().signInWithCredential(credential);
                 alert('Google account already linked, signed in.');
                 loadUserData(result.user.uid);
