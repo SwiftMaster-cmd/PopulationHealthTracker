@@ -4,13 +4,12 @@
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
     <script src="main.js" defer></script>
-
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -23,7 +22,6 @@
             measurementId: "G-RVBYB0RR06"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
@@ -37,16 +35,30 @@
             }
 
             try {
-                const result = await signInWithPopup(auth, provider);
-                // Directly redirect to user dashboard after successful sign-in
+                await signInWithPopup(auth, provider);
                 window.location.href = 'user-dashboard.html';
             } catch (error) {
                 console.error('Error during Google sign-in:', error);
             }
         }
 
+        async function emailPasswordSignIn(email, password) {
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = 'user-dashboard.html';
+            } catch (error) {
+                console.error('Error during email sign-in:', error);
+                alert('Failed to sign in. Please check your email and password.');
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
+            document.getElementById('emailSignInButton').addEventListener('click', () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                emailPasswordSignIn(email, password);
+            });
         });
     </script>
 </head>
@@ -54,10 +66,14 @@
     <div class="login-container">
         <h2>Please Sign In</h2>
         <div class="form-group">
-            <!-- reCAPTCHA widget -->
             <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
-            <!-- Google Sign-In Button -->
             <button id="googleSignInButton">Sign in with Google</button>
+        </div>
+        <h3>Or Login with Email</h3>
+        <div class="form-group">
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button id="emailSignInButton">Login</button>
         </div>
     </div>
 </body>
