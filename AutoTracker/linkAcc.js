@@ -4,19 +4,22 @@ document.getElementById('linkGoogleButton').addEventListener('click', async () =
 
     try {
         if (user) {
-            // Attempt to link the Google account
             await user.linkWithPopup(provider);
             alert('Successfully linked to Google account.');
             loadUserData(user.uid);
         }
     } catch (error) {
         if (error.code === 'auth/credential-already-in-use') {
-            // The account is already linked, so sign in with the Google account
             const credential = firebase.auth.GoogleAuthProvider.credentialFromError(error);
-            const result = await firebase.auth().signInWithCredential(credential);
-            
-            alert('Google account already linked, signed in.');
-            loadUserData(result.user.uid);
+            try {
+                // Merge the accounts by signing in with the Google credentials
+                const result = await firebase.auth().signInWithCredential(credential);
+                alert('Google account already linked, signed in.');
+                loadUserData(result.user.uid);
+            } catch (signInError) {
+                console.error('Error signing in with linked Google account:', signInError);
+                alert('Failed to sign in with Google account. Please try again.');
+            }
         } else {
             console.error('Error linking Google account:', error);
             alert('Failed to link Google account. Please try again.');
