@@ -139,6 +139,23 @@
             <button id="applyColor" class="button">Apply Color Palette</button>
         </div>
 
+<!-- Google Link Container -->
+<div class="google-link-container">
+    <button id="linkGoogleButton" class="button">Link to Google Account</button>
+</div>
+
+<script>
+    document.getElementById('linkGoogleButton').addEventListener('click', async () => {
+        try {
+            const user = firebase.auth().currentUser;
+            const provider = new firebase.auth.GoogleAuthProvider();
+            await user.linkWithPopup(provider);
+            alert('Successfully linked to Google account.');
+        } catch (error) {
+            console.error('Error linking Google account:', error);
+        }
+    });
+</script>
 
     </div>
 </body>
