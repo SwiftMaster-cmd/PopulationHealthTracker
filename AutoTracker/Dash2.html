@@ -164,9 +164,11 @@ document.getElementById('linkAccountForm').addEventListener('submit', function(e
     
     user.linkWithCredential(credential).then((usercred) => {
         console.log('Accounts linked:', usercred.user);
+        usercred.user.sendEmailVerification().then(() => {
+            document.getElementById('linkStatus').textContent = 'Accounts linked. Verification email sent. Please verify your email.';
+        });
         const userRef = firebase.database().ref('users/' + user.uid);
         userRef.update({ googleLinked: true });
-        document.getElementById('linkStatus').textContent = 'Accounts linked successfully.';
         checkLinkStatus();
     }).catch((error) => {
         console.error('Error linking accounts:', error);
