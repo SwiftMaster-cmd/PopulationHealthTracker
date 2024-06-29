@@ -1,0 +1,36 @@
+// uid-link.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure Firebase is initialized
+    if (!firebase.apps.length) {
+        console.error('Firebase not initialized. Please ensure firebase-init.js is loaded first.');
+        return;
+    }
+
+    // Event listener for UID linking
+    const linkUidButton = document.getElementById('linkUidButton');
+    const uidInput = document.getElementById('uidInput');
+
+    linkUidButton.addEventListener('click', async function() {
+        const uidToLink = uidInput.value.trim();
+        if (!uidToLink) {
+            alert('Please enter a valid UID.');
+            return;
+        }
+
+        const user = firebase.auth().currentUser;
+        if (!user) {
+            alert('No user is currently signed in.');
+            return;
+        }
+
+        try {
+            const userRef = firebase.database().ref(`users/${user.uid}/linkedAccount`);
+            await userRef.set(uidToLink);
+            alert('Account linked successfully.');
+        } catch (error) {
+            console.error('Error linking account:', error);
+            alert('Error linking account. Please try again.');
+        }
+    });
+});
