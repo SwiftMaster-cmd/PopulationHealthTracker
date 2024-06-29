@@ -37,3 +37,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Dispatch custom event to notify other scripts
     document.dispatchEvent(new Event('firebaseInitialized'));
 });
+async function loadUserData(uid) {
+    const salesRef = ref(database, 'sales/' + uid);
+
+    try {
+        const snapshot = await get(salesRef);
+        if (snapshot.exists()) {
+            const salesData = snapshot.val();
+            console.log('Sales data:', salesData);
+            // Display the sales data as needed
+        } else {
+            console.log('No sales data found for this user.');
+        }
+    } catch (error) {
+        console.error('Error fetching sales data:', error);
+    }
+}
