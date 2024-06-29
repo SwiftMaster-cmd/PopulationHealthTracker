@@ -1,102 +1,127 @@
-/* eslint-disable */
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.processSalesOutcomes = functions.database.ref('/salesOutcomes/{userId}')
+const database = admin.database();
+
+// Helper functions
+// ... (Previous helper functions remain unchanged)
+
+// Cloud Function to update sales counts and timeframes
+exports.updateSalesData = functions.database.ref('/salesOutcomes/{userId}/{saleId}')
     .onWrite((change, context) => {
         const userId = context.params.userId;
-        const outcomes = change.after.val();
-        if (!outcomes) return null;
+        const saleId = context.params.saleId;
 
-        const now = new Date();
-        const salesCounts = {
-            day: { billableHRA: 0, selectRX: 0, selectPatientManagement: 0, transfer: 0 },
-            week: { billableHRA: 0, selectRX: 0, selectPatientManagement: 0, transfer: 0 },
-            month: { billableHRA: 0, selectRX: 0, selectPatientManagement: 0, transfer: 0 }
+        const newValue = change.after.val();
+        const previousValue = change.before.val();
+
+        if (!newValue || newValue.assignAction.trim() === "--") {
+            console.log(`No valid sales outcome data found for ${saleId}`);
+            return null;
+        }
+
+        console.log(`Processing sale outcome ${saleId} for user ${userId}`);
+
+        const action = newValue.assignAction;
+        const notes = newValue.notesValue;
+        const outcomeTime = new Date(newValue.outcomeTime);
+
+        const saleType = getSaleType(action, notes);
+
+        const updates = {};
+
+        // Update sales counts based on timeframe
+        const dayKey = getCurrentDayKey();
+        const weekKey = getCurrentWeekKey();
+        const monthKey = getCurrentMonthKey();
+
+        const salesCountsPath = `/salesCounts/${userId}`;
+        const salesTimeFramesPath = `/salesTimeFrames/${userId}/${saleId}`;
+
+        const salesCountsRef = database.ref(salesCountsPath);
+        const salesTimeFramesRef = database.ref(salesTimeFramesPath);
+
+        updates[salesTimeFramesPath] = {
+            action,
+            outcomeTime: outcomeTime.toISOString(),
+            saleType
         };
-        const salesTimeFrames = {};
 
-        for (const key in outcomes) {
-            if (Object.prototype.hasOwnProperty.call(outcomes, key)) {
-                const outcome = outcomes[key];
-                const action = outcome.assignAction;
-                const notes = outcome.notesValue;
-                const outcomeTime = new Date(outcome.outcomeTime);
-                const saleType = getSaleType(action, notes);
+        if (isSameDay(outcomeTime, new Date())) {
+            updates[`${salesCountsPath}/day/${saleType}`] = admin.database.ServerValue.increment(1);
+        }
 
-                if (!salesTimeFrames[outcome.accountNumber]) {
-                    salesTimeFrames[outcome.accountNumber] = {};
-                }
-                if (!salesTimeFrames[outcome.accountNumber][saleType]) {
-                    salesTimeFrames[outcome.accountNumber][saleType] = [];
-                }
-                salesTimeFrames[outcome.accountNumber][saleType].push(outcomeTime.toISOString());
+        if (isSameWeek(outcomeTime, new Date())) {
+            updates[`${salesCountsPath}/week/${saleType}`] = admin.database.ServerValue.increment(1);
+        }
 
-                if (isSameDay(outcomeTime, now)) {
-                    incrementCount(salesCounts.day, saleType);
-                }
-                if (isSameWeek(outcomeTime, now)) {
-                    incrementCount(salesCounts.week, saleType);
-                }
-                if (isSameMonth(outcomeTime, now)) {
-                    incrementCount(salesCounts.month, saleType);
-                }
+        if (isSameMonth(outcomeTime, new Date())) {
+            updates[`${salesCountsPath}/month/${saleType}`] = admin.database.ServerValue.increment(1);
+        }
+
+        return database.ref().update(updates)
+            .then(() => {
+                console.log('Sales data updated successfully:', updates);
+                return null;
+            })
+            .catch((error) => {
+                console.error('Error updating sales data:', error);
+                return null;
+            });
+    });
+
+// Scheduled Function to reset daily, weekly, and monthly sales counts
+exports.resetSalesCounts = functions.pubsub.schedule('0 0 * * *').timeZone('America/New_York').onRun((context) => {
+    console.log('Daily reset triggered at midnight');
+
+    const database = admin.database();
+    const salesCountsRef = database.ref('salesCounts');
+
+    // Update sales counts to zero for new day, week, and month
+    const updates = {};
+    updates['day'] = {};
+    updates['week'] = {};
+    updates['month'] = {};
+
+    return salesCountsRef.once('value', snapshot => {
+        const salesCountsData = snapshot.val();
+        for (const userId in salesCountsData) {
+            updates['day'][userId] = {};
+            updates['week'][userId] = {};
+            updates['month'][userId] = {};
+
+            // Reset day count to zero
+            updates['day'][userId] = Object.keys(salesCountsData[userId].day || {}).reduce((acc, saleType) => {
+                acc[saleType] = 0;
+                return acc;
+            }, {});
+
+            // Reset week count to zero if it's a new week
+            if (!isSameWeek(new Date(), new Date())) {
+                updates['week'][userId] = Object.keys(salesCountsData[userId].week || {}).reduce((acc, saleType) => {
+                    acc[saleType] = 0;
+                    return acc;
+                }, {});
+            }
+
+            // Reset month count to zero if it's a new month
+            if (!isSameMonth(new Date(), new Date())) {
+                updates['month'][userId] = Object.keys(salesCountsData[userId].month || {}).reduce((acc, saleType) => {
+                    acc[saleType] = 0;
+                    return acc;
+                }, {});
             }
         }
 
-        const salesCountsRef = admin.database().ref(`salesCounts/${userId}`);
-        const salesTimeFramesRef = admin.database().ref(`salesTimeFrames/${userId}`);
-
-        return Promise.all([
-            salesCountsRef.set(salesCounts),
-            salesTimeFramesRef.set(salesTimeFrames)
-        ]);
+        return salesCountsRef.update(updates)
+            .then(() => {
+                console.log('Sales counts reset successfully for day, week, and month.');
+                return null;
+            })
+            .catch((error) => {
+                console.error('Error resetting sales counts:', error);
+                return null;
+            });
     });
-
-function getSaleType(action, notes) {
-    const normalizedAction = action.toLowerCase();
-    if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-        return 'Select RX';
-    }
-    if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-        return 'Billable HRA';
-    }
-    if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-        return 'Transfer';
-    }
-    if (normalizedAction.includes('select patient management')) {
-        return 'Select Patient Management';
-    }
-    return action;
-}
-
-function isSameDay(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth() &&
-           date1.getDate() === date2.getDate();
-}
-
-function isSameWeek(date1, date2) {
-    const week1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate() - date1.getDay() + (date1.getDay() === 0 ? -6 : 1));
-    const week2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate() - date2.getDay() + (date2.getDay() === 0 ? -6 : 1));
-    return week1.getTime() === week2.getTime();
-}
-
-function isSameMonth(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth();
-}
-
-function incrementCount(counts, saleType) {
-    if (saleType === 'Billable HRA') {
-        counts.billableHRA++;
-    } else if (saleType === 'Select RX') {
-        counts.selectRX++;
-    } else if (saleType === 'Select Patient Management') {
-        counts.selectPatientManagement++;
-    } else if (saleType === 'Transfer') {
-        counts.transfer++;
-    }
-}
+});
