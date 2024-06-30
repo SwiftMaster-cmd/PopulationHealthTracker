@@ -3,7 +3,7 @@ body {
     background: linear-gradient(135deg, rgba(173, 216, 230, 0.1) 25%, transparent 25%),
                 linear-gradient(135deg, transparent 75%, rgba(0, 128, 128, 0.1) 75%);
     background-color: #000;
-    background-size: 20px 20px;
+    background-size: 40px 40px; /* Increased size for larger lines */
     animation: moveBackground 1s linear infinite;
     margin: 0;
     padding: 0;
@@ -13,7 +13,7 @@ body {
     justify-content: center;
     height: 100vh;
     overflow: hidden;
-    backdrop-filter: blur(0.3px);
+    backdrop-filter: blur(8px);
 }
 
 @keyframes moveBackground {
@@ -21,7 +21,7 @@ body {
         background-position: 0 0;
     }
     to {
-        background-position: 0 40px;
+        background-position: 0 80px;
     }
 }
 
