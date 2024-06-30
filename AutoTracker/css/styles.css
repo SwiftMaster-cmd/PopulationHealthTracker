@@ -113,16 +113,17 @@ body, html {
 }
 
 
-.summary-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three columns of equal width */
-    gap: 20px; /* Equal spacing between items */
-}
-
 .sales-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
-    gap: 10px; /* Equal spacing between items */
+    gap: 20px; /* Equal spacing between items */
+    margin-bottom: 20px; /* Vertical spacing below the sales container */
+}
+
+.summary-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns in one line */
+    gap: 20px; /* Equal spacing between items */
 }
 
 .summary-item, .sales-item {
