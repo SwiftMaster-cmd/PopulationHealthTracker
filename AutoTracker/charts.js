@@ -282,3 +282,28 @@ window.addEventListener('resize', () => {
         salesChart.resize();
     }
 });
+
+function checkChartHeight() {
+    const chartContainer = document.getElementById('chartContainer');
+    const rotateMessage = document.getElementById('rotateMessage');
+
+    if (chartContainer.clientHeight < 300) {
+        chartContainer.style.display = 'none';
+        rotateMessage.style.display = 'block';
+    } else {
+        chartContainer.style.display = 'flex';
+        rotateMessage.style.display = 'none';
+    }
+}
+
+window.addEventListener('resize', () => {
+    checkChartHeight();
+    if (salesChart) {
+        salesChart.resize();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkChartHeight();
+    // Your existing code...
+});
