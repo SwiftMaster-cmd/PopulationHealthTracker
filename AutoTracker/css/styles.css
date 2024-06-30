@@ -64,11 +64,11 @@ body, html {
     backdrop-filter: blur(8px);
     transition: background-color 0.3s ease, opacity 0.3s;
     color: var(--text-bright-primary);
-    opacity: 0.3;
 }
 
 .container:hover, .leaderboard-container:hover, .sales-history-content:hover, .customer-info-container:hover {
-    opacity: 0.75;
+    opacity: 0.8;
+    backdrop-filter: blur(4px);
 }
 
 .monthly-sales-totals-container {
