@@ -181,6 +181,7 @@ body, html {
     text-align: center;
     margin: 10px 0;
     color: var(--text-white);
+    font-size: 4em; /* Adjust based on your base font size */
 }
 
 .search-container {
