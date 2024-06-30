@@ -206,6 +206,16 @@ body, html {
     text-align: center;
     margin: 10px 0; /* Adjust margin for spacing */
 }
+
+.leaderboard-section h3 {
+    text-align: center;
+    font-size: 1.5em; /* Adjust size as needed */
+}
+#leaderboard-title {
+    text-align: center;
+    font-size: 1.5em; /* Match this with the leaderboard-section h3 size */
+}
+
 @media (max-width: 768px) {
     .main-container {
         grid-template-columns: 1fr;
