@@ -12,27 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            checkAndSetUserName(user.uid);
             loadLeaderboard(); // Ensure leaderboard loads after authentication
         }
     });
 });
-
-function checkAndSetUserName(userId) {
-    const usersRef = firebase.database().ref('users/' + userId);
-
-    usersRef.once('value', snapshot => {
-        if (!snapshot.exists() || !snapshot.val().name) {
-            const name = prompt("Please enter your name:");
-            if (name) {
-                usersRef.set({ name: name });
-            } else {
-                alert("Name is required to proceed.");
-                firebase.auth().signOut();
-            }
-        }
-    });
-}
 
 function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
@@ -45,7 +28,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         return;
     }
 
-    // Detach previous listeners
     salesCountsRef.off('value');
 
     salesCountsRef.on('value', salesSnapshot => {
@@ -56,20 +38,19 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
             if (user) {
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
-                    console.log('Users data:', usersData);
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                        const name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        users.push({ name, count });
+                        const userDetail = usersData && usersData[userId];
+                        const name = userDetail && userDetail.firstName ? userDetail.firstName : 'Unknown User';
+                        const team = userDetail && userDetail.teamName ? userDetail.teamName : 'Unknown Team';
+                        users.push({ name, team, count });
                     }
-
-                    console.log('Leaderboard users:', users);
 
                     users.sort((a, b) => b.count - a.count);
 
-                    leaderboardSection.innerHTML = ''; // Clear previous entries
+                    leaderboardSection.innerHTML = '';
 
                     const periodSaleTypeContainer = document.createElement('div');
                     periodSaleTypeContainer.classList.add('leaderboard-section');
@@ -78,7 +59,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     users.slice(0, 5).forEach((user, index) => {
                         const userElement = document.createElement('div');
                         userElement.classList.add('leaderboard-item');
-                        userElement.innerHTML = `<strong>${index + 1}. ${user.name} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
+                        userElement.innerHTML = `<strong>${index + 1}. ${user.name} (${user.team}) - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
                         periodSaleTypeContainer.appendChild(userElement);
                     });
 
