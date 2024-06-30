@@ -34,40 +34,36 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         const salesData = salesSnapshot.val();
         const users = [];
 
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                usersRef.once('value', usersSnapshot => {
-                    const usersData = usersSnapshot.val();
+        usersRef.once('value', usersSnapshot => {
+            const usersData = usersSnapshot.val();
 
-                    for (const userId in salesData) {
-                        const userData = salesData[userId];
-                        const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                        const userDetail = usersData && usersData[userId];
-                        const name = userDetail && userDetail.firstName ? userDetail.firstName : 'Unknown User';
-                        const team = userDetail && userDetail.teamName ? userDetail.teamName : 'Unknown Team';
-                        users.push({ name, team, count });
-                    }
-
-                    users.sort((a, b) => b.count - a.count);
-
-                    leaderboardSection.innerHTML = '';
-
-                    const periodSaleTypeContainer = document.createElement('div');
-                    periodSaleTypeContainer.classList.add('leaderboard-section');
-                    periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
-
-                    users.slice(0, 5).forEach((user, index) => {
-                        const userElement = document.createElement('div');
-                        userElement.classList.add('leaderboard-item');
-                        userElement.innerHTML = `<strong>${index + 1}. ${user.name} (${user.team}) - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
-                        periodSaleTypeContainer.appendChild(userElement);
-                    });
-
-                    leaderboardSection.appendChild(periodSaleTypeContainer);
-                });
-            } else {
-                console.error('No user is signed in.');
+            for (const userId in salesData) {
+                const userData = salesData[userId];
+                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                const userDetail = usersData ? usersData[userId] : null;
+                const name = userDetail && userDetail.firstName ? userDetail.firstName : 'Unknown User';
+                const team = userDetail && userDetail.teamName ? userDetail.teamName : 'Unknown Team';
+                users.push({ name, team, count });
             }
+
+            users.sort((a, b) => b.count - a.count);
+
+            leaderboardSection.innerHTML = '';
+
+            const periodSaleTypeContainer = document.createElement('div');
+            periodSaleTypeContainer.classList.add('leaderboard-section');
+            periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
+
+            users.slice(0, 5).forEach((user, index) => {
+                const userElement = document.createElement('div');
+                userElement.classList.add('leaderboard-item');
+                userElement.innerHTML = `<strong>${index + 1}. ${user.name} (${user.team}) - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
+                periodSaleTypeContainer.appendChild(userElement);
+            });
+
+            leaderboardSection.appendChild(periodSaleTypeContainer);
+        }, error => {
+            console.error('Error fetching user data:', error);
         });
     }, error => {
         console.error('Error fetching sales data:', error);
