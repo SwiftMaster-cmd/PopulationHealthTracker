@@ -1,11 +1,11 @@
 :root {
-    --color-primary: #007bff;
-    --color-secondary: #6c757d;
-    --color-tertiary: #28a745;
-    --color-quaternary: #17a2b8;
-    --color-quinary: #ffc107;
-    --text-color: #ffffff;
-    --background-color: #282c34;
+    --color-primary: rgba(0, 123, 255, 0.8); /* Adjust opacity as needed */
+    --color-secondary: rgba(108, 117, 125, 0.8);
+    --color-tertiary: rgba(40, 167, 69, 0.8);
+    --color-quaternary: rgba(23, 162, 184, 0.8);
+    --color-quinary: rgba(255, 193, 7, 0.8);
+    --text-color: rgba(255, 255, 255, 1);
+    --background-color: rgba(40, 44, 52, 1);
 }
 
 body, html {
