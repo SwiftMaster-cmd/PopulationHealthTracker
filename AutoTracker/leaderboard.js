@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     periodPicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     saleTypePicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     firebase.auth().onAuthStateChanged(user => {
@@ -19,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// No changes needed in the rest of the code
 // Rest of the code remains unchanged
 
 function checkAndSetUserName(userId) {
