@@ -45,6 +45,12 @@ h2 {
     width: 300px;
     opacity: 0.8;
     color: #000;
+    transition: opacity 0.5s ease;
+}
+
+.login-container:hover, .register-container:hover,
+.login-container:focus-within, .register-container:focus-within {
+    opacity: 1;
 }
 
 .form-group {
