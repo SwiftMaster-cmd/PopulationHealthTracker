@@ -63,6 +63,17 @@ body, html {
     transition: background-color 0.3s ease;
 }
 
+.monthly-sales-totals-container {
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    height: auto; /* Adjusts height based on content */
+}
+
 .picker-container, .chart-picker-container, .navigation-container, .picker-header {
     display: flex;
     justify-content: space-between;
