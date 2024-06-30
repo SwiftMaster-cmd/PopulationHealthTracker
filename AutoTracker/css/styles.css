@@ -96,7 +96,7 @@ body, html {
 .picker-header > .picker, #leaderboard-title {
     flex: 1;
     text-align: center;
-    max-width: 33%;
+    max-width:40%;
 }
 
 .picker {
