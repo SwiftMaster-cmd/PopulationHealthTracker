@@ -68,10 +68,16 @@ body, html {
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 100%;
+    width: 90%;
     max-width: 1000px;
-    margin: auto;
-    height: auto; /* Adjusts height based on content */
+    margin: 20px auto; /* Center the container with vertical spacing */
+    height: auto; /* Adjust height based on content */
+}
+
+.sales-container, .summary-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
+    gap: 20px; /* Equal spacing between items */
 }
 
 .picker-container, .chart-picker-container, .navigation-container, .picker-header {
