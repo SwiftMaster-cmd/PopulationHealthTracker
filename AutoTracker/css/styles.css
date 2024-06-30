@@ -47,6 +47,32 @@ body, html {
     color: var(--text-white);
 }
 
+
+.profile-button {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.color-picker-container {
+    display: none;
+    position: absolute;
+    top: 60px; /* Adjust based on header height */
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: var(--text-white);
+}
+
 .main-container {
     display: grid;
     grid-template-columns: 1fr;
