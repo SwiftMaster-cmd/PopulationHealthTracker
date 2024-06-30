@@ -34,55 +34,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateStyles(isDark) {
         const styles = document.documentElement.style;
-        const primaryTextColor = isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)';
-        const secondaryTextColor = isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)';
+        const whiteTextColor = '#ffffff';
+        const brightPrimaryTextColor = chroma(styles.getPropertyValue('--color-primary')).brighten(2).hex();
     
-        document.body.style.color = primaryTextColor;
+        document.body.style.color = whiteTextColor;
     
         document.querySelectorAll('.button').forEach(btn => {
             btn.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-primary')}, ${chroma(styles.getPropertyValue('--color-primary')).darken(1).hex()})`;
-            btn.style.color = primaryTextColor;
+            btn.style.color = brightPrimaryTextColor;
         });
     
         document.querySelectorAll('.container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-primary')}, ${chroma(styles.getPropertyValue('--color-primary')).darken(1).hex()})`;
-            container.style.color = primaryTextColor;
+            container.style.color = brightPrimaryTextColor;
             container.style.opacity = '0.8';
         });
     
         document.querySelectorAll('.leaderboard-container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-secondary')}, ${chroma(styles.getPropertyValue('--color-secondary')).darken(1).hex()})`;
-            container.style.color = secondaryTextColor;
+            container.style.color = whiteTextColor;
             container.style.opacity = '0.8';
         });
     
         document.querySelectorAll('.leaderboard-item').forEach(item => {
             item.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
-            item.style.color = primaryTextColor;
+            item.style.color = brightPrimaryTextColor;
             item.style.opacity = '0.8';
         });
     
         document.querySelectorAll('.outcome-item').forEach(item => {
             item.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
-            item.style.color = primaryTextColor;
+            item.style.color = brightPrimaryTextColor;
             item.style.opacity = '0.8';
         });
     
         document.querySelectorAll('.sales-counts-container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-quaternary')}, ${chroma(styles.getPropertyValue('--color-quaternary')).darken(1).hex()})`;
-            container.style.color = primaryTextColor;
+            container.style.color = brightPrimaryTextColor;
             container.style.opacity = '0.8';
         });
     
         document.querySelectorAll('.account-container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-quaternary')}, ${chroma(styles.getPropertyValue('--color-quaternary')).darken(1).hex()})`;
-            container.style.color = primaryTextColor;
+            container.style.color = brightPrimaryTextColor;
             container.style.opacity = '0.8';
         });
     
         document.querySelectorAll('.customer-info').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
-            container.style.color = primaryTextColor;
+            container.style.color = brightPrimaryTextColor;
             container.style.opacity = '0.8';
         });
     }
