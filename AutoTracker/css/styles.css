@@ -107,16 +107,15 @@ body, html {
 
 
 .sales-container, .summary-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
+    gap: 10px; /* Equal spacing between items */
 }
 
-.sales-item {
-    background-color: rgba(255, 255, 255, 0.1); /* Light background */
+.sales-item, .summary-item {
+    background-color: rgba(255, 255, 255, 0.1); /* Light background for contrast */
     border-radius: 5px;
     padding: 10px;
-    margin: 5px;
     text-align: center;
     transition: background-color 0.3s ease;
 }
