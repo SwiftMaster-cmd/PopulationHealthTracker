@@ -27,6 +27,7 @@ body {
 .container {
     display: flex;
     flex-direction: column;
+    width: 75%;
     align-items: center;
 }
 
@@ -41,7 +42,6 @@ h2 {
     border-radius: 8px;
     box-shadow: 0 0 0 rgba(255, 255, 255, 0);
     margin: 20px 0;
-    width: 75%; /* Adjusted width */
     opacity: 0.6;
     color: #fff;
     transition: opacity 0.5s ease, box-shadow 0.5s ease;
