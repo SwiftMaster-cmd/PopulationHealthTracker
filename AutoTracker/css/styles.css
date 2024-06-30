@@ -75,11 +75,12 @@ body, html {
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
+    align-items: center;
     border: 1px solid #ccc;
     background-color: var(--color-primary);
     color: var(--text-color);
     cursor: pointer;
-    max-width: 40%;
+    width: 45%;
 }
 
 #leaderboard-title, .leaderboard-section h3 {
