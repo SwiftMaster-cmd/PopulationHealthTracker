@@ -34,48 +34,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateStyles(isDark) {
         const styles = document.documentElement.style;
-        const textColor = isDark ? '#ffffff' : '#000000';
-
-        document.body.style.color = textColor;
-
+        const primaryTextColor = isDark ? '#ffffff' : '#000000';
+        const secondaryTextColor = isDark ? 'rgba(255, 255, 255, 0.75)' : 'rgba(0, 0, 0, 0.75)';
+    
+        document.body.style.color = primaryTextColor;
+    
         document.querySelectorAll('.button').forEach(btn => {
             btn.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-primary')}, ${chroma(styles.getPropertyValue('--color-primary')).darken(1).hex()})`;
-            btn.style.color = textColor;
+            btn.style.color = primaryTextColor;
         });
-
+    
         document.querySelectorAll('.container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-primary')}, ${chroma(styles.getPropertyValue('--color-primary')).darken(1).hex()})`;
-            container.style.color = textColor;
+            container.style.color = primaryTextColor;
+            container.style.opacity = '0.8';
         });
-
+    
         document.querySelectorAll('.leaderboard-container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-secondary')}, ${chroma(styles.getPropertyValue('--color-secondary')).darken(1).hex()})`;
-            container.style.color = textColor;
+            container.style.color = secondaryTextColor;
+            container.style.opacity = '0.8';
         });
-
+    
         document.querySelectorAll('.leaderboard-item').forEach(item => {
             item.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
-            item.style.color = textColor;
+            item.style.color = primaryTextColor;
+            item.style.opacity = '0.8';
         });
-
+    
         document.querySelectorAll('.outcome-item').forEach(item => {
             item.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
-            item.style.color = textColor;
+            item.style.color = primaryTextColor;
+            item.style.opacity = '0.8';
         });
-
+    
         document.querySelectorAll('.sales-counts-container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-quaternary')}, ${chroma(styles.getPropertyValue('--color-quaternary')).darken(1).hex()})`;
-            container.style.color = textColor;
+            container.style.color = primaryTextColor;
+            container.style.opacity = '0.8';
         });
-
+    
         document.querySelectorAll('.account-container').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-quaternary')}, ${chroma(styles.getPropertyValue('--color-quaternary')).darken(1).hex()})`;
-            container.style.color = textColor;
+            container.style.color = primaryTextColor;
+            container.style.opacity = '0.8';
         });
-
+    
         document.querySelectorAll('.customer-info').forEach(container => {
             container.style.background = `linear-gradient(to bottom, ${styles.getPropertyValue('--color-tertiary')}, ${chroma(styles.getPropertyValue('--color-tertiary')).darken(1).hex()})`;
-            container.style.color = textColor;
+            container.style.color = primaryTextColor;
+            container.style.opacity = '0.8';
         });
     }
 });
