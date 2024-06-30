@@ -10,10 +10,10 @@ body {
     justify-content: center;
     height: 100vh;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 10%, transparent 10%) 0 0,
-                linear-gradient(135deg, transparent 10%, rgba(255, 255, 255, 0.1) 10%) 10px 10px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%),
+                linear-gradient(135deg, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
     background-size: 20px 20px;
-    animation: moveBackground 10s linear infinite;
+    animation: moveBackground 5s linear infinite;
 }
 
 @keyframes moveBackground {
