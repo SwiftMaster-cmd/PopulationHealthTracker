@@ -149,6 +149,7 @@ body, html {
 
 #chart-container {
     width: 100%;
+    min-height: 400px;
 
 }
 
@@ -240,7 +241,7 @@ body, html {
 
 #salesChart {
     height: 100%;
-    width: 100%;
+    min-height: 100%;
 }
 
 
