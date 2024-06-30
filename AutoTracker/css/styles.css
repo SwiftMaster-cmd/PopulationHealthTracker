@@ -50,9 +50,8 @@ body, html {
     grid-template-columns: 1fr;
     gap: 20px;
     padding: 20px;
-    max-width: 85%;
+    max-width: 80%; /* Adjusted to 80% */
     margin: 80px auto 0;
-    background-color: non;
 }
 
 .container {
@@ -62,6 +61,8 @@ body, html {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(8px);
     transition: background-color 0.3s ease;
+    max-width: 100%; /* Full width */
+    margin: 0 auto; /* Centering horizontally */
 }
 
 .container:hover {
@@ -129,12 +130,30 @@ body, html {
     cursor: pointer;
 }
 
-.leaderboard-container, .sales-history-content, .customer-info-container {
+.leaderboard-container {
+    max-width: 75%;
+    margin: 0 auto;
+    text-align: center; /* Centering leaderboard title and data */
+}
+
+.leaderboard-container .sales-history-content, 
+.leaderboard-container .customer-info-container {
+    max-width: 100%; /* Take full width of leaderboard container */
+}
+
+.sales-history-content, .customer-info-container {
     max-height: 300px;
     overflow-y: auto;
     padding: 10px;
     background-color: var(--color-secondary);
     border-radius: 10px;
+    margin: 0 auto; /* Centering content horizontally */
+    font-size: 18px; /* Increase font size */
+}
+
+.sales-history-content .sales-item, .customer-info-container .summary-item {
+    text-align: center;
+    margin: 10px 0; /* Adjust margin for better spacing */
 }
 
 .monthly-sales-totals-container {
