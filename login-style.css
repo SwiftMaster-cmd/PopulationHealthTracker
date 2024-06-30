@@ -4,7 +4,6 @@ body {
                 linear-gradient(135deg, transparent 75%, rgba(0, 128, 128, 0.1) 75%);
     background-size: 20px 20px;
     animation: moveBackground 5s linear infinite;
-    color: #f0f0f0;
     margin: 0;
     padding: 0;
     display: flex;
@@ -31,8 +30,8 @@ body {
 }
 
 h2 {
-    color: #f0f0f0;
     text-align: center;
+    color: #f0f0f0; /* Light color for dark background */
 }
 
 .login-container, .register-container {
@@ -44,6 +43,7 @@ h2 {
     margin: 20px 0;
     width: 300px;
     opacity: 0.8;
+    color: #000; /* Dark text for light background */
 }
 
 .form-group {
