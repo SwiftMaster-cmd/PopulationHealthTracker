@@ -51,6 +51,7 @@ h2 {
 .login-container:focus-within, .register-container:focus-within {
     opacity: 0.9;
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.7); /* Brighter background color on hover */
 }
 
 .form-group {
