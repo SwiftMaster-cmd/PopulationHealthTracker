@@ -156,6 +156,10 @@ body, html {
     overflow-y: auto;
     padding: 10px;
     background-color: var(--color-secondary);
+    backdrop-filter: blur(8px); /* Add blur effect */
+    background-color: rgba(0, 0, 0, 0.75); /* Set opacity */
+
+
     border-radius: 10px;
 }
 
