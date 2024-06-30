@@ -64,8 +64,8 @@ body, html {
 .color-picker-container {
     display: none;
     position: absolute;
-    top: 60px; /* Adjust based on header height */
-    right: 60px; /* Position to the left of the profile button */
+    top: 50px; /* Adjust based on profile button height */
+    right: 50px; /* 10 pixels to the left of the profile button */
     background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
