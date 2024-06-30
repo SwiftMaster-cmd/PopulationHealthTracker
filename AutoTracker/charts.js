@@ -276,3 +276,9 @@ document.getElementById('applyColor').addEventListener('click', () => {
     const selectedColor = colorPicker.value;
     saveColorPalette(selectedColor);
 });
+
+window.addEventListener('resize', () => {
+    if (salesChart) {
+        salesChart.resize();
+    }
+});
