@@ -65,14 +65,13 @@ body, html {
     display: none;
     position: absolute;
     top: 60px; /* Adjust based on header height */
-    right: 20px;
+    left: 20px; /* Change from right to left */
     background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     color: var(--text-white);
 }
-
 .main-container {
     display: grid;
     grid-template-columns: 1fr;
