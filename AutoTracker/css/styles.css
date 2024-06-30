@@ -52,11 +52,11 @@ body, html {
     padding: 20px;
     max-width: 1200px;
     margin: 80px auto 0;
-    background-color: none;
+    background-color: non;
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.7); /* Initial opacity */
+    background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -64,9 +64,8 @@ body, html {
     transition: background-color 0.3s ease;
 }
 
-.container:focus-within,
 .container:hover {
-    background-color: rgba(0, 0, 0, 0.9); /* Opacity when worked on */
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 .picker-container, .chart-picker-container, .navigation-container {
@@ -134,19 +133,8 @@ body, html {
     max-height: 300px;
     overflow-y: auto;
     padding: 10px;
-    background-color: rgba(108, 117, 125, 0.7); /* Initial opacity */
+    background-color: var(--color-secondary);
     border-radius: 10px;
-    backdrop-filter: blur(8px);
-    transition: background-color 0.3s ease;
-}
-
-.leaderboard-container:focus-within,
-.sales-history-content:focus-within,
-.customer-info-container:focus-within,
-.leaderboard-container:hover,
-.sales-history-content:hover,
-.customer-info-container:hover {
-    background-color: rgba(108, 117, 125, 0.9); /* Opacity when worked on */
 }
 
 .monthly-sales-totals-container {
