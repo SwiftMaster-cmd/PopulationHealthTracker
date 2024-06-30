@@ -170,7 +170,11 @@ body, html {
 .button:hover {
     background-color: var(--color-quaternary);
 }
-
+/* Add this CSS to center leaderboard items */
+.leaderboard-item {
+    text-align: center;
+    margin: 10px 0; /* Adjust margin for spacing */
+}
 @media (max-width: 768px) {
     .main-container {
         grid-template-columns: 1fr;
