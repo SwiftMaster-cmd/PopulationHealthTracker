@@ -24,7 +24,7 @@ body, html {
 }
 
 @keyframes moveBackground {
-    from {
+    from { 
         background-position: 0 0;
     }
     to {
@@ -36,17 +36,10 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
     padding: 10px 20px;
     background-color: var(--color-secondary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    height: 60px;
     color: var(--text-white);
 }
-
 
 .profile-button {
     width: 40px;
@@ -59,8 +52,9 @@ body, html {
     border-radius: 50%;
     cursor: pointer;
     font-size: 18px;
+    margin-left: auto; /* Aligns to the right */
+    margin-right: 10px; /* Optional spacing from the edge */
 }
-
 .color-picker-container {
     display: none;
     position: absolute;
