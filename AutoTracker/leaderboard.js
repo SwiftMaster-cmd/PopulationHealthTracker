@@ -1,22 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
     const periodPicker = document.getElementById('periodPicker');
     const saleTypePicker = document.getElementById('saleTypePicker');
+    const leaderboardTitle = document.createElement('h3');
+    leaderboardTitle.textContent = 'Leaderboard: Select RX';
+
+    const pickerHeader = document.querySelector('.picker-header');
+    pickerHeader.insertBefore(leaderboardTitle, pickerHeader.firstChild);
 
     periodPicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     saleTypePicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             checkAndSetUserName(user.uid);
-            loadLeaderboard(); // Ensure leaderboard loads after authentication
+            loadLeaderboard();
         }
     });
 });
+
+// Rest of the code remains unchanged
 
 function checkAndSetUserName(userId) {
     const usersRef = firebase.database().ref('users/' + userId);
