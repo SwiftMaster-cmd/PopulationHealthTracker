@@ -64,9 +64,7 @@ body, html {
     transition: background-color 0.3s ease;
 }
 
-.container:hover {
-    background-color: rgba(0, 0, 0, 0.7);
-}
+
 
 .picker-container, .chart-picker-container, .navigation-container {
     display: flex;
@@ -96,6 +94,7 @@ body, html {
 .picker-header > .picker, #leaderboard-title {
     flex: 1;
     text-align: center;
+    align-items: center;
     max-width:40%;
 }
 
@@ -213,6 +212,8 @@ body, html {
 #leaderboard-title {
     display: block;
     text-align: center;
+    align-items: center;
+
     font-size: 1.5em; /* Adjust as needed */
     margin-bottom: 10px; /* Add space below the title */
     line-height: 1.5; /* Adjust line height for readability */
