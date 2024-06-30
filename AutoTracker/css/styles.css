@@ -113,15 +113,19 @@ body, html {
 }
 
 
+.summary-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns of equal width */
+    gap: 20px; /* Equal spacing between items */
+}
 
-
-.sales-container, .summary-container {
+.sales-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
     gap: 10px; /* Equal spacing between items */
 }
 
-.sales-item, .summary-item {
+.summary-item, .sales-item {
     background-color: rgba(255, 255, 255, 0.1); /* Light background for contrast */
     border-radius: 5px;
     padding: 10px;
