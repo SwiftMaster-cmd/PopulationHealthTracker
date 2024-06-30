@@ -51,7 +51,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         return;
     }
 
-    // Detach previous listeners
     salesCountsRef.off('value');
 
     salesCountsRef.on('value', salesSnapshot => {
@@ -62,32 +61,33 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
             if (user) {
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
-                    console.log('Users data:', usersData);
+                    const currentUserId = user.uid;
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
                         const name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        users.push({ name, count });
+                        users.push({ userId, name, count });
                     }
-
-                    console.log('Leaderboard users:', users);
 
                     users.sort((a, b) => b.count - a.count);
 
-                    leaderboardSection.innerHTML = ''; // Clear previous entries
+                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
+                    const start = Math.max(0, currentUserIndex - 3);
+                    const end = Math.min(users.length, start + 8);
 
-                    const periodSaleTypeContainer = document.createElement('div');
-                    periodSaleTypeContainer.classList.add('leaderboard-section');
-                    periodSaleTypeContainer.innerHTML = `<h3>${getReadableTitle(saleType)} - ${period.charAt(0).toUpperCase() + period.slice(1)}</h3>`;
-                    users.slice(0, 5).forEach((user, index) => {
+                    leaderboardSection.innerHTML = '';
+
+                    for (let i = start; i < end; i++) {
+                        const user = users[i];
                         const userElement = document.createElement('div');
                         userElement.classList.add('leaderboard-item');
-                        userElement.innerHTML = `<strong>${index + 1}. ${user.name} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
-                        periodSaleTypeContainer.appendChild(userElement);
-                    });
-
-                    leaderboardSection.appendChild(periodSaleTypeContainer);
+                        if (user.userId === currentUserId) {
+                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
+                        }
+                        userElement.innerHTML = `<strong>${i + 1}. ${user.name} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
+                        leaderboardSection.appendChild(userElement);
+                    }
                 });
             } else {
                 console.error('No user is signed in.');
