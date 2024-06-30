@@ -1,20 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const periodPicker = document.getElementById('periodPicker');
     const saleTypePicker = document.getElementById('saleTypePicker');
-    const leaderboardTitle = document.createElement('h3');
-    leaderboardTitle.textContent = 'Leaderboard: Select RX';
-
-    const pickerHeader = document.querySelector('.picker-header');
-    pickerHeader.insertBefore(leaderboardTitle, pickerHeader.firstChild);
+    const leaderboardTitle = document.getElementById('leaderboard-title');
 
     periodPicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     saleTypePicker.addEventListener('change', () => {
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     firebase.auth().onAuthStateChanged(user => {
