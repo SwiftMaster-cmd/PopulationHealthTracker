@@ -138,7 +138,12 @@ body, html {
 }
 
 .monthly-sales-totals-container {
-    background-color: var(--color-primary);
+    height: 80%; /* Takes up 80% of its container's height */
+    width: 90%; /* Takes up 90% of its container's width */
+    max-width: 1000px; /* Adjust max-width as per your layout needs */
+    margin: auto; /* Center horizontally */
+    overflow: auto; /* Enable scrolling if content exceeds dimensions */
+    padding: 20px; /* Optional padding for better appearance */
 }
 
 .sales-container, .summary-container {
