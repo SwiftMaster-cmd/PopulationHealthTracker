@@ -112,9 +112,17 @@ body, html {
     align-items: center;
 }
 
-.sales-item, .summary-item {
-    text-align: center;
+.sales-item {
+    background-color: rgba(255, 255, 255, 0.1); /* Light background */
+    border-radius: 5px;
+    padding: 10px;
     margin: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.sales-item:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly darker on hover */
 }
 
 .color-picker-container {
