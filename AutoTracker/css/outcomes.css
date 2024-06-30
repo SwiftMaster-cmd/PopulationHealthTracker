@@ -13,7 +13,6 @@
     margin-bottom: 20px; /* Adjust spacing as needed */
 
 }
-
 .header-section {
     display: flex;
     justify-content: space-between;
@@ -25,10 +24,11 @@
     display: flex;
     align-items: center;
     margin-left: auto;
+    width: 50%;
 }
 
 .search-container input {
-    width: 200px; /* Adjust as needed */
+    width: 100%;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
