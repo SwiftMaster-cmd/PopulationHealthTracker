@@ -56,40 +56,18 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
             if (user) {
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
+                    console.log('Users data:', usersData);
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
                         const name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        users.push({ userId, name, count });
+                        users.push({ name, count });
                     }
+
+                    console.log('Leaderboard users:', users);
 
                     users.sort((a, b) => b.count - a.count);
-
-                    // Find index of current user
-                    const currentUserIndex = users.findIndex(u => u.userId === user.uid);
-
-                    // Calculate range of indices to display
-                    let startIdx = Math.max(0, currentUserIndex - 2);
-                    let endIdx = Math.min(users.length - 1, currentUserIndex + 2);
-
-                    // Adjust startIdx and endIdx to ensure exactly 5 items are shown
-                    if (endIdx - startIdx < 4) {
-                        if (startIdx === 0) {
-                            endIdx = Math.min(users.length - 1, startIdx + 4);
-                        } else {
-                            startIdx = Math.max(0, endIdx - 4);
-                        }
-                    }
-
-                    // Ensure top entry is always at the top
-                    if (currentUserIndex > 2 && users.length > 5) {
-                        startIdx = currentUserIndex - 2;
-                        endIdx = currentUserIndex + 2;
-                    } else if (users.length <= 5) {
-                        startIdx = 0;
-                        endIdx = users.length - 1;
-                    }
 
                     leaderboardSection.innerHTML = ''; // Clear previous entries
 
@@ -97,13 +75,12 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     periodSaleTypeContainer.classList.add('leaderboard-section');
                     periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
 
-                    for (let i = startIdx; i <= endIdx; i++) {
-                        const currentUserClass = users[i].userId === user.uid ? 'current-user' : '';
+                    users.slice(0, 5).forEach((user, index) => {
                         const userElement = document.createElement('div');
-                        userElement.classList.add('leaderboard-item', currentUserClass);
-                        userElement.innerHTML = `<strong>${i + 1}. ${users[i].name} - ${getReadableTitle(saleType)}: ${users[i].count}</strong>`;
+                        userElement.classList.add('leaderboard-item');
+                        userElement.innerHTML = `<strong>${index + 1}. ${user.name} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
                         periodSaleTypeContainer.appendChild(userElement);
-                    }
+                    });
 
                     leaderboardSection.appendChild(periodSaleTypeContainer);
                 });
