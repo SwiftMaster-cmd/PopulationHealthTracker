@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateStyles(isDark) {
         const styles = document.documentElement.style;
-        const primaryTextColor = isDark ? '#ffffff' : '#000000';
-        const secondaryTextColor = isDark ? 'rgba(255, 255, 255, 0.75)' : 'rgba(0, 0, 0, 0.75)';
+        const primaryTextColor = isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)';
+        const secondaryTextColor = isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)';
     
         document.body.style.color = primaryTextColor;
     
