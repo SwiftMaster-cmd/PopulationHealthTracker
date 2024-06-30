@@ -65,7 +65,7 @@ body, html {
     display: none;
     position: absolute;
     top: 60px; /* Adjust based on header height */
-    left: 20px; /* Adjust position as needed */
+    right: 60px; /* Position to the left of the profile button */
     background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
