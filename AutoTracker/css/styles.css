@@ -211,10 +211,12 @@ body, html {
     font-size: 1.5em; /* Adjust size as needed */
 }
 #leaderboard-title {
+    display: block;
     text-align: center;
-    font-size: 1.5em; /* Match this with the leaderboard-section h3 size */
+    font-size: 1.5em; /* Adjust as needed */
+    margin-bottom: 10px; /* Add space below the title */
+    line-height: 1.5; /* Adjust line height for readability */
 }
-
 @media (max-width: 768px) {
     .main-container {
         grid-template-columns: 1fr;
