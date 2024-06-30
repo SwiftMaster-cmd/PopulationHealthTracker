@@ -65,12 +65,13 @@ body, html {
     display: none;
     position: absolute;
     top: 60px; /* Adjust based on header height */
-    left: 20px; /* Change from right to left */
+    left: 20px; /* Adjust position as needed */
     background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     color: var(--text-white);
+    z-index: 1000; /* Ensure it is in front of other elements */
 }
 .main-container {
     display: grid;
