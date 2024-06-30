@@ -15,7 +15,20 @@ body, html {
     font-family: Arial, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-x: hidden;
+    background: linear-gradient(135deg, rgba(173, 216, 230, 0.1) 25%, transparent 25%),
+                linear-gradient(135deg, transparent 75%, rgba(0, 128, 128, 0.1) 75%);
+    background-size: 40px 40px;
+    animation: moveBackground 1s linear infinite;
+}
+
+@keyframes moveBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 0 40px;
+    }
 }
 
 .header-container {
@@ -29,7 +42,7 @@ body, html {
     position: fixed;
     top: 0;
     z-index: 1000;
-    height: 60px; /* Specify header height */
+    height: 60px;
 }
 
 .main-container {
@@ -38,15 +51,21 @@ body, html {
     gap: 20px;
     padding: 20px;
     max-width: 1200px;
-    margin: 100px auto 0; /* Increased top margin for more spacing */
-    background-color: var(--background-color); /* Ensure consistent background */
+    margin: 80px auto 0;
+    background-color: var(--background-color);
 }
 
 .container {
-    background-color: var(--color-primary);
+    background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    transition: background-color 0.3s ease;
+}
+
+.container:hover {
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 .picker-container, .chart-picker-container, .navigation-container {
@@ -74,6 +93,8 @@ body, html {
 
 .sales-history-container {
     background-color: var(--color-secondary);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header-section {
@@ -143,6 +164,7 @@ body, html {
     background-color: var(--color-tertiary);
     color: var(--text-color);
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .button:hover {
