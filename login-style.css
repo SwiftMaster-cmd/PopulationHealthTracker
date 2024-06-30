@@ -62,10 +62,13 @@ input[type="password"] {
     border-radius: 4px;
     box-sizing: border-box;
     background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    color: #000; /* Dark text for light background */
+    opacity: 0.9;
 }
 
 button {
-    background-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.8);
     color: white;
     padding: 8px;
     border: none;
@@ -75,8 +78,10 @@ button {
     margin-top: 10px;
     font-weight: bold;
     text-align: center;
+    backdrop-filter: blur(5px);
+    opacity: 0.9;
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: rgba(33, 136, 56, 0.8);
 }
