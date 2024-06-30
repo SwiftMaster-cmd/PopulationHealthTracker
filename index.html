@@ -7,7 +7,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
         import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -23,16 +23,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
-        const provider = new GoogleAuthProvider();
-
-        async function googleSignIn() {
-            try {
-                await signInWithPopup(auth, provider);
-                window.location.href = 'user-dashboard.html';
-            } catch (error) {
-                console.error('Error during Google sign-in:', error);
-            }
-        }
 
         async function emailPasswordSignIn(email, password) {
             try {
@@ -54,7 +44,6 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 await sendEmailVerification(userCredential.user);
 
-                // Store registration information to Firebase
                 const userDataRef = ref(database, 'users/' + userCredential.user.uid);
                 await set(userDataRef, {
                     email: email
@@ -73,7 +62,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
             document.getElementById('emailSignInButton').addEventListener('click', () => {
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
@@ -91,11 +79,6 @@
     <div class="login-container">
         <h2>Please Sign In</h2>
         <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
-            <button id="googleSignInButton">Sign in with Google</button>
-        </div>
-        <h3>Or Login with Email</h3>
-        <div class="form-group">
             <input type="email" id="loginEmail" placeholder="Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
             <button id="emailSignInButton">Login</button>
@@ -104,7 +87,6 @@
     <div class="register-container">
         <h2>Create an Account</h2>
         <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
             <input type="email" id="registerEmail" placeholder="Email" required>
             <input type="password" id="registerPassword" placeholder="Password" required>
             <button id="registerButton">Register</button>
