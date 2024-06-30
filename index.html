@@ -1,103 +1,86 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Welcome to Work!</title>
-    <link rel="stylesheet" href="login-style.css">
-    <script src="main.js" defer></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+document.addEventListener('DOMContentLoaded', () => {
+    const periodPicker = document.getElementById('periodPicker');
+    const saleTypePicker = document.getElementById('saleTypePicker');
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
-            authDomain: "track-dac15.firebaseapp.com",
-            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
-            projectId: "track-dac15",
-            storageBucket: "track-dac15.appspot.com",
-            messagingSenderId: "495156821305",
-            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
-            measurementId: "G-RVBYB0RR06"
-        };
+    periodPicker.addEventListener('change', () => {
+        loadLeaderboard(periodPicker.value, saleTypePicker.value);
+    });
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+    saleTypePicker.addEventListener('change', () => {
+        loadLeaderboard(periodPicker.value, saleTypePicker.value);
+    });
 
-        async function emailPasswordSignIn(email, password) {
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                window.location.href = 'user-dashboard.html';
-            } catch (error) {
-                console.error('Error during email sign-in:', error);
-                alert('Failed to sign in. Please check your email and password.');
-            }
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            loadLeaderboard(); // Ensure leaderboard loads after authentication
         }
+    });
+});
 
-        async function registerUser(email, password, firstName, lastName, phoneNumber, managerName, teamName) {
-            if (!email.includes('@') || !email.includes('.')) {
-                alert('Please enter a valid email address.');
-                return;
+function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+    const database = firebase.database();
+    const salesCountsRef = database.ref('salesCounts');
+    const usersRef = database.ref('users');
+
+    const leaderboardSection = document.getElementById('leaderboard-section');
+    if (!leaderboardSection) {
+        console.error('Leaderboard section element not found');
+        return;
+    }
+
+    salesCountsRef.off('value');
+
+    salesCountsRef.on('value', salesSnapshot => {
+        const salesData = salesSnapshot.val();
+        const users = [];
+
+        usersRef.once('value', usersSnapshot => {
+            const usersData = usersSnapshot.val();
+
+            for (const userId in salesData) {
+                const userData = salesData[userId];
+                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                const userDetail = usersData && usersData[userId];
+                const name = userDetail && userDetail.firstName ? userDetail.firstName : 'Unknown User';
+                const team = userDetail && userDetail.teamName ? userDetail.teamName : 'Unknown Team';
+                users.push({ name, team, count });
             }
 
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await sendEmailVerification(userCredential.user);
-                const userDataRef = ref(database, 'users/' + userCredential.user.uid);
-                await set(userDataRef, { firstName, lastName, phoneNumber, managerName, teamName });
-                alert('Registration successful. A verification email has been sent. Please check your email.');
-                window.location.href = 'index.html';
-            } catch (error) {
-                if (error.code === 'auth/email-already-in-use') {
-                    alert('This email is already in use. Please use a different email or reset your password.');
-                } else {
-                    console.error('Error during registration:', error);
-                    alert(`Registration failed: ${error.message}`);
-                }
-            }
-        }
+            users.sort((a, b) => b.count - a.count);
 
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('emailSignInButton').addEventListener('click', () => {
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                emailPasswordSignIn(email, password);
+            leaderboardSection.innerHTML = '';
+
+            const periodSaleTypeContainer = document.createElement('div');
+            periodSaleTypeContainer.classList.add('leaderboard-section');
+            periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
+
+            users.slice(0, 5).forEach((user, index) => {
+                const userElement = document.createElement('div');
+                userElement.classList.add('leaderboard-item');
+                userElement.innerHTML = `<strong>${index + 1}. ${user.name} (${user.team}) - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
+                periodSaleTypeContainer.appendChild(userElement);
             });
 
-            document.getElementById('registerButton').addEventListener('click', () => {
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const firstName = document.getElementById('firstName').value;
-                const lastName = document.getElementById('lastName').value;
-                const phoneNumber = document.getElementById('phoneNumber').value;
-                const managerName = document.getElementById('managerName').value;
-                const teamName = document.getElementById('teamName').value;
-                registerUser(email, password, firstName, lastName, phoneNumber, managerName, teamName);
-            });
+            leaderboardSection.appendChild(periodSaleTypeContainer);
+        }, error => {
+            console.error('Error fetching user data:', error);
         });
-    </script>
-</head>
-<body>
-    <div class="login-container">
-        <h2>Please Sign In</h2>
-        <div class="form-group">
-            <input type="email" id="loginEmail" placeholder="Email" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button id="emailSignInButton">Login</button>
-        </div>
-    </div>
-    <div class="register-container">
-        <h2>Create an Account</h2>
-        <div class="form-group">
-            <input type="email" id="registerEmail" placeholder="Email" required>
-            <input type="password" id="registerPassword" placeholder="Password" required>
-            <input type="text" id="firstName" placeholder="First Name" required>
-            <input type="text" id="lastName" placeholder="Last Name" required>
-            <input type="text" id="phoneNumber" placeholder="Phone Number" required>
-            <input type="text" id="managerName" placeholder="Manager's Name" required>
-            <input type="text" id="teamName" placeholder="Team Name" required>
-            <button id="registerButton">Register</button>
-        </div>
-    </div>
-</body>
-</html>
+    }, error => {
+        console.error('Error fetching sales data:', error);
+    });
+}
+
+function getReadableTitle(saleType) {
+    switch (saleType) {
+        case 'selectRX':
+            return 'Select RX';
+        case 'billableHRA':
+            return 'Billable HRA';
+        case 'transfer':
+            return 'Transfer';
+        case 'selectPatientManagement':
+            return 'Select Patient Management';
+        default:
+            return saleType;
+    }
+}

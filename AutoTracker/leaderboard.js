@@ -40,7 +40,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
             for (const userId in salesData) {
                 const userData = salesData[userId];
                 const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                const userDetail = usersData ? usersData[userId] : null;
+                const userDetail = usersData && usersData[userId];
                 const name = userDetail && userDetail.firstName ? userDetail.firstName : 'Unknown User';
                 const team = userDetail && userDetail.teamName ? userDetail.teamName : 'Unknown Team';
                 users.push({ name, team, count });
