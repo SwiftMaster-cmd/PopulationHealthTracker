@@ -1,86 +1,114 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const periodPicker = document.getElementById('periodPicker');
-    const saleTypePicker = document.getElementById('saleTypePicker');
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Work!</title>
+    <link rel="stylesheet" href="login-style.css">
+    <script src="main.js" defer></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
-    periodPicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-    });
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+            authDomain: "track-dac15.firebaseapp.com",
+            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+            projectId: "track-dac15",
+            storageBucket: "track-dac15.appspot.com",
+            messagingSenderId: "495156821305",
+            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+            measurementId: "G-RVBYB0RR06"
+        };
 
-    saleTypePicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-    });
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        const provider = new GoogleAuthProvider();
 
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            loadLeaderboard(); // Ensure leaderboard loads after authentication
+        async function googleSignIn() {
+            try {
+                await signInWithPopup(auth, provider);
+                window.location.href = 'user-dashboard.html';
+            } catch (error) {
+                console.error('Error during Google sign-in:', error);
+            }
         }
-    });
-});
 
-function loadLeaderboard(period = 'day', saleType = 'selectRX') {
-    const database = firebase.database();
-    const salesCountsRef = database.ref('salesCounts');
-    const usersRef = database.ref('users');
+        async function emailPasswordSignIn(email, password) {
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = 'user-dashboard.html';
+            } catch (error) {
+                console.error('Error during email sign-in:', error);
+                alert('Failed to sign in. Please check your email and password.');
+            }
+        }
 
-    const leaderboardSection = document.getElementById('leaderboard-section');
-    if (!leaderboardSection) {
-        console.error('Leaderboard section element not found');
-        return;
-    }
-
-    salesCountsRef.off('value');
-
-    salesCountsRef.on('value', salesSnapshot => {
-        const salesData = salesSnapshot.val();
-        const users = [];
-
-        usersRef.once('value', usersSnapshot => {
-            const usersData = usersSnapshot.val();
-
-            for (const userId in salesData) {
-                const userData = salesData[userId];
-                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                const userDetail = usersData && usersData[userId];
-                const name = userDetail && userDetail.firstName ? userDetail.firstName : 'Unknown User';
-                const team = userDetail && userDetail.teamName ? userDetail.teamName : 'Unknown Team';
-                users.push({ name, team, count });
+        async function registerUser(email, password) {
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Please enter a valid email address.');
+                return;
             }
 
-            users.sort((a, b) => b.count - a.count);
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await sendEmailVerification(userCredential.user);
 
-            leaderboardSection.innerHTML = '';
+                // Store registration information to Firebase
+                const userDataRef = ref(database, 'users/' + userCredential.user.uid);
+                await set(userDataRef, {
+                    email: email
+                });
 
-            const periodSaleTypeContainer = document.createElement('div');
-            periodSaleTypeContainer.classList.add('leaderboard-section');
-            periodSaleTypeContainer.innerHTML = `<h3>Leaderboard: ${getReadableTitle(saleType)}</h3>`;
+                alert('Registration successful. A verification email has been sent. Please check your email.');
+                window.location.href = 'index.html';
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('This email is already in use. Please use a different email or reset your password.');
+                } else {
+                    console.error('Error during registration:', error);
+                    alert(`Registration failed: ${error.message}`);
+                }
+            }
+        }
 
-            users.slice(0, 5).forEach((user, index) => {
-                const userElement = document.createElement('div');
-                userElement.classList.add('leaderboard-item');
-                userElement.innerHTML = `<strong>${index + 1}. ${user.name} (${user.team}) - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
-                periodSaleTypeContainer.appendChild(userElement);
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
+            document.getElementById('emailSignInButton').addEventListener('click', () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                emailPasswordSignIn(email, password);
             });
-
-            leaderboardSection.appendChild(periodSaleTypeContainer);
-        }, error => {
-            console.error('Error fetching user data:', error);
+            document.getElementById('registerButton').addEventListener('click', () => {
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                registerUser(email, password);
+            });
         });
-    }, error => {
-        console.error('Error fetching sales data:', error);
-    });
-}
-
-function getReadableTitle(saleType) {
-    switch (saleType) {
-        case 'selectRX':
-            return 'Select RX';
-        case 'billableHRA':
-            return 'Billable HRA';
-        case 'transfer':
-            return 'Transfer';
-        case 'selectPatientManagement':
-            return 'Select Patient Management';
-        default:
-            return saleType;
-    }
-}
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Please Sign In</h2>
+        <div class="form-group">
+            <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
+            <button id="googleSignInButton">Sign in with Google</button>
+        </div>
+        <h3>Or Login with Email</h3>
+        <div class="form-group">
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button id="emailSignInButton">Login</button>
+        </div>
+    </div>
+    <div class="register-container">
+        <h2>Create an Account</h2>
+        <div class="form-group">
+            <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
+            <input type="email" id="registerEmail" placeholder="Email" required>
+            <input type="password" id="registerPassword" placeholder="Password" required>
+            <button id="registerButton">Register</button>
+        </div>
+    </div>
+</body>
+</html>
