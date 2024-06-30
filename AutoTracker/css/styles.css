@@ -1,11 +1,11 @@
 :root {
-    --color-primary: rgba(0, 123, 255, 0.8); /* Adjust opacity as needed */
+    --color-primary: rgba(0, 123, 255, 0.8);
     --color-secondary: rgba(108, 117, 125, 0.8);
     --color-tertiary: rgba(40, 167, 69, 0.8);
     --color-quaternary: rgba(23, 162, 184, 0.8);
     --color-quinary: rgba(255, 193, 7, 0.8);
     --text-white: rgba(255, 255, 255, 1);
-    --text-bright-primary: rgba(255, 255, 255, 1); /* Use brighten(2) for actual */
+    --text-bright-primary: rgba(255, 255, 255, 1);
     --background-color: rgba(40, 44, 52, 1);
 }
 
@@ -62,8 +62,12 @@ body, html {
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(8px);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, opacity 0.3s;
     color: var(--text-bright-primary);
+}
+
+.container:hover, .leaderboard-container:hover, .sales-history-content:hover, .customer-info-container:hover {
+    opacity: 1.0;
 }
 
 .monthly-sales-totals-container {
@@ -102,6 +106,10 @@ body, html {
     color: var(--text-white);
     cursor: pointer;
     width: 45%;
+}
+
+.picker:hover, .chart-picker:hover {
+    background-color: var(--color-quinary);
 }
 
 #leaderboard-title, .leaderboard-section h3 {
