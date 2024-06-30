@@ -4,12 +4,10 @@
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
     <script src="main.js" defer></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -25,22 +23,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
-        const provider = new GoogleAuthProvider();
-
-        async function googleSignIn() {
-            const token = grecaptcha.getResponse();
-            if (!token) {
-                alert('Please complete the reCAPTCHA.');
-                return;
-            }
-
-            try {
-                await signInWithPopup(auth, provider);
-                window.location.href = 'user-dashboard.html';
-            } catch (error) {
-                console.error('Error during Google sign-in:', error);
-            }
-        }
 
         async function emailPasswordSignIn(email, password) {
             try {
@@ -52,38 +34,45 @@
             }
         }
 
-        async function registerUser(email, password) {
-    if (!email.includes('@') || !email.includes('.')) {
-        alert('Please enter a valid email address.');
-        return;
-    }
+        async function registerUser(email, password, firstName, lastName, phoneNumber, managerName, teamName) {
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
 
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await sendEmailVerification(userCredential.user);
-        alert('Registration successful. A verification email has been sent. Please check your email.');
-        window.location.href = 'index.html';
-    } catch (error) {
-        if (error.code === 'auth/email-already-in-use') {
-            alert('This email is already in use. Please use a different email or reset your password.');
-        } else {
-            console.error('Error during registration:', error);
-            alert(`Registration failed: ${error.message}`);
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await sendEmailVerification(userCredential.user);
+                const userDataRef = ref(database, 'users/' + userCredential.user.uid);
+                await set(userDataRef, { firstName, lastName, phoneNumber, managerName, teamName });
+                alert('Registration successful. A verification email has been sent. Please check your email.');
+                window.location.href = 'index.html';
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('This email is already in use. Please use a different email or reset your password.');
+                } else {
+                    console.error('Error during registration:', error);
+                    alert(`Registration failed: ${error.message}`);
+                }
+            }
         }
-    }
-}
 
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('googleSignInButton').addEventListener('click', googleSignIn);
             document.getElementById('emailSignInButton').addEventListener('click', () => {
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
                 emailPasswordSignIn(email, password);
             });
+
             document.getElementById('registerButton').addEventListener('click', () => {
                 const email = document.getElementById('registerEmail').value;
                 const password = document.getElementById('registerPassword').value;
-                registerUser(email, password);
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const phoneNumber = document.getElementById('phoneNumber').value;
+                const managerName = document.getElementById('managerName').value;
+                const teamName = document.getElementById('teamName').value;
+                registerUser(email, password, firstName, lastName, phoneNumber, managerName, teamName);
             });
         });
     </script>
@@ -91,11 +80,6 @@
 <body>
     <div class="login-container">
         <h2>Please Sign In</h2>
-        <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
-            <button id="googleSignInButton">Sign in with Google</button>
-        </div>
-        <h3>Or Login with Email</h3>
         <div class="form-group">
             <input type="email" id="loginEmail" placeholder="Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
@@ -105,9 +89,13 @@
     <div class="register-container">
         <h2>Create an Account</h2>
         <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6Ld5PecpAAAAAEXaLr2jTmFevUUfpAhGfju-Wmhz"></div>
             <input type="email" id="registerEmail" placeholder="Email" required>
             <input type="password" id="registerPassword" placeholder="Password" required>
+            <input type="text" id="firstName" placeholder="First Name" required>
+            <input type="text" id="lastName" placeholder="Last Name" required>
+            <input type="text" id="phoneNumber" placeholder="Phone Number" required>
+            <input type="text" id="managerName" placeholder="Manager's Name" required>
+            <input type="text" id="teamName" placeholder="Team Name" required>
             <button id="registerButton">Register</button>
         </div>
     </div>
