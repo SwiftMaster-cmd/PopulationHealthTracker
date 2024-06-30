@@ -1,16 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     const periodPicker = document.getElementById('periodPicker');
-    const saleTypePicker = document.getElementById('saleTypePicker');
+    const saleTypeRadios = document.querySelectorAll('input[name="saleType"]');
     const leaderboardTitle = document.getElementById('leaderboard-title');
 
     periodPicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+        const selectedSaleType = document.querySelector('input[name="saleType"]:checked').value;
+        loadLeaderboard(periodPicker.value, selectedSaleType);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(selectedSaleType)}`;
     });
 
-    saleTypePicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+    saleTypeRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            loadLeaderboard(periodPicker.value, radio.value);
+            leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(radio.value)}`;
+        });
     });
 
     firebase.auth().onAuthStateChanged(user => {
