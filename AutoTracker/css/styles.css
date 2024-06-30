@@ -52,10 +52,9 @@ body, html {
     padding: 20px;
     max-width: 85%;
     margin: 80px auto 0;
-    background-color: non;
 }
 
-.container {
+.container, .leaderboard-container, .sales-history-content, .customer-info-container {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
@@ -64,9 +63,7 @@ body, html {
     transition: background-color 0.3s ease;
 }
 
-
-
-.picker-container, .chart-picker-container, .navigation-container {
+.picker-container, .chart-picker-container, .navigation-container, .picker-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -82,92 +79,36 @@ body, html {
     background-color: var(--color-primary);
     color: var(--text-color);
     cursor: pointer;
+    max-width: 40%;
 }
 
-.picker-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.picker-header > .picker, #leaderboard-title {
-    flex: 1;
+#leaderboard-title, .leaderboard-section h3 {
     text-align: center;
-    align-items: center;
-    max-width:40%;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
-.picker {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: var(--color-primary);
-    color: var(--text-color);
-    cursor: pointer;
-}
 #chart-container {
     width: 100%;
     height: 400px;
 }
 
-.sales-history-container {
+.sales-history-container, .monthly-sales-totals-container {
     background-color: var(--color-secondary);
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.search-container {
-    position: relative;
-    width: 100%;
-}
-
-.search-container input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid var(--color-quaternary);
-    background-color: var(--color-secondary);
-    color: var(--text-color);
-}
-
-.search-container button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-}
-
-.leaderboard-container, .sales-history-content, .customer-info-container {
+    padding: 20px;
     max-height: 300px;
     overflow-y: auto;
-    padding: 10px;
-    background-color: var(--color-secondary);
-
-
-
-    border-radius: 10px;
 }
 
 .monthly-sales-totals-container {
-    height: 80%; /* Takes up 80% of its container's height */
-    width: 90%; /* Takes up 90% of its container's width */
-    max-width: 1000px; /* Adjust max-width as per your layout needs */
-    margin: auto; /* Center horizontally */
-    overflow: auto; /* Enable scrolling if content exceeds dimensions */
-    padding: 20px; /* Optional padding for better appearance */
+    height: 80%;
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+    overflow: auto;
 }
 
 .sales-container, .summary-container {
@@ -199,25 +140,37 @@ body, html {
 .button:hover {
     background-color: var(--color-quaternary);
 }
-/* Add this CSS to center leaderboard items */
+
 .leaderboard-item {
     text-align: center;
-    margin: 10px 0; /* Adjust margin for spacing */
+    margin: 10px 0;
 }
 
-.leaderboard-section h3 {
-    text-align: center;
-    font-size: 1.5em; /* Adjust size as needed */
+.search-container {
+    position: relative;
+    width: 100%;
 }
-#leaderboard-title {
-    display: block;
-    text-align: center;
-    align-items: center;
 
-    font-size: 1.5em; /* Adjust as needed */
-    margin-bottom: 10px; /* Add space below the title */
-    line-height: 1.5; /* Adjust line height for readability */
+.search-container input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--color-quaternary);
+    background-color: var(--color-secondary);
+    color: var(--text-color);
 }
+
+.search-container button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .main-container {
         grid-template-columns: 1fr;
