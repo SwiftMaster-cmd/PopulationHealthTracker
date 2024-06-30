@@ -34,7 +34,7 @@ function checkAndSetUserName(userId) {
     });
 }
 
-ffunction loadLeaderboard(period = 'day', saleType = 'selectRX') {
+function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
