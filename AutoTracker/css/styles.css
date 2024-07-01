@@ -89,7 +89,6 @@ body, html {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* More intense shadow, offset to bottom right, more blur */
     backdrop-filter: blur(8px);
     transition: background-color 0.3s ease, opacity 0.3s;
     color: var(--text-bright-primary);
@@ -99,6 +98,8 @@ body, html {
 .container:hover, .leaderboard-container:hover, .sales-history-content:hover, .customer-info-container:hover {
     opacity: 0.8;
     backdrop-filter: blur(4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* More intense shadow, offset to bottom right, more blur */
+
 }
 
 
