@@ -121,9 +121,7 @@ body, html {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    max-width: 200px; /* Set maximum width */
-    width: 100%;
-
+  
     margin-bottom: 20px;
     backdrop-filter: blur(13px);
 }
@@ -132,13 +130,6 @@ body, html {
     color: var(--text-white);
     font-size: 16px;
 }
-.select-level-container {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    align-items: flex-start;
-}
-
 
 .picker, .chart-picker {
     padding: 10px;
@@ -150,6 +141,8 @@ body, html {
     color: var(--text-white);
     cursor: pointer;
     width: 45%;
+    max-width: 400px; /
+
     backdrop-filter: blur(13px);
 }
 
