@@ -13,6 +13,7 @@ function createLevelPicker() {
 
     const levelPicker = document.createElement('select');
     levelPicker.id = 'levelPicker';
+    levelPicker.className = 'picker'; // Add this line to apply CSS
     levelPicker.innerHTML = `
         <option value="1">Level 1</option>
         <option value="2">Level 2</option>
