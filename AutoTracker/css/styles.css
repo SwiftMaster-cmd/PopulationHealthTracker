@@ -229,29 +229,64 @@ button:active {
     font-size: 2em; /* Adjust based on your base font size */
 }
 
+/* Input field and search button styling */
 .search-container {
-    position: relative;
-    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Add spacing between the search input and the button */
 }
 
 .search-container input {
     width: 100%;
+    max-width: 300px; /* Ensure the search input doesn't grow too large */
     padding: 10px;
     border-radius: 5px;
     border: 1px solid var(--color-quaternary);
     background-color: var(--color-secondary);
     color: var(--text-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
 }
 
 .search-container button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
+    margin-left: 10px;
+    background: var(--color-tertiary);
     border: none;
     color: var(--text-white);
+    font-size: 18px;
     cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.search-container button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+.search-container button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+/* Header section styling */
+.header-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.header-section h2 {
+    margin: 0;
+    font-size: 24px;
+    white-space: nowrap; /* Prevent text from wrapping to next line */
+}
+
+.header-section .search-container {
+    flex-shrink: 0; /* Prevent the search container from shrinking */
+    max-width: 100%; /* Allow it to take up as much space as needed */
 }
 
 #chartContainer {
