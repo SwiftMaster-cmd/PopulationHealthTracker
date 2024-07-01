@@ -161,7 +161,7 @@ body, html {
 
 #chart-container {
     width: 100%;
-min-width: 400px;
+
 
 }
 
@@ -285,8 +285,6 @@ min-width: 400px;
     align-items: center;
     justify-content: center;
     margin-top: 20px; /* Adjust spacing from the top */
-    margin-bottom: 20px; /* Adjust spacing from the top */
-
 }
 
 #salesChart {
