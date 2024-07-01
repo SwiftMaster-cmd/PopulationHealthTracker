@@ -84,7 +84,8 @@ body, html {
     max-width: 85%;
     margin: 80px auto 0;
 }
- .leaderboard-container, .sales-history-content, .customer-info-container {
+
+.container {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
