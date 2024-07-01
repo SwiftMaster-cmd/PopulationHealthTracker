@@ -84,18 +84,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let filteredSalesData = [];
 
     function updateSalesDisplay() {
-        if (salesData.length === 0) return;
-
-        const sale = salesData[currentSaleIndex];
+        const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
+        if (salesToDisplay.length === 0) return;
+    
+        const sale = salesToDisplay[currentSaleIndex];
         const leadIdContainer = document.getElementById('lead-id-container');
         const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
         const customerInfoContainer = document.getElementById('customer-info-container');
         const counter = document.getElementById('counter');
-
+    
         if (leadIdContainer) {
             leadIdContainer.textContent = `Lead ID: ${sale.accountNumber || 'N/A'}`;
         }
-
+    
         if (salesOutcomesContainer) {
             salesOutcomesContainer.innerHTML = `
                 <div class="sales-history-item">
@@ -110,14 +111,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
-
+    
         if (customerInfoContainer) {
             const customerInfoHtml = displayCustomerInfo(sale.customerInfo);
             customerInfoContainer.innerHTML = customerInfoHtml;
         }
-
+    
         if (counter) {
-            counter.textContent = `${currentSaleIndex + 1} of ${salesData.length}`;
+            counter.textContent = `${currentSaleIndex + 1} of ${salesToDisplay.length}`;
         }
     }
 
