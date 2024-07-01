@@ -89,7 +89,7 @@ body, html {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7); /* Even more intense shadow, more offset to bottom right, more blur */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* More intense shadow, offset to bottom right, more blur */
     backdrop-filter: blur(8px);
     transition: background-color 0.3s ease, opacity 0.3s;
     color: var(--text-bright-primary);
