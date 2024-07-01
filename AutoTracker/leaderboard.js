@@ -4,13 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const leaderboardTitle = document.getElementById('leaderboard-title');
 
     periodPicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+        updateLeaderboard();
     });
 
     saleTypePicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+        updateLeaderboard();
     });
 
     firebase.auth().onAuthStateChanged(user => {
@@ -19,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
             loadLeaderboard();
         }
     });
+
+    function updateLeaderboard() {
+        loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+    }
 });
 
 function checkAndSetUserName(userId) {
@@ -52,42 +55,37 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
+        if (!salesData) return;
+
         const users = [];
+        usersRef.once('value', usersSnapshot => {
+            const usersData = usersSnapshot.val();
+            const currentUserId = firebase.auth().currentUser.uid;
 
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                usersRef.once('value', usersSnapshot => {
-                    const usersData = usersSnapshot.val();
-                    const currentUserId = user.uid;
+            for (const userId in salesData) {
+                const userData = salesData[userId];
+                const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                const name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                users.push({ userId, name, count });
+            }
 
-                    for (const userId in salesData) {
-                        const userData = salesData[userId];
-                        const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                        const name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        users.push({ userId, name, count });
-                    }
+            users.sort((a, b) => b.count - a.count);
 
-                    users.sort((a, b) => b.count - a.count);
+            const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
+            const start = Math.max(0, currentUserIndex - 3);
+            const end = Math.min(users.length, start + 8);
 
-                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
-                    const start = Math.max(0, currentUserIndex - 3);
-                    const end = Math.min(users.length, start + 8);
+            leaderboardSection.innerHTML = '';
 
-                    leaderboardSection.innerHTML = '';
-
-                    for (let i = start; i < end; i++) {
-                        const user = users[i];
-                        const userElement = document.createElement('div');
-                        userElement.classList.add('leaderboard-item');
-                        if (user.userId === currentUserId) {
-                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
-                        }
-                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
-                        leaderboardSection.appendChild(userElement);
-                    }
-                });
-            } else {
-                console.error('No user is signed in.');
+            for (let i = start; i < end; i++) {
+                const user = users[i];
+                const userElement = document.createElement('div');
+                userElement.classList.add('leaderboard-item');
+                if (user.userId === currentUserId) {
+                    userElement.style.color = 'var(--color-quinary)'; // Highlight current user
+                }
+                userElement.innerHTML = `<strong>${i + 1}. ${user.name.substring(0, 10)}: ${user.count}</strong>`; // Limiting name to 10 characters
+                leaderboardSection.appendChild(userElement);
             }
         });
     }, error => {
