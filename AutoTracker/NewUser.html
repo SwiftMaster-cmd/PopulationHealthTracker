@@ -8,20 +8,36 @@
 <body>
     <div class="container">
         <div class="setup-container">
-            <h2>Thank you for Registering!</h2>
+            <h2>Welcome to Auto Tracker!</h2>
             <div class="form-group">
                 <h3>Follow The Steps Below to Set Up Your Auto Tracker</h3>
-                <p>1. Click the button below to copy the bookmarklet script.</p>
-                <p>2. Create a new bookmark in your browser.</p>
-                <p>3. Paste the copied script into the URL field of the bookmark.</p>
-                <p>4. Name the bookmark whatever you like and save it to your bookmarks bar.</p>
-                <p>5. Click the bookmark each time an action is made to activate the tracker.</p>
+                <p>1. <a href="#" id="step1">Click the button below to copy the bookmarklet script.</a></p>
+                <div id="step1-details" class="step-details" style="display:none;">
+                    <p>Clicking the button will copy the necessary JavaScript code to your clipboard.</p>
+                </div>
+                <p>2. <a href="#" id="step2">Create a new bookmark in your browser.</a></p>
+                <div id="step2-details" class="step-details" style="display:none;">
+                    <p>Open your browser's bookmark manager and create a new bookmark.</p>
+                </div>
+                <p>3. <a href="#" id="step3">Paste the copied script into the URL field of the bookmark.</a></p>
+                <div id="step3-details" class="step-details" style="display:none;">
+                    <p>In the URL field of your new bookmark, paste the JavaScript code you copied earlier.</p>
+                </div>
+                <p>4. <a href="#" id="step4">Name the bookmark whatever you like and save it to your bookmarks bar.</a></p>
+                <div id="step4-details" class="step-details" style="display:none;">
+                    <p>Give your bookmark a name that you will recognize and save it.</p>
+                </div>
+                <p>5. <a href="#" id="step5">Click the bookmark each time an action is made to activate the tracker.</a></p>
+                <div id="step5-details" class="step-details" style="display:none;">
+                    <p>Clicking the bookmark will activate the tracker and show the active indicator.</p>
+                </div>
                 <p>The tracker active indicator will inform you that the sale will be tracked.</p>
                 <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
                 <br><br>
                 <button id="dashboardButton">Ready to go to the dashboard? Click me!</button>
             </div>
         </div>
+    </div>
     </div>
     <script>
         document.getElementById('copyBookmarkletButton').addEventListener('click', () => {
