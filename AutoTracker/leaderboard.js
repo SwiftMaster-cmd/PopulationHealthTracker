@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// No changes needed in the rest of the code
+// Rest of the code remains unchanged
+
 function checkAndSetUserName(userId) {
     const usersRef = firebase.database().ref('users/' + userId);
 
@@ -82,7 +85,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         if (user.userId === currentUserId) {
                             userElement.style.color = 'var(--color-quinary)'; // Highlight current user
                         }
-                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
+                        userElement.innerHTML = `<strong>${i + 1}. ${user.name} - ${getReadableTitle(saleType)}: ${user.count}</strong>`;
                         leaderboardSection.appendChild(userElement);
                     }
                 });
