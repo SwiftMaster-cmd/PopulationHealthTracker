@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Setup Auto Tracker</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="newUser.css">
     <script src="main.js" defer></script>
 </head>
 <body>
@@ -18,6 +18,8 @@
                 <p>5. Click the bookmark each time an action is made to activate the tracker.</p>
                 <p>The tracker active indicator will inform you that the sale will be tracked.</p>
                 <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
+                <br><br>
+                <button id="dashboardButton">Ready to go to the dashboard? Click me!</button>
             </div>
         </div>
     </div>
@@ -30,6 +32,10 @@
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
             });
+        });
+
+        document.getElementById('dashboardButton').addEventListener('click', () => {
+            window.location.href = 'AutoTracker/Dash2.html';
         });
     </script>
 </body>
