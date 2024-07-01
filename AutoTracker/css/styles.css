@@ -62,7 +62,7 @@ body, html {
     cursor: pointer;
     font-size: 18px;
     margin-left: auto; /* Aligns to the right */
-    margin-right: 10px; /* Optional spacing from the edge */
+    margin-right: 35px; /* Optional spacing from the edge */
 }
 .color-picker-container {
     display: none;
