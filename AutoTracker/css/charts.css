@@ -1,0 +1,24 @@
+#chartContainer {
+    height: 100%; /* Adjust as needed */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px; /* Adjust spacing from the top */
+}
+
+#salesChart {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+/* Additional styling for chart responsiveness */
+@media (max-width: 768px) {
+    #chartContainer {
+        height: auto;
+    }
+
+    #salesChart {
+        height: auto;
+    }
+}

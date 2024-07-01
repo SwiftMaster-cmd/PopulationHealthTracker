@@ -160,11 +160,7 @@ body, html {
     
 }
 
-#chart-container {
-    width: 100%;
-    min-height: 400px;
 
-}
 
 .sales-container {
     display: grid;
@@ -218,7 +214,30 @@ body, html {
     font-size: 2em; /* Adjust based on your base font size */
 }
 
+.search-container {
+    position: relative;
+    width: 100%;
+}
 
+.search-container input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--color-quaternary);
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+}
+
+.search-container button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-white);
+    cursor: pointer;
+}
 
 #chartContainer {
     height: 100%; /* Adjust as needed */
