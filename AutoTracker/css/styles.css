@@ -85,14 +85,15 @@ body, html {
     margin: 80px auto 0;
 }
 
-.container {
+.container, .leaderboard-container, .sales-history-content, .customer-info-container {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* More intense shadow, offset to bottom right, more blur */
-    backdrop-filter: blur(13px);
+    backdrop-filter: blur(8px);
     transition: background-color 0.3s ease, opacity 0.3s;
     color: var(--text-bright-primary);
+    backdrop-filter: blur(13px);
 }
 
 .container:hover, .leaderboard-container:hover, .sales-history-content:hover, .customer-info-container:hover {
@@ -172,7 +173,7 @@ body, html {
 
 #chart-container {
     width: 100%;
-
+    min-height: 400px;
 
 }
 
