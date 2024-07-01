@@ -89,11 +89,10 @@ body, html {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Adjusted shadow */
+    backdrop-filter: blur(13px);
     transition: background-color 0.3s ease, opacity 0.3s;
     color: var(--text-bright-primary);
-    backdrop-filter: blur(13px);
 }
 
 .container:hover, .leaderboard-container:hover, .sales-history-content:hover, .customer-info-container:hover {
