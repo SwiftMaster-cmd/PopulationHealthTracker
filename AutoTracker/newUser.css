@@ -31,12 +31,12 @@ body {
     align-items: center;
 }
 
-h2 {
+h2, h3 {
     text-align: center;
     color: #d3d3d3;
 }
 
-.login-container, .register-container {
+.setup-container {
     background-color: rgba(0, 0, 0, 0.5);
     padding: 20px;
     border-radius: 8px;
@@ -47,8 +47,7 @@ h2 {
     transition: opacity 0.5s ease, box-shadow 0.5s ease;
 }
 
-.login-container:hover, .register-container:hover,
-.login-container:focus-within, .register-container:focus-within {
+.setup-container:hover, .setup-container:focus-within {
     opacity: 0.9;
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.7);
     background-color: rgba(0, 0, 0, 0.7); /* Brighter background color on hover */
@@ -59,19 +58,6 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-input[type="email"],
-input[type="password"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    background-color: rgba(255, 255, 255, 0.8);
-    color: #000;
-    opacity: 0.9;
 }
 
 button {
@@ -91,34 +77,6 @@ button {
 }
 
 button:hover {
-    background-color: #1e998e;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Add any additional styling for the setup button if needed */
-.setup-container {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#setupButton {
-    background-color: #20b2aa;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 60%;
-    margin-top: 10px;
-    font-weight: bold;
-    text-align: center;
-    opacity: 0.9;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-#setupButton:hover {
     background-color: #1e998e;
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);

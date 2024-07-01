@@ -27,7 +27,7 @@
         async function emailPasswordSignIn(email, password) {
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = '/AutoTracker/Dash2.html';
+                window.location.href = 'AutoTracker/Dash2.html';
             } catch (error) {
                 console.error('Error during email sign-in:', error);
                 alert('Failed to sign in. Please check your email and password.');
@@ -93,6 +93,16 @@
                 <button id="registerButton">Register</button>
             </div>
         </div>
+        <div class="setup-container">
+            <button id="setupButton">New here? Click me to set up the AutoTracker</button>
+        </div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('setupButton').addEventListener('click', () => {
+                window.location.href = 'AutoTracker/NewUser.html';
+            });
+        });
+    </script>
 </body>
 </html>
