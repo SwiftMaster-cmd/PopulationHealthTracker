@@ -81,3 +81,12 @@ button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
+
+.step-container a {
+    color: #00bfff; /* Light blue color */
+    text-decoration: none;
+}
+
+.step-container a:hover {
+    text-decoration: underline; /* Optional: underline on hover */
+}
