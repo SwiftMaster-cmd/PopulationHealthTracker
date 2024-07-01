@@ -285,6 +285,8 @@ body, html {
     align-items: center;
     justify-content: center;
     margin-top: 20px; /* Adjust spacing from the top */
+    margin-bottom: 20px; /* Adjust spacing from the top */
+
 }
 
 #salesChart {
