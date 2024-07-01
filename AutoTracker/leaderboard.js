@@ -63,7 +63,10 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
-                        const name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                        let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                        if (name.length > 8) {
+                            name = name.substring(0, 8); // Truncate name to 8 characters
+                        }
                         users.push({ userId, name, count });
                     }
 
