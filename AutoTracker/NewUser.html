@@ -55,7 +55,9 @@
             });
     
             document.getElementById('dashboardButton').addEventListener('click', () => {
-                window.location.href = 'index.html'; // Change to your login page URL
+                // Use the correct relative or absolute path
+                window.location.href = '../PopulationHealthTracker/index.html'; // Relative path
+                // window.location.href = '/PopulationHealthTracker/index.html'; // Absolute path (if needed)
             });
         });
     </script>
@@ -70,8 +72,6 @@
             });
         });
 
-        document.getElementById('dashboardButton').addEventListener('click', () => {
-            window.location.href = '/PopulationHealthTracker/index.html'        });
     </script>
 </body>
 </html>
