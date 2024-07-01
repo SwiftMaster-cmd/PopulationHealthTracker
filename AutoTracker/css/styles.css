@@ -85,6 +85,22 @@ body, html {
     margin: 80px auto 0;
 }
 
+button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+/* Input field and search button styling */
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
 .container, .leaderboard-container, .sales-history-content,.monthly-sales-totals-container , .customer-info-container {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
@@ -159,7 +175,6 @@ body, html {
     color: var(--text-white);
     
 }
-
 
 
 .sales-container {
