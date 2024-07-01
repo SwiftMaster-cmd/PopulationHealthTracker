@@ -1,10 +1,11 @@
 #chartContainer {
-    height: 70%; /* Adjust as needed */
+    height: 100%; /* Adjust as needed */
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: 20px; /* Adjust spacing from the top */
+    margin-bottom: 40px; /* Adjust spacing from the top */
 }
 
 #salesChart {
