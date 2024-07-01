@@ -41,7 +41,7 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 10px;
     background-color: var(--color-secondary);
     color: var(--text-white);
     position: fixed;
