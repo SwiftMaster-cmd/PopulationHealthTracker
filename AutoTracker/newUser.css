@@ -83,8 +83,9 @@ button:hover {
 }
 
 .step-container a {
-    color: #a5e6fc; /* Light blue color */
+    color: #ffffff; /* Light blue color */
     text-decoration: none;
+    
 }
 
 .step-container a:hover {
