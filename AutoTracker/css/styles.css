@@ -125,26 +125,18 @@ body, html {
     margin-bottom: 20px;
     backdrop-filter: blur(13px);
 }
-.select-level-container label {
-    margin-bottom: 5px;
-    color: var(--text-white);
-    font-size: 16px;
-}
-
 .select-level-container {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     margin-bottom: 20px;
-    .select-level-container {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    align-items: flex-start;
+    gap: 10px; /* Add spacing between label and picker */
 }
 
-    align-items: flex-start;
+.select-level-container label {
+    color: var(--text-white);
+    font-size: 16px;
+    margin: 0; /* Remove bottom margin */
 }
-
 
 .picker, .chart-picker {
     padding: 10px;
