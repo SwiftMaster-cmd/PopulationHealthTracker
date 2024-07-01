@@ -159,10 +159,22 @@ body, html {
     
 }
 
-#chart-container {
+#chartContainer {
     width: 100%;
-    min-height: 400px;
+    height: calc(100vh - 100px); /* Example to fill the height minus some header/footer space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    overflow: hidden; /* Ensure no overflow */
+}
 
+#salesChart {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
 }
 
 .sales-container {
