@@ -182,14 +182,14 @@ function loadLiveActivities() {
                 saleElement.classList.add('activity-item');
                 const likeButton = document.createElement('span');
                 likeButton.classList.add('like-button');
-                likeButton.innerHTML = `<i class="heart" style="opacity: 0.3;">&#x2764;</i> ${sale.likeCount > 0 ? sale.likeCount : ''}`;
+                likeButton.innerHTML = `${sale.likeCount > 0 ? sale.likeCount : ''} <i class="heart" style="opacity: 0.3;">&#x2764;</i>`;
                 likeButton.addEventListener('click', () => {
                     const user = firebase.auth().currentUser;
                     if (user) {
                         const likeRef = likesRef.child(sale.saleTime).child(user.uid);
                         likeRef.set(true).then(() => {
                             sale.likeCount += 1;
-                            likeButton.innerHTML = `<i class="heart" style="opacity: 1;">&#x2764;</i> ${sale.likeCount}`;
+                            likeButton.innerHTML = `${sale.likeCount} <i class="heart" style="opacity: 1;">&#x2764;</i>`;
                         }).catch(error => {
                             console.error('Error liking sale:', error);
                         });
