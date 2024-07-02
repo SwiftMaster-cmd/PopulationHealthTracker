@@ -128,7 +128,7 @@ function loadLiveActivities() {
         for (const userId in salesData) {
             for (const saleId in salesData[userId]) {
                 const sale = salesData[userId][saleId];
-                const saleType = getReadableTitle(sale.saleType);  // Ensure saleType is readable
+                const saleType = getSaleType(sale.assignAction, sale.notesValue);  // Ensure saleType is readable
                 const timestamp = sale.outcomeTime;
                 const formattedTime = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
