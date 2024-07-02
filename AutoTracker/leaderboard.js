@@ -4,25 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const leaderboardTitle = document.getElementById('leaderboard-title');
 
     periodPicker.addEventListener('change', () => {
-        console.log('Period changed to:', periodPicker.value);
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
         leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     saleTypePicker.addEventListener('change', () => {
-        console.log('Sale type changed to:', saleTypePicker.value);
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
         leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            console.log('User logged in:', user.uid);
             checkAndSetUserName(user.uid);
             loadLeaderboard(periodPicker.value, saleTypePicker.value);
             loadLiveActivities();
-        } else {
-            console.log('No user logged in.');
         }
     });
 });
@@ -125,7 +120,7 @@ function loadLiveActivities() {
     const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
     const usersRef = database.ref('users');
 
-    const liveActivitiesSection = document.getElementById('live-activity-section');
+    const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
         console.error('Live activities section element not found');
         return;
@@ -158,6 +153,7 @@ function loadLiveActivities() {
         const namePromises = latestSales.map(sale => {
             return usersRef.child(sale.userId).once('value').then(snapshot => {
                 sale.userName = snapshot.val().name || 'Unknown User';
+                sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
             });
         });
 
