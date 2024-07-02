@@ -122,7 +122,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 function loadLiveActivities() {
     const database = firebase.database();
-    const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
+    const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(9);
     const usersRef = database.ref('users');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
@@ -153,7 +153,7 @@ function loadLiveActivities() {
         }
 
         sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
-        const latestSales = sales.slice(0, 5);
+        const latestSales = sales.slice(0, 9);
 
         const namePromises = latestSales.map(sale => {
             return usersRef.child(sale.userId).once('value').then(snapshot => {
