@@ -113,30 +113,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -219,7 +195,7 @@ function renderSales(sales, container, likesRef, usersRef) {
         saleElement.classList.add('activity-item');
 
         // Use a sanitized path for the like button
-        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[\.\#\$$begin:math:display$$end:math:display$]/g, '_')}`;
+        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[\.\#\$$begin:math:display$$end:math:display$\s]/g, '_')}`;
 
         saleElement.innerHTML = `
             <button class="like-button" data-like-path="${likePath}">
@@ -308,7 +284,7 @@ function getReadableTitle(saleType) {
         case 'Select RX':
             return 'Select RX';
         case 'selectPatientManagement':
-                return 'Select Patient Management';
+            return 'Select Patient Management';
         default:
             return saleType;
     }
