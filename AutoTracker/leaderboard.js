@@ -198,7 +198,7 @@ function renderSales(sales, container, likesRef) {
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[\.\#\$$begin:math:display$$end:math:display$]/g, '_')}`;
 
         saleElement.innerHTML = `
-            <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
+            <button class="like-button" data-like-path="${likePath}">❤️</button>
             <span class="like-count">0</span>
             <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
         `;
@@ -207,22 +207,28 @@ function renderSales(sales, container, likesRef) {
         const likeButton = saleElement.querySelector('.like-button');
         const likeCountSpan = saleElement.querySelector('.like-count');
 
-        updateLikeCount(likesRef, likePath, likeCountSpan, likeButton);
+        initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton);
 
         likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeCountSpan, likeButton));
     });
 }
 
-async function updateLikeCount(likesRef, likePath, likeCountSpan, likeButton) {
+async function initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton) {
     try {
         const snapshot = await likesRef.child(likePath).once('value');
-        const likeCount = snapshot.val() || 0;
-        likeCountSpan.textContent = likeCount;
+        let likeCount = snapshot.val();
+        if (likeCount === null) {
+            // Initialize like count to 0 if it doesn't exist
+            await likesRef.child(likePath).set(0);
+            likeCount = 0;
+        }
         if (likeCount > 0) {
+            likeCountSpan.textContent = likeCount;
+            likeCountSpan.style.display = 'inline';
             likeButton.classList.add('liked');
         }
     } catch (error) {
-        console.error('Error fetching like count:', error);
+        console.error('Error initializing like count:', error);
     }
 }
 
@@ -237,14 +243,28 @@ async function handleLikeClick(likesRef, likePath, likeCountSpan, likeButton) {
 
         if (result.committed) {
             const newCount = result.snapshot.val() ? parseInt(likeCountSpan.textContent) + 1 : parseInt(likeCountSpan.textContent) - 1;
-            likeCountSpan.textContent = newCount;
+            if (newCount > 0) {
+                likeCountSpan.textContent = newCount;
+                likeCountSpan.style.display = 'inline';
+            } else {
+                likeCountSpan.textContent = 0;
+                likeCountSpan.style.display = 'none';
+            }
             likeButton.classList.toggle('liked', result.snapshot.val());
+
+            // Update the global like count
+            await likesRef.child(likePath).transaction(globalLikeCount => {
+                if (result.snapshot.val()) {
+                    return (globalLikeCount || 0) + 1;
+                } else {
+                    return (globalLikeCount || 0) - 1;
+                }
+            });
         }
     } catch (error) {
         console.error('Error updating like count:', error);
     }
 }
-
 function getReadableTitle(saleType) {
     switch (saleType) {
         case 'Notes':
