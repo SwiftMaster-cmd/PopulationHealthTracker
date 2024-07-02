@@ -115,28 +115,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -151,18 +129,18 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
-            const salesData = salesSnapshot.val();
-            if (!salesData) {
-                throw new Error('No sales data found');
-            }
+        const salesSnapshot = await salesTimeFramesRef.orderByKey().limitToLast(5).once('value');
+        const salesData = salesSnapshot.val();
+        if (!salesData) {
+            throw new Error('No sales data found');
+        }
 
-            const sales = await processSalesData(salesData);
-            const latestSales = sales.slice(0, 5);
+        const sales = await processSalesData(salesData);
+        const latestSales = sales.slice(0, 5);
 
-            await addUserNames(latestSales, usersRef);
-            renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
-        });
+        await addUserNames(latestSales, usersRef);
+        renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
+
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
@@ -249,10 +227,10 @@ function renderSales(sales, container, likesRef, usersRef) {
 function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     const likes = snapshot.val() || {};
     const likeCount = Object.values(likes).reduce((total, value) => total + value, 0);
-    const lastLikerId = Object.keys(likes).sort((a, b) => likes[b] - likes[a])[0];
+    const lastLikerId = Object.keys(likes).find(key => likes[key] === 1);
     let lastLikerName = 'Someone';
     
-    if (likeCount > 0 && lastLikerId) {
+    if (lastLikerId) {
         usersRef.child(lastLikerId).once('value').then(userSnapshot => {
             if (userSnapshot.exists()) {
                 lastLikerName = userSnapshot.val().name || 'Someone';
@@ -262,7 +240,7 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
                 : `Liked by ${lastLikerName}`;
         });
     } else {
-        likeInfoDiv.textContent = ''; // Clear the like-info text if there are no likes
+        likeInfoDiv.textContent = '';
     }
 
     if (likes[firebase.auth().currentUser.uid]) {
