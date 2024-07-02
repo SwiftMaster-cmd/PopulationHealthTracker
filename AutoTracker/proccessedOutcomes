@@ -25,17 +25,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
-
+        const normalizedNotes = notes.toLowerCase();
+        let saleTypes = [];
+    
         if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-            return 'Select RX';
+            saleTypes.push('Select RX');
         } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-            return 'Billable HRA';
-        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-            return 'Transfer';
-        } else if (normalizedAction.includes('select patient management')) {
-            return 'Select Patient Management';
+            saleTypes.push('Billable HRA');
+        } else if (normalizedAction.includes('select patient management') || normalizedNotes.includes('spm')) {
+            saleTypes.push('Select Patient Management');
+        } else if (normalizedAction.includes('notes')) {
+            saleTypes.push('Notes');
+        } else {
+            saleTypes.push(action);
         }
-        return action;
+    
+        // Check if the notes indicate a transfer, unless the primary type is "Notes"
+        if (normalizedNotes.match(/(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i) && !normalizedAction.includes('notes')) {
+            saleTypes.push('Transfer');
+        }
+    
+        return saleTypes;
     }
 
     function getCurrentDayKey() {
