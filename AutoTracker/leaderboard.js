@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             checkAndSetUserName(user.uid);
-            loadLeaderboard();
+            loadLeaderboard(periodPicker.value, saleTypePicker.value);
+            loadLiveActivities();
         }
     });
 });
@@ -62,7 +63,16 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
-                        const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                        let count = 0;
+
+                        if (period === 'day') {
+                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
+                        } else if (period === 'week') {
+                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                        } else if (period === 'month') {
+                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
+                        }
+
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
                         if (name.length > 10) {
                             name = name.substring(0, 8); // Truncate name to 8 characters
@@ -95,6 +105,60 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         });
     }, error => {
         console.error('Error fetching sales data:', error);
+    });
+}
+
+function loadLiveActivities() {
+    const database = firebase.database();
+    const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
+    const usersRef = database.ref('users');
+
+    const liveActivitiesSection = document.getElementById('live-activities-section');
+    if (!liveActivitiesSection) {
+        console.error('Live activities section element not found');
+        return;
+    }
+
+    salesOutcomesRef.off('value');
+
+    salesOutcomesRef.on('value', salesSnapshot => {
+        const salesData = salesSnapshot.val();
+        const sales = [];
+
+        for (const userId in salesData) {
+            for (const saleId in salesData[userId]) {
+                const sale = salesData[userId][saleId];
+                const saleType = getReadableTitle(sale.saleType);  // Ensure saleType is readable
+                const timestamp = sale.outcomeTime;
+                const formattedTime = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                sales.push({ userId, saleType, formattedTime, saleId });
+            }
+        }
+
+        sales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const latestSales = sales.slice(0, 5);
+
+        const namePromises = latestSales.map(sale => {
+            return usersRef.child(sale.userId).once('value').then(snapshot => {
+                sale.userName = snapshot.val().name || 'Unknown User';
+            });
+        });
+
+        Promise.all(namePromises).then(() => {
+            liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
+
+            latestSales.forEach(sale => {
+                const saleElement = document.createElement('div');
+                saleElement.classList.add('activity-item');
+                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> (${sale.saleId}) at ${sale.formattedTime}`;
+                liveActivitiesSection.appendChild(saleElement);
+            });
+        }).catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }, error => {
+        console.error('Error fetching live activities:', error);
     });
 }
 
