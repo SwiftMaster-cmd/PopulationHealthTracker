@@ -117,7 +117,6 @@ function loadLiveActivities() {
     const database = firebase.database();
     const salesTimeFramesRef = database.ref('salesTimeFrames');
     const usersRef = database.ref('users');
-    const likesRef = database.ref('likes');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
@@ -144,7 +143,7 @@ function loadLiveActivities() {
                         const saleTime = saleTimes[timeIndex];
                         const formattedTime = new Date(saleTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                        sales.push({ userId, leadId, saleType, saleTime, formattedTime });
+                        sales.push({ userId, saleType, saleTime, formattedTime });
                     }
                 }
             }
@@ -174,50 +173,8 @@ function loadLiveActivities() {
             latestSales.forEach(sale => {
                 const saleElement = document.createElement('div');
                 saleElement.classList.add('activity-item');
-
-                // Use a sanitized path for the like button
-                const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${encodeURIComponent(sale.saleTime)}`;
-
-                saleElement.innerHTML = `
-                    <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
-                    <span class="like-count">0</span>
-                    <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
-                `;
+                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
                 liveActivitiesSection.appendChild(saleElement);
-
-                const likeButton = saleElement.querySelector('.like-button');
-                const likeCountSpan = saleElement.querySelector('.like-count');
-
-                likesRef.child(likePath).once('value').then(snapshot => {
-                    const likeCount = snapshot.val() || 0;
-                    likeCountSpan.textContent = likeCount;
-                    if (likeCount > 0) {
-                        likeButton.classList.add('liked');
-                    }
-                });
-
-                likeButton.addEventListener('click', () => {
-                    const currentUserId = firebase.auth().currentUser.uid;
-                    const userLikePath = `${likePath}/${currentUserId}`;
-
-                    likesRef.child(userLikePath).transaction(currentValue => {
-                        if (currentValue) {
-                            // Unlike
-                            return null;
-                        } else {
-                            // Like
-                            return true;
-                        }
-                    }).then(result => {
-                        if (result.committed) {
-                            const newCount = result.snapshot.val() ? parseInt(likeCountSpan.textContent) + 1 : parseInt(likeCountSpan.textContent) - 1;
-                            likeCountSpan.textContent = newCount;
-                            likeButton.classList.toggle('liked', result.snapshot.val());
-                        }
-                    }).catch(error => {
-                        console.error('Error updating like count:', error);
-                    });
-                });
             });
         }).catch(error => {
             console.error('Error fetching data:', error);
