@@ -122,8 +122,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -227,20 +225,16 @@ function renderSales(sales, container, likesRef) {
 async function initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton) {
     try {
         const snapshot = await likesRef.child(likePath).once('value');
-        let likeCount = snapshot.val();
-        if (likeCount === null) {
-            // Initialize like count to 0 if it doesn't exist
-            await likesRef.child(likePath).set(0);
-            likeCount = 0;
-        }
-        if (typeof likeCount === 'number') {
-            likeCountSpan.textContent = likeCount;
-            if (likeCount > 0) {
-                likeCountSpan.style.display = 'inline';
+        const likes = snapshot.val() || {};
+        const likeCount = Object.values(likes).reduce((total, value) => total + value, 0);
+        likeCountSpan.textContent = likeCount;
+        if (likeCount > 0) {
+            likeCountSpan.style.display = 'inline';
+            if (likes[firebase.auth().currentUser.uid]) {
                 likeButton.classList.add('liked');
-            } else {
-                likeCountSpan.style.display = 'none';
             }
+        } else {
+            likeCountSpan.style.display = 'none';
         }
     } catch (error) {
         console.error('Error initializing like count:', error);
@@ -253,35 +247,39 @@ async function handleLikeClick(likesRef, likePath, likeCountSpan, likeButton) {
         const userLikePath = `${likePath}/${currentUserId}`;
 
         const result = await likesRef.child(userLikePath).transaction(currentValue => {
-            return currentValue ? null : true;
+            return currentValue ? 0 : 1;
         });
 
         if (result.committed) {
-            const globalLikeCountSnapshot = await likesRef.child(likePath).once('value');
-            let globalLikeCount = globalLikeCountSnapshot.val() || 0;
+            const likesSnapshot = await likesRef.child(likePath).once('value');
+            const likes = likesSnapshot.val() || {};
+            const likeCount = Object.values(likes).reduce((total, value) => total + value, 0);
 
-            if (result.snapshot.val()) {
-                globalLikeCount++;
-                likeButton.classList.add('liked');
-            } else {
-                globalLikeCount--;
-                likeButton.classList.remove('liked');
-            }
-
-            await likesRef.child(likePath).set(globalLikeCount);
-
-            likeCountSpan.textContent = globalLikeCount;
-            if (globalLikeCount > 0) {
+            likeCountSpan.textContent = likeCount;
+            if (likeCount > 0) {
                 likeCountSpan.style.display = 'inline';
             } else {
                 likeCountSpan.style.display = 'none';
             }
+            likeButton.classList.toggle('liked', !!likes[currentUserId]);
         }
     } catch (error) {
         console.error('Error updating like count:', error);
     }
 }
 
+function getReadableTitle(saleType) {
+    switch (saleType) {
+        case 'Notes':
+            return 'Notes';
+        case 'HRA Completed':
+            return 'HRA Completed';
+        case 'Select RX':
+            return 'Select RX';
+        default:
+            return saleType;
+    }
+}
 
 
 
