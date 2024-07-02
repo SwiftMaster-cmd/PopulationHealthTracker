@@ -307,6 +307,8 @@ function getReadableTitle(saleType) {
             return 'HRA Completed';
         case 'Select RX':
             return 'Select RX';
+        case 'selectPatientManagement':
+                return 'Select Patient Management';
         default:
             return saleType;
     }
