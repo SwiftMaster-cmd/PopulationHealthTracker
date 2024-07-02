@@ -113,8 +113,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -227,7 +225,7 @@ function renderSales(sales, container, likesRef, usersRef) {
 function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     const likes = snapshot.val() || {};
     const likeCount = Object.values(likes).reduce((total, value) => total + value, 0);
-    const lastLikerId = Object.keys(likes).find(key => likes[key] === 1);
+    const lastLikerId = Object.keys(likes).sort((a, b) => likes[b] - likes[a])[0];
     let lastLikerName = 'Someone';
     
     if (lastLikerId) {
