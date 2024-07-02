@@ -174,9 +174,10 @@ function loadLiveActivities() {
             latestSales.forEach(sale => {
                 const saleElement = document.createElement('div');
                 saleElement.classList.add('activity-item');
-                const sanitizedSaleTime = encodeURIComponent(sale.saleTime);
-                const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sanitizedSaleTime}`;
-                
+
+                // Use a sanitized path for the like button
+                const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${encodeURIComponent(sale.saleTime)}`;
+
                 saleElement.innerHTML = `
                     <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
                     <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
@@ -209,7 +210,7 @@ function loadLiveActivities() {
                         }
                     }).then(result => {
                         if (result.committed) {
-                            const newCount = result.snapshot.val() ? likeCountSpan.textContent - 1 : likeCountSpan.textContent + 1;
+                            const newCount = result.snapshot.val() ? parseInt(likeCountSpan.textContent) + 1 : parseInt(likeCountSpan.textContent) - 1;
                             likeCountSpan.textContent = newCount;
                             likeButton.classList.toggle('liked', result.snapshot.val());
                         }
