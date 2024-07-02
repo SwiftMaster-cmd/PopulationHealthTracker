@@ -139,11 +139,14 @@ function loadLiveActivities() {
         const sales = [];
 
         for (const userId in salesData) {
-            for (const saleId in salesData[userId]) {
-                const sale = salesData[userId][saleId];
-                const formattedTime = new Date(sale).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const userSales = salesData[userId];
+            for (const saleType in userSales) {
+                const saleTimes = userSales[saleType];
+                for (const saleTime in saleTimes) {
+                    const formattedTime = new Date(saleTimes[saleTime]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                sales.push({ userId, saleType: saleId, formattedTime });
+                    sales.push({ userId, saleType, formattedTime });
+                }
             }
         }
 
