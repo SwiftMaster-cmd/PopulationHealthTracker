@@ -153,6 +153,7 @@ function loadLiveActivities() {
         sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
         const latestSales = sales.slice(0, 5);
 
+        // Fetch user names from the user node
         const namePromises = latestSales.map(sale => {
             return usersRef.child(sale.userId).once('value').then(snapshot => {
                 if (snapshot.exists()) {
