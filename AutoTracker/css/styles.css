@@ -326,7 +326,7 @@ button:active {
     cursor: pointer;
     font-size: 1.5em;
     padding: 0;
-    margin-left: 5px; /* Adjust margin to position the button correctly */
+    margin-left: 3px; /* Adjust margin to position the button correctly */
     color: black; /* Default color for unclicked heart */
 }
 
