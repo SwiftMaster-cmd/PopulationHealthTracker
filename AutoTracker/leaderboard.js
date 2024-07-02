@@ -135,8 +135,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -154,9 +152,11 @@ async function loadLiveActivities() {
         salesTimeFramesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
-                throw new Error('No sales data found');
+                console.error('No sales data found');
+                return;
             }
 
+            console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
             const latestSales = sales.slice(0, 5);
 
