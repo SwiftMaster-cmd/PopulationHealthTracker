@@ -1,6 +1,7 @@
-body {
-    font-size: 1.2em; /* Increase base font size */
-}
+@import url('https://fonts.googleapis.com/css2?family=Apple+System+UI:ital,wght@0,700;1,700&display=swap');
+
+
+
 
 :root {
     --color-primary: rgba(0, 123, 255, 0.8);
@@ -16,6 +17,7 @@ body {
 body, html {
     height: 100%;
     margin: 0;
+        font-size: 1.2em; /* Increase base font size */
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--background-color);
@@ -63,7 +65,6 @@ body, html {
     margin-left: auto; /* Aligns to the right */
     margin-right: 35px; /* Optional spacing from the edge */
 }
-
 .color-picker-container {
     display: none;
     position: absolute;
@@ -76,29 +77,13 @@ body, html {
     color: var(--text-white);
     z-index: 1000; /* Ensure it is in front of other elements */
 }
-
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
     padding: 20px;
     max-width: 85%;
     margin: 80px auto 0;
-}
-
-@media (max-width: 768px) {
-    .main-container {
-        grid-template-columns: 1fr;
-    }
-
-    .picker-container, .chart-picker-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .navigation-container {
-        justify-content: center;
-    }
 }
 
 button:hover {
@@ -117,7 +102,7 @@ button:active {
     align-items: center;
 }
 
-.container, .leaderboard-container, .sales-history-content, .monthly-sales-totals-container, .customer-info-container {
+.container, .leaderboard-container, .sales-history-content,.monthly-sales-totals-container , .customer-info-container {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
@@ -131,7 +116,9 @@ button:active {
     opacity: 0.8;
     backdrop-filter: blur(4px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* More intense shadow, offset to bottom right, more blur */
+
 }
+
 
 .sales-container, .summary-container {
     display: grid;
@@ -145,10 +132,10 @@ button:active {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+  
     margin-bottom: 20px;
     backdrop-filter: blur(13px);
 }
-
 .select-level-container {
     display: flex;
     align-items: center;
@@ -173,6 +160,7 @@ button:active {
     cursor: pointer;
     width: 45%;
     max-width: 400px; 
+
     backdrop-filter: blur(13px);
 }
 
@@ -186,7 +174,9 @@ button:active {
     margin-bottom: 10px;
     line-height: 1.5;
     color: var(--text-white);
+    
 }
+
 
 .sales-container {
     display: grid;
@@ -314,49 +304,10 @@ button:active {
     min-height: 100%;
 }
 
-/* Real-time live activities section */
-.activity-item {
-    margin-bottom: 10px;
-}
 
-.like-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5em;
-    padding: 0;
-    margin-left: 5px;
-    margin-right: 2px;
-}
-
-.like-button svg {
-    fill: black; /* Default color for unclicked heart */
-}
-
-.like-button.liked svg {
-    fill: red; /* Color for clicked heart */
-}
-
-.like-info {
-    font-size: 0.8em;
-    color: var(--text-white);
-    margin-top: 5px;
-}
-
-/* Grid layout for main container */
-.main-container {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* Adjusted for leaderboard and live activities */
-    gap: 20px;
-    padding: 20px;
-    max-width: 85%;
-    margin: 80px auto 0;
-}
-
-/* Responsive design */
 @media (max-width: 768px) {
     .main-container {
-        grid-template-columns: 1fr; /* Stack elements on smaller screens */
+        grid-template-columns: 1fr;
     }
 
     .picker-container, .chart-picker-container {
@@ -367,4 +318,30 @@ button:active {
     .navigation-container {
         justify-content: center;
     }
+}
+
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    padding: 0;
+
+}
+
+.like-button svg {
+    fill: black; /* Default color for unclicked heart */
+}
+
+.like-button.liked svg {
+    fill: red; /* Color for clicked heart */
+}
+
+
+
+.like-info {
+    font-size: 0.8em;
+    color: var(--text-white);
+    margin-top: 5px;
 }
