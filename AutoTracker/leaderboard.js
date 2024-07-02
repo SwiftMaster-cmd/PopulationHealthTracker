@@ -141,9 +141,10 @@ function loadLiveActivities() {
         for (const userId in salesData) {
             for (const saleId in salesData[userId]) {
                 const sale = salesData[userId][saleId];
-                const formattedTime = new Date(sale.outcomeTime).toLocaleString();
+                const formattedTime = new Date(sale.outcomeTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const saleType = getReadableTitle(sale.saleType);
 
-                sales.push({ userId, saleType: sale.saleType, formattedTime });
+                sales.push({ userId, saleType, formattedTime });
             }
         }
 
@@ -153,7 +154,6 @@ function loadLiveActivities() {
         const namePromises = latestSales.map(sale => {
             return usersRef.child(sale.userId).once('value').then(snapshot => {
                 sale.userName = snapshot.val().name || 'Unknown User';
-                sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
             });
         });
 
