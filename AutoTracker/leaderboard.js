@@ -124,6 +124,7 @@ function loadLiveActivities() {
 
     salesOutcomesRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
+        const userPromises = [];
         const sales = [];
 
         for (const userId in salesData) {
@@ -132,23 +133,25 @@ function loadLiveActivities() {
                 const timestamp = sale.outcomeTime;
                 const accountNumber = saleId;
 
-                const salePromise = salesCountsRef.child(`${userId}`).once('value').then(snapshot => {
-                    const userData = snapshot.val();
+                const salePromise = salesCountsRef.child(userId).once('value').then(snapshot => {
+                    const salesCounts = snapshot.val();
                     let saleType = 'Unknown Sale Type';
-                    if (userData.day && userData.day[sale.saleType]) {
-                        saleType = sale.saleType;
-                    } else if (userData.week && userData.week[sale.saleType]) {
-                        saleType = sale.saleType;
-                    } else if (userData.month && userData.month[sale.saleType]) {
-                        saleType = sale.saleType;
+                    
+                    if (salesCounts && salesCounts.day && salesCounts.day[saleId] && salesCounts.day[saleId].saleType) {
+                        saleType = salesCounts.day[saleId].saleType;
+                    } else if (salesCounts && salesCounts.week && salesCounts.week[saleId] && salesCounts.week[saleId].saleType) {
+                        saleType = salesCounts.week[saleId].saleType;
+                    } else if (salesCounts && salesCounts.month && salesCounts.month[saleId] && salesCounts.month[saleId].saleType) {
+                        saleType = salesCounts.month[saleId].saleType;
                     }
+
                     sales.push({ userId, saleType, timestamp, accountNumber });
                 });
-                sales.push(salePromise);
+                userPromises.push(salePromise);
             }
         }
 
-        Promise.all(sales).then(() => {
+        Promise.all(userPromises).then(() => {
             sales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             const latestSales = sales.slice(0, 5);
 
