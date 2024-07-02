@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             checkAndSetUserName(user.uid);
-            loadLeaderboard();
+            loadLeaderboard(periodPicker.value, saleTypePicker.value);
+            loadLiveActivities();
         }
     });
 });
@@ -62,7 +63,16 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
-                        const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
+                        let count = 0;
+
+                        if (period === 'day') {
+                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
+                        } else if (period === 'week') {
+                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                        } else if (period === 'month') {
+                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
+                        }
+
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
                         if (name.length > 10) {
                             name = name.substring(0, 8); // Truncate name to 8 characters
@@ -98,50 +108,10 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-function getReadableTitle(saleType) {
-    switch (saleType) {
-        case 'selectRX':
-            return 'Select RX';
-        case 'billableHRA':
-            return 'Billable HRA';
-        case 'transfer':
-            return 'Transfer';
-        case 'selectPatientManagement':
-            return 'Select Patient Management';
-        default:
-            return saleType;
-    }
-}
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadLiveActivities();
-
-    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
-
-    // Set default picker value to 'month'
-    chartPeriodPicker.value = 'month';
-
-    chartPeriodPicker.addEventListener('change', () => {
-        loadChart(chartPeriodPicker.value);
-    });
-
-    loadChart('month');
-
-    const savedColor = localStorage.getItem('baseColor');
-    if (savedColor) {
-        applyColorPalette(savedColor);
-    } else {
-        const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
-        applyColorPalette(defaultColor);
-    }
-});
-
 function loadLiveActivities() {
     const database = firebase.database();
     const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
     const usersRef = database.ref('users');
-    const salesTimeFramesRef = database.ref('salesTimeFrames');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
@@ -158,54 +128,49 @@ function loadLiveActivities() {
         for (const userId in salesData) {
             for (const saleId in salesData[userId]) {
                 const sale = salesData[userId][saleId];
-                const timestamp = sale.outcomeTime;
-                const formattedTime = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const formattedTime = new Date(sale.outcomeTime).toLocaleString();
 
-                sales.push({ userId, timestamp, formattedTime, saleId });
+                sales.push({ userId, saleType: sale.saleType, formattedTime });
             }
         }
 
-        sales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
         const latestSales = sales.slice(0, 5);
 
-        Promise.all(latestSales.map(sale => 
-            Promise.all([
-                fetchUserName(usersRef, sale),
-                fetchSaleType(salesTimeFramesRef, sale)
-            ])
-        )).then(() => {
-            renderLiveActivities(latestSales, liveActivitiesSection);
+        const namePromises = latestSales.map(sale => {
+            return usersRef.child(sale.userId).once('value').then(snapshot => {
+                sale.userName = snapshot.val().name || 'Unknown User';
+            });
+        });
+
+        Promise.all(namePromises).then(() => {
+            liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
+
+            latestSales.forEach(sale => {
+                const saleElement = document.createElement('div');
+                saleElement.classList.add('activity-item');
+                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
+                liveActivitiesSection.appendChild(saleElement);
+            });
         }).catch(error => {
-            console.error('Error fetching user data:', error);
+            console.error('Error fetching data:', error);
         });
     }, error => {
         console.error('Error fetching live activities:', error);
     });
 }
 
-function fetchUserName(usersRef, sale) {
-    return usersRef.child(sale.userId).once('value').then(snapshot => {
-        sale.userName = snapshot.val().name || 'Unknown User';
-    });
+function getReadableTitle(saleType) {
+    switch (saleType) {
+        case 'selectRX':
+            return 'Select RX';
+        case 'billableHRA':
+            return 'Billable HRA';
+        case 'transfer':
+            return 'Transfer';
+        case 'selectPatientManagement':
+            return 'Select Patient Management';
+        default:
+            return saleType;
+    }
 }
-
-function fetchSaleType(salesTimeFramesRef, sale) {
-    return salesTimeFramesRef.child(`${sale.userId}/${sale.saleId}`).once('value').then(snapshot => {
-        const saleData = snapshot.val();
-        const saleType = Object.keys(saleData)[0]; // Assuming there's only one key per saleId
-        sale.saleType = saleType;
-    });
-}
-
-function renderLiveActivities(latestSales, liveActivitiesSection) {
-    liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
-    latestSales.forEach(sale => {
-        const saleElement = document.createElement('div');
-        saleElement.classList.add('activity-item');
-        saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
-        liveActivitiesSection.appendChild(saleElement);
-    });
-}
-
-// Additional functions for the chart
-// ... (chart code remains the same)
