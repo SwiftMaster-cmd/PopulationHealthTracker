@@ -117,7 +117,6 @@ function loadLiveActivities() {
     const database = firebase.database();
     const salesTimeFramesRef = database.ref('salesTimeFrames');
     const usersRef = database.ref('users');
-    const likesRef = database.ref('likes');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
@@ -162,15 +161,9 @@ function loadLiveActivities() {
                     sale.userName = 'Unknown User';
                 }
                 sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
-
-                // Fetch like counts
-                return likesRef.child(sale.saleTime).once('value').then(likesSnapshot => {
-                    sale.likeCount = likesSnapshot.exists() ? likesSnapshot.numChildren() : 0;
-                });
             }).catch(error => {
                 console.error(`Error fetching user data for userId ${sale.userId}:`, error);
                 sale.userName = 'Unknown User';
-                sale.likeCount = 0;
             });
         });
 
@@ -180,23 +173,7 @@ function loadLiveActivities() {
             latestSales.forEach(sale => {
                 const saleElement = document.createElement('div');
                 saleElement.classList.add('activity-item');
-                const likeButton = document.createElement('span');
-                likeButton.classList.add('like-button');
-                likeButton.innerHTML = `${sale.likeCount > 0 ? sale.likeCount : ''} <i class="heart" style="opacity: 0.3;">&#x2764;</i>`;
-                likeButton.addEventListener('click', () => {
-                    const user = firebase.auth().currentUser;
-                    if (user) {
-                        const likeRef = likesRef.child(sale.saleTime).child(user.uid);
-                        likeRef.set(true).then(() => {
-                            sale.likeCount += 1;
-                            likeButton.innerHTML = `${sale.likeCount} <i class="heart" style="opacity: 1;">&#x2764;</i>`;
-                        }).catch(error => {
-                            console.error('Error liking sale:', error);
-                        });
-                    }
-                });
                 saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
-                saleElement.insertBefore(likeButton, saleElement.firstChild);
                 liveActivitiesSection.appendChild(saleElement);
             });
         }).catch(error => {
