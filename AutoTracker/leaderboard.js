@@ -113,7 +113,34 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-document.addEventListener('DOMContentLoaded', loadLiveActivities);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadLiveActivities();
+});
 
 async function loadLiveActivities() {
     try {
@@ -127,18 +154,18 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        const salesSnapshot = await salesTimeFramesRef.orderByKey().limitToLast(5).once('value');
-        const salesData = salesSnapshot.val();
-        if (!salesData) {
-            throw new Error('No sales data found');
-        }
+        salesTimeFramesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
+            const salesData = salesSnapshot.val();
+            if (!salesData) {
+                throw new Error('No sales data found');
+            }
 
-        const sales = await processSalesData(salesData);
-        const latestSales = sales.slice(0, 5);
+            const sales = await processSalesData(salesData);
+            const latestSales = sales.slice(0, 5);
 
-        await addUserNames(latestSales, usersRef);
-        renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
-
+            await addUserNames(latestSales, usersRef);
+            renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
+        });
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
