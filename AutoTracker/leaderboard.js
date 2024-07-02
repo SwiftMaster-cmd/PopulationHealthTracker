@@ -113,118 +113,135 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-function loadLiveActivities() {
-    const database = firebase.database();
-    const salesTimeFramesRef = database.ref('salesTimeFrames');
-    const usersRef = database.ref('users');
-    const likesRef = database.ref('likes');
+document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
-    const liveActivitiesSection = document.getElementById('live-activities-section');
-    if (!liveActivitiesSection) {
-        console.error('Live activities section element not found');
-        return;
-    }
+async function loadLiveActivities() {
+    try {
+        const database = firebase.database();
+        const salesTimeFramesRef = database.ref('salesTimeFrames');
+        const usersRef = database.ref('users');
+        const likesRef = database.ref('likes');
 
-    salesTimeFramesRef.orderByKey().limitToLast(5).on('value', salesSnapshot => {
-        const salesData = salesSnapshot.val();
-        if (!salesData) {
-            console.error('No sales data found');
-            return;
+        const liveActivitiesSection = document.getElementById('live-activities-section');
+        if (!liveActivitiesSection) {
+            throw new Error('Live activities section element not found');
         }
 
-        const sales = [];
+        const salesSnapshot = await salesTimeFramesRef.orderByKey().limitToLast(5).once('value');
+        const salesData = salesSnapshot.val();
+        if (!salesData) {
+            throw new Error('No sales data found');
+        }
 
-        for (const userId in salesData) {
-            const userSales = salesData[userId];
-            for (const leadId in userSales) {
-                const leadSales = userSales[leadId];
-                for (const saleType in leadSales) {
-                    const saleTimes = leadSales[saleType];
-                    for (const timeIndex in saleTimes) {
-                        const saleTime = saleTimes[timeIndex];
-                        const formattedTime = new Date(saleTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const sales = await processSalesData(salesData);
+        const latestSales = sales.slice(0, 5);
 
-                        sales.push({ userId, leadId, saleType, saleTime, formattedTime });
-                    }
+        await addUserNames(latestSales, usersRef);
+        renderSales(latestSales, liveActivitiesSection, likesRef);
+
+    } catch (error) {
+        console.error('Error loading live activities:', error);
+    }
+}
+
+async function processSalesData(salesData) {
+    const sales = [];
+
+    for (const userId in salesData) {
+        const userSales = salesData[userId];
+        for (const leadId in userSales) {
+            const leadSales = userSales[leadId];
+            for (const saleType in leadSales) {
+                const saleTimes = leadSales[saleType];
+                for (const timeIndex in saleTimes) {
+                    const saleTime = saleTimes[timeIndex];
+                    const formattedTime = new Date(saleTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    sales.push({ userId, leadId, saleType, saleTime, formattedTime });
                 }
             }
         }
+    }
 
-        sales.sort((a, b) => new Date(b.saleTime) - new Date(a.saleTime));
-        const latestSales = sales.slice(0, 5);
+    sales.sort((a, b) => new Date(b.saleTime) - new Date(a.saleTime));
+    return sales;
+}
 
-        const namePromises = latestSales.map(sale => {
-            return usersRef.child(sale.userId).once('value').then(snapshot => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    sale.userName = userData.name || 'Unknown User';
-                } else {
-                    sale.userName = 'Unknown User';
-                }
-                sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
-            }).catch(error => {
-                console.error(`Error fetching user data for userId ${sale.userId}:`, error);
+async function addUserNames(sales, usersRef) {
+    const namePromises = sales.map(async sale => {
+        try {
+            const snapshot = await usersRef.child(sale.userId).once('value');
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                sale.userName = userData.name || 'Unknown User';
+            } else {
                 sale.userName = 'Unknown User';
-            });
-        });
-
-        Promise.all(namePromises).then(() => {
-            liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
-
-            latestSales.forEach(sale => {
-                const saleElement = document.createElement('div');
-                saleElement.classList.add('activity-item');
-
-                // Use a sanitized path for the like button
-                const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${encodeURIComponent(sale.saleTime)}`;
-
-                saleElement.innerHTML = `
-                    <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
-                    <span class="like-count">0</span>
-                    <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
-                `;
-                liveActivitiesSection.appendChild(saleElement);
-
-                const likeButton = saleElement.querySelector('.like-button');
-                const likeCountSpan = saleElement.querySelector('.like-count');
-
-                likesRef.child(likePath).once('value').then(snapshot => {
-                    const likeCount = snapshot.val() || 0;
-                    likeCountSpan.textContent = likeCount;
-                    if (likeCount > 0) {
-                        likeButton.classList.add('liked');
-                    }
-                });
-
-                likeButton.addEventListener('click', () => {
-                    const currentUserId = firebase.auth().currentUser.uid;
-                    const userLikePath = `${likePath}/${currentUserId}`;
-
-                    likesRef.child(userLikePath).transaction(currentValue => {
-                        if (currentValue) {
-                            // Unlike
-                            return null;
-                        } else {
-                            // Like
-                            return true;
-                        }
-                    }).then(result => {
-                        if (result.committed) {
-                            const newCount = result.snapshot.val() ? parseInt(likeCountSpan.textContent) + 1 : parseInt(likeCountSpan.textContent) - 1;
-                            likeCountSpan.textContent = newCount;
-                            likeButton.classList.toggle('liked', result.snapshot.val());
-                        }
-                    }).catch(error => {
-                        console.error('Error updating like count:', error);
-                    });
-                });
-            });
-        }).catch(error => {
-            console.error('Error fetching data:', error);
-        });
-    }, error => {
-        console.error('Error fetching live activities:', error);
+            }
+            sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
+        } catch (error) {
+            console.error(`Error fetching user data for userId ${sale.userId}:`, error);
+            sale.userName = 'Unknown User';
+        }
     });
+
+    await Promise.all(namePromises);
+}
+
+function renderSales(sales, container, likesRef) {
+    container.innerHTML = '<h4>Live Activities</h4>';
+
+    sales.forEach(sale => {
+        const saleElement = document.createElement('div');
+        saleElement.classList.add('activity-item');
+
+        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${encodeURIComponent(sale.saleTime)}`;
+
+        saleElement.innerHTML = `
+            <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
+            <span class="like-count">0</span>
+            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
+        `;
+        container.appendChild(saleElement);
+
+        const likeButton = saleElement.querySelector('.like-button');
+        const likeCountSpan = saleElement.querySelector('.like-count');
+
+        updateLikeCount(likesRef, likePath, likeCountSpan, likeButton);
+
+        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeCountSpan, likeButton));
+    });
+}
+
+async function updateLikeCount(likesRef, likePath, likeCountSpan, likeButton) {
+    try {
+        const snapshot = await likesRef.child(likePath).once('value');
+        const likeCount = snapshot.val() || 0;
+        likeCountSpan.textContent = likeCount;
+        if (likeCount > 0) {
+            likeButton.classList.add('liked');
+        }
+    } catch (error) {
+        console.error('Error fetching like count:', error);
+    }
+}
+
+async function handleLikeClick(likesRef, likePath, likeCountSpan, likeButton) {
+    try {
+        const currentUserId = firebase.auth().currentUser.uid;
+        const userLikePath = `${likePath}/${currentUserId}`;
+
+        const result = await likesRef.child(userLikePath).transaction(currentValue => {
+            return currentValue ? null : true;
+        });
+
+        if (result.committed) {
+            const newCount = result.snapshot.val() ? parseInt(likeCountSpan.textContent) + 1 : parseInt(likeCountSpan.textContent) - 1;
+            likeCountSpan.textContent = newCount;
+            likeButton.classList.toggle('liked', result.snapshot.val());
+        }
+    } catch (error) {
+        console.error('Error updating like count:', error);
+    }
 }
 
 function getReadableTitle(saleType) {
