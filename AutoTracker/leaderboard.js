@@ -152,7 +152,12 @@ function loadLiveActivities() {
 
         const namePromises = latestSales.map(sale => {
             return usersRef.child(sale.userId).once('value').then(snapshot => {
-                sale.userName = snapshot.val().name || 'Unknown User';
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    sale.userName = userData.name || 'Unknown User';
+                } else {
+                    sale.userName = 'Unknown User';
+                }
                 sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
             });
         });
