@@ -4,20 +4,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const leaderboardTitle = document.getElementById('leaderboard-title');
 
     periodPicker.addEventListener('change', () => {
+        console.log('Period changed to:', periodPicker.value);
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
         leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     saleTypePicker.addEventListener('change', () => {
+        console.log('Sale type changed to:', saleTypePicker.value);
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
         leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
+            console.log('User logged in:', user.uid);
             checkAndSetUserName(user.uid);
             loadLeaderboard(periodPicker.value, saleTypePicker.value);
             loadLiveActivities();
+        } else {
+            console.log('No user logged in.');
         }
     });
 });
@@ -53,6 +58,12 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
+        if (!salesData) {
+            console.error('No sales data found');
+            return;
+        }
+        console.log('Sales data:', salesData);
+
         const users = [];
 
         firebase.auth().onAuthStateChanged(user => {
@@ -60,6 +71,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
                     const currentUserId = user.uid;
+                    console.log('Users data:', usersData);
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
@@ -123,6 +135,12 @@ function loadLiveActivities() {
 
     salesOutcomesRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
+        if (!salesData) {
+            console.error('No sales data found');
+            return;
+        }
+        console.log('Sales outcomes data:', salesData);
+
         const sales = [];
 
         for (const userId in salesData) {
