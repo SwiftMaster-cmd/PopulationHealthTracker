@@ -4,25 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const leaderboardTitle = document.getElementById('leaderboard-title');
 
     periodPicker.addEventListener('change', () => {
-        console.log('Period changed to:', periodPicker.value);
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
         leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     saleTypePicker.addEventListener('change', () => {
-        console.log('Sale type changed to:', saleTypePicker.value);
         loadLeaderboard(periodPicker.value, saleTypePicker.value);
         leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
     });
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            console.log('User logged in:', user.uid);
             checkAndSetUserName(user.uid);
-            loadLeaderboard(periodPicker.value, saleTypePicker.value);
-            loadLiveActivities();
-        } else {
-            console.log('No user logged in.');
+            loadLeaderboard();
         }
     });
 });
@@ -58,12 +52,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
-        if (!salesData) {
-            console.error('No sales data found');
-            return;
-        }
-        console.log('Sales data:', salesData);
-
         const users = [];
 
         firebase.auth().onAuthStateChanged(user => {
@@ -71,20 +59,10 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
                     const currentUserId = user.uid;
-                    console.log('Users data:', usersData);
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
-                        let count = 0;
-
-                        if (period === 'day') {
-                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
-                        } else if (period === 'week') {
-                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                        } else if (period === 'month') {
-                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
-                        }
-
+                        const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
                         if (name.length > 10) {
                             name = name.substring(0, 8); // Truncate name to 8 characters
@@ -117,64 +95,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         });
     }, error => {
         console.error('Error fetching sales data:', error);
-    });
-}
-
-function loadLiveActivities() {
-    const database = firebase.database();
-    const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
-    const usersRef = database.ref('users');
-
-    const liveActivitiesSection = document.getElementById('live-activities-section');
-    if (!liveActivitiesSection) {
-        console.error('Live activities section element not found');
-        return;
-    }
-
-    salesOutcomesRef.off('value');
-
-    salesOutcomesRef.on('value', salesSnapshot => {
-        const salesData = salesSnapshot.val();
-        if (!salesData) {
-            console.error('No sales data found');
-            return;
-        }
-        console.log('Sales outcomes data:', salesData);
-
-        const sales = [];
-
-        for (const userId in salesData) {
-            for (const saleId in salesData[userId]) {
-                const sale = salesData[userId][saleId];
-                const formattedTime = new Date(sale.outcomeTime).toLocaleString();
-
-                sales.push({ userId, saleType: sale.saleType, formattedTime });
-            }
-        }
-
-        sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
-        const latestSales = sales.slice(0, 5);
-
-        const namePromises = latestSales.map(sale => {
-            return usersRef.child(sale.userId).once('value').then(snapshot => {
-                sale.userName = snapshot.val().name || 'Unknown User';
-            });
-        });
-
-        Promise.all(namePromises).then(() => {
-            liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
-
-            latestSales.forEach(sale => {
-                const saleElement = document.createElement('div');
-                saleElement.classList.add('activity-item');
-                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
-                liveActivitiesSection.appendChild(saleElement);
-            });
-        }).catch(error => {
-            console.error('Error fetching data:', error);
-        });
-    }, error => {
-        console.error('Error fetching live activities:', error);
     });
 }
 
