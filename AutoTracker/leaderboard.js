@@ -179,9 +179,9 @@ function loadLiveActivities() {
                 const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${encodeURIComponent(sale.saleTime)}`;
 
                 saleElement.innerHTML = `
-                    <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
                     <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
                     <span class="like-count">0</span>
+                    <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
                 `;
                 liveActivitiesSection.appendChild(saleElement);
 
