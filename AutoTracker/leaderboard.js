@@ -194,7 +194,8 @@ function renderSales(sales, container, likesRef) {
         const saleElement = document.createElement('div');
         saleElement.classList.add('activity-item');
 
-        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${encodeURIComponent(sale.saleTime)}`;
+        // Use a sanitized path for the like button
+        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[\.\#\$$begin:math:display$$end:math:display$]/g, '_')}`;
 
         saleElement.innerHTML = `
             <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
