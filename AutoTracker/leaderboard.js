@@ -134,7 +134,7 @@ function loadLiveActivities() {
                 const accountNumber = saleId;
 
                 const salePromise = salesTimeframesRef.child(`${userId}/${saleId}`).once('value').then(snapshot => {
-                    const saleType = snapshot.val() ? snapshot.val().saleType : 'Unknown Sale Type';
+                    const saleType = snapshot.val() ? snapshot.val().action : 'Unknown Sale Type';
                     sales.push({ userId, saleType, timestamp, accountNumber });
                 });
                 userPromises.push(salePromise);
@@ -157,7 +157,8 @@ function loadLiveActivities() {
                 latestSales.forEach(sale => {
                     const saleElement = document.createElement('div');
                     saleElement.classList.add('activity-item');
-                    saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> (${sale.accountNumber}) at ${new Date(sale.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                    const formattedTime = new Date(sale.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> (${sale.accountNumber}) at ${formattedTime}`;
                     liveActivitiesSection.appendChild(saleElement);
                 });
             });
