@@ -120,7 +120,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -231,9 +230,12 @@ async function initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton
             likeCountSpan.style.display = 'inline';
             if (likes[firebase.auth().currentUser.uid]) {
                 likeButton.classList.add('liked');
+            } else {
+                likeButton.classList.remove('liked');
             }
         } else {
             likeCountSpan.style.display = 'none';
+            likeButton.classList.remove('liked');
         }
     } catch (error) {
         console.error('Error initializing like count:', error);
