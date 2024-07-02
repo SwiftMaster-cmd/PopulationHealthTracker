@@ -328,14 +328,21 @@ button:active {
     padding: 0;
     margin-left: 5px; /* Adjust margin to position the button correctly */
     margin-right: 2px; /* Adjust margin to position the button correctly */
-
-    color: black; /* Default color for unclicked heart */
 }
 
-.like-button.liked {
-    color: red; /* Color for clicked heart */
+.like-button svg {
+    fill: black; /* Default color for unclicked heart */
 }
 
+.like-button.liked svg {
+    fill: red; /* Color for clicked heart */
+}
+
+.like-count {
+    margin-right: 5px; /* Adjust margin to position the count correctly */
+    font-size: 1.2em;
+    vertical-align: middle;
+}
 .like-count {
     margin-right: 5px; /* Adjust margin to position the count correctly */
     font-size: 1.2em;
