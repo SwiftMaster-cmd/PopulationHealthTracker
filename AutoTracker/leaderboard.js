@@ -135,12 +135,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadLiveActivities();
-});
+document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
     try {
@@ -157,9 +152,11 @@ async function loadLiveActivities() {
         salesTimeFramesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
-                throw new Error('No sales data found');
+                console.error('No sales data found');
+                return;
             }
 
+            console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
             const latestSales = sales.slice(0, 5);
 
@@ -255,7 +252,7 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     const lastLikerId = Object.keys(likes).sort((a, b) => likes[b] - likes[a])[0];
     let lastLikerName = 'Someone';
     
-    if (lastLikerId) {
+    if (likeCount > 0 && lastLikerId) {
         usersRef.child(lastLikerId).once('value').then(userSnapshot => {
             if (userSnapshot.exists()) {
                 lastLikerName = userSnapshot.val().name || 'Someone';
@@ -265,7 +262,7 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
                 : `Liked by ${lastLikerName}`;
         });
     } else {
-        likeInfoDiv.textContent = '';
+        likeInfoDiv.textContent = ''; // Clear the like-info text if there are no likes
     }
 
     if (likes[firebase.auth().currentUser.uid]) {
