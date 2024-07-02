@@ -121,7 +121,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -207,8 +206,8 @@ function renderSales(sales, container, likesRef) {
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[\.\#\$$begin:math:display$$end:math:display$]/g, '_')}`;
 
         saleElement.innerHTML = `
-            <button class="like-button" data-like-path="${likePath}">❤️</button>
             <span class="like-count">0</span>
+            <button class="like-button" data-like-path="${likePath}">❤️</button>
             <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
         `;
         container.appendChild(saleElement);
@@ -267,23 +266,6 @@ async function handleLikeClick(likesRef, likePath, likeCountSpan, likeButton) {
         console.error('Error updating like count:', error);
     }
 }
-
-function getReadableTitle(saleType) {
-    switch (saleType) {
-        case 'Notes':
-            return 'Notes';
-        case 'HRA Completed':
-            return 'HRA Completed';
-        case 'Select RX':
-            return 'Select RX';
-        default:
-            return saleType;
-    }
-}
-
-
-
-
 
 function getReadableTitle(saleType) {
     switch (saleType) {
