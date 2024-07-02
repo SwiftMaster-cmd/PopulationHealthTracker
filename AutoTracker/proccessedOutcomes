@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return 'Billable HRA';
         } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
             return 'Transfer';
-        } else if (normalizedAction.includes('notes') || normalizedNotes.includes('spm')) {
+        } else if (normalizedNotes.includes('spm')) {
             return 'Select Patient Management';
         }
         return action;
