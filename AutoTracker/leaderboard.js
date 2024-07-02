@@ -174,27 +174,44 @@ function loadLiveActivities() {
             latestSales.forEach(sale => {
                 const saleElement = document.createElement('div');
                 saleElement.classList.add('activity-item');
+                const sanitizedSaleTime = encodeURIComponent(sale.saleTime);
+                const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sanitizedSaleTime}`;
+                
                 saleElement.innerHTML = `
                     <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
-                    <button class="like-button" data-user-id="${sale.userId}" data-lead-id="${sale.leadId}" data-sale-type="${sale.saleType}" data-sale-time="${sale.saleTime}">❤️ Like</button>
+                    <button class="like-button" data-like-path="${likePath}">❤️ Like</button>
                     <span class="like-count">0</span>
                 `;
                 liveActivitiesSection.appendChild(saleElement);
 
-                // Fetch initial like count and set up like button
                 const likeButton = saleElement.querySelector('.like-button');
                 const likeCountSpan = saleElement.querySelector('.like-count');
 
-                const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime}`;
                 likesRef.child(likePath).once('value').then(snapshot => {
                     const likeCount = snapshot.val() || 0;
                     likeCountSpan.textContent = likeCount;
+                    if (likeCount > 0) {
+                        likeButton.classList.add('liked');
+                    }
                 });
 
                 likeButton.addEventListener('click', () => {
-                    likesRef.child(likePath).transaction(likeCount => (likeCount || 0) + 1).then(result => {
+                    const currentUserId = firebase.auth().currentUser.uid;
+                    const userLikePath = `${likePath}/${currentUserId}`;
+
+                    likesRef.child(userLikePath).transaction(currentValue => {
+                        if (currentValue) {
+                            // Unlike
+                            return null;
+                        } else {
+                            // Like
+                            return true;
+                        }
+                    }).then(result => {
                         if (result.committed) {
-                            likeCountSpan.textContent = result.snapshot.val();
+                            const newCount = result.snapshot.val() ? likeCountSpan.textContent - 1 : likeCountSpan.textContent + 1;
+                            likeCountSpan.textContent = newCount;
+                            likeButton.classList.toggle('liked', result.snapshot.val());
                         }
                     }).catch(error => {
                         console.error('Error updating like count:', error);
