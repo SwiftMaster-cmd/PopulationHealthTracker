@@ -207,22 +207,27 @@ function renderSales(sales, container, likesRef) {
         const likeButton = saleElement.querySelector('.like-button');
         const likeCountSpan = saleElement.querySelector('.like-count');
 
-        updateLikeCount(likesRef, likePath, likeCountSpan, likeButton);
+        initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton);
 
         likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeCountSpan, likeButton));
     });
 }
 
-async function updateLikeCount(likesRef, likePath, likeCountSpan, likeButton) {
+async function initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton) {
     try {
         const snapshot = await likesRef.child(likePath).once('value');
-        const likeCount = snapshot.val() || 0;
+        let likeCount = snapshot.val();
+        if (likeCount === null) {
+            // Initialize like count to 0 if it doesn't exist
+            await likesRef.child(likePath).set(0);
+            likeCount = 0;
+        }
         likeCountSpan.textContent = likeCount;
         if (likeCount > 0) {
             likeButton.classList.add('liked');
         }
     } catch (error) {
-        console.error('Error fetching like count:', error);
+        console.error('Error initializing like count:', error);
     }
 }
 
@@ -239,6 +244,9 @@ async function handleLikeClick(likesRef, likePath, likeCountSpan, likeButton) {
             const newCount = result.snapshot.val() ? parseInt(likeCountSpan.textContent) + 1 : parseInt(likeCountSpan.textContent) - 1;
             likeCountSpan.textContent = newCount;
             likeButton.classList.toggle('liked', result.snapshot.val());
+
+            // Update the global like count
+            await likesRef.child(likePath).set(newCount);
         }
     } catch (error) {
         console.error('Error updating like count:', error);
