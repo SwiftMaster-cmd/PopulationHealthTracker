@@ -318,3 +318,25 @@ button:active {
         justify-content: center;
     }
 }
+
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    padding: 0;
+    margin: 0;
+    color: black; /* Default color for unclicked heart */
+}
+
+.like-button.liked {
+    color: red; /* Color for clicked heart */
+}
+
+.like-count {
+    display: none;
+    margin-left: 5px;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
