@@ -112,6 +112,7 @@ function loadLiveActivities() {
     const database = firebase.database();
     const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
     const usersRef = database.ref('users');
+    const salesTimeFramesRef = database.ref('salesTimeFrames');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
@@ -128,11 +129,10 @@ function loadLiveActivities() {
         for (const userId in salesData) {
             for (const saleId in salesData[userId]) {
                 const sale = salesData[userId][saleId];
-                const saleType = getSaleType(sale.assignAction, sale.notesValue);  // Ensure saleType is readable
                 const timestamp = sale.outcomeTime;
                 const formattedTime = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                sales.push({ userId, saleType, formattedTime, saleId });
+                sales.push({ userId, timestamp, formattedTime, saleId });
             }
         }
 
@@ -145,13 +145,21 @@ function loadLiveActivities() {
             });
         });
 
-        Promise.all(namePromises).then(() => {
+        const saleTypePromises = latestSales.map(sale => {
+            return salesTimeFramesRef.child(`${sale.userId}/${sale.saleId}`).once('value').then(snapshot => {
+                const saleData = snapshot.val();
+                const saleType = Object.keys(saleData)[0]; // Assuming there's only one key per saleId
+                sale.saleType = saleType;
+            });
+        });
+
+        Promise.all([...namePromises, ...saleTypePromises]).then(() => {
             liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
 
             latestSales.forEach(sale => {
                 const saleElement = document.createElement('div');
                 saleElement.classList.add('activity-item');
-                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> (${sale.saleId}) at ${sale.formattedTime}`;
+                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
                 liveActivitiesSection.appendChild(saleElement);
             });
         }).catch(error => {
