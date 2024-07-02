@@ -57,7 +57,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
             console.error('No sales data found');
             return;
         }
-        console.log('Sales data:', salesData);
 
         const users = [];
 
@@ -66,7 +65,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                 usersRef.once('value', usersSnapshot => {
                     const usersData = usersSnapshot.val();
                     const currentUserId = user.uid;
-                    console.log('Users data:', usersData);
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
@@ -117,7 +115,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 function loadLiveActivities() {
     const database = firebase.database();
-    const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
+    const salesTimeFramesRef = database.ref('salesTimeFrames');
     const usersRef = database.ref('users');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
@@ -126,25 +124,26 @@ function loadLiveActivities() {
         return;
     }
 
-    salesOutcomesRef.off('value');
+    salesTimeFramesRef.off('value');
 
-    salesOutcomesRef.on('value', salesSnapshot => {
+    salesTimeFramesRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         if (!salesData) {
             console.error('No sales data found');
             return;
         }
-        console.log('Sales outcomes data:', salesData);
 
         const sales = [];
 
         for (const userId in salesData) {
-            for (const saleId in salesData[userId]) {
-                const sale = salesData[userId][saleId];
-                const formattedTime = new Date(sale.outcomeTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const saleType = getReadableTitle(sale.saleType);
+            const userSales = salesData[userId];
+            for (const saleType in userSales) {
+                const saleTimes = userSales[saleType];
+                for (const timeIndex in saleTimes) {
+                    const formattedTime = new Date(saleTimes[timeIndex]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                sales.push({ userId, saleType, formattedTime });
+                    sales.push({ userId, saleType, formattedTime });
+                }
             }
         }
 
@@ -154,6 +153,7 @@ function loadLiveActivities() {
         const namePromises = latestSales.map(sale => {
             return usersRef.child(sale.userId).once('value').then(snapshot => {
                 sale.userName = snapshot.val().name || 'Unknown User';
+                sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
             });
         });
 
@@ -176,14 +176,12 @@ function loadLiveActivities() {
 
 function getReadableTitle(saleType) {
     switch (saleType) {
-        case 'selectRX':
+        case 'Notes':
+            return 'Notes';
+        case 'HRA Completed':
+            return 'HRA Completed';
+        case 'Select RX':
             return 'Select RX';
-        case 'billableHRA':
-            return 'Billable HRA';
-        case 'transfer':
-            return 'Transfer';
-        case 'selectPatientManagement':
-            return 'Select Patient Management';
         default:
             return saleType;
     }

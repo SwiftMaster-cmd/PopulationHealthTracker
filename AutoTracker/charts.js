@@ -1,188 +1,309 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const periodPicker = document.getElementById('periodPicker');
-    const saleTypePicker = document.getElementById('saleTypePicker');
-    const leaderboardTitle = document.getElementById('leaderboard-title');
+    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
 
-    periodPicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+    // Set default picker value to 'month'
+    chartPeriodPicker.value = 'month';
+
+    chartPeriodPicker.addEventListener('change', () => {
+        loadChart(chartPeriodPicker.value);
     });
 
-    saleTypePicker.addEventListener('change', () => {
-        loadLeaderboard(periodPicker.value, saleTypePicker.value);
-        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
-    });
+    loadChart('month');
+
+    const savedColor = localStorage.getItem('baseColor');
+    if (savedColor) {
+        applyColorPalette(savedColor);
+    } else {
+        const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
+        applyColorPalette(defaultColor);
+    }
+});
+
+let salesChart;
+
+function loadChart(period = 'month') {
+    const database = firebase.database();
+    const salesTimeFramesRef = database.ref('salesTimeFrames');
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            checkAndSetUserName(user.uid);
-            loadLeaderboard(periodPicker.value, saleTypePicker.value);
-            loadLiveActivities();
+            const currentUserId = user.uid;
+
+            salesTimeFramesRef.child(currentUserId).on('value', salesSnapshot => {
+                const salesData = salesSnapshot.val();
+                let chartData = {
+                    labels: [],
+                    datasets: []
+                };
+
+                if (period === 'day') {
+                    chartData = getDailyChartData(salesData);
+                } else if (period === 'week') {
+                    chartData = getWeeklyChartData(salesData);
+                } else if (period === 'month') {
+                    chartData = getMonthlyChartData(salesData);
+                }
+
+                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+                const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
+
+                const ctx = document.getElementById('salesChart').getContext('2d');
+
+                if (salesChart instanceof Chart) {
+                    salesChart.data = chartData;
+                    salesChart.options.scales.x.ticks.color = textColor;
+                    salesChart.options.scales.y.ticks.color = textColor;
+                    salesChart.options.scales.x.ticks.font.size = 24;
+                    salesChart.options.scales.y.ticks.font.size = 24;
+                    salesChart.options.plugins.legend.labels.color = textColor;
+                    salesChart.options.plugins.legend.labels.font.size = 24;
+                    salesChart.update();
+                } else {
+                    salesChart = new Chart(ctx, {
+                        type: 'line',
+                        data: chartData,
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        lineWidth: 1
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24,
+                                            family: 'Arial',
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        lineWidth: 1
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24
+                                        }
+                                    }
+                                }
+                            },
+                            elements: {
+                                line: {
+                                    tension: 0.4, // smooth curves
+                                    borderWidth: 3, // set line width to 3 for thicker lines
+                                    fill: 'origin', // fill only the area below
+                                    backgroundColor: function(context) {
+                                        const color = context.dataset.borderColor;
+                                        return hexToRgba(color, 0.1); // reduce fill opacity
+                                    }
+                                },
+                                point: {
+                                    backgroundColor: '#ffffff', // white dots
+                                    borderColor: function(context) {
+                                        return context.dataset.borderColor;
+                                    },
+                                    borderWidth: 2
+                                }
+                            }
+                        }
+                    });
+                }
+            }, error => {
+                console.error('Error fetching sales data:', error);
+            });
+        } else {
+            console.error('No user is signed in.');
         }
     });
+}
+
+function getDailyChartData(salesData) {
+    const hours = Array.from({ length: 13 }, (_, i) => `${i + 8}am`);
+    const data = {
+        labels: hours,
+        datasets: createDatasets(hours, salesData, 'day')
+    };
+    return data;
+}
+
+function getWeeklyChartData(salesData) {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const data = {
+        labels: days,
+        datasets: createDatasets(days, salesData, 'week')
+    };
+    return data;
+}
+
+function getMonthlyChartData(salesData) {
+    const today = new Date().getDate();
+    const daysInMonth = Array.from({ length: today }, (_, i) => (i + 1).toString());
+    const data = {
+        labels: daysInMonth,
+        datasets: createDatasets(daysInMonth, salesData, 'month')
+    };
+    return data;
+}
+
+function createDatasets(labels, salesData, period) {
+    const datasets = [
+        {
+            label: 'SPM',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
+            borderColor: 'rgb(255, 102, 102)', // Red
+            backgroundColor: hexToRgba('rgb(255, 102, 102)', 0.25), // Red with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 102, 102)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 4 // Ensure this dataset is always in front
+        },
+        {
+            label: 'Transfer',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
+            borderColor: 'rgb(148, 255, 119)', // Keylime
+            backgroundColor: hexToRgba('rgb(148, 255, 119)', 0.25), // Keylime with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(148, 255, 119)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 3 // Ensure this dataset is behind SPM but in front of others
+        },
+        {
+            label: 'HRA',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
+            borderColor: 'rgb(255, 249, 112)', // Yellow
+            backgroundColor: hexToRgba('rgb(255, 249, 112)', 0.25), // Yellow with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 249, 112)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 2 // Ensure this dataset is behind Transfer but in front of SRX
+        },
+        {
+            label: 'SRX',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
+            borderColor: 'rgb(255, 95, 236)', // Magenta
+            backgroundColor: hexToRgba('rgb(255, 95, 236)', 0.25), // Magenta with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 95, 236)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 1 // Ensure this dataset is at the back
+        }
+    ];
+
+    return datasets;
+}
+
+function getSaleCountForLabel(salesData, period, saleType, label) {
+    let count = 0;
+
+    for (const account in salesData) {
+        const sales = salesData[account][saleType];
+
+        if (sales) {
+            sales.forEach(saleTime => {
+                const saleDate = new Date(saleTime);
+                if (period === 'day' && formatHour(saleDate) === label) {
+                    count++;
+                } else if (period === 'week' && formatDay(saleDate) === label) {
+                    count++;
+                } else if (period === 'month' && saleDate.getDate().toString() === label) {
+                    count++;
+                }
+            });
+        }
+    }
+
+    return count;
+}
+
+function formatHour(date) {
+    const hours = date.getHours();
+    return hours < 12 ? `${hours}am` : `${hours - 12}pm`;
+}
+
+function formatDay(date) {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+}
+
+function hexToRgba(hex, alpha) {
+    const [r, g, b] = hex.match(/\d+/g).map(Number);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// Apply color palette to the chart
+function applyColorPalette(color) {
+    document.documentElement.style.setProperty('--color-primary', color);
+    document.documentElement.style.setProperty('--color-secondary', chroma(color).darken(1.5).hex());
+    document.documentElement.style.setProperty('--background-color', chroma(color).brighten(3).hex());
+
+    if (salesChart instanceof Chart) {
+        const textColor = chroma(color).luminance() < 0.5 ? '#ffffff' : '#000000';
+        salesChart.options.scales.x.ticks.color = textColor;
+        salesChart.options.scales.y.ticks.color = textColor;
+        salesChart.options.plugins.legend.labels.color = textColor;
+        salesChart.update();
+    }
+}
+
+// Save the color palette
+function saveColorPalette(color) {
+    localStorage.setItem('baseColor', color);
+    applyColorPalette(color);
+}
+
+// Initialize color picker
+document.getElementById('applyColor').addEventListener('click', () => {
+    const colorPicker = document.getElementById('colorPicker');
+    const selectedColor = colorPicker.value;
+    saveColorPalette(selectedColor);
 });
 
-function checkAndSetUserName(userId) {
-    const usersRef = firebase.database().ref('users/' + userId);
-
-    usersRef.once('value', snapshot => {
-        if (!snapshot.exists() || !snapshot.val().name) {
-            const name = prompt("Please enter your name:");
-            if (name) {
-                usersRef.set({ name: name });
-            } else {
-                alert("Name is required to proceed.");
-                firebase.auth().signOut();
-            }
-        }
-    });
-}
-
-function loadLeaderboard(period = 'day', saleType = 'selectRX') {
-    const database = firebase.database();
-    const salesCountsRef = database.ref('salesCounts');
-    const usersRef = database.ref('users');
-
-    const leaderboardSection = document.getElementById('leaderboard-section');
-    if (!leaderboardSection) {
-        console.error('Leaderboard section element not found');
-        return;
+window.addEventListener('resize', () => {
+    if (salesChart) {
+        salesChart.resize();
     }
+});
 
-    salesCountsRef.off('value');
+function checkChartHeight() {
+    const chartContainer = document.getElementById('chartContainer');
+    const rotateMessage = document.getElementById('rotateMessage');
 
-    salesCountsRef.on('value', salesSnapshot => {
-        const salesData = salesSnapshot.val();
-        if (!salesData) {
-            console.error('No sales data found');
-            return;
-        }
-
-        const users = [];
-
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                usersRef.once('value', usersSnapshot => {
-                    const usersData = usersSnapshot.val();
-                    const currentUserId = user.uid;
-
-                    for (const userId in salesData) {
-                        const userData = salesData[userId];
-                        let count = 0;
-
-                        if (period === 'day') {
-                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
-                        } else if (period === 'week') {
-                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                        } else if (period === 'month') {
-                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
-                        }
-
-                        let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        if (name.length > 10) {
-                            name = name.substring(0, 8); // Truncate name to 8 characters
-                        }
-                        users.push({ userId, name, count });
-                    }
-
-                    users.sort((a, b) => b.count - a.count);
-
-                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
-                    const start = Math.max(0, currentUserIndex - 3);
-                    const end = Math.min(users.length, start + 8);
-
-                    leaderboardSection.innerHTML = '';
-
-                    for (let i = start; i < end; i++) {
-                        const user = users[i];
-                        const userElement = document.createElement('div');
-                        userElement.classList.add('leaderboard-item');
-                        if (user.userId === currentUserId) {
-                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
-                        }
-                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
-                        leaderboardSection.appendChild(userElement);
-                    }
-                });
-            } else {
-                console.error('No user is signed in.');
-            }
-        });
-    }, error => {
-        console.error('Error fetching sales data:', error);
-    });
-}
-
-function loadLiveActivities() {
-    const database = firebase.database();
-    const salesTimeFramesRef = database.ref('salesTimeFrames');
-    const usersRef = database.ref('users');
-
-    const liveActivitiesSection = document.getElementById('live-activities-section');
-    if (!liveActivitiesSection) {
-        console.error('Live activities section element not found');
-        return;
-    }
-
-    salesTimeFramesRef.off('value');
-
-    salesTimeFramesRef.on('value', salesSnapshot => {
-        const salesData = salesSnapshot.val();
-        if (!salesData) {
-            console.error('No sales data found');
-            return;
-        }
-
-        const sales = [];
-
-        for (const userId in salesData) {
-            const userSales = salesData[userId];
-            for (const saleType in userSales) {
-                const saleTimes = userSales[saleType];
-                for (const timeIndex in saleTimes) {
-                    const formattedTime = new Date(saleTimes[timeIndex]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                    sales.push({ userId, saleType, formattedTime });
-                }
-            }
-        }
-
-        sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
-        const latestSales = sales.slice(0, 5);
-
-        const namePromises = latestSales.map(sale => {
-            return usersRef.child(sale.userId).once('value').then(snapshot => {
-                sale.userName = snapshot.val().name || 'Unknown User';
-                sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
-            });
-        });
-
-        Promise.all(namePromises).then(() => {
-            liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
-
-            latestSales.forEach(sale => {
-                const saleElement = document.createElement('div');
-                saleElement.classList.add('activity-item');
-                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
-                liveActivitiesSection.appendChild(saleElement);
-            });
-        }).catch(error => {
-            console.error('Error fetching data:', error);
-        });
-    }, error => {
-        console.error('Error fetching live activities:', error);
-    });
-}
-
-function getReadableTitle(saleType) {
-    switch (saleType) {
-        case 'Notes':
-            return 'Notes';
-        case 'HRA Completed':
-            return 'HRA Completed';
-        case 'Select RX':
-            return 'Select RX';
-        default:
-            return saleType;
+    if (chartContainer.clientHeight < 300) {
+        chartContainer.style.display = 'none';
+        rotateMessage.style.display = 'block';
+    } else {
+        chartContainer.style.display = 'flex';
+        rotateMessage.style.display = 'none';
     }
 }
+
+window.addEventListener('resize', () => {
+    checkChartHeight();
+    if (salesChart) {
+        salesChart.resize();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkChartHeight();
+    // Your existing code...
+});
