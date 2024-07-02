@@ -137,12 +137,15 @@ function loadLiveActivities() {
 
         for (const userId in salesData) {
             const userSales = salesData[userId];
-            for (const saleType in userSales) {
-                const saleTimes = userSales[saleType];
-                for (const timeIndex in saleTimes) {
-                    const formattedTime = new Date(saleTimes[timeIndex]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            for (const leadId in userSales) {
+                const leadSales = userSales[leadId];
+                for (const saleType in leadSales) {
+                    const saleTimes = leadSales[saleType];
+                    for (const timeIndex in saleTimes) {
+                        const formattedTime = new Date(saleTimes[timeIndex]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                    sales.push({ userId, saleType, formattedTime });
+                        sales.push({ userId, saleType, formattedTime });
+                    }
                 }
             }
         }
@@ -159,6 +162,9 @@ function loadLiveActivities() {
                     sale.userName = 'Unknown User';
                 }
                 sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
+            }).catch(error => {
+                console.error(`Error fetching user data for userId ${sale.userId}:`, error);
+                sale.userName = 'Unknown User';
             });
         });
 
