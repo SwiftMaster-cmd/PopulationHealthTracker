@@ -131,10 +131,10 @@ function loadLiveActivities() {
             for (const saleId in salesData[userId]) {
                 const sale = salesData[userId][saleId];
                 const timestamp = sale.outcomeTime;
-                const formattedTime = new Date(timestamp).toLocaleString([], { hour: '2-digit', minute: '2-digit' });
+                const formattedTime = timestamp;
 
                 const salePromise = salesTimeframesRef.child(`${userId}/${saleId}`).once('value').then(snapshot => {
-                    const saleType = snapshot.val().saleType;
+                    const saleType = snapshot.val() ? snapshot.val().saleType : 'Unknown Sale Type';
                     sales.push({ userId, saleType, formattedTime });
                 });
                 userPromises.push(salePromise);
