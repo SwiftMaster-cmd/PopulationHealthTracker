@@ -110,7 +110,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 function loadLiveActivities() {
     const database = firebase.database();
-    const salesRef = database.ref('sales').orderByChild('timestamp').limitToLast(5);
+    const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
@@ -118,25 +118,29 @@ function loadLiveActivities() {
         return;
     }
 
-    salesRef.off('value');
+    salesOutcomesRef.off('value');
 
-    salesRef.on('value', salesSnapshot => {
+    salesOutcomesRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         const sales = [];
 
-        for (const saleId in salesData) {
-            const sale = salesData[saleId];
-            const userId = sale.userId;
-            const saleType = sale.type;
-            const timestamp = sale.timestamp;
-            const formattedTime = new Date(timestamp).toLocaleString();
+        for (const userId in salesData) {
+            for (const saleId in salesData[userId]) {
+                const sale = salesData[userId][saleId];
+                const saleType = sale.saleType;
+                const timestamp = sale.outcomeTime;
+                const formattedTime = new Date(timestamp).toLocaleString();
 
-            sales.push({ userId, saleType, formattedTime });
+                sales.push({ userId, saleType, formattedTime });
+            }
         }
+
+        sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
+        const latestSales = sales.slice(0, 5);
 
         liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
 
-        sales.forEach(sale => {
+        latestSales.forEach(sale => {
             const saleElement = document.createElement('div');
             saleElement.classList.add('activity-item');
             saleElement.innerHTML = `<strong>${sale.userId}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
