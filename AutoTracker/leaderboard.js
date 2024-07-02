@@ -116,7 +116,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 function loadLiveActivities() {
     const database = firebase.database();
     const salesTimeFramesRef = database.ref('salesTimeFrames');
-    const usersRef = firebase.database().ref('users');
+    const usersRef = database.ref('users');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
@@ -143,7 +143,6 @@ function loadLiveActivities() {
                     const saleTimes = leadSales[saleType];
                     for (const timeIndex in saleTimes) {
                         const formattedTime = new Date(saleTimes[timeIndex]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
                         sales.push({ userId, saleType, formattedTime });
                     }
                 }
@@ -153,15 +152,12 @@ function loadLiveActivities() {
         sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
         const latestSales = sales.slice(0, 5);
 
-        // Fetch user names from the user node
         const namePromises = latestSales.map(sale => {
             return usersRef.child(sale.userId).once('value').then(snapshot => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    console.log(`Fetched user data for userId ${sale.userId}:`, userData); // Log user data for debugging
                     sale.userName = userData.name || 'Unknown User';
                 } else {
-                    console.log(`No user data found for userId ${sale.userId}`);
                     sale.userName = 'Unknown User';
                 }
                 sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
