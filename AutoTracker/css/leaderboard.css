@@ -3,3 +3,19 @@
     flex-wrap: wrap;
     justify-content: space-between;
 }
+#leaderboard-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+#live-activities-section {
+    flex: 1;
+    min-width: 300px;
+    margin-left: 20px;
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+}
