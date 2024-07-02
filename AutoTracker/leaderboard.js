@@ -111,6 +111,8 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 function loadLiveActivities() {
     const database = firebase.database();
     const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
+    const salesCountsRef = database.ref('salesCounts');
+    const usersRef = database.ref('users');
 
     const liveActivitiesSection = document.getElementById('live-activities-section');
     if (!liveActivitiesSection) {
@@ -127,24 +129,48 @@ function loadLiveActivities() {
         for (const userId in salesData) {
             for (const saleId in salesData[userId]) {
                 const sale = salesData[userId][saleId];
-                const saleType = sale.saleType;
                 const timestamp = sale.outcomeTime;
-                const formattedTime = new Date(timestamp).toLocaleString();
+                const accountNumber = saleId;
 
-                sales.push({ userId, saleType, formattedTime });
+                const salePromise = salesCountsRef.child(`${userId}`).once('value').then(snapshot => {
+                    const userData = snapshot.val();
+                    let saleType = 'Unknown Sale Type';
+                    if (userData.day && userData.day[sale.saleType]) {
+                        saleType = sale.saleType;
+                    } else if (userData.week && userData.week[sale.saleType]) {
+                        saleType = sale.saleType;
+                    } else if (userData.month && userData.month[sale.saleType]) {
+                        saleType = sale.saleType;
+                    }
+                    sales.push({ userId, saleType, timestamp, accountNumber });
+                });
+                sales.push(salePromise);
             }
         }
 
-        sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
-        const latestSales = sales.slice(0, 5);
+        Promise.all(sales).then(() => {
+            sales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            const latestSales = sales.slice(0, 5);
 
-        liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
+            const namePromises = latestSales.map(sale => {
+                return usersRef.child(sale.userId).once('value').then(snapshot => {
+                    sale.userName = snapshot.val().name || 'Unknown User';
+                });
+            });
 
-        latestSales.forEach(sale => {
-            const saleElement = document.createElement('div');
-            saleElement.classList.add('activity-item');
-            saleElement.innerHTML = `<strong>${sale.userId}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
-            liveActivitiesSection.appendChild(saleElement);
+            return Promise.all(namePromises).then(() => {
+                liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
+
+                latestSales.forEach(sale => {
+                    const saleElement = document.createElement('div');
+                    saleElement.classList.add('activity-item');
+                    const formattedTime = new Date(sale.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> (${sale.accountNumber}) at ${formattedTime}`;
+                    liveActivitiesSection.appendChild(saleElement);
+                });
+            });
+        }).catch(error => {
+            console.error('Error fetching data:', error);
         });
     }, error => {
         console.error('Error fetching live activities:', error);
