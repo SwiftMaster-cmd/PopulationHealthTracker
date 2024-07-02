@@ -120,7 +120,63 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
+function loadLiveActivities() {
+    const database = firebase.database();
+    const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
+    const usersRef = database.ref('users');
 
+    const liveActivitiesSection = document.getElementById('live-activity-section');
+    if (!liveActivitiesSection) {
+        console.error('Live activities section element not found');
+        return;
+    }
+
+    salesOutcomesRef.off('value');
+
+    salesOutcomesRef.on('value', salesSnapshot => {
+        const salesData = salesSnapshot.val();
+        if (!salesData) {
+            console.error('No sales data found');
+            return;
+        }
+        console.log('Sales outcomes data:', salesData);
+
+        const sales = [];
+
+        for (const userId in salesData) {
+            for (const saleId in salesData[userId]) {
+                const sale = salesData[userId][saleId];
+                const formattedTime = new Date(sale.outcomeTime).toLocaleString();
+
+                sales.push({ userId, saleType: sale.saleType, formattedTime });
+            }
+        }
+
+        sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
+        const latestSales = sales.slice(0, 5);
+
+        const namePromises = latestSales.map(sale => {
+            return usersRef.child(sale.userId).once('value').then(snapshot => {
+                sale.userName = snapshot.val().name || 'Unknown User';
+            });
+        });
+
+        Promise.all(namePromises).then(() => {
+            liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
+
+            latestSales.forEach(sale => {
+                const saleElement = document.createElement('div');
+                saleElement.classList.add('activity-item');
+                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
+                liveActivitiesSection.appendChild(saleElement);
+            });
+        }).catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    }, error => {
+        console.error('Error fetching live activities:', error);
+    });
+}
 
 function getReadableTitle(saleType) {
     switch (saleType) {
