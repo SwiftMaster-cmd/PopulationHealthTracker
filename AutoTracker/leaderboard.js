@@ -131,18 +131,17 @@ function loadLiveActivities() {
             for (const saleId in salesData[userId]) {
                 const sale = salesData[userId][saleId];
                 const timestamp = sale.outcomeTime;
-                const formattedTime = timestamp;
 
                 const salePromise = salesTimeframesRef.child(`${userId}/${saleId}`).once('value').then(snapshot => {
-                    const saleType = snapshot.val() ? snapshot.val().saleType : 'Unknown Sale Type';
-                    sales.push({ userId, saleType, formattedTime });
+                    const saleType = snapshot.child('saleType').val();
+                    sales.push({ userId, saleType, timestamp });
                 });
                 userPromises.push(salePromise);
             }
         }
 
         Promise.all(userPromises).then(() => {
-            sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
+            sales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             const latestSales = sales.slice(0, 5);
 
             const namePromises = latestSales.map(sale => {
@@ -157,7 +156,7 @@ function loadLiveActivities() {
                 latestSales.forEach(sale => {
                     const saleElement = document.createElement('div');
                     saleElement.classList.add('activity-item');
-                    saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
+                    saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.timestamp}`;
                     liveActivitiesSection.appendChild(saleElement);
                 });
             });
