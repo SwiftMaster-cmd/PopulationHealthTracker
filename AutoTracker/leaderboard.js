@@ -173,8 +173,46 @@ function loadLiveActivities() {
             latestSales.forEach(sale => {
                 const saleElement = document.createElement('div');
                 saleElement.classList.add('activity-item');
-                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
+                saleElement.innerHTML = `
+                    <span class="like-heart" data-sale-id="${sale.saleTime}" style="opacity: 0.5; cursor: pointer;">❤️</span>
+                    <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
+                    <span class="like-count" data-sale-id="${sale.saleTime}">(0)</span>
+                `;
                 liveActivitiesSection.appendChild(saleElement);
+
+                // Load initial like count
+                const likeCountRef = database.ref(`likes/${sale.saleTime}/count`);
+                likeCountRef.once('value', snapshot => {
+                    const likeCount = snapshot.val() || 0;
+                    document.querySelector(`.like-count[data-sale-id="${sale.saleTime}"]`).textContent = `(${likeCount})`;
+                });
+            });
+
+            // Add click event listener for the hearts
+            document.querySelectorAll('.like-heart').forEach(heart => {
+                heart.addEventListener('click', function() {
+                    const saleId = this.getAttribute('data-sale-id');
+                    const user = firebase.auth().currentUser;
+                    if (user) {
+                        const likeRef = database.ref(`likes/${saleId}/users/${user.uid}`);
+                        likeRef.once('value', snapshot => {
+                            if (snapshot.exists()) {
+                                console.log('User has already liked this sale');
+                            } else {
+                                likeRef.set(true).then(() => {
+                                    const countRef = database.ref(`likes/${saleId}/count`);
+                                    countRef.transaction(currentCount => (currentCount || 0) + 1).then(() => {
+                                        const likeCountElement = document.querySelector(`.like-count[data-sale-id="${saleId}"]`);
+                                        const newCount = parseInt(likeCountElement.textContent.replace(/[()]/g, '')) + 1;
+                                        likeCountElement.textContent = `(${newCount})`;
+                                    });
+                                });
+                            }
+                        });
+                    } else {
+                        console.error('No user is signed in.');
+                    }
+                });
             });
         }).catch(error => {
             console.error('Error fetching data:', error);
@@ -183,6 +221,49 @@ function loadLiveActivities() {
         console.error('Error fetching live activities:', error);
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+        authDomain: "track-dac15.firebaseapp.com",
+        databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+        projectId: "track-dac15",
+        storageBucket: "track-dac15.appspot.com",
+        messagingSenderId: "495156821305",
+        appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+        measurementId: "G-RVBYB0RR06"
+    };
+
+    // Check if Firebase has been initialized
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    } else {
+        firebase.app();
+    }
+
+    // Check Google link status
+    firebase.auth().onAuthStateChanged(async user => {
+        if (user) {
+            const userRef = firebase.database().ref('users/' + user.uid);
+            const snapshot = await userRef.once('value');
+            const userData = snapshot.val();
+
+            if (userData && userData.googleLinked) {
+                console.log('Google account is already linked.');
+            } else {
+                console.log('Google account is not linked.');
+            }
+        } else {
+            console.error('No user is signed in.');
+        }
+    });
+
+    // Dispatch custom event to notify other scripts
+    document.dispatchEvent(new Event('firebaseInitialized'));
+
+    // Load live activities
+    loadLiveActivities();
+});
 
 function getReadableTitle(saleType) {
     switch (saleType) {
