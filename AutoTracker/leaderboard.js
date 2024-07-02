@@ -124,9 +124,7 @@ function loadLiveActivities() {
         return;
     }
 
-    salesTimeFramesRef.off('value');
-
-    salesTimeFramesRef.on('value', salesSnapshot => {
+    salesTimeFramesRef.orderByKey().limitToLast(5).on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         if (!salesData) {
             console.error('No sales data found');
@@ -142,14 +140,16 @@ function loadLiveActivities() {
                 for (const saleType in leadSales) {
                     const saleTimes = leadSales[saleType];
                     for (const timeIndex in saleTimes) {
-                        const formattedTime = new Date(saleTimes[timeIndex]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        sales.push({ userId, saleType, formattedTime });
+                        const saleTime = saleTimes[timeIndex];
+                        const formattedTime = new Date(saleTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        sales.push({ userId, saleType, saleTime, formattedTime });
                     }
                 }
             }
         }
 
-        sales.sort((a, b) => new Date(b.formattedTime) - new Date(a.formattedTime));
+        sales.sort((a, b) => new Date(b.saleTime) - new Date(a.saleTime));
         const latestSales = sales.slice(0, 5);
 
         const namePromises = latestSales.map(sale => {
