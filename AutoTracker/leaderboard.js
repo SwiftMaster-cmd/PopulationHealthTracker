@@ -108,6 +108,29 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    loadLiveActivities();
+
+    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
+
+    // Set default picker value to 'month'
+    chartPeriodPicker.value = 'month';
+
+    chartPeriodPicker.addEventListener('change', () => {
+        loadChart(chartPeriodPicker.value);
+    });
+
+    loadChart('month');
+
+    const savedColor = localStorage.getItem('baseColor');
+    if (savedColor) {
+        applyColorPalette(savedColor);
+    } else {
+        const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
+        applyColorPalette(defaultColor);
+    }
+});
+
 function loadLiveActivities() {
     const database = firebase.database();
     const salesOutcomesRef = database.ref('salesOutcomes').limitToLast(5);
@@ -139,29 +162,13 @@ function loadLiveActivities() {
         sales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         const latestSales = sales.slice(0, 5);
 
-        const namePromises = latestSales.map(sale => {
-            return usersRef.child(sale.userId).once('value').then(snapshot => {
-                sale.userName = snapshot.val().name || 'Unknown User';
-            });
-        });
-
-        const saleTypePromises = latestSales.map(sale => {
-            return salesTimeFramesRef.child(`${sale.userId}/${sale.saleId}`).once('value').then(snapshot => {
-                const saleData = snapshot.val();
-                const saleType = Object.keys(saleData)[0]; // Assuming there's only one key per saleId
-                sale.saleType = saleType;
-            });
-        });
-
-        Promise.all([...namePromises, ...saleTypePromises]).then(() => {
-            liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
-
-            latestSales.forEach(sale => {
-                const saleElement = document.createElement('div');
-                saleElement.classList.add('activity-item');
-                saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
-                liveActivitiesSection.appendChild(saleElement);
-            });
+        Promise.all(latestSales.map(sale => 
+            Promise.all([
+                fetchUserName(usersRef, sale),
+                fetchSaleType(salesTimeFramesRef, sale)
+            ])
+        )).then(() => {
+            renderLiveActivities(latestSales, liveActivitiesSection);
         }).catch(error => {
             console.error('Error fetching user data:', error);
         });
@@ -169,6 +176,33 @@ function loadLiveActivities() {
         console.error('Error fetching live activities:', error);
     });
 }
+
+function fetchUserName(usersRef, sale) {
+    return usersRef.child(sale.userId).once('value').then(snapshot => {
+        sale.userName = snapshot.val().name || 'Unknown User';
+    });
+}
+
+function fetchSaleType(salesTimeFramesRef, sale) {
+    return salesTimeFramesRef.child(`${sale.userId}/${sale.saleId}`).once('value').then(snapshot => {
+        const saleData = snapshot.val();
+        const saleType = Object.keys(saleData)[0]; // Assuming there's only one key per saleId
+        sale.saleType = saleType;
+    });
+}
+
+function renderLiveActivities(latestSales, liveActivitiesSection) {
+    liveActivitiesSection.innerHTML = '<h4>Live Activities</h4>';
+    latestSales.forEach(sale => {
+        const saleElement = document.createElement('div');
+        saleElement.classList.add('activity-item');
+        saleElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
+        liveActivitiesSection.appendChild(saleElement);
+    });
+}
+
+// Additional functions for the chart
+// ... (chart code remains the same)
 
 function getReadableTitle(saleType) {
     switch (saleType) {
