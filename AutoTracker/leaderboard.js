@@ -16,8 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             checkAndSetUserName(user.uid);
-            loadLeaderboard(periodPicker.value, saleTypePicker.value);
-            loadLiveActivities();
+            loadLeaderboard();
         }
     });
 });
@@ -63,16 +62,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
-                        let count = 0;
-
-                        if (period === 'day') {
-                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
-                        } else if (period === 'week') {
-                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                        } else if (period === 'month') {
-                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
-                        }
-
+                        const count = userData[period] && userData[period][saleType] ? userData[period][saleType] : 0;
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
                         if (name.length > 10) {
                             name = name.substring(0, 8); // Truncate name to 8 characters
@@ -107,6 +97,22 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
+function getReadableTitle(saleType) {
+    switch (saleType) {
+        case 'selectRX':
+            return 'Select RX';
+        case 'billableHRA':
+            return 'Billable HRA';
+        case 'transfer':
+            return 'Transfer';
+        case 'selectPatientManagement':
+            return 'Select Patient Management';
+        default:
+            return saleType;
+    }
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     loadLiveActivities();
@@ -203,18 +209,3 @@ function renderLiveActivities(latestSales, liveActivitiesSection) {
 
 // Additional functions for the chart
 // ... (chart code remains the same)
-
-function getReadableTitle(saleType) {
-    switch (saleType) {
-        case 'selectRX':
-            return 'Select RX';
-        case 'billableHRA':
-            return 'Billable HRA';
-        case 'transfer':
-            return 'Transfer';
-        case 'selectPatientManagement':
-            return 'Select Patient Management';
-        default:
-            return saleType;
-    }
-}
