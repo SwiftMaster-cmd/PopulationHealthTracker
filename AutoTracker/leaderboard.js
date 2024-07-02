@@ -115,7 +115,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -201,7 +200,6 @@ function renderSales(sales, container, likesRef, usersRef) {
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[\.\#\$$begin:math:display$$end:math:display$]/g, '_')}`;
 
         saleElement.innerHTML = `
-            <span class="like-count" id="like-count-${likePath}">0</span>
             <button class="like-button" data-like-path="${likePath}">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -213,21 +211,20 @@ function renderSales(sales, container, likesRef, usersRef) {
         container.appendChild(saleElement);
 
         const likeButton = saleElement.querySelector('.like-button');
-        const likeCountSpan = saleElement.querySelector('.like-count');
         const likeInfoDiv = saleElement.querySelector('.like-info');
 
-        initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton, likeInfoDiv, usersRef);
+        initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
 
-        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeCountSpan, likeButton, likeInfoDiv, usersRef));
+        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
 
         // Listen for changes to likes in real-time
         likesRef.child(likePath).on('value', snapshot => {
-            updateLikeCount(snapshot, likeCountSpan, likeButton, likeInfoDiv, usersRef);
+            updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
     });
 }
 
-function updateLikeCount(snapshot, likeCountSpan, likeButton, likeInfoDiv, usersRef) {
+function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     const likes = snapshot.val() || {};
     const likeCount = Object.values(likes).reduce((total, value) => total + value, 0);
     const lastLikerId = Object.keys(likes).find(key => likes[key] === 1);
@@ -246,12 +243,6 @@ function updateLikeCount(snapshot, likeCountSpan, likeButton, likeInfoDiv, users
         likeInfoDiv.textContent = '';
     }
 
-    likeCountSpan.textContent = likeCount;
-    if (likeCount > 0) {
-        likeCountSpan.style.display = 'inline';
-    } else {
-        likeCountSpan.style.display = 'none';
-    }
     if (likes[firebase.auth().currentUser.uid]) {
         likeButton.classList.add('liked');
     } else {
@@ -259,16 +250,16 @@ function updateLikeCount(snapshot, likeCountSpan, likeButton, likeInfoDiv, users
     }
 }
 
-async function initializeLikeCount(likesRef, likePath, likeCountSpan, likeButton, likeInfoDiv, usersRef) {
+async function initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef) {
     try {
         const snapshot = await likesRef.child(likePath).once('value');
-        updateLikeCount(snapshot, likeCountSpan, likeButton, likeInfoDiv, usersRef);
+        updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
     } catch (error) {
         console.error('Error initializing like count:', error);
     }
 }
 
-async function handleLikeClick(likesRef, likePath, likeCountSpan, likeButton, likeInfoDiv, usersRef) {
+async function handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef) {
     try {
         const currentUserId = firebase.auth().currentUser.uid;
         const userLikePath = `${likePath}/${currentUserId}`;
@@ -279,7 +270,7 @@ async function handleLikeClick(likesRef, likePath, likeCountSpan, likeButton, li
 
         if (result.committed) {
             const likesSnapshot = await likesRef.child(likePath).once('value');
-            updateLikeCount(likesSnapshot, likeCountSpan, likeButton, likeInfoDiv, usersRef);
+            updateLikeCount(likesSnapshot, likeButton, likeInfoDiv, usersRef);
         }
     } catch (error) {
         console.error('Error updating like count:', error);

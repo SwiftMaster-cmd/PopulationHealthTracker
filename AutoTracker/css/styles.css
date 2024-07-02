@@ -337,25 +337,10 @@ button:active {
     fill: red; /* Color for clicked heart */
 }
 
-.like-count {
-    margin-right: 5px; /* Adjust margin to position the count correctly */
-    font-size: 1.2em;
-    vertical-align: middle;
-}
-.like-count {
-    margin-right: 5px; /* Adjust margin to position the count correctly */
-    font-size: 1.2em;
-    vertical-align: middle;
-}
 
-.like-count {
-    margin-right: 5px; /* Adjust margin to position the count correctly */
-    font-size: 1.2em;
-    vertical-align: middle;
-}
 
 .like-info {
     font-size: 0.8em;
-    color: #555;
+    color: var(--text-white);
     margin-top: 5px;
 }
