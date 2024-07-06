@@ -36,6 +36,7 @@
 
 .leaderboard-item {
     text-align: center;
+    align-items: center;
     margin: 10px 0;
     color: var(--text-white);
     font-size: 1.3em; /* Adjust based on your base font size */
