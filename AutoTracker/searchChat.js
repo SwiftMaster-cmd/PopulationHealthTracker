@@ -32,7 +32,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const user = firebase.auth().currentUser;
                 if (user) {
                     const usersRef = firebase.database().ref('users/' + user.uid);
-                    usersRef.update({ name: newName }).then(() => {
+                    usersRef.update({
+                        name: newName,
+                        nameLowerCase: newName.toLowerCase()
+                    }).then(() => {
                         alert('Name updated successfully');
                         nameInput.value = '';
                     }).catch((error) => {
@@ -54,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const searchName = searchInput.value.trim().toLowerCase();
             if (searchName) {
                 const usersRef = firebase.database().ref('users');
-                usersRef.orderByChild('name').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
+                usersRef.orderByChild('nameLowerCase').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
                     const users = snapshot.val();
                     const results = [];
                     for (const uid in users) {
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const searchName = chatSearchInput.value.trim().toLowerCase();
             if (searchName) {
                 const usersRef = firebase.database().ref('users');
-                usersRef.orderByChild('name').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
+                usersRef.orderByChild('nameLowerCase').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
                     const users = snapshot.val();
                     const results = [];
                     for (const uid in users) {
