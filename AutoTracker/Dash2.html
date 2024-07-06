@@ -18,7 +18,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
-    <script src="searchChat.js" defer></script>
+    <script src="tracker.js" defer></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -61,85 +61,7 @@
         });
     </script>
 
-    <!-- Event Tracking Script -->
-    <script>
-        // Track button clicks
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('cheatSheetButton').addEventListener('click', function() {
-                gtag('event', 'click', {
-                    'event_category': 'Button',
-                    'event_label': 'Cheat Sheet Button'
-                });
-            });
-
-            document.getElementById('applyColor').addEventListener('click', function() {
-                gtag('event', 'click', {
-                    'event_category': 'Button',
-                    'event_label': 'Apply Color Palette Button'
-                });
-            });
-
-            document.getElementById('changeName').addEventListener('click', function() {
-                gtag('event', 'click', {
-                    'event_category': 'Button',
-                    'event_label': 'Change Name Button'
-                });
-            });
-
-            document.getElementById('signOut').addEventListener('click', function() {
-                gtag('event', 'click', {
-                    'event_category': 'Button',
-                    'event_label': 'Sign Out Button'
-                });
-            });
-
-            document.getElementById('copyBookmarkletButton').addEventListener('click', function() {
-                gtag('event', 'click', {
-                    'event_category': 'Button',
-                    'event_label': 'Copy Bookmarklet Button'
-                });
-            });
-
-            document.getElementById('prev').addEventListener('click', function() {
-                gtag('event', 'click', {
-                    'event_category': 'Navigation',
-                    'event_label': 'Prev Button'
-                });
-            });
-
-            document.getElementById('next').addEventListener('click', function() {
-                gtag('event', 'click', {
-                    'event_category': 'Navigation',
-                    'event_label': 'Next Button'
-                });
-            });
-
-            // Track picker selections
-            document.getElementById('periodPicker').addEventListener('change', function() {
-                gtag('event', 'change', {
-                    'event_category': 'Picker',
-                    'event_label': 'Period Picker',
-                    'value': this.value
-                });
-            });
-
-            document.getElementById('saleTypePicker').addEventListener('change', function() {
-                gtag('event', 'change', {
-                    'event_category': 'Picker',
-                    'event_label': 'Sale Type Picker',
-                    'value': this.value
-                });
-            });
-
-            document.getElementById('chartPeriodPicker').addEventListener('change', function() {
-                gtag('event', 'change', {
-                    'event_category': 'Picker',
-                    'event_label': 'Chart Period Picker',
-                    'value': this.value
-                });
-            });
-        });
-    </script>
+  
 </head>
 <body>
     <div class="header-container">
