@@ -320,3 +320,10 @@ button:active {
     color: var(--text-white);
     margin-top: 5px;
 }
+
+
+
+
+#leaderboard-container {
+    background: none; /* Ensures no background */
+}
