@@ -102,7 +102,7 @@ button:active {
     align-items: center;
 }
 
-.container, .leaderboard-container, .sales-history-content,.monthly-sales-totals-container , .customer-info-container {
+.container {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
