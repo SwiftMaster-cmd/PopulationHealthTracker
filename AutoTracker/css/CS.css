@@ -25,7 +25,7 @@ body {
   top: 0;
   width: 100%;
   padding: 20px 0;
-  background: rgba(128, 0, 128, 0.1); /* Low opacity purple background */
+  background: rgba(255, 255, 255, 0.1); /* Low opacity white background */
   backdrop-filter: blur(15px); /* High blur effect */
   -webkit-backdrop-filter: blur(15px);
   z-index: 1000; /* Ensure the header stays on top */
@@ -42,16 +42,19 @@ body {
   width: 50%;
   padding: 15px;
   font-size: 24px; /* Increase font size */
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Transparent border */
   border-radius: 5px;
   margin-right: 10px;
   transition: all 0.3s ease-in-out;
+  background: none; /* No background color */
+  backdrop-filter: blur(15px); /* High blur effect */
+  -webkit-backdrop-filter: blur(15px);
   color: #333;
 }
 
 .search-container input[type="text"]:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: rgba(255, 255, 255, 0.3); /* Transparent border focus */
 }
 
 .search-container button {
@@ -59,14 +62,16 @@ body {
   font-size: 24px; /* Increase font size */
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
-  color: white;
+  background: none; /* No background color */
+  backdrop-filter: blur(15px); /* High blur effect */
+  -webkit-backdrop-filter: blur(15px);
+  color: #333; /* Black text color */
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 
 .search-container button:hover {
-  background-color: #0056b3;
+  background: rgba(255, 255, 255, 0.2); /* Slightly higher opacity on hover */
 }
 
 .main-container {
