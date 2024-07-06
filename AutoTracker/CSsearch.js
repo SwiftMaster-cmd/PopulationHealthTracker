@@ -101,10 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
     containers.forEach(container => {
       if (container.dataset.originalContent) {
         container.innerHTML = container.dataset.originalContent; // Restore original content
+        container.classList.add('visible');
+        container.classList.remove('hidden');
         delete container.dataset.originalContent;
+      } else {
+        container.classList.add('hidden');
+        container.classList.remove('visible');
       }
-      container.classList.add('visible');
-      container.classList.remove('hidden');
     });
   
     refineButton.textContent = "Refine";
