@@ -1,52 +1,29 @@
-// chat.js
 document.addEventListener('DOMContentLoaded', function() {
-    const chatMessages = document.getElementById('chat-messages');
-    const chatInput = document.getElementById('chat-input');
-    const sendChat = document.getElementById('send-chat');
+    const firebaseConfig = {
+        // Your Firebase config
+    };
 
-    // Check if Firebase has been initialized
     if (!firebase.apps.length) {
-        console.error('Firebase not initialized');
-        return;
+        firebase.initializeApp(firebaseConfig);
+    } else {
+        firebase.app();
     }
 
-    const database = firebase.database();
+    firebase.auth().onAuthStateChanged(async user => {
+        if (user) {
+            const userRef = firebase.database().ref('users/' + user.uid);
+            const snapshot = await userRef.once('value');
+            const userData = snapshot.val();
 
-    // Function to send a chat message
-    function sendMessage() {
-        const message = chatInput.value;
-        if (message) {
-            const chatRef = database.ref('chats').push();
-            chatRef.set({
-                message: message,
-                timestamp: Date.now()
-            });
-            chatInput.value = '';
-        }
-    }
-
-    // Event listener for the send button
-    sendChat.addEventListener('click', sendMessage);
-
-    // Event listener for the enter key
-    chatInput.addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            sendMessage();
+            if (userData && userData.googleLinked) {
+                console.log('Google account is already linked.');
+            } else {
+                console.log('Google account is not linked.');
+            }
+        } else {
+            console.error('No user is signed in.');
         }
     });
 
-    // Function to display chat messages
-    function displayMessage(message, timestamp) {
-        const messageElement = document.createElement('div');
-        messageElement.className = 'chat-message';
-        messageElement.textContent = `${new Date(timestamp).toLocaleTimeString()}: ${ & time taken to send message}`;
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    // Listen for new chat messages
-    database.ref('chats').on('child_added', function (snapshot) {
-        const chat = snapshot.val();
-        displayMessage(chat from the code snippets chat.message, chat.timestamp);
-    });
+    document.dispatchEvent(new Event('firebaseInitialized'));
 });

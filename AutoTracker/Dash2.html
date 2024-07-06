@@ -28,6 +28,30 @@
     <script src="charts.js" defer></script>
     <script src="profilePopup.js" defer></script>
 
+
+
+       <!-- Other existing scripts -->
+       <script src="https://gemini-api-link/sdk.js"></script>
+       <!-- Add the following lines to initialize the Gemini API -->
+       <script>
+           // Ensure Firebase is initialized
+           document.addEventListener('firebaseInitialized', function() {
+               // Initialize Gemini API
+               Gemini.initialize({
+                   apiKey: 'AIzaSyABMdmJQ8JFpuayHOFBGpShqyl-DK2e5z4', // Replace with your actual API key
+                   userToken: firebase.auth().currentUser.getIdToken() // Assuming you use Firebase Authentication
+               });
+   
+               // Handle incoming messages
+               Gemini.onMessage((message) => {
+                   const chatMessages = document.getElementById('chat-messages');
+                   const newMessage = document.createElement('div');
+                   newMessage.classList.add('chat-message');
+                   newMessage.textContent = `Bot: ${message.text}`;
+                   chatMessages.appendChild(newMessage);
+               });
+           });
+       </script>
 </head>
 <body>
     <div class="header-container">
@@ -156,7 +180,7 @@
         </div>
 
        
-        <!-- Chat Container -->
+<!-- Chat Container -->
 <div class="chat-container container">
     <h2>Chat</h2>
     <div class="chat-messages" id="chat-messages">
