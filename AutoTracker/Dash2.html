@@ -29,29 +29,58 @@
     <script src="profilePopup.js" defer></script>
 
 
+    <!-- Include Gemini SDK -->
+    <script src="https://gemini-api-link/sdk.js"></script>
 
-       <!-- Other existing scripts -->
-       <script src="https://gemini-api-link/sdk.js"></script>
-       <!-- Add the following lines to initialize the Gemini API -->
-       <script>
-           // Ensure Firebase is initialized
-           document.addEventListener('firebaseInitialized', function() {
-               // Initialize Gemini API
-               Gemini.initialize({
-                   apiKey: 'AIzaSyDdanD13Lt1SuBgWDNmUgMaiJ9MMqJqky4-DK2e5z4', // Replace with your actual API key
-                   userToken: firebase.auth().currentUser.getIdToken() // Assuming you use Firebase Authentication
-               });
-   
-               // Handle incoming messages
-               Gemini.onMessage((message) => {
-                   const chatMessages = document.getElementById('chat-messages');
-                   const newMessage = document.createElement('div');
-                   newMessage.classList.add('chat-message');
-                   newMessage.textContent = `Bot: ${message.text}`;
-                   chatMessages.appendChild(newMessage);
-               });
-           });
-       </script>
+    <script>
+        document.addEventListener('firebaseInitialized', function() {
+            // Initialize Gemini API
+            Gemini.initialize({
+                apiKey: 'your-gemini-api-key', // Replace with your actual Gemini API key
+                userToken: firebase.auth().currentUser.getIdToken() // Assuming you use Firebase Authentication
+            });
+
+            // Handle incoming messages
+            Gemini.onMessage((message) => {
+                const chatMessages = document.getElementById('chat-messages');
+                const newMessage = document.createElement('div');
+                newMessage.classList.add('chat-message');
+                newMessage.textContent = `Bot: ${message.text}`;
+                chatMessages.appendChild(newMessage);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chat-input');
+            const sendChatButton = document.getElementById('send-chat');
+            const chatMessages = document.getElementById('chat-messages');
+
+            sendChatButton.addEventListener('click', () => {
+                const userMessage = chatInput.value;
+                if (userMessage.trim() === '') return;
+
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.classList.add('chat-message');
+                userMessageDiv.textContent = `You: ${userMessage}`;
+                chatMessages.appendChild(userMessageDiv);
+
+                Gemini.sendMessage(userMessage).then(response => {
+                    const botMessageDiv = document.createElement('div');
+                    botMessageDiv.classList.add('chat-message');
+                    botMessageDiv.textContent = `Bot: ${response.text}`;
+                    chatMessages.appendChild(botMessageDiv);
+                });
+
+                chatInput.value = '';
+            });
+
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendChatButton.click();
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="header-container">
