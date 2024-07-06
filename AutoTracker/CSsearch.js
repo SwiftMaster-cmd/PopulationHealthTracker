@@ -1,13 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const containers = [
-      { id: 'cheatSheet-title', title: 'Pop Health Cheat Sheet' },
-      { id: 'services-paused', title: 'Services Paused 🚫' },
-      // Add more containers here
-    ];
+    const containers = document.querySelectorAll('.container');
   
     // Ensure all containers are hidden initially
-    const allContainers = document.querySelectorAll('.container');
-    allContainers.forEach(container => {
+    containers.forEach(container => {
       container.classList.add('hidden');
     });
   });
@@ -37,6 +32,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function highlightSearchTerm(container, searchTerm) {
-    const regex = new RegExp(`\\b(${searchTerm})\\b`, 'gi');
-    container.innerHTML = container.innerHTML.replace(regex, '<span class="highlight">$1</span>');
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    traverseDOM(container, regex);
+  }
+  
+  function traverseDOM(node, regex) {
+    if (node.nodeType === 3) { // Text node
+      const match = node.data.match(regex);
+      if (match) {
+        const highlight = document.createElement('span');
+        highlight.className = 'highlight';
+        const wordNode = node.splitText(match.index);
+        wordNode.splitText(match[0].length);
+        const wordClone = wordNode.cloneNode(true);
+        highlight.appendChild(wordClone);
+        wordNode.parentNode.replaceChild(highlight, wordNode);
+      }
+    } else if (node.nodeType === 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+      for (let i = 0; i < node.childNodes.length; i++) {
+        traverseDOM(node.childNodes[i], regex);
+      }
+    }
   }
