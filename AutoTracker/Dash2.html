@@ -155,12 +155,18 @@
             </div>
         </div>
 
-        <div class="chat-container">
-            <h3>Wanna send a message to someone?</h3>
-            <input type="text" id="chatSearchInput" placeholder="Search users by name">
-            <button id="startChatButton" class="button">Start a Chat</button>
-            <div id="chatSearchResults"></div>
-        </div>
+       
+        <!-- Chat Container -->
+<div class="chat-container container">
+    <h2>Chat</h2>
+    <div class="chat-messages" id="chat-messages">
+        <!-- Chat messages will be dynamically added here -->
+    </div>
+    <div class="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Type a message" />
+        <button id="send-chat">Send</button>
+    </div>
+</div>
     </div>
 </body>
 </html>
