@@ -23,32 +23,8 @@ body {
   border-radius: 5px;
 }
 
-.results-container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.result-button {
-  display: inline-block;
-  margin: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  flex: 1 1 auto;
-}
-
-.result-button:hover {
-  background-color: #0056b3;
-}
-
-.highlight {
-  background-color: white;
+mark {
+  background-color: yellow;
   color: black;
 }
 
@@ -62,4 +38,8 @@ body {
 
 .container.visible {
   display: flex;
+}
+
+.hidden {
+  display: none;
 }
