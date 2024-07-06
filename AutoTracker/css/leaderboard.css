@@ -15,7 +15,28 @@
 }
 
 
+.picker-leaderboard-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
 
+.leaderboard-container,
+#live-activities-section {
+    flex: 1;
+    margin: 10px;
+    min-width: 300px; /* Ensures the sections don't get too narrow on smaller screens */
+}
+
+.picker-header {
+    display: flex;
+    gap: 10px; /* Adjust as needed */
+    margin-bottom: 10px; /* Adjust as needed */
+}
+
+#leaderboard-title {
+    margin-bottom: 10px; /* Adjust as needed */
+}
 
 .leaderboard-item {
     text-align: center;
