@@ -32,10 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const user = firebase.auth().currentUser;
                 if (user) {
                     const usersRef = firebase.database().ref('users/' + user.uid);
-                    usersRef.update({
-                        name: newName,
-                        nameLowerCase: newName.toLowerCase()
-                    }).then(() => {
+                    usersRef.update({ name: newName }).then(() => {
                         alert('Name updated successfully');
                         nameInput.value = '';
                     }).catch((error) => {
@@ -48,20 +45,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Live search functionality
+    // Live search functionality by email
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
 
     if (searchInput && searchResults) {
         searchInput.addEventListener('input', () => {
-            const searchName = searchInput.value.trim().toLowerCase();
-            if (searchName) {
+            const searchEmail = searchInput.value.trim().toLowerCase();
+            if (searchEmail) {
                 const usersRef = firebase.database().ref('users');
-                usersRef.orderByChild('nameLowerCase').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
+                usersRef.orderByChild('email').startAt(searchEmail).endAt(searchEmail + "\uf8ff").once('value').then(snapshot => {
                     const users = snapshot.val();
                     const results = [];
                     for (const uid in users) {
-                        if (users[uid].name && users[uid].name.toLowerCase().includes(searchName)) {
+                        if (users[uid].email && users[uid].email.toLowerCase().includes(searchEmail)) {
                             results.push(users[uid]);
                         }
                     }
@@ -79,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (results.length > 0) {
                 results.forEach(user => {
                     const userDiv = document.createElement('div');
-                    userDiv.textContent = user.name;
+                    userDiv.textContent = user.email;
                     searchResults.appendChild(userDiv);
                 });
             } else {
@@ -95,15 +92,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (chatSearchInput && chatSearchResults && startChatButton) {
         chatSearchInput.addEventListener('input', () => {
-            const searchName = chatSearchInput.value.trim().toLowerCase();
-            if (searchName) {
+            const searchEmail = chatSearchInput.value.trim().toLowerCase();
+            if (searchEmail) {
                 const usersRef = firebase.database().ref('users');
-                usersRef.orderByChild('nameLowerCase').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
+                usersRef.orderByChild('email').startAt(searchEmail).endAt(searchEmail + "\uf8ff").once('value').then(snapshot => {
                     const users = snapshot.val();
                     const results = [];
                     for (const uid in users) {
-                        if (users[uid].name && users[uid].name.toLowerCase().includes(searchName)) {
-                            results.push({ uid, name: users[uid].name });
+                        if (users[uid].email && users[uid].email.toLowerCase().includes(searchEmail)) {
+                            results.push({ uid, email: users[uid].email });
                         }
                     }
                     displayChatSearchResults(results);
@@ -120,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (results.length > 0) {
                 results.forEach(user => {
                     const userDiv = document.createElement('div');
-                    userDiv.textContent = user.name;
+                    userDiv.textContent = user.email;
                     userDiv.dataset.uid = user.uid;
                     userDiv.classList.add('chat-user');
                     chatSearchResults.appendChild(userDiv);
