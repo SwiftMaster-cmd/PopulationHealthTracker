@@ -103,8 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = container.dataset.originalContent; // Restore original content
         delete container.dataset.originalContent;
       }
-      container.classList.add('hidden');
-      container.classList.remove('visible');
+      container.classList.add('visible');
+      container.classList.remove('hidden');
     });
   
     refineButton.textContent = "Refine";
