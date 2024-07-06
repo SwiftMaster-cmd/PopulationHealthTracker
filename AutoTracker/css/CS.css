@@ -80,8 +80,8 @@ body {
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 20px;
-  margin: 20px 0;
+  padding: 40px; /* Increased padding to prevent bleeding */
+  margin: 40px 0; /* Increased margin to add space between containers */
   border-radius: 15px;
   transition: all 0.3s ease-in-out;
   color: #333;
@@ -109,14 +109,4 @@ body {
 
 .hidden {
   display: none;
-}
-
-/* Add padding to ensure text doesn't bleed to the edges */
-.container ul {
-  padding-left: 40px;
-}
-
-.container p,
-.container li {
-  padding-left: 40px;
 }
