@@ -154,7 +154,7 @@ async function loadLiveActivities() {
 
             console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
-            const latestSales = sales.slice(0, 5);
+            const latestSales = sales.slice(0, 50);
 
             console.log('Processed sales data:', latestSales);
             await addUserNames(latestSales, usersRef);
