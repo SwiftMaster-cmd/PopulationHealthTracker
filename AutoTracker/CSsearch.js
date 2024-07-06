@@ -52,12 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const allContainers = document.querySelectorAll('.container');
     allContainers.forEach(container => {
       container.classList.add('hidden');
+      container.classList.remove('visible');
     });
   
     // Show the selected container
     const selectedContainer = document.getElementById(containerId);
     if (selectedContainer) {
       selectedContainer.classList.remove('hidden');
+      selectedContainer.classList.add('visible');
       selectedContainer.scrollIntoView({ behavior: 'smooth' });
   
       // Highlight the search term
