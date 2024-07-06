@@ -165,7 +165,7 @@ button:active {
 }
 
 .picker:hover, .chart-picker:hover {
-    background-color: var(--color-quinary);
+    background-color: var(--color-tertiary);
 }
 
 
