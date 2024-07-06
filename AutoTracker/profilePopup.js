@@ -55,18 +55,3 @@ document.getElementById('copyBookmarkletButton').addEventListener('click', () =>
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Existing code...
-
-    // Add event listener for the cheat sheet button
-    const cheatSheetButton = document.getElementById('cheatSheetButton');
-    if (cheatSheetButton) {
-        cheatSheetButton.addEventListener('click', () => {
-            window.location.href = 'cheatSheet.html';
-        });
-    }
-
-    // Existing code...
-});
-
-// Existing code continues...

@@ -307,3 +307,4 @@ document.addEventListener('DOMContentLoaded', () => {
     checkChartHeight();
     // Your existing code...
 });
+
