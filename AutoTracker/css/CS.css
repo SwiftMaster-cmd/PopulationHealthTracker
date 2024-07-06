@@ -13,8 +13,8 @@ body {
 
 .search-container {
   margin-top: 150px;
-  width: 50%;
-  text-align: center;
+  width: 300px;
+align-items: center;
 }
 
 #searchInput {
