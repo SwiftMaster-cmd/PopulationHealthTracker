@@ -1,24 +1,26 @@
-.picker-leaderboard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.picker-header {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.picker {
-    margin: 0 10px;
-}
-
 .content-wrapper {
     display: flex;
     justify-content: space-between;
     width: 100%;
+}
+#leaderboard-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+#live-activities-section {
+    flex: 1;
+    min-width: 300px;
+    margin-left: 20px;
+}
+
+#leaderboard-title, .leaderboard-section h3 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    color: var(--text-white);
+    
 }
 
 .leaderboard-container, .live-activities-container {
