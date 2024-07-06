@@ -82,13 +82,61 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Chat container functionality
+    const chatSearchInput = document.getElementById('chatSearchInput');
+    const chatSearchResults = document.getElementById('chatSearchResults');
     const startChatButton = document.getElementById('startChatButton');
 
+    chatSearchInput.addEventListener('input', () => {
+        const searchName = chatSearchInput.value.trim().toLowerCase();
+        if (searchName) {
+            const usersRef = firebase.database().ref('users');
+            usersRef.orderByChild('name').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
+                const users = snapshot.val();
+                const results = [];
+                for (const uid in users) {
+                    if (users[uid].name && users[uid].name.toLowerCase().includes(searchName)) {
+                        results.push({ uid, name: users[uid].name });
+                    }
+                }
+                displayChatSearchResults(results);
+            }).catch(error => {
+                console.error('Error searching users:', error);
+            });
+        } else {
+            chatSearchResults.innerHTML = ''; // Clear results if search input is empty
+        }
+    });
+
+    function displayChatSearchResults(results) {
+        chatSearchResults.innerHTML = '';
+        if (results.length > 0) {
+            results.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.textContent = user.name;
+                userDiv.dataset.uid = user.uid;
+                userDiv.classList.add('chat-user');
+                chatSearchResults.appendChild(userDiv);
+            });
+        } else {
+            chatSearchResults.textContent = 'No users found';
+        }
+    }
+
     startChatButton.addEventListener('click', () => {
-        const chatRecipient = prompt("Enter the name of the person you want to chat with:");
-        if (chatRecipient) {
-            alert(`Starting a chat with ${chatRecipient}`);
-            // Here you would implement the functionality to start a new chat, e.g., open a chat window, send a message, etc.
+        const selectedUser = document.querySelector('.chat-user-selected');
+        if (selectedUser) {
+            const recipientUid = selectedUser.dataset.uid;
+            alert(`Starting a chat with ${selectedUser.textContent}`);
+            // Implement the actual chat start logic here
+        } else {
+            alert('Please select a user to start a chat');
+        }
+    });
+
+    chatSearchResults.addEventListener('click', (event) => {
+        if (event.target.classList.contains('chat-user')) {
+            document.querySelectorAll('.chat-user').forEach(user => user.classList.remove('chat-user-selected'));
+            event.target.classList.add('chat-user-selected');
         }
     });
 });
