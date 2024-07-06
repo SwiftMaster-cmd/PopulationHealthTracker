@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function openModal(containerId) {
     const modal = document.getElementById('myModal');
     const iframe = document.getElementById('iframeContainer');
-    iframe.src = `content.html#${containerId}`;
+    iframe.src = `cheatSheet.html#${containerId}`;
     modal.style.display = 'block';
   
     // Highlight text in iframe
