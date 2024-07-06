@@ -324,6 +324,6 @@ button:active {
 
 
 
-#leaderboard-container {
-    background: none; /* Ensures no background */
+.leaderboard-container {
+    background: none !important; /* Ensures no background */
 }
