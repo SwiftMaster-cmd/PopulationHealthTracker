@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function highlightSearchTerm(container, searchTerm) {
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    const regex = new RegExp(`\\b(${searchTerm})\\b`, 'gi');
     traverseDOM(container, regex);
   }
   
