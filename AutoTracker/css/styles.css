@@ -168,14 +168,7 @@ button:active {
     background-color: var(--color-quinary);
 }
 
-#leaderboard-title, .leaderboard-section h3 {
-    text-align: center;
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    line-height: 1.5;
-    color: var(--text-white);
-    
-}
+
 
 
 .sales-container {
@@ -223,12 +216,7 @@ button:active {
     background-color: var(--color-quaternary);
 }
 
-.leaderboard-item {
-    text-align: center;
-    margin: 10px 0;
-    color: var(--text-white);
-    font-size: 2em; /* Adjust based on your base font size */
-}
+
 
 /* Input field and search button styling */
 .search-container {

@@ -14,6 +14,22 @@
     margin-left: 20px;
 }
 
+#leaderboard-title, .leaderboard-section h3 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    color: var(--text-white);
+    
+}
+
+.leaderboard-item {
+    text-align: center;
+    margin: 10px 0;
+    color: var(--text-white);
+    font-size: 2em; /* Adjust based on your base font size */
+}
+
 @media (max-width: 768px) {
     .content-wrapper {
         flex-direction: column;
