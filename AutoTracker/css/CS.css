@@ -10,7 +10,7 @@ html, body {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Playfair Display', serif; /* Updated font family */
   background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
   color: #333;
   line-height: 1.6;
@@ -24,6 +24,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  background: none; /* Remove background for main container */
 }
 
 .search-container {
@@ -85,6 +86,7 @@ body {
   border-radius: 15px;
   transition: all 0.3s ease-in-out;
   color: #333;
+  word-wrap: break-word; /* Ensure long text breaks to the next line */
 }
 
 .container:hover {
