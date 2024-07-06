@@ -3,21 +3,11 @@
 
 
 
-:root {
-    --color-primary: rgba(0, 123, 255, 0.8);
-    --color-secondary: rgba(108, 117, 125, 0.8);
-    --color-tertiary: rgba(40, 167, 69, 0.8);
-    --color-quaternary: rgba(23, 162, 184, 0.8);
-    --color-quinary: rgba(255, 193, 7, 0.8);
-    --text-white: rgba(255, 255, 255, 1);
-    --text-bright-primary: rgba(255, 255, 255, 1);
-    --background-color: rgba(40, 44, 52, 1);
-}
-
+/* Additional CSS from your previous configuration */
 body, html {
     height: 100%;
     margin: 0;
-        font-size: 1.2em; /* Increase base font size */
+    font-size: 1.2em; /* Increase base font size */
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--background-color);
@@ -119,7 +109,6 @@ button:active {
 
 }
 
-
 .sales-container, .summary-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -132,10 +121,10 @@ button:active {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-  
     margin-bottom: 20px;
     backdrop-filter: blur(13px);
 }
+
 .select-level-container {
     display: flex;
     align-items: center;
@@ -159,17 +148,13 @@ button:active {
     color: var(--text-white);
     cursor: pointer;
     width: 45%;
-    max-width: 400px; 
-
+    max-width: 300px; 
     backdrop-filter: blur(13px);
 }
 
 .picker:hover, .chart-picker:hover {
     background-color: var(--color-quinary);
 }
-
-
-
 
 .sales-container {
     display: grid;
@@ -215,8 +200,6 @@ button:active {
 .button:hover {
     background-color: var(--color-quaternary);
 }
-
-
 
 /* Input field and search button styling */
 .search-container {
@@ -278,21 +261,6 @@ button:active {
     max-width: 100%; /* Allow it to take up as much space as needed */
 }
 
-#chartContainer {
-    height: 100%; /* Adjust as needed */
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px; /* Adjust spacing from the top */
-}
-
-#salesChart {
-    height: 100%;
-    min-height: 100%;
-}
-
-
 @media (max-width: 768px) {
     .main-container {
         grid-template-columns: 1fr;
@@ -308,14 +276,12 @@ button:active {
     }
 }
 
-
 .like-button {
     background: none;
     border: none;
     cursor: pointer;
     font-size: 1.5em;
     padding: 0;
-
 }
 
 .like-button svg {
@@ -326,10 +292,17 @@ button:active {
     fill: red; /* Color for clicked heart */
 }
 
-
-
 .like-info {
     font-size: 0.8em;
     color: var(--text-white);
     margin-top: 5px;
+}
+
+/* Additional Styles */
+#leaderboard-title, .picker {
+    visibility: visible; /* Ensure elements are visible */
+}
+
+.picker {
+    z-index: 100;
 }
