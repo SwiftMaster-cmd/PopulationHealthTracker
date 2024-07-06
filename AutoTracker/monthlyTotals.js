@@ -74,33 +74,37 @@ function loadMonthlyTotals() {
                         }, 0, 'N/A');
                         return;
                     }
-            
+
                     const salesTotals = {
                         billableHRA: salesData.billableHRA || 0,
                         selectRX: salesData.selectRX || 0,
                         selectPatientManagement: salesData.selectPatientManagement || 0,
                         transfer: salesData.transfer || 0
                     };
-            
+
                     const level = parseInt(document.getElementById('levelPicker').value);
                     const commission = calculateCommission(salesTotals, level);
-            
+
                     const previousMonthKey = getPreviousMonthKey();
                     salesCountsRef.child(currentUserId).child('month').child(previousMonthKey).once('value', prevSnapshot => {
                         const prevSalesData = prevSnapshot.val();
                         const prevTotal = prevSalesData ? calculateTotal(prevSalesData, level) : 'N/A';
-            
+
                         salesCountsRef.child(currentUserId).once('value', allSnapshot => {
                             const allSalesData = allSnapshot.val();
                             const average = calculateAverage(allSalesData, level);
-            
+
                             updateSalesDisplay(salesTotals, commission, prevTotal, average);
                         });
                     });
                 } catch (error) {
                     console.error('Error processing sales data:', error);
                 }
-            });});
+            });
+        } else {
+            console.error('No user is signed in.');
+        }
+    });
 }
 
 function updateSalesDisplay(salesTotals, commission, prevTotal, average) {
