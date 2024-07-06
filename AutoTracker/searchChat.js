@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.dispatchEvent(new Event('firebaseInitialized'));
 
     // Name change functionality
+    const changeNameButton = document.getElementById('changeName');
+    const nameInput = document.getElementById('nameInput');
+
     changeNameButton.addEventListener('click', () => {
         const newName = nameInput.value.trim();
         if (newName) {
@@ -48,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchName = searchInput.value.trim().toLowerCase();
         if (searchName) {
             const usersRef = firebase.database().ref('users');
-            usersRef.once('value').then(snapshot => {
+            usersRef.orderByChild('name').startAt(searchName).endAt(searchName + "\uf8ff").once('value').then(snapshot => {
                 const users = snapshot.val();
                 const results = [];
                 for (const uid in users) {
@@ -77,4 +80,15 @@ document.addEventListener('DOMContentLoaded', function() {
             searchResults.textContent = 'No users found';
         }
     }
+
+    // Chat container functionality
+    const startChatButton = document.getElementById('startChatButton');
+
+    startChatButton.addEventListener('click', () => {
+        const chatRecipient = prompt("Enter the name of the person you want to chat with:");
+        if (chatRecipient) {
+            alert(`Starting a chat with ${chatRecipient}`);
+            // Here you would implement the functionality to start a new chat, e.g., open a chat window, send a message, etc.
+        }
+    });
 });
