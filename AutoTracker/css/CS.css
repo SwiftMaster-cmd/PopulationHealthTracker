@@ -1,24 +1,28 @@
-
-body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-}
-h2 {
-  color: #2c3e50;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-ul li {
-  margin-bottom: 10px;
-}
-.services-paused, .hra, .selectrx, .spm, .vbc, .fe, .dvh, .ndr, .flossy, .charlie-financial, .ibis, .retirable, .marley-medical, .important-numbers, .policies-scripts, .mel-ai, .dummy-plan-ids, .pharmacy-zip-codes, .parent-companies, .medicaid-states, .medicaid-plans, .lead-gen-calls, .crm-glitches {
-  margin-bottom: 20px;
+.hidden {
+  display: none;
 }
 
+.results-container {
+  margin-top: 10px;
+  text-align: center;
+}
 
+.result-button {
+  display: inline-block;
+  margin: 5px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
+.result-button:hover {
+  background-color: #0056b3;
+}
 
-
-
+.highlight {
+  background-color: white;
+  color: black;
+}
