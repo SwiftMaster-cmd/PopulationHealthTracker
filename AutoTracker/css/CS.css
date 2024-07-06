@@ -110,3 +110,13 @@ body {
 .hidden {
   display: none;
 }
+
+/* Add padding to ensure text doesn't bleed to the edges */
+.container ul {
+  padding-left: 40px;
+}
+
+.container p,
+.container li {
+  padding-left: 40px;
+}
