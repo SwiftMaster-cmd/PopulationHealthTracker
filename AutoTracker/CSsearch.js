@@ -56,3 +56,31 @@ document.addEventListener('DOMContentLoaded', () => {
       accuracy: "partially"
     });
   }
+  
+  function refineSearch() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const containers = document.querySelectorAll('.container');
+  
+    if (input === "") {
+      // If the input is empty, hide all containers
+      containers.forEach(container => {
+        container.classList.add('hidden');
+        container.classList.remove('visible');
+      });
+      return; // Exit the function early
+    }
+  
+    containers.forEach(container => {
+      const containerText = container.textContent.toLowerCase();
+      if (containerText.includes(input)) {
+        const lines = container.innerHTML.split('<br>');
+        const matchingLines = lines.filter(line => line.toLowerCase().includes(input));
+        container.innerHTML = matchingLines.join('<br>');
+        container.classList.add('visible');
+        container.classList.remove('hidden');
+      } else {
+        container.classList.add('hidden');
+        container.classList.remove('visible');
+      }
+    });
+  }
