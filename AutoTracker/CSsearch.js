@@ -1,8 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const containers = document.querySelectorAll('.container');
+    const containers = [
+      { id: 'cheatSheet-title', title: 'Pop Health Cheat Sheet' },
+      { id: 'services-paused', title: 'Services Paused 🚫' },
+      // Add more containers here
+    ];
   
     // Ensure all containers are hidden initially
-    containers.forEach(container => {
+    const allContainers = document.querySelectorAll('.container');
+    allContainers.forEach(container => {
       container.classList.add('hidden');
     });
   });
@@ -11,10 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('searchInput').value.toLowerCase();
     const containers = document.querySelectorAll('.container');
   
-    // Remove previous highlights using mark.js
-    containers.forEach(container => {
-      const instance = new Mark(container);
-      instance.unmark();
+    // Remove previous highlights
+    const previousHighlights = document.querySelectorAll('.highlight');
+    previousHighlights.forEach(element => {
+      const parentElement = element.parentNode;
+      parentElement.innerHTML = parentElement.innerHTML.replace(/<span class="highlight">|<\/span>/gi, '');
     });
   
     containers.forEach(container => {
@@ -31,6 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function highlightSearchTerm(container, searchTerm) {
-    const instance = new Mark(container);
-    instance.mark(searchTerm);
+    const regex = new RegExp(`\\b(${searchTerm})\\b`, 'gi');
+    container.innerHTML = container.innerHTML.replace(regex, '<span class="highlight">$1</span>');
   }
