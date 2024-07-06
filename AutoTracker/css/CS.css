@@ -23,3 +23,10 @@
   background-color: white;
   color: black;
 }
+container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 50px auto;
+  align-items: center;
+}
