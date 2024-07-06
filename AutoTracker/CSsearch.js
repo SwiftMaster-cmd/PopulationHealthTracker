@@ -60,28 +60,52 @@ document.addEventListener('DOMContentLoaded', () => {
   function refineSearch() {
     const input = document.getElementById('searchInput').value.toLowerCase();
     const containers = document.querySelectorAll('.container');
+    const refineButton = document.getElementById('refineButton');
   
-    if (input === "") {
-      // If the input is empty, hide all containers
+    if (refineButton.textContent === "Refine") {
+      if (input === "") {
+        // If the input is empty, hide all containers
+        containers.forEach(container => {
+          container.classList.add('hidden');
+          container.classList.remove('visible');
+        });
+        return; // Exit the function early
+      }
+  
       containers.forEach(container => {
-        container.classList.add('hidden');
-        container.classList.remove('visible');
+        const containerText = container.textContent.toLowerCase();
+        if (containerText.includes(input)) {
+          const lines = container.innerHTML.split('\n');
+          const matchingLines = lines.filter(line => line.toLowerCase().includes(input));
+          container.dataset.originalContent = container.innerHTML; // Save original content
+          container.innerHTML = matchingLines.join('\n');
+          container.classList.add('visible');
+          container.classList.remove('hidden');
+          highlightSearchTerm(container, input);
+        } else {
+          container.classList.add('hidden');
+          container.classList.remove('visible');
+        }
       });
-      return; // Exit the function early
+  
+      refineButton.textContent = "Show All";
+    } else {
+      showAll();
     }
+  }
+  
+  function showAll() {
+    const containers = document.querySelectorAll('.container');
+    const refineButton = document.getElementById('refineButton');
   
     containers.forEach(container => {
-      const containerText = container.textContent.toLowerCase();
-      if (containerText.includes(input)) {
-        const lines = container.innerHTML.split('\n');
-        const matchingLines = lines.filter(line => line.toLowerCase().includes(input));
-        container.innerHTML = matchingLines.join('\n');
-        container.classList.add('visible');
-        container.classList.remove('hidden');
-        highlightSearchTerm(container, input);
-      } else {
-        container.classList.add('hidden');
-        container.classList.remove('visible');
+      if (container.dataset.originalContent) {
+        container.innerHTML = container.dataset.originalContent; // Restore original content
+        delete container.dataset.originalContent;
       }
+      container.classList.add('hidden');
+      container.classList.remove('visible');
     });
+  
+    refineButton.textContent = "Refine";
   }
