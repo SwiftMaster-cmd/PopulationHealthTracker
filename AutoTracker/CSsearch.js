@@ -73,11 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
     containers.forEach(container => {
       const containerText = container.textContent.toLowerCase();
       if (containerText.includes(input)) {
-        const lines = container.innerHTML.split('<br>');
+        const lines = container.innerHTML.split('\n');
         const matchingLines = lines.filter(line => line.toLowerCase().includes(input));
-        container.innerHTML = matchingLines.join('<br>');
+        container.innerHTML = matchingLines.join('\n');
         container.classList.add('visible');
         container.classList.remove('hidden');
+        highlightSearchTerm(container, input);
       } else {
         container.classList.add('hidden');
         container.classList.remove('visible');
