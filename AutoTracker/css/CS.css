@@ -19,8 +19,8 @@ body {
   padding: 20px;
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 15px;
 }
@@ -36,10 +36,15 @@ body {
   width: 50%;
   padding: 15px;
   font-size: 18px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border-radius: 5px;
   margin-right: 10px;
   transition: all 0.3s ease-in-out;
+  color: #333;
 }
 
 .search-container input[type="text"]:focus {
@@ -51,30 +56,34 @@ body {
 .search-container button {
   padding: 15px 20px;
   font-size: 18px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border-radius: 5px;
-  background-color: #3498db;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 
 .search-container button:hover {
-  background-color: #2980b9;
+  background-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 15px rgba(41, 128, 185, 0.5);
 }
 
 .container {
   display: none;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 20px;
   margin: 20px 0;
   border-radius: 15px;
   transition: all 0.3s ease-in-out;
+  color: #333;
 }
 
 .container:hover {
