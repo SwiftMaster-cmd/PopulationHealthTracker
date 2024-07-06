@@ -1,28 +1,31 @@
 document.addEventListener('DOMContentLoaded', function() {
     const auth = firebase.auth();
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    const MAX_LOGIN_DURATION = 9 * 60 * 60 * 1000; // 9 hours in milliseconds
 
     auth.onAuthStateChanged(user => {
         if (user) {
-            console.log('User authenticated:', user);
-            window.displaySalesOutcomes(user); // Call the global function
+            const loginTime = localStorage.getItem('loginTime');
+            if (loginTime) {
+                const elapsedTime = Date.now() - parseInt(loginTime, 10);
+                if (elapsedTime > MAX_LOGIN_DURATION) {
+                    console.log('Login duration exceeded. Logging out.');
+                    auth.signOut();
+                    localStorage.removeItem('loginTime');
+                    document.getElementById('auth-container').style.display = 'block'; // Show the sign-in form
+                } else {
+                    console.log('User authenticated:', user);
+                    window.displaySalesOutcomes(user); // Call the global function
+                }
+            } else {
+                // Set the login time if not already set
+                localStorage.setItem('loginTime', Date.now().toString());
+                console.log('User authenticated:', user);
+                window.displaySalesOutcomes(user); // Call the global function
+            }
         } else {
-            // Show the sign-in form or Google sign-in button if no user is authenticated
+            // Show the sign-in form if no user is authenticated
             document.getElementById('auth-container').style.display = 'block';
         }
-    });
-
-    // Handle Google Sign-In
-    document.getElementById('google-signin-button').addEventListener('click', () => {
-        auth.signInWithPopup(googleProvider)
-            .then((result) => {
-                const user = result.user;
-                console.log('User signed in with Google:', user);
-                window.displaySalesOutcomes(user); // Call the global function
-            })
-            .catch((error) => {
-                console.error('Google authentication error:', error);
-            });
     });
 
     // Handle Email/Password Sign-In
@@ -35,7 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
             .then((result) => {
                 const user = result.user;
                 console.log('User signed in with email:', user);
+                localStorage.setItem('loginTime', Date.now().toString()); // Set the login time
                 window.displaySalesOutcomes(user); // Call the global function
+                document.getElementById('auth-container').style.display = 'none'; // Hide the sign-in form
             })
             .catch((error) => {
                 const errorCode = error.code;
