@@ -24,7 +24,7 @@
 }
 
 .leaderboard-container, .live-activities-container {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: none;
     border-radius: 10px;
     padding: 20px;
     backdrop-filter: blur(8px);
