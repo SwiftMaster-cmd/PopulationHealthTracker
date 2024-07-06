@@ -19,7 +19,6 @@
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="tracker.js" defer></script>
-    <script src="CSsearch.js" defer></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -44,18 +43,8 @@
 </head>
 <body>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search for info..." onkeyup="liveSearch()">
-        <div id="resultsContainer" class="results-container"></div>
-    </div>
-    
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <iframe id="iframeContainer" src="" width="100%" height="400px"></iframe>
-        </div>
-    </div>
 
+    
     <div class="header-container">
         <h1>Dashboard</h1>
         <button id="cheatSheetButton">Cheat Sheet</button>
