@@ -62,7 +62,7 @@ body {
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border-radius: 5px;
-  color: white;
+  color: rgb(92, 92, 92);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
