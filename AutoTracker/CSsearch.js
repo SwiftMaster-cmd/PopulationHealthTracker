@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function liveSearch() {
     const input = document.getElementById('searchInput').value.toLowerCase();
     const containers = document.querySelectorAll('.container');
-    const resultsContainer = document.getElementById('resultsContainer');
   
     // Remove previous highlights
     containers.forEach(container => {
@@ -18,17 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
       instance.unmark();
     });
   
+    let anyContainerVisible = false;
     containers.forEach(container => {
       const containerText = container.textContent.toLowerCase();
       if (containerText.includes(input)) {
         container.classList.add('visible');
         container.classList.remove('hidden');
         highlightSearchTerm(container, input);
+        anyContainerVisible = true;
       } else {
         container.classList.add('hidden');
         container.classList.remove('visible');
       }
     });
+  
+    // If no container is visible, clear highlights
+    if (!anyContainerVisible) {
+      containers.forEach(container => {
+        const instance = new Mark(container);
+        instance.unmark();
+      });
+    }
   }
   
   function highlightSearchTerm(container, searchTerm) {
