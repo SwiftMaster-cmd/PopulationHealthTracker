@@ -193,6 +193,39 @@
             <button id="send-chat">Send</button>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chat-input');
+            const sendChatButton = document.getElementById('send-chat');
+            const chatMessages = document.getElementById('chat-messages');
+    
+            sendChatButton.addEventListener('click', () => {
+                const userMessage = chatInput.value;
+                if (userMessage.trim() === '') return;
+    
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.classList.add('chat-message');
+                userMessageDiv.textContent = `You: ${userMessage}`;
+                chatMessages.appendChild(userMessageDiv);
+    
+                Gemini.sendMessage(userMessage).then(response => {
+                    const botMessageDiv = document.createElement('div');
+                    botMessageDiv.classList.add('chat-message');
+                    botMessageDiv.textContent = `Bot: ${response.text}`;
+                    chatMessages.appendChild(botMessageDiv);
+                });
+    
+                chatInput.value = '';
+            });
+    
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendChatButton.click();
+                }
+            });
+        });
+    </script>
     <!-- Existing scripts -->
 </body>
     </div>
