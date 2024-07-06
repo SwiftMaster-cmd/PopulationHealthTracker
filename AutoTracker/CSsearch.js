@@ -17,6 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
       instance.unmark();
     });
   
+    if (input === "") {
+      // If the input is empty, hide all containers
+      containers.forEach(container => {
+        container.classList.add('hidden');
+        container.classList.remove('visible');
+      });
+      return; // Exit the function early
+    }
+  
     let anyContainerVisible = false;
     containers.forEach(container => {
       const containerText = container.textContent.toLowerCase();
