@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previousHighlights = document.querySelectorAll('.highlight');
     previousHighlights.forEach(element => {
       const parentElement = element.parentNode;
-      parentElement.innerHTML = parentElement.innerHTML.replace('<span class="highlight">', '').replace('</span>', '');
+      parentElement.innerHTML = parentElement.innerHTML.replace(/<span class="highlight">|<\/span>/gi, '');
     });
   
     containers.forEach(container => {
@@ -41,9 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function highlightSearchTerm(container, searchTerm) {
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    const regex = new RegExp(`\\b(${searchTerm})\\b`, 'gi');
     container.innerHTML = container.innerHTML.replace(regex, '<span class="highlight">$1</span>');
   }
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    // Ensure all containers are hidden initially
+    const containers = document.querySelectorAll('.container');
+    containers.forEach(container => {
+      container.classList.remove('visible');
+      container.classList.add('hidden');
+    });
+  });
   
   document.addEventListener('DOMContentLoaded', () => {
     // Ensure all containers are hidden initially
