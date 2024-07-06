@@ -1,19 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .content-wrapper {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    width: 100%;
 }
-#leaderboard-section {
-    flex: 1;
-    min-width: 300px;
-}
-
-#live-activities-section {
-    flex: 1;
-    min-width: 300px;
-    margin-left: 20px;
-}
-
 
 .picker-header {
     display: flex;
@@ -21,11 +17,14 @@
     align-items: center;
     width: 100%;
     margin-bottom: 20px;
+    z-index: 100; /* Ensure it's on top */
+    background-color: rgba(0, 0, 0, 0.5); /* Debugging visibility */
 }
 
 .picker-header h3 {
     margin: 0 0 10px 0;
     color: var(--text-white);
+    z-index: 100; /* Ensure it's on top */
 }
 
 .picker {
@@ -33,10 +32,22 @@
     margin: 5px 0;
     width: 45%;
     max-width: 300px;
+    z-index: 100; /* Ensure it's on top */
 }
 
+#leaderboard-section {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-
+#live-activities-section {
+    flex: 1;
+    min-width: 300px;
+    margin-left: 20px;
+}
 
 .leaderboard-item {
     text-align: center;
@@ -49,5 +60,14 @@
     .content-wrapper {
         flex-direction: column;
     }
-}
 
+    .picker-header {
+        margin-bottom: 20px;
+    }
+
+    #leaderboard-section,
+    #live-activities-section {
+        width: 100%;
+        margin-left: 0;
+    }
+}
