@@ -17,17 +17,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Email/Password Authentication
-    const email = "user@example.com"; // Replace with user's email
-    const password = "userpassword"; // Replace with user's password
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(userCredential => {
+        // Signed in
+        var user = userCredential.user;
+        console.log('User signed in:', user);
+        // Perform any additional actions
+    })
+    .catch(error => {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
 
-    auth.signInWithEmailAndPassword(email, password)
-        .then((result) => {
-            const user = result.user;
-            console.log('User signed in with email:', user);
-            window.displaySalesOutcomes(user); // Call the global function
-        })
-        .catch((error) => {
-            console.error('Email authentication error:', error);
-        });
-});
+        if (errorCode === 'auth/wrong-password') {
+            alert('Wrong password. Please try again.');
+        } else if (errorCode === 'auth/user-not-found') {
+            alert('No user found with this email. Please sign up.');
+        } else if (errorCode === 'auth/invalid-email') {
+            alert('Invalid email format.');
+        } else {
+            alert(errorMessage);
+        }
+        console.error('Authentication error:', error);
+    });
