@@ -88,8 +88,24 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     users.sort((a, b) => b.count - a.count);
 
                     const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
-                    const start = Math.max(0, currentUserIndex - 3);
-                    const end = Math.min(users.length, start + 8);
+                    let start = 0, end = 5;
+
+                    if (currentUserIndex === 0) {
+                        // If current user is in the first place
+                        start = 0;
+                        end = Math.min(5, users.length);
+                    } else if (currentUserIndex === users.length - 1) {
+                        // If current user is in the last place
+                        start = Math.max(users.length - 5, 0);
+                        end = users.length;
+                    } else {
+                        // If current user is in the middle
+                        start = Math.max(0, currentUserIndex - 2);
+                        end = Math.min(users.length, currentUserIndex + 3);
+                        if (end - start < 5) {
+                            start = Math.max(0, end - 5);
+                        }
+                    }
 
                     leaderboardSection.innerHTML = '';
 
