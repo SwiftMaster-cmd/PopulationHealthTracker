@@ -27,7 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
     resultsContainer.innerHTML = '';
     // Remove previous highlights
     const previousHighlights = document.querySelectorAll('.highlight');
-    previousHighlights.forEach(element => element.classList.remove('highlight'));
+    previousHighlights.forEach(element => {
+      const parentElement = element.parentNode;
+      parentElement.innerHTML = parentElement.innerHTML.replace('<span class="highlight">', '').replace('</span>', '');
+    });
   
     containers.forEach(container => {
       const containerText = container.textContent.toLowerCase();
@@ -37,14 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
         resultButton.classList.add('result-button');
         resultButton.textContent = containerTitle;
         resultButton.onclick = () => {
-          showContainer(container.id);
+          showContainer(container.id, input);
         };
         resultsContainer.appendChild(resultButton);
       }
     });
   }
   
-  function showContainer(containerId) {
+  function showContainer(containerId, searchTerm) {
     // Hide all containers
     const allContainers = document.querySelectorAll('.container');
     allContainers.forEach(container => {
@@ -58,11 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedContainer.scrollIntoView({ behavior: 'smooth' });
   
       // Highlight the search term
-      const input = document.getElementById('searchInput').value.toLowerCase();
-      const innerHTML = selectedContainer.innerHTML;
-      const index = innerHTML.toLowerCase().indexOf(input);
+      const innerHTML = selectedContainer.innerHTML.toLowerCase();
+      const index = innerHTML.indexOf(searchTerm);
       if (index >= 0) {
-        selectedContainer.innerHTML = innerHTML.substring(0, index) + "<span class='highlight'>" + innerHTML.substring(index, index + input.length) + "</span>" + innerHTML.substring(index + input.length);
+        const originalHTML = selectedContainer.innerHTML;
+        const highlightedHTML = originalHTML.substring(0, index) + "<span class='highlight'>" + originalHTML.substring(index, index + searchTerm.length) + "</span>" + originalHTML.substring(index + searchTerm.length);
+        selectedContainer.innerHTML = highlightedHTML;
       }
     }
   }
