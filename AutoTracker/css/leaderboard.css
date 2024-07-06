@@ -38,25 +38,13 @@
     text-align: center;
     margin: 10px 0;
     color: var(--text-white);
-    font-size: 2em; /* Adjust based on your base font size */
+    font-size: 1.3em; /* Adjust based on your base font size */
 }
 
 @media (max-width: 768px) {
     .content-wrapper {
         flex-direction: column;
     }
-}
-
-
-
-
-#leaderboard-container {
-    background: none; /* Ensures no background */
-}
-
-
-#picker-leaderboard-container {
-    background: none; /* Ensures no background */
 }
 
 
