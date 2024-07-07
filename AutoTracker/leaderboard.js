@@ -45,7 +45,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
-    const pointsAwardedRef = database.ref('pointsAwarded');
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -91,38 +90,45 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     users.sort((a, b) => b.count - a.count);
 
-                    const now = new Date();
-                    const todayKey = now.toISOString().split('T')[0];
-                    const isEndOfDay = now.getHours() === 23;
+                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
+                    let start = 0, end = 5;
 
-                    if (isEndOfDay) {
-                        pointsAwardedRef.child(todayKey).once('value', snapshot => {
-                            if (!snapshot.exists()) {
-                                // Points haven't been awarded for today
-                                users.forEach((user, index) => {
-                                    let points = 0;
-                                    if (index < 5) {
-                                        points = 5 - index;
-                                    }
-                                    
-                                    if (points > 0) {
-                                        const userPointsRef = database.ref('points/' + user.userId);
-                                        userPointsRef.transaction(currentPoints => {
-                                            return (currentPoints || 0) + points;
-                                        });
-                                    }
-                                });
-
-                                // Mark points as awarded for today
-                                pointsAwardedRef.child(todayKey).set(true);
-                            }
-                        });
+                    if (currentUserIndex === 0) {
+                        // If current user is in the first place
+                        start = 0;
+                        end = Math.min(5, users.length);
+                    } else if (currentUserIndex === users.length - 1) {
+                        // If current user is in the last place
+                        start = Math.max(users.length - 5, 0);
+                        end = users.length;
+                    } else {
+                        // If current user is in the middle
+                        start = Math.max(0, currentUserIndex - 2);
+                        end = Math.min(users.length, currentUserIndex + 3);
+                        if (end - start < 5) {
+                            start = Math.max(0, end - 5);
+                        }
                     }
 
-                    // ... Rest of the function (displaying leaderboard) remains the same
-                    
-                    // Update total points in header
-                    updateTotalPointsInHeader();
+                    leaderboardSection.innerHTML = '';
+
+                    for (let i = start; i < end; i++) {
+                        const user = users[i];
+                        const userElement = document.createElement('div');
+                        userElement.classList.add('leaderboard-item');
+                        if (user.userId === currentUserId) {
+                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
+                        }
+                        
+                        // Calculate points
+                        let points = 0;
+                        if (i < 5) {
+                            points = 5 - i;
+                        }
+                        
+                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong> (${points} points)`;
+                        leaderboardSection.appendChild(userElement);
+                    }
                 });
             } else {
                 console.error('No user is signed in.');
@@ -135,11 +141,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-// Call this function when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    // ... (existing code)
-    updateTotalPointsInHeader();
-});
+
 
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
