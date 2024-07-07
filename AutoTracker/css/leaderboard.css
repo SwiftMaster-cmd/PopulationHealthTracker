@@ -43,6 +43,13 @@
     font-size: 2em; /* Adjust based on your base font size */
 }
 
+.leaderboard-item::after {
+    content: attr(data-points);
+    font-weight: bold;
+    color: var(--color-tertiary);
+    margin-left: 10px;
+}
+
 @media (max-width: 768px) {
     .content-wrapper {
         flex-direction: column;

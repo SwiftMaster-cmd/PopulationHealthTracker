@@ -119,7 +119,14 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         if (user.userId === currentUserId) {
                             userElement.style.color = 'var(--color-quinary)'; // Highlight current user
                         }
-                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
+                        
+                        // Calculate points
+                        let points = 0;
+                        if (i < 5) {
+                            points = 5 - i;
+                        }
+                        
+                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong> (${points} points)`;
                         leaderboardSection.appendChild(userElement);
                     }
                 });
