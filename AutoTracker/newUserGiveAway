@@ -1,0 +1,49 @@
+// userInitialization.js
+
+function initializeNewUser(userId) {
+    const database = firebase.database();
+    const userRef = database.ref('users/' + userId);
+
+    userRef.once('value', snapshot => {
+        if (!snapshot.exists()) {
+            // This is a new user
+            userRef.set({
+                points: 100,
+                joinDate: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                showWelcomePopup();
+            }).catch(error => {
+                console.error("Error setting initial user data:", error);
+            });
+        }
+    });
+}
+
+function showWelcomePopup() {
+    const popupHtml = `
+        <div id="welcomePopup" class="popup">
+            <div class="popup-content">
+                <h2>Welcome to the site!</h2>
+                <p>Thank you for joining! Here's 100 points to get you started!</p>
+                <p>These can be redeemed for a variety of things in the near future, so keep stacking these!</p>
+                <button id="closePopup">Got it!</button>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', popupHtml);
+
+    const popup = document.getElementById('welcomePopup');
+    const closeButton = document.getElementById('closePopup');
+
+    closeButton.addEventListener('click', () => {
+        popup.style.display = 'none';
+    });
+}
+
+// Listen for auth state changes
+firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+        initializeNewUser(user.uid);
+    }
+});
