@@ -162,8 +162,8 @@ function updateTotalPointsInHeader() {
     const currentUser = firebase.auth().currentUser;
 
     if (currentUser) {
-        const userRef = database.ref('users/' + currentUser.uid);
-        userRef.child('points').on('value', snapshot => {
+        const pointsRef = database.ref('points/' + currentUser.uid);
+        pointsRef.on('value', snapshot => {
             const totalPoints = snapshot.val() || 0;
             const pointsElement = document.getElementById('totalPoints');
             if (pointsElement) {

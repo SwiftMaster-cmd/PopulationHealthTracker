@@ -3,32 +3,35 @@
 function initializeNewUser(userId) {
     const database = firebase.database();
     const userRef = database.ref('users/' + userId);
+    const pointsRef = database.ref('points/' + userId);
 
     userRef.once('value', snapshot => {
-        const userData = snapshot.val();
-        if (!userData) {
-            // This is a completely new user
+        if (!snapshot.exists()) {
+            // This is a new user
             userRef.set({
-                points: 100,
                 joinDate: firebase.database.ServerValue.TIMESTAMP,
                 initialPointsGiven: true
+            }).then(() => {
+                return pointsRef.set(100);
             }).then(() => {
                 showWelcomePopup();
             }).catch(error => {
                 console.error("Error setting initial user data:", error);
             });
-        } else if (!userData.initialPointsGiven) {
-            // This is an existing user who hasn't received initial points
-            userRef.update({
-                points: (userData.points || 0) + 100,
-                initialPointsGiven: true
-            }).then(() => {
-                showWelcomePopup();
-            }).catch(error => {
-                console.error("Error updating user data:", error);
+        } else {
+            // Existing user, check if they have points
+            pointsRef.once('value', pointsSnapshot => {
+                if (!pointsSnapshot.exists()) {
+                    // User exists but doesn't have points, give them 100
+                    pointsRef.set(100).then(() => {
+                        userRef.update({ initialPointsGiven: true });
+                        showWelcomePopup();
+                    }).catch(error => {
+                        console.error("Error setting initial points:", error);
+                    });
+                }
             });
         }
-        // If the user already has initialPointsGiven set to true, do nothing
     });
 }
 
