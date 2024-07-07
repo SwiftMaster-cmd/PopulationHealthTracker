@@ -5,17 +5,30 @@ function initializeNewUser(userId) {
     const userRef = database.ref('users/' + userId);
 
     userRef.once('value', snapshot => {
-        if (!snapshot.exists()) {
-            // This is a new user
+        const userData = snapshot.val();
+        if (!userData) {
+            // This is a completely new user
             userRef.set({
                 points: 100,
-                joinDate: firebase.database.ServerValue.TIMESTAMP
+                joinDate: firebase.database.ServerValue.TIMESTAMP,
+                initialPointsGiven: true
             }).then(() => {
                 showWelcomePopup();
             }).catch(error => {
                 console.error("Error setting initial user data:", error);
             });
+        } else if (!userData.initialPointsGiven) {
+            // This is an existing user who hasn't received initial points
+            userRef.update({
+                points: (userData.points || 0) + 100,
+                initialPointsGiven: true
+            }).then(() => {
+                showWelcomePopup();
+            }).catch(error => {
+                console.error("Error updating user data:", error);
+            });
         }
+        // If the user already has initialPointsGiven set to true, do nothing
     });
 }
 
@@ -32,10 +45,10 @@ function showWelcomePopup() {
     `;
 
     document.body.insertAdjacentHTML('beforeend', popupHtml);
-
     const popup = document.getElementById('welcomePopup');
-    const closeButton = document.getElementById('closePopup');
+    popup.style.display = 'block';  // Make sure the popup is visible
 
+    const closeButton = document.getElementById('closePopup');
     closeButton.addEventListener('click', () => {
         popup.style.display = 'none';
     });
