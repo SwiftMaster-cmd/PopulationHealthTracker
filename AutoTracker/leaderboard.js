@@ -90,6 +90,20 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     users.sort((a, b) => b.count - a.count);
 
+                    // Save points for all users
+                    users.forEach((user, index) => {
+                        let points = 0;
+                        if (index < 5) {
+                            points = 5 - index;
+                        }
+                        
+                        // Save points to user's profile
+                        const userRef = usersRef.child(user.userId);
+                        userRef.child('points').transaction(currentPoints => {
+                            return (currentPoints || 0) + points;
+                        });
+                    });
+
                     const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
                     let start = 0, end = 5;
 
@@ -126,9 +140,13 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                             points = 5 - i;
                         }
                         
-                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong> (${points} points)`;
+                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
+                        userElement.setAttribute('data-points', `${points} pts`);
                         leaderboardSection.appendChild(userElement);
                     }
+
+                    // Update total points in header
+                    updateTotalPointsInHeader();
                 });
             } else {
                 console.error('No user is signed in.');
@@ -138,6 +156,29 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
+function updateTotalPointsInHeader() {
+    const database = firebase.database();
+    const currentUser = firebase.auth().currentUser;
+
+    if (currentUser) {
+        const userRef = database.ref('users/' + currentUser.uid);
+        userRef.child('points').on('value', snapshot => {
+            const totalPoints = snapshot.val() || 0;
+            const pointsElement = document.getElementById('totalPoints');
+            if (pointsElement) {
+                pointsElement.textContent = `Total Points: ${totalPoints}`;
+            }
+        });
+    }
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    // ... (existing code)
+    updateTotalPointsInHeader();
+});
+
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {

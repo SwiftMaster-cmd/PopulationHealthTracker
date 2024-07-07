@@ -327,3 +327,10 @@ button:active {
 .leaderboard-container {
     background: none !important; /* Ensures no background */
 }
+
+#totalPoints {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-tertiary);
+    margin-right: 20px;
+}
