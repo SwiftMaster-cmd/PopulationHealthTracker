@@ -34,24 +34,28 @@
             }
         }
 
-        async function fetchUserEmails() {
+        async function fetchUserProfiles() {
             const usersRef = ref(database, 'users');
             const usersSnapshot = await get(usersRef);
             const usersData = usersSnapshot.val();
 
-            const emails = {};
+            const profiles = {};
             for (const uid in usersData) {
-                emails[uid] = usersData[uid].email;
+                profiles[uid] = {
+                    email: usersData[uid].email,
+                    name: usersData[uid].name || usersData[uid].email // Fallback to email if name is not available
+                };
             }
-            return emails;
+            return profiles;
         }
 
-        function createNodeElement(key, value, emails) {
+        function createNodeElement(key, value, profiles) {
             const nodeContainer = document.createElement('div');
             nodeContainer.className = 'node-container';
 
+            const displayKey = profiles[key]?.name || profiles[key]?.email || key;
             const keyElement = document.createElement('h3');
-            keyElement.textContent = emails[key] || key;  // Replace UID with email if it exists
+            keyElement.textContent = displayKey;
             keyElement.style.cursor = 'pointer';
             keyElement.addEventListener('click', () => {
                 subContainer.style.display = subContainer.style.display === 'none' ? 'block' : 'none';
@@ -62,7 +66,7 @@
 
             if (typeof value === 'object' && value !== null) {
                 Object.entries(value).forEach(([subKey, subValue]) => {
-                    const subNodeElement = createNodeElement(subKey, subValue, emails);
+                    const subNodeElement = createNodeElement(subKey, subValue, profiles);
                     subContainer.appendChild(subNodeElement);
                 });
             } else {
@@ -78,12 +82,12 @@
             return nodeContainer;
         }
 
-        function displayData(data, emails) {
+        function displayData(data, profiles) {
             const container = document.getElementById('dataContainer');
             container.innerHTML = ''; // Clear previous content
 
             Object.entries(data).forEach(([key, value]) => {
-                const nodeElement = createNodeElement(key, value, emails);
+                const nodeElement = createNodeElement(key, value, profiles);
                 container.appendChild(nodeElement);
             });
         }
@@ -95,8 +99,8 @@
                 const authorityLevel = userAuthoritySnapshot.val();
 
                 if (authorityLevel === 3) {
-                    const [data, emails] = await Promise.all([fetchAllData(), fetchUserEmails()]);
-                    displayData(data, emails);
+                    const [data, profiles] = await Promise.all([fetchAllData(), fetchUserProfiles()]);
+                    displayData(data, profiles);
                 } else {
                     alert("You do not have permission to view this page.");
                     window.location.href = 'index.html';
