@@ -40,18 +40,28 @@
 
             const keyElement = document.createElement('h3');
             keyElement.textContent = key;
-            nodeContainer.appendChild(keyElement);
+            keyElement.style.cursor = 'pointer';
+            keyElement.addEventListener('click', () => {
+                subContainer.style.display = subContainer.style.display === 'none' ? 'block' : 'none';
+            });
+
+            const subContainer = document.createElement('div');
+            subContainer.className = 'sub-container';
 
             if (typeof value === 'object' && value !== null) {
                 Object.entries(value).forEach(([subKey, subValue]) => {
                     const subNodeElement = createNodeElement(subKey, subValue);
-                    nodeContainer.appendChild(subNodeElement);
+                    subContainer.appendChild(subNodeElement);
                 });
             } else {
                 const valueElement = document.createElement('p');
                 valueElement.textContent = value;
-                nodeContainer.appendChild(valueElement);
+                subContainer.appendChild(valueElement);
             }
+
+            subContainer.style.display = 'none'; // Start hidden
+            nodeContainer.appendChild(keyElement);
+            nodeContainer.appendChild(subContainer);
 
             return nodeContainer;
         }
@@ -118,6 +128,12 @@
         .node-container p {
             margin: 5px 0;
             color: #666;
+        }
+
+        .sub-container {
+            margin-left: 20px;
+            border-left: 2px solid #ddd;
+            padding-left: 10px;
         }
 
         #dataContainer {
