@@ -25,21 +25,21 @@
 
         // Function to set authority level for a user
         async function setAuthorityLevel(userId, level) {
-            const userRef = ref(database, `users/${userId}/authorityLevel`);
-            await set(userRef, level);
+            const userRef = ref(database, `users/${userId}`);
+            await set(userRef, { authorityLevel: level }, { merge: true });
         }
 
         // Function to get authority level for a user
         async function getAuthorityLevel(userId) {
-            const userRef = ref(database, `users/${userId}/authorityLevel`);
+            const userRef = ref(database, `users/${userId}`);
             const snapshot = await get(userRef);
-            return snapshot.val();
+            return snapshot.val()?.authorityLevel;
         }
 
         // Function to check and set default authority level if not set
         async function checkAndSetAuthorityLevel(userId) {
             const currentLevel = await getAuthorityLevel(userId);
-            if (currentLevel === null) {
+            if (currentLevel === null || currentLevel === undefined) {
                 await setAuthorityLevel(userId, 1); // Set default level to 1 (employee)
                 return 1;
             }
