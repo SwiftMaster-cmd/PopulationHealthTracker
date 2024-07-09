@@ -23,27 +23,21 @@
         const auth = getAuth(app);
         const database = getDatabase(app);
 
-        // Function to set authority level for a user
-        async function setAuthorityLevel(userId, level) {
-            const userRef = ref(database, `users/${userId}`);
-            await set(userRef, { authorityLevel: level }, { merge: true });
-        }
-
-        // Function to get authority level for a user
-        async function getAuthorityLevel(userId) {
-            const userRef = ref(database, `users/${userId}`);
-            const snapshot = await get(userRef);
-            return snapshot.val()?.authorityLevel;
-        }
-
         // Function to check and set default authority level if not set
         async function checkAndSetAuthorityLevel(userId) {
-            const currentLevel = await getAuthorityLevel(userId);
-            if (currentLevel === null || currentLevel === undefined) {
-                await setAuthorityLevel(userId, 1); // Set default level to 1 (employee)
+            const userRef = ref(database, `users/${userId}`);
+            const snapshot = await get(userRef);
+            const userData = snapshot.val();
+
+            if (!userData || userData.authorityLevel === undefined) {
+                // If user data doesn't exist or authorityLevel is not set, set it to 1
+                await set(userRef, { 
+                    ...userData, 
+                    authorityLevel: 1 
+                });
                 return 1;
             }
-            return currentLevel;
+            return userData.authorityLevel;
         }
 
         // Function to redirect based on authority level
@@ -68,6 +62,7 @@
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const authorityLevel = await checkAndSetAuthorityLevel(userCredential.user.uid);
+                console.log(`User ${userCredential.user.uid} has authority level: ${authorityLevel}`);
                 redirectBasedOnAuthority(authorityLevel);
             } catch (error) {
                 console.error('Error during email sign-in:', error);
@@ -85,11 +80,7 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 await sendEmailVerification(userCredential.user);
 
-                const userDataRef = ref(database, 'users/' + userCredential.user.uid);
-                await set(userDataRef, {
-                    email: email,
-                    authorityLevel: 1 // Set default authority level for new users
-                });
+                await checkAndSetAuthorityLevel(userCredential.user.uid);
 
                 alert('Registration successful. A verification email has been sent. Please check your email.');
                 window.location.href = 'index.html';
