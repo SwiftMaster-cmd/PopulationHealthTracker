@@ -49,31 +49,45 @@
             return profiles;
         }
 
-        async function fetchAccountNumbers(data) {
+        async function fetchAccountNumbersAndTimes(data) {
             const accountNumbers = {};
+            const outcomeTimes = {};
 
-            function extractAccountNumbers(obj) {
+            function extractData(obj) {
                 for (const key in obj) {
                     if (typeof obj[key] === 'object' && obj[key] !== null) {
                         if (obj[key].hasOwnProperty('accountNumber')) {
                             accountNumbers[key] = obj[key].accountNumber;
                         }
-                        extractAccountNumbers(obj[key]);
+                        if (obj[key].hasOwnProperty('outcomeTime')) {
+                            outcomeTimes[key] = obj[key].outcomeTime;
+                        }
+                        extractData(obj[key]);
                     }
                 }
             }
 
-            extractAccountNumbers(data);
-            return accountNumbers;
+            extractData(data);
+            return { accountNumbers, outcomeTimes };
         }
 
-        function createNodeElement(key, value, profiles, accountNumbers) {
+        function formatTimeFrame(timestamp) {
+            const date = new Date(timestamp);
+            const options = { month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+            return date.toLocaleString('en-US', options);
+        }
+
+        function createNodeElement(key, value, profiles, accountNumbers, outcomeTimes) {
             const nodeContainer = document.createElement('div');
             nodeContainer.className = 'node-container';
 
             let displayKey = profiles[key]?.name || profiles[key]?.email || accountNumbers[key] || key;
             if (displayKey === key && key.startsWith('-')) {
                 displayKey = accountNumbers[key] || key;
+            }
+
+            if (outcomeTimes[key]) {
+                displayKey += ` (${formatTimeFrame(outcomeTimes[key])})`;
             }
 
             const keyElement = document.createElement('h3');
@@ -88,7 +102,7 @@
 
             if (typeof value === 'object' && value !== null) {
                 Object.entries(value).forEach(([subKey, subValue]) => {
-                    const subNodeElement = createNodeElement(subKey, subValue, profiles, accountNumbers);
+                    const subNodeElement = createNodeElement(subKey, subValue, profiles, accountNumbers, outcomeTimes);
                     subContainer.appendChild(subNodeElement);
                 });
             } else {
@@ -104,12 +118,12 @@
             return nodeContainer;
         }
 
-        function displayData(data, profiles, accountNumbers) {
+        function displayData(data, profiles, accountNumbers, outcomeTimes) {
             const container = document.getElementById('dataContainer');
             container.innerHTML = ''; // Clear previous content
 
             Object.entries(data).forEach(([key, value]) => {
-                const nodeElement = createNodeElement(key, value, profiles, accountNumbers);
+                const nodeElement = createNodeElement(key, value, profiles, accountNumbers, outcomeTimes);
                 container.appendChild(nodeElement);
             });
         }
@@ -123,8 +137,8 @@
                 if (authorityLevel === 3) {
                     const data = await fetchAllData();
                     const profiles = await fetchUserProfiles();
-                    const accountNumbers = await fetchAccountNumbers(data);
-                    displayData(data, profiles, accountNumbers);
+                    const { accountNumbers, outcomeTimes } = await fetchAccountNumbersAndTimes(data);
+                    displayData(data, profiles, accountNumbers, outcomeTimes);
                 } else {
                     alert("You do not have permission to view this page.");
                     window.location.href = 'index.html';
