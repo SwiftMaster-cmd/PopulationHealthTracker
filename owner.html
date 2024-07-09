@@ -49,27 +49,11 @@
             return profiles;
         }
 
-        async function fetchLeadIDs() {
-            const leadsRef = ref(database, 'leads');
-            const leadsSnapshot = await get(leadsRef);
-            const leadsData = leadsSnapshot.val();
-
-            const leadIDs = {};
-            for (const leadKey in leadsData) {
-                leadIDs[leadKey] = leadsData[leadKey].id; // Assuming 'id' is the relevant lead ID
-            }
-            return leadIDs;
-        }
-
-        function createNodeElement(key, value, profiles, leadIDs) {
+        function createNodeElement(key, value, profiles) {
             const nodeContainer = document.createElement('div');
             nodeContainer.className = 'node-container';
 
-            let displayKey = profiles[key]?.name || profiles[key]?.email || leadIDs[key] || key;
-            if (displayKey === key && key.startsWith('-')) {
-                displayKey = leadIDs[key] || key;
-            }
-
+            const displayKey = profiles[key]?.name || profiles[key]?.email || key;
             const keyElement = document.createElement('h3');
             keyElement.textContent = displayKey;
             keyElement.style.cursor = 'pointer';
@@ -82,7 +66,7 @@
 
             if (typeof value === 'object' && value !== null) {
                 Object.entries(value).forEach(([subKey, subValue]) => {
-                    const subNodeElement = createNodeElement(subKey, subValue, profiles, leadIDs);
+                    const subNodeElement = createNodeElement(subKey, subValue, profiles);
                     subContainer.appendChild(subNodeElement);
                 });
             } else {
@@ -98,12 +82,12 @@
             return nodeContainer;
         }
 
-        function displayData(data, profiles, leadIDs) {
+        function displayData(data, profiles) {
             const container = document.getElementById('dataContainer');
             container.innerHTML = ''; // Clear previous content
 
             Object.entries(data).forEach(([key, value]) => {
-                const nodeElement = createNodeElement(key, value, profiles, leadIDs);
+                const nodeElement = createNodeElement(key, value, profiles);
                 container.appendChild(nodeElement);
             });
         }
@@ -115,8 +99,8 @@
                 const authorityLevel = userAuthoritySnapshot.val();
 
                 if (authorityLevel === 3) {
-                    const [data, profiles, leadIDs] = await Promise.all([fetchAllData(), fetchUserProfiles(), fetchLeadIDs()]);
-                    displayData(data, profiles, leadIDs);
+                    const [data, profiles] = await Promise.all([fetchAllData(), fetchUserProfiles()]);
+                    displayData(data, profiles);
                 } else {
                     alert("You do not have permission to view this page.");
                     window.location.href = 'index.html';
