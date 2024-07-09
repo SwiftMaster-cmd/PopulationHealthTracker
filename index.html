@@ -3,10 +3,13 @@
 <head>
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
+    <script src="main.js" defer></script>
+    <script src="autority.js" defer></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -23,47 +26,20 @@
         const auth = getAuth(app);
         const database = getDatabase(app);
 
-        // Function to check and set default authority level if not set
-        async function checkAndSetAuthorityLevel(userId) {
-            const userRef = ref(database, `users/${userId}`);
-            const snapshot = await get(userRef);
-            const userData = snapshot.val();
-
-            if (!userData || userData.authorityLevel === undefined) {
-                // If user data doesn't exist or authorityLevel is not set, set it to 1
-                await set(userRef, { 
-                    ...userData, 
-                    authorityLevel: 1 
-                });
-                return 1;
-            }
-            return userData.authorityLevel;
-        }
-
-        // Function to redirect based on authority level
-        function redirectBasedOnAuthority(authorityLevel) {
-            switch(authorityLevel) {
-                case 1:
-                    window.location.href = 'AutoTracker/Dash2.html';
-                    break;
-                case 2:
-                    window.location.href = 'manager.html';
-                    break;
-                case 3:
-                    window.location.href = 'owner.html';
-                    break;
-                default:
-                    console.error('Unknown authority level');
-                    alert('Error: Unknown user type. Please contact support.');
-            }
-        }
-
         async function emailPasswordSignIn(email, password) {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const authorityLevel = await checkAndSetAuthorityLevel(userCredential.user.uid);
-                console.log(`User ${userCredential.user.uid} has authority level: ${authorityLevel}`);
-                redirectBasedOnAuthority(authorityLevel);
+
+                // Check if the user has an authority level set
+                const userAuthorityRef = ref(database, 'users/' + userCredential.user.uid + '/authority');
+                const userAuthoritySnapshot = await get(userAuthorityRef);
+                
+                if (!userAuthoritySnapshot.exists()) {
+                    // Set default authority level to 1 if not set
+                    await set(userAuthorityRef, 1);
+                }
+
+                window.location.href = 'AutoTracker/Dash2.html';
             } catch (error) {
                 console.error('Error during email sign-in:', error);
                 alert('Failed to sign in. Please check your email and password.');
@@ -80,7 +56,11 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 await sendEmailVerification(userCredential.user);
 
-                await checkAndSetAuthorityLevel(userCredential.user.uid);
+                const userDataRef = ref(database, 'users/' + userCredential.user.uid);
+                await set(userDataRef, {
+                    email: email,
+                    authority: 1 // Set default authority level to 1
+                });
 
                 alert('Registration successful. A verification email has been sent. Please check your email.');
                 window.location.href = 'index.html';
@@ -94,17 +74,6 @@
             }
         }
 
-        // Listen for authentication state changes
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const authorityLevel = await checkAndSetAuthorityLevel(user.uid);
-                console.log(`User ${user.uid} has authority level: ${authorityLevel}`);
-                redirectBasedOnAuthority(authorityLevel);
-            } else {
-                console.log('No user is signed in.');
-            }
-        });
-
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('emailSignInButton').addEventListener('click', () => {
                 const email = document.getElementById('loginEmail').value;
@@ -116,30 +85,7 @@
                 const password = document.getElementById('registerPassword').value;
                 registerUser(email, password);
             });
-            document.getElementById('setupButton').addEventListener('click', () => {
-                window.location.href = 'AutoTracker/NewUser.html';
-            });
-
-            updateAuthorityLevelInHeader();
         });
-
-        // Function to update the authority level in the header
-        function updateAuthorityLevelInHeader() {
-            const currentUser = auth.currentUser;
-
-            if (currentUser) {
-                const userRef = ref(database, 'users/' + currentUser.uid);
-                userRef.on('value', snapshot => {
-                    const userData = snapshot.val();
-                    const authorityLevel = userData ? userData.authorityLevel : 0;
-                    const authorityElement = document.getElementById('authorityLevel');
-                    if (authorityElement) {
-                        authorityElement.textContent = `Authority Level: ${authorityLevel}`;
-                    }
-                });
-            }
-        }
-
     </script>
 </head>
 <body>
@@ -163,7 +109,13 @@
         <div class="setup-container">
             <button id="setupButton">New here? Click me to set up the AutoTracker</button>
         </div>
-        <div id="authorityLevel"></div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('setupButton').addEventListener('click', () => {
+                window.location.href = 'AutoTracker/NewUser.html';
+            });
+        });
+    </script>
 </body>
 </html>
