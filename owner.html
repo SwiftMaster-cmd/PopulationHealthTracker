@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="style.css">
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
@@ -22,17 +22,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
-
-        async function fetchAllData() {
-            const dbRef = ref(database);
-            const snapshot = await get(dbRef);
-            if (snapshot.exists()) {
-                return snapshot.val();
-            } else {
-                console.log("No data available");
-                return null;
-            }
-        }
 
         async function fetchUserProfiles() {
             const usersRef = ref(database, 'users');
@@ -165,10 +154,16 @@
                 const authorityLevel = userAuthoritySnapshot.val();
 
                 if (authorityLevel === 3) {
-                    const data = await fetchAllData();
                     const profiles = await fetchUserProfiles();
-                    const { accountNumbers, outcomeTimes } = await fetchAccountNumbersAndTimes(data);
-                    displayData(data, profiles, accountNumbers, outcomeTimes);
+                    onValue(ref(database), async (snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            const { accountNumbers, outcomeTimes } = await fetchAccountNumbersAndTimes(data);
+                            displayData(data, profiles, accountNumbers, outcomeTimes);
+                        } else {
+                            console.log("No data available");
+                        }
+                    });
                 } else {
                     alert("You do not have permission to view this page.");
                     window.location.href = 'index.html';
