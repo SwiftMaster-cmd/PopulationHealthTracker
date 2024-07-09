@@ -1,181 +1,103 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Owner Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: #fff;
+}
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
-            authDomain: "track-dac15.firebaseapp.com",
-            databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
-            projectId: "track-dac15",
-            storageBucket: "track-dac15.appspot.com",
-            messagingSenderId: "495156821305",
-            appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
-            measurementId: "G-RVBYB0RR06"
-        };
+h1 {
+    margin-top: 20px;
+    font-size: 2.5em;
+    animation: fadeIn 1s ease-in-out;
+}
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+.node-container {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease-in-out;
+}
 
-        async function fetchUserProfiles() {
-            const usersRef = ref(database, 'users');
-            const usersSnapshot = await get(usersRef);
-            const usersData = usersSnapshot.val();
+.node-container h3 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #fff;
+    transition: color 0.2s ease-in-out;
+}
 
-            const profiles = {};
-            for (const uid in usersData) {
-                profiles[uid] = {
-                    email: usersData[uid].email,
-                    name: usersData[uid].name || usersData[uid].email // Fallback to email if name is not available
-                };
-            }
-            return profiles;
-        }
+.node-container p {
+    margin: 10px 0;
+    color: #fff;
+}
 
-        async function fetchAccountNumbersAndTimes(data) {
-            const accountNumbers = {};
-            const outcomeTimes = {};
+.sub-container {
+    margin-left: 20px;
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    padding-left: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    backdrop-filter: blur(20px);
+    opacity: 0.8;
+    transition: all 0.2s ease-in-out;
+}
 
-            function extractData(obj, path) {
-                for (const key in obj) {
-                    if (typeof obj[key] === 'object' && obj[key] !== null) {
-                        if (obj[key].hasOwnProperty('accountNumber')) {
-                            accountNumbers[`${path}/${key}`] = obj[key].accountNumber;
-                        }
-                        if (obj[key].hasOwnProperty('outcomeTime')) {
-                            outcomeTimes[`${path}/${key}`] = obj[key].outcomeTime;
-                        }
-                        extractData(obj[key], `${path}/${key}`);
-                    }
-                }
-            }
+#dataContainer {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
 
-            extractData(data, '');
-            return { accountNumbers, outcomeTimes };
-        }
+button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
 
-        function formatTimeFrame(timestamp) {
-            const date = new Date(timestamp);
-            const options = { month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
-            return date.toLocaleString('en-US', options);
-        }
+button:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
 
-        function createNodeElement(key, value, profiles, accountNumbers, outcomeTimes, path) {
-            const nodeContainer = document.createElement('div');
-            nodeContainer.className = 'node-container';
+input[type="text"] {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    margin-right: 10px;
+    transition: background 0.2s ease-in-out;
+}
 
-            let displayKey = profiles[key]?.name || profiles[key]?.email || accountNumbers[`${path}/${key}`] || key;
-            if (displayKey === key && key.startsWith('-')) {
-                displayKey = accountNumbers[`${path}/${key}`] || key;
-            }
+input[type="text"]:focus {
+    background: rgba(255, 255, 255, 0.5);
+    outline: none;
+}
 
-            if (outcomeTimes[`${path}/${key}`]) {
-                displayKey += ` (${formatTimeFrame(outcomeTimes[`${path}/${key}`])})`;
-            }
-
-            const keyElement = document.createElement('h3');
-            keyElement.textContent = displayKey;
-            keyElement.style.cursor = 'pointer';
-            keyElement.addEventListener('click', () => {
-                subContainer.style.display = subContainer.style.display === 'none' ? 'block' : 'none';
-            });
-
-            const subContainer = document.createElement('div');
-            subContainer.className = 'sub-container';
-
-            if (typeof value === 'object' && value !== null) {
-                Object.entries(value).forEach(([subKey, subValue]) => {
-                    const subNodeElement = createNodeElement(subKey, subValue, profiles, accountNumbers, outcomeTimes, `${path}/${key}`);
-                    subContainer.appendChild(subNodeElement);
-                });
-            } else {
-                const valueElement = document.createElement('p');
-                valueElement.textContent = value;
-
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Edit';
-                editButton.addEventListener('click', () => {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.value = value;
-                    subContainer.replaceChild(input, valueElement);
-                    editButton.style.display = 'none';
-                    saveButton.style.display = 'inline';
-                });
-
-                const saveButton = document.createElement('button');
-                saveButton.textContent = 'Save';
-                saveButton.style.display = 'none';
-                saveButton.addEventListener('click', async () => {
-                    const newValue = subContainer.querySelector('input').value;
-                    valueElement.textContent = newValue;
-                    subContainer.replaceChild(valueElement, subContainer.querySelector('input'));
-                    editButton.style.display = 'inline';
-                    saveButton.style.display = 'none';
-
-                    // Update the value in the database
-                    const updates = {};
-                    updates[`${path}/${key}`] = newValue;
-                    await update(ref(database), updates);
-                });
-
-                subContainer.appendChild(valueElement);
-                subContainer.appendChild(editButton);
-                subContainer.appendChild(saveButton);
-            }
-
-            subContainer.style.display = 'none'; // Start hidden
-            nodeContainer.appendChild(keyElement);
-            nodeContainer.appendChild(subContainer);
-
-            return nodeContainer;
-        }
-
-        function displayData(data, profiles, accountNumbers, outcomeTimes) {
-            const container = document.getElementById('dataContainer');
-            container.innerHTML = ''; // Clear previous content
-
-            Object.entries(data).forEach(([key, value]) => {
-                const nodeElement = createNodeElement(key, value, profiles, accountNumbers, outcomeTimes, '');
-                container.appendChild(nodeElement);
-            });
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
-                const userAuthoritySnapshot = await get(userAuthorityRef);
-                const authorityLevel = userAuthoritySnapshot.val();
-
-                if (authorityLevel === 3) {
-                    const profiles = await fetchUserProfiles();
-                    onValue(ref(database), async (snapshot) => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
-                            const { accountNumbers, outcomeTimes } = await fetchAccountNumbersAndTimes(data);
-                            displayData(data, profiles, accountNumbers, outcomeTimes);
-                        } else {
-                            console.log("No data available");
-                        }
-                    });
-                } else {
-                    alert("You do not have permission to view this page.");
-                    window.location.href = 'index.html';
-                }
-            } else {
-                window.location.href = 'index.html';
-            }
-        });
-    </script>
-</head>
-<body>
-    <h1>Owner Dashboard</h1>
-    <div id="dataContainer"></div>
-</body>
-</html>
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

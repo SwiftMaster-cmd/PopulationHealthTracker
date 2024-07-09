@@ -16,7 +16,7 @@ h1 {
     animation: fadeIn 1s ease-in-out;
 }
 
-.node-container, .sub-container {
+.node-container {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 15px;
@@ -45,10 +45,12 @@ h1 {
     margin-left: 20px;
     border-left: 2px solid rgba(255, 255, 255, 0.3);
     padding-left: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 15px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
+    opacity: 0.8;
+    transition: all 0.2s ease-in-out;
 }
 
 #dataContainer {
