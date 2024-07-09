@@ -34,12 +34,24 @@
             }
         }
 
-        function createNodeElement(key, value) {
+        async function fetchUserEmails() {
+            const usersRef = ref(database, 'users');
+            const usersSnapshot = await get(usersRef);
+            const usersData = usersSnapshot.val();
+
+            const emails = {};
+            for (const uid in usersData) {
+                emails[uid] = usersData[uid].email;
+            }
+            return emails;
+        }
+
+        function createNodeElement(key, value, emails) {
             const nodeContainer = document.createElement('div');
             nodeContainer.className = 'node-container';
 
             const keyElement = document.createElement('h3');
-            keyElement.textContent = key;
+            keyElement.textContent = emails[key] || key;  // Replace UID with email if it exists
             keyElement.style.cursor = 'pointer';
             keyElement.addEventListener('click', () => {
                 subContainer.style.display = subContainer.style.display === 'none' ? 'block' : 'none';
@@ -50,7 +62,7 @@
 
             if (typeof value === 'object' && value !== null) {
                 Object.entries(value).forEach(([subKey, subValue]) => {
-                    const subNodeElement = createNodeElement(subKey, subValue);
+                    const subNodeElement = createNodeElement(subKey, subValue, emails);
                     subContainer.appendChild(subNodeElement);
                 });
             } else {
@@ -66,12 +78,12 @@
             return nodeContainer;
         }
 
-        function displayData(data) {
+        function displayData(data, emails) {
             const container = document.getElementById('dataContainer');
             container.innerHTML = ''; // Clear previous content
 
             Object.entries(data).forEach(([key, value]) => {
-                const nodeElement = createNodeElement(key, value);
+                const nodeElement = createNodeElement(key, value, emails);
                 container.appendChild(nodeElement);
             });
         }
@@ -83,8 +95,8 @@
                 const authorityLevel = userAuthoritySnapshot.val();
 
                 if (authorityLevel === 3) {
-                    const data = await fetchAllData();
-                    displayData(data);
+                    const [data, emails] = await Promise.all([fetchAllData(), fetchUserEmails()]);
+                    displayData(data, emails);
                 } else {
                     alert("You do not have permission to view this page.");
                     window.location.href = 'index.html';
