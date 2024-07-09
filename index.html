@@ -33,13 +33,22 @@
                 // Check if the user has an authority level set
                 const userAuthorityRef = ref(database, 'users/' + userCredential.user.uid + '/authority');
                 const userAuthoritySnapshot = await get(userAuthorityRef);
-                
+
                 if (!userAuthoritySnapshot.exists()) {
                     // Set default authority level to 1 if not set
                     await set(userAuthorityRef, 1);
                 }
 
-                window.location.href = 'AutoTracker/Dash2.html';
+                const authorityLevel = userAuthoritySnapshot.val() || 1;
+
+                // Redirect based on authority level
+                if (authorityLevel == 2) {
+                    window.location.href = 'manager.html';
+                } else if (authorityLevel == 3) {
+                    window.location.href = 'owner.html';
+                } else {
+                    window.location.href = 'AutoTracker/Dash2.html';
+                }
             } catch (error) {
                 console.error('Error during email sign-in:', error);
                 alert('Failed to sign in. Please check your email and password.');
