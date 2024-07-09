@@ -119,7 +119,27 @@
             document.getElementById('setupButton').addEventListener('click', () => {
                 window.location.href = 'AutoTracker/NewUser.html';
             });
+
+            updateAuthorityLevelInHeader();
         });
+
+        // Function to update the authority level in the header
+        function updateAuthorityLevelInHeader() {
+            const currentUser = auth.currentUser;
+
+            if (currentUser) {
+                const userRef = ref(database, 'users/' + currentUser.uid);
+                userRef.on('value', snapshot => {
+                    const userData = snapshot.val();
+                    const authorityLevel = userData ? userData.authorityLevel : 0;
+                    const authorityElement = document.getElementById('authorityLevel');
+                    if (authorityElement) {
+                        authorityElement.textContent = `Authority Level: ${authorityLevel}`;
+                    }
+                });
+            }
+        }
+
     </script>
 </head>
 <body>
@@ -143,6 +163,7 @@
         <div class="setup-container">
             <button id="setupButton">New here? Click me to set up the AutoTracker</button>
         </div>
+        <div id="authorityLevel"></div>
     </div>
 </body>
 </html>
