@@ -3,13 +3,10 @@
 <head>
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
-    <script src="main.js" defer></script>
-    <script src="autority.js" defer></script>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -26,10 +23,52 @@
         const auth = getAuth(app);
         const database = getDatabase(app);
 
+        // Function to set authority level for a user
+        async function setAuthorityLevel(userId, level) {
+            const userRef = ref(database, `users/${userId}/authorityLevel`);
+            await set(userRef, level);
+        }
+
+        // Function to get authority level for a user
+        async function getAuthorityLevel(userId) {
+            const userRef = ref(database, `users/${userId}/authorityLevel`);
+            const snapshot = await get(userRef);
+            return snapshot.val();
+        }
+
+        // Function to check and set default authority level if not set
+        async function checkAndSetAuthorityLevel(userId) {
+            const currentLevel = await getAuthorityLevel(userId);
+            if (currentLevel === null) {
+                await setAuthorityLevel(userId, 1); // Set default level to 1 (employee)
+                return 1;
+            }
+            return currentLevel;
+        }
+
+        // Function to redirect based on authority level
+        function redirectBasedOnAuthority(authorityLevel) {
+            switch(authorityLevel) {
+                case 1:
+                    window.location.href = 'AutoTracker/Dash2.html';
+                    break;
+                case 2:
+                    window.location.href = 'manager.html';
+                    break;
+                case 3:
+                    window.location.href = 'owner.html';
+                    break;
+                default:
+                    console.error('Unknown authority level');
+                    alert('Error: Unknown user type. Please contact support.');
+            }
+        }
+
         async function emailPasswordSignIn(email, password) {
             try {
-                await signInWithEmailAndPassword(auth, email, password);
-                window.location.href = 'AutoTracker/Dash2.html';
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const authorityLevel = await checkAndSetAuthorityLevel(userCredential.user.uid);
+                redirectBasedOnAuthority(authorityLevel);
             } catch (error) {
                 console.error('Error during email sign-in:', error);
                 alert('Failed to sign in. Please check your email and password.');
@@ -48,7 +87,8 @@
 
                 const userDataRef = ref(database, 'users/' + userCredential.user.uid);
                 await set(userDataRef, {
-                    email: email
+                    email: email,
+                    authorityLevel: 1 // Set default authority level for new users
                 });
 
                 alert('Registration successful. A verification email has been sent. Please check your email.');
@@ -63,6 +103,17 @@
             }
         }
 
+        // Listen for authentication state changes
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const authorityLevel = await checkAndSetAuthorityLevel(user.uid);
+                console.log(`User ${user.uid} has authority level: ${authorityLevel}`);
+                redirectBasedOnAuthority(authorityLevel);
+            } else {
+                console.log('No user is signed in.');
+            }
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('emailSignInButton').addEventListener('click', () => {
                 const email = document.getElementById('loginEmail').value;
@@ -73,6 +124,9 @@
                 const email = document.getElementById('registerEmail').value;
                 const password = document.getElementById('registerPassword').value;
                 registerUser(email, password);
+            });
+            document.getElementById('setupButton').addEventListener('click', () => {
+                window.location.href = 'AutoTracker/NewUser.html';
             });
         });
     </script>
@@ -99,12 +153,5 @@
             <button id="setupButton">New here? Click me to set up the AutoTracker</button>
         </div>
     </div>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('setupButton').addEventListener('click', () => {
-                window.location.href = 'AutoTracker/NewUser.html';
-            });
-        });
-    </script>
 </body>
 </html>
