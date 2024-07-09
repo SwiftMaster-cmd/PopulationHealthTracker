@@ -32,13 +32,13 @@ h1 {
 .node-container h3 {
     margin: 0;
     font-size: 1.5em;
-    color: #fff;
+    color: #000000;
     transition: color 0.2s ease-in-out;
 }
 
 .node-container p {
     margin: 10px 0;
-    color: #fff;
+    color: #000000;
 }
 
 .sub-container {
