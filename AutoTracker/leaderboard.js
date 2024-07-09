@@ -131,6 +131,9 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
+
+
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
@@ -151,11 +154,9 @@ async function loadLiveActivities() {
                 throw new Error('No sales data found');
             }
 
-            console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
             const latestSales = sales.slice(0, 5);
 
-            console.log('Processed sales data:', latestSales);
             await addUserNames(latestSales, usersRef);
             renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
         });
@@ -215,7 +216,7 @@ function renderSales(sales, container, likesRef, usersRef) {
         saleElement.classList.add('activity-item');
 
         // Use a sanitized path for the like button
-        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.#$]/g, '_')}`;
 
         saleElement.innerHTML = `
             <button class="like-button" data-like-path="${likePath}">
@@ -247,7 +248,7 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     const likeCount = Object.values(likes).reduce((total, value) => total + value, 0);
     const lastLikerId = Object.keys(likes).sort((a, b) => likes[b] - likes[a])[0];
     let lastLikerName = 'Someone';
-    
+
     if (likeCount > 0 && lastLikerId) {
         usersRef.child(lastLikerId).once('value').then(userSnapshot => {
             if (userSnapshot.exists()) {
