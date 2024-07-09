@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="style.css">
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
         const firebaseConfig = {
@@ -108,7 +108,37 @@
             } else {
                 const valueElement = document.createElement('p');
                 valueElement.textContent = value;
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.addEventListener('click', () => {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = value;
+                    subContainer.replaceChild(input, valueElement);
+                    editButton.style.display = 'none';
+                    saveButton.style.display = 'inline';
+                });
+
+                const saveButton = document.createElement('button');
+                saveButton.textContent = 'Save';
+                saveButton.style.display = 'none';
+                saveButton.addEventListener('click', async () => {
+                    const newValue = subContainer.querySelector('input').value;
+                    valueElement.textContent = newValue;
+                    subContainer.replaceChild(valueElement, subContainer.querySelector('input'));
+                    editButton.style.display = 'inline';
+                    saveButton.style.display = 'none';
+
+                    // Update the value in the database
+                    const updates = {};
+                    updates[`/${key}`] = newValue;
+                    await update(ref(database), updates);
+                });
+
                 subContainer.appendChild(valueElement);
+                subContainer.appendChild(editButton);
+                subContainer.appendChild(saveButton);
             }
 
             subContainer.style.display = 'none'; // Start hidden
@@ -193,6 +223,10 @@
         #dataContainer {
             width: 100%;
             max-width: 1200px;
+        }
+
+        button {
+            margin-left: 5px;
         }
     </style>
 </head>
