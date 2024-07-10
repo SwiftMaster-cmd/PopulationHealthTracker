@@ -18,6 +18,7 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 
 document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+document.getElementById('add-node-field').addEventListener('click', addNodeField);
 document.getElementById('add-rule-field').addEventListener('click', addRuleField);
 document.getElementById('save-rules').addEventListener('click', saveRules);
 document.getElementById('save-all').addEventListener('click', saveAllSettings);
@@ -37,20 +38,38 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+function addNodeField() {
+    const nodeContainer = document.createElement('div');
+    nodeContainer.className = 'node-field';
+
+    const nodeValueInput = document.createElement('input');
+    nodeValueInput.type = 'number';
+    nodeValueInput.placeholder = 'Node Value';
+    nodeValueInput.value = 0;
+
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove';
+    removeButton.addEventListener('click', () => {
+        nodeContainer.remove();
+    });
+
+    nodeContainer.appendChild(nodeValueInput);
+    nodeContainer.appendChild(removeButton);
+
+    document.getElementById('nodes-container').appendChild(nodeContainer);
+}
+
 function saveConfiguration() {
-    const node1 = document.getElementById('node1').value;
-    const node2 = document.getElementById('node2').value;
-    const node3 = document.getElementById('node3').value;
-    const totalSpins = document.getElementById('total-spins').value;
+    const nodesContainer = document.getElementById('nodes-container');
+    const nodeFields = nodesContainer.getElementsByClassName('node-field');
+    const nodes = [];
 
-    const configuration = {
-        node1,
-        node2,
-        node3,
-        totalSpins
-    };
+    for (let i = 0; i < nodeFields.length; i++) {
+        const nodeValue = nodeFields[i].querySelector('input').value;
+        nodes.push({ value: nodeValue });
+    }
 
-    update(ref(database, 'gameConfiguration'), configuration).then(() => {
+    update(ref(database, 'gameConfiguration/nodes'), nodes).then(() => {
         console.log('Configuration saved successfully.');
     }).catch((error) => {
         console.error('Error saving configuration:', error);
@@ -71,6 +90,7 @@ function addRuleField() {
 
     const quantityInput = document.createElement('input');
     quantityInput.type = 'number';
+    quantityInput.placeholder = 'Quantity';
     quantityInput.value = 0;
 
     const removeButton = document.createElement('button');
