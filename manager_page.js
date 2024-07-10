@@ -129,17 +129,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // Generate a random spin duration and speed
         let spinDuration = 5000 + Math.random() * 2000; // Spin duration between 5000ms to 7000ms
         let maxSpinSpeed = 10 + Math.random() * 10; // Spin speed between 10 and 20
+        let accelerationDuration = spinDuration * 0.3; // 30% of the duration for acceleration
+        let decelerationDuration = spinDuration * 0.7; // 70% of the duration for deceleration
+        let peakTime = accelerationDuration;
         let start = null;
 
         function animate(timestamp) {
             if (!start) start = timestamp;
             const progress = timestamp - start;
 
-            // Calculate the easing factor for smooth acceleration and deceleration
-            const easingFactor = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-
-            const easedProgress = easingFactor(progress / spinDuration);
-            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+            // Acceleration phase
+            if (progress <= accelerationDuration) {
+                const easedProgress = easeInOutCubic(progress / accelerationDuration);
+                currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+            }
+            // Deceleration phase
+            else if (progress <= spinDuration) {
+                const decelerationProgress = (progress - peakTime) / decelerationDuration;
+                const easedProgress = easeInOutCubic(1 - decelerationProgress);
+                currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+            }
 
             drawWheel(nodes, currentAngle);
 
@@ -152,6 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         animationFrameId = requestAnimationFrame(animate);
+    }
+
+    function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
 
     function drawWheel(nodes, rotation) {
