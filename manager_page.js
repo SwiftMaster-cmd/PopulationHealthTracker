@@ -231,29 +231,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function highlightWinningSegment(wedges, rotation, angleStep) {
         const canvas = document.getElementById('wheel-canvas');
         const ctx = canvas.getContext('2d');
-
+    
         if (!ctx) return;
-
+    
         const totalWedges = wedges.length;
         const radius = canvas.width / 2;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
-
+    
         // Determine the winning wedge
         const winningIndex = Math.floor(rotation / angleStep) % totalWedges;
-
+    
         // Redraw the wheel with the winning segment highlighted
         let currentAngle = 0;  // Reset currentAngle for correct drawing
-
+    
         wedges.forEach((value, index) => {
             const startAngle = currentAngle;
             const endAngle = startAngle + angleStep;
-
+    
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.arc(centerX, centerY, radius, startAngle, endAngle);
             ctx.closePath();
-
+    
             // Highlight only the winning segment
             if (index === winningIndex) {
                 ctx.fillStyle = '#FFFF00'; // Bright yellow
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             ctx.fill();
             ctx.stroke();
-
+    
             // Draw text
             ctx.save();
             ctx.translate(centerX, centerY);
@@ -273,10 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.font = '20px Arial';
             ctx.fillText(value, radius - 10, 10);
             ctx.restore();
-
+    
             currentAngle += angleStep;
         });
-
+    
         drawNeedle();
     }
 });
