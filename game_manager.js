@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, update, get, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, update, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -19,7 +19,6 @@ const database = getDatabase(app);
 
 document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
 document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
-document.getElementById('save-all').addEventListener('click', saveAllSettings);
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -48,17 +47,19 @@ function addNodeField(value = 0, count = 1) {
     nodeValueInput.type = 'number';
     nodeValueInput.placeholder = 'Node Value';
     nodeValueInput.value = value;
+    nodeValueInput.addEventListener('input', updateConfiguration);
 
     const nodeCountInput = document.createElement('input');
     nodeCountInput.type = 'number';
     nodeCountInput.placeholder = 'Count';
     nodeCountInput.value = count;
+    nodeCountInput.addEventListener('input', updateConfiguration);
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
         nodeContainer.remove();
-        updateSummary();
+        updateConfiguration();
     });
 
     nodeContainer.appendChild(nodeValueInput);
@@ -79,17 +80,19 @@ function addRuleField(salesType = 'billableHRA', quantity = 0) {
         <option value="selectRX" ${salesType === 'selectRX' ? 'selected' : ''}>Select RX</option>
         <option value="transfer" ${salesType === 'transfer' ? 'selected' : ''}>Transfer</option>
     `;
+    salesTypeSelect.addEventListener('change', updateRules);
 
     const quantityInput = document.createElement('input');
     quantityInput.type = 'number';
     quantityInput.placeholder = 'Quantity';
     quantityInput.value = quantity;
+    quantityInput.addEventListener('input', updateRules);
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
         ruleContainer.remove();
-        updateSummary();
+        updateRules();
     });
 
     ruleContainer.appendChild(salesTypeSelect);
@@ -99,55 +102,39 @@ function addRuleField(salesType = 'billableHRA', quantity = 0) {
     document.getElementById('rules-container').appendChild(ruleContainer);
 }
 
-function saveAllSettings() {
-    saveConfiguration().then(() => {
-        return saveRules();
-    }).then(() => {
-        console.log('All settings saved.');
+function updateConfiguration() {
+    const nodesContainer = document.getElementById('nodes-container');
+    const nodeFields = nodesContainer.getElementsByClassName('node-field');
+    const nodes = [];
+
+    for (let i = 0; i < nodeFields.length; i++) {
+        const nodeValue = nodeFields[i].querySelector('input[type="number"]').value;
+        const nodeCount = nodeFields[i].querySelector('input[type="number"]:nth-child(2)').value;
+        nodes.push({ value: nodeValue, count: nodeCount });
+    }
+
+    set(ref(database, 'gameConfiguration'), { nodes }).then(() => {
+        console.log('Configuration updated successfully.');
     }).catch((error) => {
-        console.error('Error saving settings:', error);
+        console.error('Error updating configuration:', error);
     });
 }
 
-function saveConfiguration() {
-    return new Promise((resolve, reject) => {
-        const nodesContainer = document.getElementById('nodes-container');
-        const nodeFields = nodesContainer.getElementsByClassName('node-field');
-        const nodes = [];
+function updateRules() {
+    const rulesContainer = document.getElementById('rules-container');
+    const ruleFields = rulesContainer.getElementsByClassName('rule-field');
+    const rules = [];
 
-        for (let i = 0; i < nodeFields.length; i++) {
-            const nodeValue = nodeFields[i].querySelector('input[type="number"]').value;
-            const nodeCount = nodeFields[i].querySelector('input[type="number"]:nth-child(2)').value;
-            nodes.push({ value: nodeValue, count: nodeCount });
-        }
+    for (let i = 0; i < ruleFields.length; i++) {
+        const salesType = ruleFields[i].querySelector('select').value;
+        const quantity = ruleFields[i].querySelector('input').value;
+        rules.push({ salesType, quantity });
+    }
 
-        update(ref(database, 'gameConfiguration'), { nodes }).then(() => {
-            console.log('Configuration saved successfully.');
-            resolve();
-        }).catch((error) => {
-            reject(error);
-        });
-    });
-}
-
-function saveRules() {
-    return new Promise((resolve, reject) => {
-        const rulesContainer = document.getElementById('rules-container');
-        const ruleFields = rulesContainer.getElementsByClassName('rule-field');
-        const rules = [];
-
-        for (let i = 0; i < ruleFields.length; i++) {
-            const salesType = ruleFields[i].querySelector('select').value;
-            const quantity = ruleFields[i].querySelector('input').value;
-            rules.push({ salesType, quantity });
-        }
-
-        set(ref(database, 'gameRules'), rules).then(() => {
-            console.log('Rules saved successfully.');
-            resolve();
-        }).catch((error) => {
-            reject(error);
-        });
+    set(ref(database, 'gameRules'), rules).then(() => {
+        console.log('Rules updated successfully.');
+    }).catch((error) => {
+        console.error('Error updating rules:', error);
     });
 }
 
@@ -211,9 +198,6 @@ function updateSummary() {
         });
     });
 }
-
-
-
 
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
