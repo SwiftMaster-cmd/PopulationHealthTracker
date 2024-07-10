@@ -59,7 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const nodes = preset.nodes;
         console.log('Preset nodes:', nodes); // Debugging
-        generateWheel(nodes);
+        const shuffledNodes = shuffleNodes(nodes);
+        generateWheel(shuffledNodes);
+    }
+
+    function shuffleNodes(nodes) {
+        const shuffled = nodes.map(node => ({ ...node, originalIndex: Math.random() }));
+        shuffled.sort((a, b) => a.originalIndex - b.originalIndex);
+        return shuffled;
     }
 
     let isSpinning = false;
