@@ -17,10 +17,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
 document.getElementById('add-node-field').addEventListener('click', addNodeField);
 document.getElementById('add-rule-field').addEventListener('click', addRuleField);
-document.getElementById('save-rules').addEventListener('click', saveRules);
 document.getElementById('save-all').addEventListener('click', saveAllSettings);
 
 onAuthStateChanged(auth, (user) => {
@@ -62,23 +60,6 @@ function addNodeField(value = 0) {
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
 
-function saveConfiguration() {
-    const nodesContainer = document.getElementById('nodes-container');
-    const nodeFields = nodesContainer.getElementsByClassName('node-field');
-    const nodes = [];
-
-    for (let i = 0; i < nodeFields.length; i++) {
-        const nodeValue = nodeFields[i].querySelector('input').value;
-        nodes.push({ value: nodeValue });
-    }
-
-    update(ref(database, 'gameConfiguration'), { nodes }).then(() => {
-        console.log('Configuration saved successfully.');
-    }).catch((error) => {
-        console.error('Error saving configuration:', error);
-    });
-}
-
 function addRuleField(salesType = 'billableHRA', quantity = 0) {
     const ruleContainer = document.createElement('div');
     ruleContainer.className = 'rule-field';
@@ -109,38 +90,67 @@ function addRuleField(salesType = 'billableHRA', quantity = 0) {
     document.getElementById('rules-container').appendChild(ruleContainer);
 }
 
-function saveRules() {
-    const rulesContainer = document.getElementById('rules-container');
-    const ruleFields = rulesContainer.getElementsByClassName('rule-field');
-    const rules = [];
-
-    for (let i = 0; i < ruleFields.length; i++) {
-        const salesType = ruleFields[i].querySelector('select').value;
-        const quantity = ruleFields[i].querySelector('input').value;
-        rules.push({ salesType, quantity });
-    }
-
-    const newRuleKey = push(ref(database, 'gameRules')).key;
-    const updates = {};
-    updates[`/gameRules/${newRuleKey}`] = rules;
-    update(ref(database), updates).then(() => {
-        console.log('Rules saved successfully.');
-
-        const ruleList = document.getElementById('rules-list');
-        const listItem = document.createElement('li');
-        listItem.textContent = JSON.stringify(rules);
-        ruleList.appendChild(listItem);
-
-        rulesContainer.innerHTML = ''; // Clear the rules container after saving
+function saveAllSettings() {
+    saveConfiguration().then(() => {
+        saveRules().then(() => {
+            console.log('All settings saved.');
+        }).catch((error) => {
+            console.error('Error saving rules:', error);
+        });
     }).catch((error) => {
-        console.error('Error saving rules:', error);
+        console.error('Error saving configuration:', error);
     });
 }
 
-function saveAllSettings() {
-    saveConfiguration();
-    saveRules();
-    console.log('All settings saved.');
+function saveConfiguration() {
+    return new Promise((resolve, reject) => {
+        const nodesContainer = document.getElementById('nodes-container');
+        const nodeFields = nodesContainer.getElementsByClassName('node-field');
+        const nodes = [];
+
+        for (let i = 0; i < nodeFields.length; i++) {
+            const nodeValue = nodeFields[i].querySelector('input').value;
+            nodes.push({ value: nodeValue });
+        }
+
+        update(ref(database, 'gameConfiguration'), { nodes }).then(() => {
+            console.log('Configuration saved successfully.');
+            resolve();
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+function saveRules() {
+    return new Promise((resolve, reject) => {
+        const rulesContainer = document.getElementById('rules-container');
+        const ruleFields = rulesContainer.getElementsByClassName('rule-field');
+        const rules = [];
+
+        for (let i = 0; i < ruleFields.length; i++) {
+            const salesType = ruleFields[i].querySelector('select').value;
+            const quantity = ruleFields[i].querySelector('input').value;
+            rules.push({ salesType, quantity });
+        }
+
+        const newRuleKey = push(ref(database, 'gameRules')).key;
+        const updates = {};
+        updates[`/gameRules/${newRuleKey}`] = rules;
+        update(ref(database), updates).then(() => {
+            console.log('Rules saved successfully.');
+
+            const ruleList = document.getElementById('rules-list');
+            const listItem = document.createElement('li');
+            listItem.textContent = JSON.stringify(rules);
+            ruleList.appendChild(listItem);
+
+            rulesContainer.innerHTML = ''; // Clear the rules container after saving
+            resolve();
+        }).catch((error) => {
+            reject(error);
+        });
+    });
 }
 
 function loadCurrentConfiguration() {
