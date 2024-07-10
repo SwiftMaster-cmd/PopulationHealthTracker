@@ -126,20 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
         const angleStep = (2 * Math.PI) / totalNodes;
 
-        let spinDuration = 3000; // Spin duration in ms
+        // Generate a random spin duration and speed
+        let spinDuration = 3000 + Math.random() * 2000; // Spin duration between 3000ms to 5000ms
+        let spinSpeed = 10 + Math.random() * 20; // Spin speed between 10 and 30
         let start = null;
 
         function animate(timestamp) {
             if (!start) start = timestamp;
             const progress = timestamp - start;
 
-            // Calculate the current angle based on the progress
-            currentAngle = (progress / spinDuration) * 2 * Math.PI;
-            currentAngle %= 2 * Math.PI; // Keep the angle within [0, 2π]
-
-            // Slow down the spin towards the end
-            const easing = 1 - Math.pow(1 - (progress / spinDuration), 3);
-            currentAngle *= easing;
+            // Calculate the current angle based on the progress and speed
+            currentAngle += (spinSpeed * (1 - Math.pow(progress / spinDuration, 3))) % (2 * Math.PI);
 
             drawWheel(nodes, currentAngle);
 
@@ -147,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 animationFrameId = requestAnimationFrame(animate);
             } else {
                 isSpinning = false;
-                highlightWinningSegment(nodes, currentAngle, angleStep);
+                // Optional: Call a function to handle the result of the spin
+                // handleSpinResult(currentAngle);
             }
         }
 
@@ -211,14 +209,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const centerY = canvas.height / 2;
         const needleLength = centerY * 0.8;
 
+        ctx.clearRect(centerX - 10, 0, 20, centerY); // Clear any previous needle
+
         ctx.beginPath();
         ctx.moveTo(centerX, centerY - needleLength);
-        ctx.lineTo(centerX - 5, centerY);
-        ctx.lineTo(centerX + 5, centerY);
+        ctx.lineTo(centerX - 10, centerY);
+        ctx.lineTo(centerX + 10, centerY);
         ctx.closePath();
         ctx.fillStyle = 'red';
         ctx.fill();
     }
-
-  
 });
