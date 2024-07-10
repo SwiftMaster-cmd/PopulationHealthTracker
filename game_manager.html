@@ -1,4 +1,4 @@
-givm<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Game Manager</title>
@@ -28,8 +28,11 @@ givm<!DOCTYPE html>
 
     <section id="spin-rules">
         <h3>Spin Rules</h3>
-        <textarea id="rules-description" rows="4" cols="50" placeholder="Describe the rules for what justifies a spin..."></textarea><br>
-        <button id="add-rule">Add Rule</button>
+        <div id="rules-container">
+            <!-- Rules will be added here dynamically -->
+        </div>
+        <button id="add-rule-field">Add Rule Field</button>
+        <button id="save-rules">Save Rules</button>
         <ul id="rules-list">
             <!-- List of rules will be dynamically added here -->
         </ul>

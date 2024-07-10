@@ -18,7 +18,8 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 
 document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-document.getElementById('add-rule').addEventListener('click', addRule);
+document.getElementById('add-rule-field').addEventListener('click', addRuleField);
+document.getElementById('save-rules').addEventListener('click', saveRules);
 document.getElementById('save-all').addEventListener('click', saveAllSettings);
 
 onAuthStateChanged(auth, (user) => {
@@ -56,44 +57,65 @@ function saveConfiguration() {
     });
 }
 
-function addRule() {
-    const billableHRA = document.getElementById('billableHRA').value;
-    const selectPatientManagement = document.getElementById('selectPatientManagement').value;
-    const selectRX = document.getElementById('selectRX').value;
-    const transfer = document.getElementById('transfer').value;
+function addRuleField() {
+    const ruleContainer = document.createElement('div');
+    ruleContainer.className = 'rule-field';
 
-    const ruleDescription = `Billable HRA: ${billableHRA}, Select Patient Management: ${selectPatientManagement}, Select RX: ${selectRX}, Transfer: ${transfer}`;
-    if (ruleDescription) {
+    const salesTypeSelect = document.createElement('select');
+    salesTypeSelect.innerHTML = `
+        <option value="billableHRA">Billable HRA</option>
+        <option value="selectPatientManagement">Select Patient Management</option>
+        <option value="selectRX">Select RX</option>
+        <option value="transfer">Transfer</option>
+    `;
+
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'number';
+    quantityInput.value = 0;
+
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove';
+    removeButton.addEventListener('click', () => {
+        ruleContainer.remove();
+    });
+
+    ruleContainer.appendChild(salesTypeSelect);
+    ruleContainer.appendChild(quantityInput);
+    ruleContainer.appendChild(removeButton);
+
+    document.getElementById('rules-container').appendChild(ruleContainer);
+}
+
+function saveRules() {
+    const rulesContainer = document.getElementById('rules-container');
+    const ruleFields = rulesContainer.getElementsByClassName('rule-field');
+    const rules = [];
+
+    for (let i = 0; i < ruleFields.length; i++) {
+        const salesType = ruleFields[i].querySelector('select').value;
+        const quantity = ruleFields[i].querySelector('input').value;
+        rules.push({ salesType, quantity });
+    }
+
+    const newRuleKey = ref(database, 'gameRules').push().key;
+    const updates = {};
+    updates[`/gameRules/${newRuleKey}`] = rules;
+    update(ref(database), updates).then(() => {
+        console.log('Rules saved successfully.');
+
         const ruleList = document.getElementById('rules-list');
         const listItem = document.createElement('li');
-        listItem.textContent = ruleDescription;
+        listItem.textContent = JSON.stringify(rules);
         ruleList.appendChild(listItem);
 
-        // Clear the input fields
-        document.getElementById('billableHRA').value = 0;
-        document.getElementById('selectPatientManagement').value = 0;
-        document.getElementById('selectRX').value = 0;
-        document.getElementById('transfer').value = 0;
-
-        // Save the rule to the database
-        const newRuleKey = ref(database, 'gameRules').push().key;
-        const ruleData = {
-            billableHRA,
-            selectPatientManagement,
-            selectRX,
-            transfer
-        };
-        const updates = {};
-        updates[`/gameRules/${newRuleKey}`] = ruleData;
-        update(ref(database), updates).then(() => {
-            console.log('Rule added successfully.');
-        }).catch((error) => {
-            console.error('Error adding rule:', error);
-        });
-    }
+        rulesContainer.innerHTML = ''; // Clear the rules container after saving
+    }).catch((error) => {
+        console.error('Error saving rules:', error);
+    });
 }
 
 function saveAllSettings() {
     saveConfiguration();
+    saveRules();
     console.log('All settings saved.');
 }
