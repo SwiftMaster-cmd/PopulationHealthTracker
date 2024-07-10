@@ -211,10 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const centerY = canvas.height / 2;
         const needleLength = centerY * 0.8;
 
+        ctx.clearRect(centerX - 10, 0, 20, centerY); // Clear any previous needle
+
         ctx.beginPath();
         ctx.moveTo(centerX, centerY - needleLength);
-        ctx.lineTo(centerX - 5, centerY);
-        ctx.lineTo(centerX + 5, centerY);
+        ctx.lineTo(centerX - 10, centerY);
+        ctx.lineTo(centerX + 10, centerY);
         ctx.closePath();
         ctx.fillStyle = 'red';
         ctx.fill();
@@ -247,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Redraw the wheel with the winning segment highlighted
-        let currentAngle = rotation;
+        let currentAngle = 0;  // Reset currentAngle for correct drawing
 
         nodes.forEach((node) => {
             for (let i = 0; i < node.count; i++) {
@@ -259,8 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.arc(centerX, centerY, radius, startAngle, endAngle);
                 ctx.closePath();
 
-                // Highlight the winning segment
-                if (rotation >= accumulatedAngle && rotation < accumulatedAngle + angleStep) {
+                // Highlight only the winning segment
+                if (accumulatedAngle - angleStep <= rotation && rotation < accumulatedAngle) {
                     ctx.fillStyle = '#FFFF00'; // Bright yellow
                 } else {
                     // Alternate colors for each segment
