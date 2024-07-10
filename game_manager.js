@@ -57,20 +57,34 @@ function saveConfiguration() {
 }
 
 function addRule() {
-    const ruleDescription = document.getElementById('rules-description').value;
+    const billableHRA = document.getElementById('billableHRA').value;
+    const selectPatientManagement = document.getElementById('selectPatientManagement').value;
+    const selectRX = document.getElementById('selectRX').value;
+    const transfer = document.getElementById('transfer').value;
+
+    const ruleDescription = `Billable HRA: ${billableHRA}, Select Patient Management: ${selectPatientManagement}, Select RX: ${selectRX}, Transfer: ${transfer}`;
     if (ruleDescription) {
         const ruleList = document.getElementById('rules-list');
         const listItem = document.createElement('li');
         listItem.textContent = ruleDescription;
         ruleList.appendChild(listItem);
 
-        // Clear the text area
-        document.getElementById('rules-description').value = '';
+        // Clear the input fields
+        document.getElementById('billableHRA').value = 0;
+        document.getElementById('selectPatientManagement').value = 0;
+        document.getElementById('selectRX').value = 0;
+        document.getElementById('transfer').value = 0;
 
         // Save the rule to the database
         const newRuleKey = ref(database, 'gameRules').push().key;
+        const ruleData = {
+            billableHRA,
+            selectPatientManagement,
+            selectRX,
+            transfer
+        };
         const updates = {};
-        updates[`/gameRules/${newRuleKey}`] = ruleDescription;
+        updates[`/gameRules/${newRuleKey}`] = ruleData;
         update(ref(database), updates).then(() => {
             console.log('Rule added successfully.');
         }).catch((error) => {
