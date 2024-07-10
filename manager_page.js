@@ -127,16 +127,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const angleStep = (2 * Math.PI) / totalNodes;
 
         // Generate a random spin duration and speed
-        let spinDuration = 3000 + Math.random() * 2000; // Spin duration between 3000ms to 5000ms
-        let spinSpeed = 20 + Math.random() * 10; // Spin speed between 20 and 30
+        let spinDuration = 5000 + Math.random() * 2000; // Spin duration between 5000ms to 7000ms
+        let maxSpinSpeed = 10 + Math.random() * 10; // Spin speed between 10 and 20
         let start = null;
 
         function animate(timestamp) {
             if (!start) start = timestamp;
             const progress = timestamp - start;
 
-            // Calculate the current angle based on the progress and speed with a dramatic slow down
-            currentAngle += (spinSpeed * (1 - Math.pow(progress / spinDuration, 2.5))) % (2 * Math.PI);
+            // Calculate the easing factor for smooth acceleration and deceleration
+            const easingFactor = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+            const easedProgress = easingFactor(progress / spinDuration);
+            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
 
             drawWheel(nodes, currentAngle);
 
