@@ -1,0 +1,14 @@
+#needle {
+    position: absolute;
+    width: 10px;
+    height: 50px;
+    background: red;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#wheel-canvas {
+    display: block;
+    margin: 0 auto;
+}
