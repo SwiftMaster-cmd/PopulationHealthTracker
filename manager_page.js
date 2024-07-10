@@ -206,10 +206,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = canvas.getContext('2d');
 
         if (!ctx) return;
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const needleLength = centerY * 0.8;
+
         ctx.beginPath();
-        ctx.moveTo(canvas.width / 2, 0);
-        ctx.lineTo((canvas.width / 2) - 10, 50);
-        ctx.lineTo((canvas.width / 2) + 10, 50);
+        ctx.moveTo(centerX, centerY - needleLength);
+        ctx.lineTo(centerX - 5, centerY);
+        ctx.lineTo(centerX + 5, centerY);
         ctx.closePath();
         ctx.fillStyle = 'red';
         ctx.fill();
@@ -255,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.closePath();
 
                 // Highlight the winning segment
-                if (node === winningNode) {
+                if (rotation >= accumulatedAngle && rotation < accumulatedAngle + angleStep) {
                     ctx.fillStyle = '#FFFF00'; // Bright yellow
                 } else {
                     // Alternate colors for each segment
