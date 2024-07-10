@@ -24,118 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    function captureOutcomeData(user) {
-        const applyActionButton = Array.from(document.querySelectorAll('button')).find(button => button.textContent.trim() === 'Apply Action');
-        if (applyActionButton) {
-            applyActionButton.addEventListener('click', function handler() {
-                console.log('Apply Action button clicked:', this);
-    
-                let outcomeTime = new Date().toISOString();
-                console.log('Outcome Time:', outcomeTime);
-    
-                let assignActionElem = document.querySelector('[role="combobox"] input');
-                let assignAction = assignActionElem ? assignActionElem.value : "unknown";
-                console.log('Assign Action:', assignAction);
-    
-                let notesValueElem = document.querySelector('[name="note"]');
-                let notesValue = notesValueElem ? notesValueElem.value : "unknown";
-                console.log('Notes Value:', notesValue);
-    
-                let accountNumberElem = document.querySelectorAll('.MuiTypography-root.leadInfoCard__content--truncate.MuiTypography-body2')[1];
-                let accountNumber = accountNumberElem ? accountNumberElem.textContent : "unknown";
-                console.log('Account Number:', accountNumber);
-    
-                let firstNameElem = document.querySelector('#indv-first-name');
-                console.log('First Name Element:', firstNameElem);
-                let firstName = firstNameElem ? firstNameElem.value : "unknown";
-                console.log('First Name:', firstName);
-    
-                let lastNameElem = document.querySelector('#indv-last-name');
-                console.log('Last Name Element:', lastNameElem);
-                let lastName = lastNameElem ? lastNameElem.value : "unknown";
-                console.log('Last Name:', lastName);
-    
-                let genderElem = document.querySelector('#indv-gender');
-                console.log('Gender Element:', genderElem);
-                let gender = genderElem ? genderElem.value : "unknown";
-                console.log('Gender:', gender);
-    
-                let birthdateElem = document.querySelector('#indv-birthday');
-                console.log('Birthdate Element:', birthdateElem);
-                let birthdate = birthdateElem ? birthdateElem.value : "unknown";
-                console.log('Birthdate:', birthdate);
-    
-                let emailElem = document.querySelector('#indv-email');
-                console.log('Email Element:', emailElem);
-                let email = emailElem ? emailElem.value : "unknown";
-                console.log('Email:', email);
-    
-                let phoneElem = document.querySelector('#indv-day-phone');
-                console.log('Day Phone Element:', phoneElem);
-                let phone = phoneElem ? phoneElem.value : "unknown";
-                console.log('Day Phone:', phone);
-    
-                let zipcodeElem = document.querySelector('#indv-zipcode');
-                console.log('Zipcode Element:', zipcodeElem);
-                let zipcode = zipcodeElem ? zipcodeElem.value : "unknown";
-                console.log('Zipcode:', zipcode);
-    
-                let stateIdElem = document.querySelector('#indv-state-id');
-                console.log('State ID Element:', stateIdElem);
-                let stateId = stateIdElem ? stateIdElem.value : "unknown";
-                console.log('State ID:', stateId);
-    
-                const data = {
-                    userId: user.uid,
-                    outcomeTime: outcomeTime,
-                    assignAction: assignAction,
-                    notesValue: notesValue,
-                    accountNumber: accountNumber,
-                    customerInfo: {
-                        firstName: firstName,
-                        lastName: lastName,
-                        gender: gender,
-                        birthdate: birthdate,
-                        email: email,
-                        phone: phone,
-                        zipcode: zipcode,
-                        stateId: stateId
-                    }
-                };
-    
-                console.log('Data to be recorded:', data);
-    
-                // Check if the sale for the current customer is already added
-                const outcomesRef = firebase.database().ref('salesOutcomes/' + user.uid);
-                outcomesRef.orderByChild('accountNumber').equalTo(accountNumber).once('value', snapshot => {
-                    let duplicate = false;
-                    if (snapshot.exists()) {
-                        snapshot.forEach(childSnapshot => {
-                            const existingData = childSnapshot.val();
-                            if (existingData.customerInfo.firstName === firstName &&
-                                existingData.customerInfo.lastName === lastName &&
-                                existingData.assignAction === assignAction) {
-                                duplicate = true;
-                            }
-                        });
-                    }
-                    if (duplicate) {
-                        console.log('Sale already recorded for account number:', accountNumber, 'customer:', firstName, lastName, 'and action:', assignAction);
-                    } else {
-                        outcomesRef.push().set(data).then(() => {
-                            console.log('Outcome recorded for user:', user.displayName);
-                            showNotification();
-                        }).catch((error) => {
-                            console.error('Error recording outcome:', error);
-                        });
-                    }
-                });
-            });
-            console.log("Event listener added to Apply Action button");
-        } else {
-            console.error("Apply Action button not found");
-        }
-    }
     
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
@@ -437,7 +325,118 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'cheatSheet.html';
         });
     }
-
+    function captureOutcomeData(user) {
+        const applyActionButton = Array.from(document.querySelectorAll('button')).find(button => button.textContent.trim() === 'Apply Action');
+        if (applyActionButton) {
+            applyActionButton.addEventListener('click', function handler() {
+                console.log('Apply Action button clicked:', this);
+    
+                let outcomeTime = new Date().toISOString();
+                console.log('Outcome Time:', outcomeTime);
+    
+                let assignActionElem = document.querySelector('[role="combobox"] input');
+                let assignAction = assignActionElem ? assignActionElem.value : "unknown";
+                console.log('Assign Action:', assignAction);
+    
+                let notesValueElem = document.querySelector('[name="note"]');
+                let notesValue = notesValueElem ? notesValueElem.value : "unknown";
+                console.log('Notes Value:', notesValue);
+    
+                let accountNumberElem = document.querySelectorAll('.MuiTypography-root.leadInfoCard__content--truncate.MuiTypography-body2')[1];
+                let accountNumber = accountNumberElem ? accountNumberElem.textContent : "unknown";
+                console.log('Account Number:', accountNumber);
+    
+                let firstNameElem = document.querySelector('#indv-first-name');
+                console.log('First Name Element:', firstNameElem);
+                let firstName = firstNameElem ? firstNameElem.value : "unknown";
+                console.log('First Name:', firstName);
+    
+                let lastNameElem = document.querySelector('#indv-last-name');
+                console.log('Last Name Element:', lastNameElem);
+                let lastName = lastNameElem ? lastNameElem.value : "unknown";
+                console.log('Last Name:', lastName);
+    
+                let genderElem = document.querySelector('#indv-gender');
+                console.log('Gender Element:', genderElem);
+                let gender = genderElem ? genderElem.value : "unknown";
+                console.log('Gender:', gender);
+    
+                let birthdateElem = document.querySelector('#indv-birthday');
+                console.log('Birthdate Element:', birthdateElem);
+                let birthdate = birthdateElem ? birthdateElem.value : "unknown";
+                console.log('Birthdate:', birthdate);
+    
+                let emailElem = document.querySelector('#indv-email');
+                console.log('Email Element:', emailElem);
+                let email = emailElem ? emailElem.value : "unknown";
+                console.log('Email:', email);
+    
+                let phoneElem = document.querySelector('#indv-day-phone');
+                console.log('Day Phone Element:', phoneElem);
+                let phone = phoneElem ? phoneElem.value : "unknown";
+                console.log('Day Phone:', phone);
+    
+                let zipcodeElem = document.querySelector('#indv-zipcode');
+                console.log('Zipcode Element:', zipcodeElem);
+                let zipcode = zipcodeElem ? zipcodeElem.value : "unknown";
+                console.log('Zipcode:', zipcode);
+    
+                let stateIdElem = document.querySelector('#indv-state-id');
+                console.log('State ID Element:', stateIdElem);
+                let stateId = stateIdElem ? stateIdElem.value : "unknown";
+                console.log('State ID:', stateId);
+    
+                const data = {
+                    userId: user.uid,
+                    outcomeTime: outcomeTime,
+                    assignAction: assignAction,
+                    notesValue: notesValue,
+                    accountNumber: accountNumber,
+                    customerInfo: {
+                        firstName: firstName,
+                        lastName: lastName,
+                        gender: gender,
+                        birthdate: birthdate,
+                        email: email,
+                        phone: phone,
+                        zipcode: zipcode,
+                        stateId: stateId
+                    }
+                };
+    
+                console.log('Data to be recorded:', data);
+    
+                // Check if the sale for the current customer is already added
+                const outcomesRef = firebase.database().ref('salesOutcomes/' + user.uid);
+                outcomesRef.orderByChild('accountNumber').equalTo(accountNumber).once('value', snapshot => {
+                    let duplicate = false;
+                    if (snapshot.exists()) {
+                        snapshot.forEach(childSnapshot => {
+                            const existingData = childSnapshot.val();
+                            if (existingData.customerInfo.firstName === firstName &&
+                                existingData.customerInfo.lastName === lastName &&
+                                existingData.assignAction === assignAction) {
+                                duplicate = true;
+                            }
+                        });
+                    }
+                    if (duplicate) {
+                        console.log('Sale already recorded for account number:', accountNumber, 'customer:', firstName, lastName, 'and action:', assignAction);
+                    } else {
+                        outcomesRef.push().set(data).then(() => {
+                            console.log('Outcome recorded for user:', user.displayName);
+                            showNotification();
+                        }).catch((error) => {
+                            console.error('Error recording outcome:', error);
+                        });
+                    }
+                });
+            });
+            console.log("Event listener added to Apply Action button");
+        } else {
+            console.error("Apply Action button not found");
+        }
+    }
     // Existing code...
 });
 
