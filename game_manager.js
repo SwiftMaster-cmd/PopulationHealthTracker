@@ -53,6 +53,7 @@ function addNodeField(value = 0) {
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
         nodeContainer.remove();
+        updateSummary();
     });
 
     nodeContainer.appendChild(nodeValueInput);
@@ -82,6 +83,7 @@ function addRuleField(salesType = 'billableHRA', quantity = 0) {
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
         ruleContainer.remove();
+        updateSummary();
     });
 
     ruleContainer.appendChild(salesTypeSelect);
@@ -136,7 +138,7 @@ function saveRules() {
         const newRuleKey = push(ref(database, 'gameRules')).key;
         const updates = {};
         updates[`/gameRules/${newRuleKey}`] = rules;
-        update(ref(database), updates).then(() => {
+        update(ref(database, updates)).then(() => {
             console.log('Rules saved successfully.');
             resolve();
         }).catch((error) => {
@@ -153,6 +155,7 @@ function loadCurrentConfiguration() {
         if (nodes) {
             nodes.forEach(node => addNodeField(node.value));
         }
+        updateSummary();
     });
 }
 
@@ -172,45 +175,4 @@ function loadCurrentRules() {
 }
 
 function listenForChanges() {
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    const rulesRef = ref(database, 'gameRules');
-
-    onValue(configRef, () => {
-        loadCurrentConfiguration();
-        updateSummary();
-    });
-
-    onValue(rulesRef, () => {
-        loadCurrentRules();
-        updateSummary();
-    });
-}
-
-function updateSummary() {
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    const rulesRef = ref(database, 'gameRules');
-
-    get(configRef).then((snapshot) => {
-        const nodes = snapshot.val();
-        let summaryText = 'Wheel Configuration:\n';
-        if (nodes) {
-            nodes.forEach(node => {
-                summaryText += `Node Value: ${node.value}\n`;
-            });
-        }
-
-        get(rulesRef).then((snapshot) => {
-            const rules = snapshot.val();
-            summaryText += '\nSpin Rules:\n';
-            if (rules) {
-                Object.values(rules).forEach(ruleSet => {
-                    ruleSet.forEach(rule => {
-                        summaryText += `Sales Type: ${rule.salesType}, Quantity: ${rule.quantity}\n`;
-                    });
-                });
-            }
-
-            document.getElementById('summary-text').textContent = summaryText;
-        });
-    });
-}
+    const configRef =
