@@ -79,52 +79,60 @@ document.addEventListener('DOMContentLoaded', () => {
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
-            const angleStep = (2 * Math.PI) / totalNodes;
+            // Flatten the nodes into individual wedges
+            const wedges = [];
+            nodes.forEach(node => {
+                for (let i = 0; i < node.count; i++) {
+                    wedges.push(node.value);
+                }
+            });
+
+            const totalWedges = wedges.length;
+            const angleStep = (2 * Math.PI) / totalWedges;
             const radius = canvas.width / 2;
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             let currentAngle = 0;
 
-            nodes.forEach((node) => {
-                for (let i = 0; i < node.count; i++) {
-                    const startAngle = currentAngle;
-                    const endAngle = startAngle + angleStep;
+            wedges.forEach((value, index) => {
+                const startAngle = currentAngle;
+                const endAngle = startAngle + angleStep;
 
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                    ctx.closePath();
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
 
-                    // Alternate colors for each segment
-                    ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
-                    ctx.fill();
-                    ctx.stroke();
+                // Alternate colors for each segment
+                ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
+                ctx.fill();
+                ctx.stroke();
 
-                    // Draw text
-                    ctx.save();
-                    ctx.translate(centerX, centerY);
-                    ctx.rotate((startAngle + endAngle) / 2);
-                    ctx.textAlign = 'right';
-                    ctx.fillStyle = '#000';
-                    ctx.font = '20px Arial';
-                    ctx.fillText(node.value, radius - 10, 10);
-                    ctx.restore();
+                // Draw text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate((startAngle + endAngle) / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#000';
+                ctx.font = '20px Arial';
+                ctx.fillText(value, radius - 10, 10);
+                ctx.restore();
 
-                    currentAngle += angleStep;
-                }
+                currentAngle += angleStep;
             });
+
+            drawNeedle();
         }
 
-        document.getElementById('spin-button').addEventListener('click', () => spinWheel(nodes));
+        document.getElementById('spin-button').addEventListener('click', () => spinWheel(wedges));
     }
 
-    function spinWheel(nodes) {
+    function spinWheel(wedges) {
         if (isSpinning) return;
         isSpinning = true;
 
-        const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
-        const angleStep = (2 * Math.PI) / totalNodes;
+        const totalWedges = wedges.length;
+        const angleStep = (2 * Math.PI) / totalWedges;
 
         let spinDuration = 3000; // Spin duration in ms
         let start = null;
@@ -141,20 +149,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const easing = 1 - Math.pow(1 - (progress / spinDuration), 3);
             currentAngle *= easing;
 
-            drawWheel(nodes, currentAngle);
+            drawWheel(wedges, currentAngle);
 
             if (progress < spinDuration) {
                 animationFrameId = requestAnimationFrame(animate);
             } else {
                 isSpinning = false;
-                highlightWinningSegment(nodes, currentAngle, angleStep);
+                highlightWinningSegment(wedges, currentAngle, angleStep);
             }
         }
 
         animationFrameId = requestAnimationFrame(animate);
     }
 
-    function drawWheel(nodes, rotation) {
+    function drawWheel(wedges, rotation) {
         const canvas = document.getElementById('wheel-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -162,40 +170,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
-        const angleStep = (2 * Math.PI) / totalNodes;
+        const totalWedges = wedges.length;
+        const angleStep = (2 * Math.PI) / totalWedges;
         const radius = canvas.width / 2;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         let currentAngle = rotation;
 
-        nodes.forEach((node) => {
-            for (let i = 0; i < node.count; i++) {
-                const startAngle = currentAngle;
-                const endAngle = startAngle + angleStep;
+        wedges.forEach((value, index) => {
+            const startAngle = currentAngle;
+            const endAngle = startAngle + angleStep;
 
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.closePath();
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
 
-                // Alternate colors for each segment
-                ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
-                ctx.fill();
-                ctx.stroke();
+            // Alternate colors for each segment
+            ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
+            ctx.fill();
+            ctx.stroke();
 
-                // Draw text
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate((startAngle + endAngle) / 2);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#000';
-                ctx.font = '20px Arial';
-                ctx.fillText(node.value, radius - 10, 10);
-                ctx.restore();
+            // Draw text
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((startAngle + endAngle) / 2);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#000';
+            ctx.font = '20px Arial';
+            ctx.fillText(value, radius - 10, 10);
+            ctx.restore();
 
-                currentAngle += angleStep;
-            }
+            currentAngle += angleStep;
         });
 
         drawNeedle();
@@ -222,67 +228,53 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fill();
     }
 
-    function highlightWinningSegment(nodes, rotation, angleStep) {
+    function highlightWinningSegment(wedges, rotation, angleStep) {
         const canvas = document.getElementById('wheel-canvas');
         const ctx = canvas.getContext('2d');
 
         if (!ctx) return;
 
-        const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
+        const totalWedges = wedges.length;
         const radius = canvas.width / 2;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
 
-        // Find the winning segment
-        let accumulatedAngle = 0;
-        let winningNode = null;
-
-        for (const node of nodes) {
-            for (let i = 0; i < node.count; i++) {
-                if (rotation >= accumulatedAngle && rotation < accumulatedAngle + angleStep) {
-                    winningNode = node;
-                    break;
-                }
-                accumulatedAngle += angleStep;
-            }
-            if (winningNode) break;
-        }
+        // Determine the winning wedge
+        const winningIndex = Math.floor(rotation / angleStep) % totalWedges;
 
         // Redraw the wheel with the winning segment highlighted
         let currentAngle = 0;  // Reset currentAngle for correct drawing
 
-        nodes.forEach((node) => {
-            for (let i = 0; i < node.count; i++) {
-                const startAngle = currentAngle;
-                const endAngle = startAngle + angleStep;
+        wedges.forEach((value, index) => {
+            const startAngle = currentAngle;
+            const endAngle = startAngle + angleStep;
 
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.closePath();
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
 
-                // Highlight only the winning segment
-                if (accumulatedAngle - angleStep <= rotation && rotation < accumulatedAngle) {
-                    ctx.fillStyle = '#FFFF00'; // Bright yellow
-                } else {
-                    // Alternate colors for each segment
-                    ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
-                }
-                ctx.fill();
-                ctx.stroke();
-
-                // Draw text
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate((startAngle + endAngle) / 2);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#000';
-                ctx.font = '20px Arial';
-                ctx.fillText(node.value, radius - 10, 10);
-                ctx.restore();
-
-                currentAngle += angleStep;
+            // Highlight only the winning segment
+            if (index === winningIndex) {
+                ctx.fillStyle = '#FFFF00'; // Bright yellow
+            } else {
+                // Alternate colors for each segment
+                ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
             }
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw text
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((startAngle + endAngle) / 2);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#000';
+            ctx.font = '20px Arial';
+            ctx.fillText(value, radius - 10, 10);
+            ctx.restore();
+
+            currentAngle += angleStep;
         });
 
         drawNeedle();
