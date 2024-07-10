@@ -31,6 +31,9 @@ onAuthStateChanged(auth, (user) => {
             if (authorityLevel !== 3) {
                 alert("You do not have permission to view this page.");
                 window.location.href = 'index.html';
+            } else {
+                loadCurrentConfiguration();
+                loadCurrentRules();
             }
         });
     } else {
@@ -38,14 +41,14 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-function addNodeField() {
+function addNodeField(value = 0) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
 
     const nodeValueInput = document.createElement('input');
     nodeValueInput.type = 'number';
     nodeValueInput.placeholder = 'Node Value';
-    nodeValueInput.value = 0;
+    nodeValueInput.value = value;
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
@@ -76,22 +79,22 @@ function saveConfiguration() {
     });
 }
 
-function addRuleField() {
+function addRuleField(salesType = 'billableHRA', quantity = 0) {
     const ruleContainer = document.createElement('div');
     ruleContainer.className = 'rule-field';
 
     const salesTypeSelect = document.createElement('select');
     salesTypeSelect.innerHTML = `
-        <option value="billableHRA">Billable HRA</option>
-        <option value="selectPatientManagement">Select Patient Management</option>
-        <option value="selectRX">Select RX</option>
-        <option value="transfer">Transfer</option>
+        <option value="billableHRA" ${salesType === 'billableHRA' ? 'selected' : ''}>Billable HRA</option>
+        <option value="selectPatientManagement" ${salesType === 'selectPatientManagement' ? 'selected' : ''}>Select Patient Management</option>
+        <option value="selectRX" ${salesType === 'selectRX' ? 'selected' : ''}>Select RX</option>
+        <option value="transfer" ${salesType === 'transfer' ? 'selected' : ''}>Transfer</option>
     `;
 
     const quantityInput = document.createElement('input');
     quantityInput.type = 'number';
     quantityInput.placeholder = 'Quantity';
-    quantityInput.value = 0;
+    quantityInput.value = quantity;
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
@@ -138,4 +141,33 @@ function saveAllSettings() {
     saveConfiguration();
     saveRules();
     console.log('All settings saved.');
+}
+
+function loadCurrentConfiguration() {
+    const configRef = ref(database, 'gameConfiguration/nodes');
+    onValue(configRef, (snapshot) => {
+        const nodes = snapshot.val();
+        document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
+        if (nodes) {
+            nodes.forEach(node => addNodeField(node.value));
+        }
+    });
+}
+
+function loadCurrentRules() {
+    const rulesRef = ref(database, 'gameRules');
+    onValue(rulesRef, (snapshot) => {
+        const rules = snapshot.val();
+        document.getElementById('rules-list').innerHTML = ''; // Clear existing rules
+        document.getElementById('rules-container').innerHTML = ''; // Clear existing rule fields
+        if (rules) {
+            Object.values(rules).forEach(ruleSet => {
+                const listItem = document.createElement('li');
+                listItem.textContent = JSON.stringify(ruleSet);
+                document.getElementById('rules-list').appendChild(listItem);
+
+                ruleSet.forEach(rule => addRuleField(rule.salesType, rule.quantity));
+            });
+        }
+    });
 }
