@@ -128,15 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Generate a random spin duration and speed
         let spinDuration = 3000 + Math.random() * 2000; // Spin duration between 3000ms to 5000ms
-        let spinSpeed = 10 + Math.random() * 20; // Spin speed between 10 and 30
+        let spinSpeed = 20 + Math.random() * 10; // Spin speed between 20 and 30
         let start = null;
 
         function animate(timestamp) {
             if (!start) start = timestamp;
             const progress = timestamp - start;
 
-            // Calculate the current angle based on the progress and speed
-            currentAngle += (spinSpeed * (1 - Math.pow(progress / spinDuration, 3))) % (2 * Math.PI);
+            // Calculate the current angle based on the progress and speed with a dramatic slow down
+            currentAngle += (spinSpeed * (1 - Math.pow(progress / spinDuration, 2.5))) % (2 * Math.PI);
 
             drawWheel(nodes, currentAngle);
 
@@ -144,8 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 animationFrameId = requestAnimationFrame(animate);
             } else {
                 isSpinning = false;
-                // Optional: Call a function to handle the result of the spin
-                // handleSpinResult(currentAngle);
+                displayResult(nodes, currentAngle, angleStep);
             }
         }
 
@@ -218,5 +217,24 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.closePath();
         ctx.fillStyle = 'red';
         ctx.fill();
+    }
+
+    function displayResult(nodes, rotation, angleStep) {
+        const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
+        const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
+        let currentNodeIndex = 0;
+        let result;
+
+        nodes.forEach((node) => {
+            for (let i = 0; i < node.count; i++) {
+                if (currentNodeIndex === winningIndex) {
+                    result = node.value;
+                }
+                currentNodeIndex++;
+            }
+        });
+
+        const resultElement = document.getElementById('result');
+        resultElement.textContent = `Result: ${result}`;
     }
 });
