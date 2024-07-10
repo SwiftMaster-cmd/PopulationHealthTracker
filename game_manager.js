@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, update, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, update, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -69,7 +69,7 @@ function saveConfiguration() {
         nodes.push({ value: nodeValue });
     }
 
-    update(ref(database, 'gameConfiguration/nodes'), nodes).then(() => {
+    update(ref(database, 'gameConfiguration'), { nodes }).then(() => {
         console.log('Configuration saved successfully.');
     }).catch((error) => {
         console.error('Error saving configuration:', error);
@@ -117,7 +117,7 @@ function saveRules() {
         rules.push({ salesType, quantity });
     }
 
-    const newRuleKey = ref(database, 'gameRules').push().key;
+    const newRuleKey = push(ref(database, 'gameRules')).key;
     const updates = {};
     updates[`/gameRules/${newRuleKey}`] = rules;
     update(ref(database), updates).then(() => {
