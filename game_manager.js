@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, update, get, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, update, get, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -135,10 +135,9 @@ function saveRules() {
             rules.push({ salesType, quantity });
         }
 
-        const newRuleKey = push(ref(database, 'gameRules')).key;
         const updates = {};
-        updates[`/gameRules/${newRuleKey}`] = rules;
-        update(ref(database), updates).then(() => {
+        updates['/gameRules'] = rules; // Overwrite the existing rules with the new set
+        set(ref(database, 'gameRules'), rules).then(() => {
             console.log('Rules saved successfully.');
             resolve();
         }).catch((error) => {
@@ -166,9 +165,7 @@ function loadCurrentRules() {
         document.getElementById('rules-list').innerHTML = ''; // Clear existing rules
         document.getElementById('rules-container').innerHTML = ''; // Clear existing rule fields
         if (rules) {
-            Object.values(rules).forEach(ruleSet => {
-                ruleSet.forEach(rule => addRuleField(rule.salesType, rule.quantity));
-            });
+            rules.forEach(rule => addRuleField(rule.salesType, rule.quantity));
             updateSummary();
         }
     });
@@ -238,10 +235,8 @@ function updateSummary() {
             const rules = snapshot.val();
             let summaryText = 'Spin Rules:\n';
             if (rules) {
-                Object.values(rules).forEach(ruleSet => {
-                    ruleSet.forEach(rule => {
-                        summaryText += `Sales Type: ${rule.salesType}, Quantity: ${rule.quantity}\n`;
-                    });
+                rules.forEach(rule => {
+                    summaryText += `Sales Type: ${rule.salesType}, Quantity: ${rule.quantity}\n`;
                 });
             }
             document.getElementById('summary-text').textContent = summaryText;
