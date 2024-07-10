@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, update, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, update, get, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -19,6 +19,7 @@ const database = getDatabase(app);
 
 document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
 document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
+document.getElementById('save-preset-button').addEventListener('click', savePreset);
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -135,6 +136,31 @@ function updateRules() {
         console.log('Rules updated successfully.');
     }).catch((error) => {
         console.error('Error updating rules:', error);
+    });
+}
+
+function savePreset() {
+    const presetName = document.getElementById('preset-name').value;
+    if (!presetName) {
+        alert('Please enter a preset name.');
+        return;
+    }
+
+    const configRef = ref(database, 'gameConfiguration/nodes');
+    const rulesRef = ref(database, 'gameRules');
+
+    Promise.all([get(configRef), get(rulesRef)]).then((snapshots) => {
+        const nodes = snapshots[0].val();
+        const rules = snapshots[1].val();
+        const preset = { nodes, rules };
+
+        set(ref(database, `spinTheWheelPresets/${presetName}`), preset).then(() => {
+            alert('Preset saved successfully.');
+        }).catch((error) => {
+            console.error('Error saving preset:', error);
+        });
+    }).catch((error) => {
+        console.error('Error retrieving configuration or rules:', error);
     });
 }
 

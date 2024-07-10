@@ -4,8 +4,6 @@
     <title>Game Manager</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="game_manager.js"></script>
-    <script type="module" src="wheekGen.js"></script>
-
 </head>
 <body>
     <header>
@@ -30,11 +28,16 @@
         </ul>
     </section>
 
+    <section id="save-preset">
+        <h3>Save Preset</h3>
+        <input type="text" id="preset-name" placeholder="Preset Name">
+        <button id="save-preset-button">Save Preset</button>
+    </section>
+
     <section id="summary">
         <h3>Summary</h3>
         <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
         <canvas id="wheel-canvas" width="500" height="500"></canvas>
-        <button id="save-all">Save All Settings</button>
     </section>
 </body>
 </html>
