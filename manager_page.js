@@ -128,9 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Generate a random spin duration and speed
         let spinDuration = 5000 + Math.random() * 2000; // Spin duration between 5000ms to 7000ms
-        let maxSpinSpeed = 10 + Math.random() * 10; // Spin speed between 10 and 20
-        let accelerationDuration = spinDuration * 0.9; // 30% of the duration for acceleration
-        let decelerationDuration = spinDuration * 0.9; // 70% of the duration for deceleration
+        let maxSpinSpeed = 5 + Math.random() * 5; // Spin speed between 5 and 10
+        let accelerationDuration = spinDuration * 0.4; // 40% of the duration for acceleration
+        let decelerationDuration = spinDuration * 0.6; // 60% of the duration for deceleration
         let peakTime = accelerationDuration;
         let start = null;
 
