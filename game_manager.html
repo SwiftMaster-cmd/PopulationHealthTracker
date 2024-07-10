@@ -1,0 +1,44 @@
+givm<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="game_manager.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Game Manager</h1>
+    </header>
+    <section id="wheel-configuration">
+        <h3>Wheel Configuration</h3>
+        <label for="node1">Node 1 Value:</label>
+        <input type="number" id="node1" name="node1" value="3"><br>
+
+        <label for="node2">Node 2 Value:</label>
+        <input type="number" id="node2" name="node2" value="5"><br>
+
+        <label for="node3">Node 3 Value:</label>
+        <input type="number" id="node3" name="node3" value="2"><br>
+
+        <label for="total-spins">Total Number of Spins:</label>
+        <input type="number" id="total-spins" name="total-spins" value="10"><br>
+
+        <button id="save-configuration">Save Configuration</button>
+    </section>
+
+    <section id="spin-rules">
+        <h3>Spin Rules</h3>
+        <textarea id="rules-description" rows="4" cols="50" placeholder="Describe the rules for what justifies a spin..."></textarea><br>
+        <button id="add-rule">Add Rule</button>
+        <ul id="rules-list">
+            <!-- List of rules will be dynamically added here -->
+        </ul>
+    </section>
+
+    <section id="summary">
+        <h3>Summary</h3>
+        <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
+        <button id="save-all">Save All Settings</button>
+    </section>
+</body>
+</html>
