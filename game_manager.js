@@ -17,8 +17,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-document.getElementById('add-node-field').addEventListener('click', addNodeField);
-document.getElementById('add-rule-field').addEventListener('click', addRuleField);
+document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
+document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
 document.getElementById('save-all').addEventListener('click', saveAllSettings);
 
 onAuthStateChanged(auth, (user) => {
@@ -32,6 +32,7 @@ onAuthStateChanged(auth, (user) => {
             } else {
                 loadCurrentConfiguration();
                 loadCurrentRules();
+                listenForChanges();
             }
         });
     } else {
@@ -92,13 +93,11 @@ function addRuleField(salesType = 'billableHRA', quantity = 0) {
 
 function saveAllSettings() {
     saveConfiguration().then(() => {
-        saveRules().then(() => {
-            console.log('All settings saved.');
-        }).catch((error) => {
-            console.error('Error saving rules:', error);
-        });
+        return saveRules();
+    }).then(() => {
+        console.log('All settings saved.');
     }).catch((error) => {
-        console.error('Error saving configuration:', error);
+        console.error('Error saving settings:', error);
     });
 }
 
@@ -139,13 +138,6 @@ function saveRules() {
         updates[`/gameRules/${newRuleKey}`] = rules;
         update(ref(database), updates).then(() => {
             console.log('Rules saved successfully.');
-
-            const ruleList = document.getElementById('rules-list');
-            const listItem = document.createElement('li');
-            listItem.textContent = JSON.stringify(rules);
-            ruleList.appendChild(listItem);
-
-            rulesContainer.innerHTML = ''; // Clear the rules container after saving
             resolve();
         }).catch((error) => {
             reject(error);
@@ -172,12 +164,53 @@ function loadCurrentRules() {
         document.getElementById('rules-container').innerHTML = ''; // Clear existing rule fields
         if (rules) {
             Object.values(rules).forEach(ruleSet => {
-                const listItem = document.createElement('li');
-                listItem.textContent = JSON.stringify(ruleSet);
-                document.getElementById('rules-list').appendChild(listItem);
-
                 ruleSet.forEach(rule => addRuleField(rule.salesType, rule.quantity));
             });
+            updateSummary();
         }
+    });
+}
+
+function listenForChanges() {
+    const configRef = ref(database, 'gameConfiguration/nodes');
+    const rulesRef = ref(database, 'gameRules');
+
+    onValue(configRef, () => {
+        loadCurrentConfiguration();
+        updateSummary();
+    });
+
+    onValue(rulesRef, () => {
+        loadCurrentRules();
+        updateSummary();
+    });
+}
+
+function updateSummary() {
+    const configRef = ref(database, 'gameConfiguration/nodes');
+    const rulesRef = ref(database, 'gameRules');
+
+    get(configRef).then((snapshot) => {
+        const nodes = snapshot.val();
+        let summaryText = 'Wheel Configuration:\n';
+        if (nodes) {
+            nodes.forEach(node => {
+                summaryText += `Node Value: ${node.value}\n`;
+            });
+        }
+
+        get(rulesRef).then((snapshot) => {
+            const rules = snapshot.val();
+            summaryText += '\nSpin Rules:\n';
+            if (rules) {
+                Object.values(rules).forEach(ruleSet => {
+                    ruleSet.forEach(rule => {
+                        summaryText += `Sales Type: ${rule.salesType}, Quantity: ${rule.quantity}\n`;
+                    });
+                });
+            }
+
+            document.getElementById('summary-text').textContent = summaryText;
+        });
     });
 }
