@@ -17,17 +17,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Email/Password Authentication
-    const email = "user@example.com"; // Replace with user's email
-    const password = "userpassword"; // Replace with user's password
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then((result) => {
-            const user = result.user;
-            console.log('User signed in with email:', user);
-            window.displaySalesOutcomes(user); // Call the global function
-        })
-        .catch((error) => {
-            console.error('Email authentication error:', error);
-        });
 });
