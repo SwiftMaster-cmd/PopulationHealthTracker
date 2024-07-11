@@ -134,7 +134,6 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
 document.addEventListener('DOMContentLoaded', loadLiveActivities);
 
 async function loadLiveActivities() {
