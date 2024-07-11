@@ -4,7 +4,7 @@
     <title>Welcome to Work!</title>
     <link rel="stylesheet" href="login-style.css">
     <script src="main.js" defer></script>
-    <script src="autority.js" defer></script>
+    <script src="Authentication/autority.js" defer></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
@@ -43,9 +43,9 @@
 
                 // Redirect based on authority level
                 if (authorityLevel == 2) {
-                    window.location.href = 'manager.html';
+                    window.location.href = '<Manager>manager.html';
                 } else if (authorityLevel == 3) {
-                    window.location.href = 'owner.html';
+                    window.location.href = '<Owner>owner.html';
                 } else {
                     window.location.href = 'AutoTracker/Dash2.html';
                 }
