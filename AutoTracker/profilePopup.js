@@ -15,6 +15,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const auth = firebase.auth();
+        const database = firebase.database();
+    
+        // Google Sign-In
+        const googleSignInButton = document.getElementById('googleSignInButton');
+        googleSignInButton.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+    
+            auth.currentUser.linkWithPopup(provider).then(result => {
+                // Accounts successfully linked
+                const user = result.user;
+    
+                // Update database to reflect Google account is linked
+                const userRef = database.ref('users/' + user.uid);
+                userRef.update({ googleLinked: true }).then(() => {
+                    console.log('Google account linked and database updated.');
+                    alert('Google account linked successfully!');
+                }).catch(error => {
+                    console.error('Error updating database:', error);
+                });
+    
+                console.log('Linked Google account with UID:', user.uid);
+            }).catch(error => {
+                console.error('Error linking Google account:', error);
+                if (error.code === 'auth/credential-already-in-use') {
+                    alert('The Google account is already linked to another user.');
+                }
+            });
+        });
+    });
+
     changeNameButton.addEventListener('click', () => {
         const newName = nameInput.value.trim();
         if (newName) {
