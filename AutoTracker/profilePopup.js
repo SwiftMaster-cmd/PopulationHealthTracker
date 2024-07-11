@@ -19,6 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const auth = firebase.auth();
         const database = firebase.database();
     
+        // Check Google link status
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                const userRef = database.ref('users/' + user.uid);
+                const snapshot = await userRef.once('value');
+                const userData = snapshot.val();
+    
+                if (userData && userData.googleLinked) {
+                    console.log('Google account is already linked.');
+                } else {
+                    console.log('Google account is not linked.');
+                }
+            } else {
+                console.error('No user is signed in.');
+            }
+        });
+    
         // Google Sign-In
         const googleSignInButton = document.getElementById('googleSignInButton');
         googleSignInButton.addEventListener('click', () => {
