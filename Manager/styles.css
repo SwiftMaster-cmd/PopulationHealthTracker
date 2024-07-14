@@ -1,56 +1,71 @@
+/* Reset some basic styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4;
+    background-color: #f4f4f9;
+    color: #333333;
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: rgba(0, 170, 255, 0.7);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
     margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     margin: 0;
+    font-size: 2.5em;
 }
 
-button {
-    background-color: #007bff;
-    color: #fff;
+header button {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #00aaff;
     border: none;
     padding: 10px 20px;
-    border-radius: 3px;
     cursor: pointer;
-    margin-right: 5px;
-    transition: background-color 0.3s ease;
+    font-size: 1em;
+    margin-top: 10px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+header button:hover {
+    background-color: rgba(224, 224, 224, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 section {
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
     margin-bottom: 20px;
     padding: 20px;
-    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    width: 80%;
     max-width: 600px;
     text-align: center;
 }
 
 section h3 {
     margin-top: 0;
-}
-
-#nodes-container, #rules-container {
-    margin-bottom: 20px;
+    color: #00aaff;
 }
 
 .node-field, .rule-field {
@@ -68,6 +83,29 @@ section h3 {
     flex: 1;
 }
 
+.node-field input, .rule-field input {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    width: calc(100% - 12px);
+}
+
+button {
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #0088cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 #summary {
     text-align: center;
 }
@@ -79,6 +117,8 @@ section h3 {
 #wheel-canvas {
     display: block;
     margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #spin-button {
