@@ -224,7 +224,6 @@ function updateSummary() {
         });
     });
 }
-
 document.getElementById('shuffle-button').addEventListener('click', shuffleAndSaveNodes);
 
 function shuffleAndSaveNodes() {
@@ -246,7 +245,7 @@ function saveShuffledNodes(nodes) {
     set(ref(database, 'shuffledGameConfiguration'), { nodes }).then(() => {
         console.log('Shuffled configuration saved successfully.');
         generateWheel(nodes);
-        alert('Nodes have been shuffled and saved.');
+        document.getElementById('summary-text').textContent = 'Nodes have been shuffled and saved.';
     }).catch((error) => {
         console.error('Error saving shuffled configuration:', error);
     });
@@ -278,64 +277,73 @@ function shuffleNodes(nodes) {
     return shuffledNodes;
 }
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
+    if (!ctx) {
+        console.error('Failed to get canvas context');
+        return;
+    }
+
     if (nodes) {
-        // Flatten nodes into a list of values based on their count
-        let allNodes = [];
-        nodes.forEach(node => {
-            for (let i = 0; i < node.count; i++) {
-                allNodes.push(node.value);
-            }
-        });
-
-        // Shuffle the nodes array to randomize the order
-        allNodes = shuffle(allNodes);
-
-        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const totalNodes = allNodes.length;
+        const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
         const angleStep = (2 * Math.PI) / totalNodes;
         const radius = canvas.width / 2;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         let currentAngle = 0;
 
-        allNodes.forEach((nodeValue, index) => {
-            const startAngle = currentAngle;
-            const endAngle = startAngle + angleStep;
+        nodes.forEach((node) => {
+            for (let i = 0; i < node.count; i++) {
+                const startAngle = currentAngle;
+                const endAngle = startAngle + angleStep;
 
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.closePath();
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
 
-            // Alternate colors for each segment
-            ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
-            ctx.fill();
-            ctx.stroke();
+                ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
+                ctx.fill();
+                ctx.stroke();
 
-            // Draw text
-            ctx.save();
-            ctx.translate(centerX, centerY);
-            ctx.rotate((startAngle + endAngle) / 2);
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#000';
-            ctx.font = '20px Arial';
-            ctx.fillText(nodeValue, radius - 10, 10);
-            ctx.restore();
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate((startAngle + endAngle) / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#000';
+                ctx.font = '20px Arial';
+                ctx.fillText(node.value, radius - 10, 10);
+                ctx.restore();
 
-            currentAngle += angleStep;
+                currentAngle += angleStep;
+            }
         });
+
+        drawNeedle();
     }
+}
+
+function drawNeedle() {
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const needleLength = centerY * 0.8;
+
+    ctx.clearRect(centerX - 10, 0, 20, centerY);
+
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - needleLength);
+    ctx.lineTo(centerX - 10, centerY);
+    ctx.lineTo(centerX + 10, centerY);
+    ctx.closePath();
+    ctx.fillStyle = 'red';
+    ctx.fill();
 }
