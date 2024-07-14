@@ -1,9 +1,10 @@
 // wheel.js
+
 let isSpinning = false;
 let currentAngle = 0;
 let animationFrameId;
 
-function spinWheel(nodes) {
+export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
 
@@ -47,7 +48,7 @@ function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-function drawWheel(nodes, rotation) {
+export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -102,7 +103,7 @@ function drawNeedle() {
     const centerY = canvas.height / 2;
     const needleLength = centerY * 0.8;
 
-    ctx.clearRect(centerX - 10, 0, 20, centerY);
+    ctx.clearRect(centerX - 10, 0, 20, centerY); // Clear any previous needle
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY - needleLength);
@@ -131,5 +132,3 @@ function displayResult(nodes, rotation, angleStep) {
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
 }
-
-export { spinWheel, drawWheel, displayResult };
