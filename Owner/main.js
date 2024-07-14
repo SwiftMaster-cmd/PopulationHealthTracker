@@ -36,7 +36,7 @@ onAuthStateChanged(auth, async (user) => {
         const authorityLevel = userAuthoritySnapshot.val();
         console.log("User authority level:", authorityLevel);
 
-        if (authorityLevel === 3) {
+        if (authorityLevel >= 2) {
             const profiles = await fetchUserProfiles();
             console.log("Fetched user profiles:", profiles);
 
