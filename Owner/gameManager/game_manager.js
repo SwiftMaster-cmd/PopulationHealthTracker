@@ -3,14 +3,14 @@ import { getDatabase, ref, update, get, push, onValue, set } from "https://www.g
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
-    authDomain: "track-dac15.firebaseapp.com",
-    databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
-    projectId: "track-dac15",
-    storageBucket: "track-dac15.appspot.com",
-    messagingSenderId: "495156821305",
-    appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
-    measurementId: "G-RVBYB0RR06"
+    apiKey: "your-api-key",
+    authDomain: "your-auth-domain",
+    databaseURL: "your-database-url",
+    projectId: "your-project-id",
+    storageBucket: "your-storage-bucket",
+    messagingSenderId: "your-messaging-sender-id",
+    appId: "your-app-id",
+    measurementId: "your-measurement-id"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -225,48 +225,65 @@ function updateSummary() {
     });
 }
 
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
     if (nodes) {
+        // Flatten nodes into a list of values based on their count
+        let allNodes = [];
+        nodes.forEach(node => {
+            for (let i = 0; i < node.count; i++) {
+                allNodes.push(node.value);
+            }
+        });
+
+        // Shuffle the nodes array to randomize the order
+        allNodes = shuffle(allNodes);
+
         // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
+        const totalNodes = allNodes.length;
         const angleStep = (2 * Math.PI) / totalNodes;
         const radius = canvas.width / 2;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         let currentAngle = 0;
 
-        nodes.forEach((node) => {
-            for (let i = 0; i < node.count; i++) {
-                const startAngle = currentAngle;
-                const endAngle = startAngle + angleStep;
+        allNodes.forEach((nodeValue, index) => {
+            const startAngle = currentAngle;
+            const endAngle = startAngle + angleStep;
 
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.closePath();
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
 
-                // Alternate colors for each segment
-                ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
-                ctx.fill();
-                ctx.stroke();
+            // Alternate colors for each segment
+            ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
+            ctx.fill();
+            ctx.stroke();
 
-                // Draw text
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate((startAngle + endAngle) / 2);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#000';
-                ctx.font = '20px Arial';
-                ctx.fillText(node.value, radius - 10, 10);
-                ctx.restore();
+            // Draw text
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((startAngle + endAngle) / 2);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#000';
+            ctx.font = '20px Arial';
+            ctx.fillText(nodeValue, radius - 10, 10);
+            ctx.restore();
 
-                currentAngle += angleStep;
-            }
+            currentAngle += angleStep;
         });
     }
 }
