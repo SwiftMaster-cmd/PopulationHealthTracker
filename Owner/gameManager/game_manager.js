@@ -224,6 +224,14 @@ function updateSummary() {
         });
     });
 }
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
