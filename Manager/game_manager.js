@@ -224,6 +224,10 @@ function updateSummary() {
         });
     });
 }
+
+
+
+
 document.getElementById('shuffle-button').addEventListener('click', shuffleAndSaveNodes);
 
 function shuffleAndSaveNodes() {
@@ -234,10 +238,10 @@ function shuffleAndSaveNodes() {
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = nodeFields[i].querySelector('input[type="number"]').value;
         const nodeCount = nodeFields[i].querySelector('input[type="number"]:nth-child(2)').value;
-        nodes.push({ value: nodeValue, count: nodeCount });
+        nodes.push({ value: nodeValue, count: parseInt(nodeCount) });
     }
 
-    nodes = shuffleNodes(nodes);
+    nodes = flattenAndShuffleNodes(nodes);
     saveShuffledNodes(nodes);
 }
 
@@ -251,7 +255,8 @@ function saveShuffledNodes(nodes) {
     });
 }
 
-function shuffleNodes(nodes) {
+function flattenAndShuffleNodes(nodes) {
+    // Flatten nodes into a list of values based on their count
     let flatNodes = [];
     nodes.forEach(node => {
         for (let i = 0; i < node.count; i++) {
@@ -259,18 +264,20 @@ function shuffleNodes(nodes) {
         }
     });
 
+    // Shuffle the flat nodes array
     for (let i = flatNodes.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
     }
 
+    // Reassemble shuffled flat nodes into nodes with their counts
     let shuffledNodes = [];
     flatNodes.forEach(value => {
         let node = shuffledNodes.find(node => node.value === value);
         if (node) {
             node.count++;
         } else {
-            shuffledNodes.push({ value, count: 1 });
+            shuffledNodes.push({ value: value, count: 1 });
         }
     });
 
@@ -289,7 +296,7 @@ function generateWheel(nodes) {
     if (nodes) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
+        const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
         const angleStep = (2 * Math.PI) / totalNodes;
         const radius = canvas.width / 2;
         const centerX = canvas.width / 2;
