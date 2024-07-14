@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { spinWheel, drawWheel } from './wheel.js'; // Import wheel functions
+import { spinWheel, drawWheel } from './wheel.js'; // Ensure this import path is correct
 
 document.addEventListener('DOMContentLoaded', () => {
     const firebaseConfig = {
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let presets = [];
     let currentPage = 0;
     const presetsPerPage = 3;
+    let shuffledNodes = []; // Define shuffledNodes here
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const nodes = preset.nodes;
         console.log('Preset nodes:', nodes); // Debugging
-        const shuffledNodes = shuffleNodes(nodes);
+        shuffledNodes = shuffleNodes(nodes); // Define shuffledNodes here
         drawWheel(shuffledNodes); // Use drawWheel from wheel.js
     }
 
@@ -120,6 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener for spin button
     document.getElementById('spin-button').addEventListener('click', () => {
-        spinWheel(shuffledNodes); // Use spinWheel from wheel.js
+        if (shuffledNodes.length > 0) {
+            spinWheel(shuffledNodes); // Use spinWheel from wheel.js
+        } else {
+            alert('Please select a preset first.');
+        }
     });
 });
