@@ -13,21 +13,5 @@
         <button onclick="window.location.href='gameManager/game_manager.html'">Go to Game Manager</button>
     </header>
     <div id="dataContainer"></div>
-    <div id="commissionStructureContainer">
-        <h2>Commission Structure</h2>
-        <form id="commissionStructureForm">
-            <!-- Add form fields for editing commission structure here -->
-            <button type="button" id="saveCommissionStructureButton">Save</button>
-        </form>
-    </div>
-    <script>
-        document.getElementById('saveCommissionStructureButton').addEventListener('click', async () => {
-            // Collect data from form fields and save commission structure
-            const newStructure = {
-                // Populate with new structure data
-            };
-            await saveCommissionStructure(newStructure);
-        });
-    </script>
 </body>
 </html>
