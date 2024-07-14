@@ -4,6 +4,7 @@
     <title>Game Manager</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="game_manager.js"></script>
+    <script type="module" src="wheel.js"></script>
 </head>
 <body>
     <header>
@@ -41,7 +42,7 @@
         <h3>Summary</h3>
         <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
         <canvas id="wheel-canvas" width="500" height="500"></canvas>
-        <button id="spin-button">Spin</button>
+        <button id="spin-button" onclick="spinWheel(currentNodes)">Spin</button>
         <!-- Add the shuffle button here -->
         <button id="shuffle-button">Shuffle Nodes</button>
     </section>
