@@ -161,3 +161,23 @@ button:hover {
     flex-wrap: wrap;
     justify-content: center;
 }
+
+/* Add these styles */
+#shuffle-button {
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 10px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+#shuffle-button:hover {
+    background-color: #0088cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

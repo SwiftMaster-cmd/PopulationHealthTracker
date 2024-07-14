@@ -225,6 +225,59 @@ function updateSummary() {
     });
 }
 
+document.getElementById('shuffle-button').addEventListener('click', shuffleAndSaveNodes);
+
+function shuffleAndSaveNodes() {
+    const nodesContainer = document.getElementById('nodes-container');
+    const nodeFields = nodesContainer.getElementsByClassName('node-field');
+    let nodes = [];
+
+    for (let i = 0; i < nodeFields.length; i++) {
+        const nodeValue = nodeFields[i].querySelector('input[type="number"]').value;
+        const nodeCount = nodeFields[i].querySelector('input[type="number"]:nth-child(2)').value;
+        nodes.push({ value: nodeValue, count: nodeCount });
+    }
+
+    nodes = shuffleNodes(nodes);
+    saveShuffledNodes(nodes);
+}
+
+function saveShuffledNodes(nodes) {
+    set(ref(database, 'shuffledGameConfiguration'), { nodes }).then(() => {
+        console.log('Shuffled configuration saved successfully.');
+        generateWheel(nodes);
+        alert('Nodes have been shuffled and saved.');
+    }).catch((error) => {
+        console.error('Error saving shuffled configuration:', error);
+    });
+}
+
+function shuffleNodes(nodes) {
+    let flatNodes = [];
+    nodes.forEach(node => {
+        for (let i = 0; i < node.count; i++) {
+            flatNodes.push(node.value);
+        }
+    });
+
+    for (let i = flatNodes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
+    }
+
+    let shuffledNodes = [];
+    flatNodes.forEach(value => {
+        let node = shuffledNodes.find(node => node.value === value);
+        if (node) {
+            node.count++;
+        } else {
+            shuffledNodes.push({ value, count: 1 });
+        }
+    });
+
+    return shuffledNodes;
+}
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
