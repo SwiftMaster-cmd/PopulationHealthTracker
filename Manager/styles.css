@@ -129,3 +129,35 @@ button:hover {
 #presets-container button {
     margin: 5px 0;
 }
+
+/* Add these styles */
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#prev-button, #next-button {
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 5px;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
+
+#prev-button:hover, #next-button:hover {
+    background-color: #0088cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#presets-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}

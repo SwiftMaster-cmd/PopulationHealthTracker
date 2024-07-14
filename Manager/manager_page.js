@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = getAuth(app);
     const database = getDatabase(app);
 
+    let presets = [];
+    let currentPage = 0;
+    const presetsPerPage = 3;
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
@@ -38,20 +42,44 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadPresets() {
         const presetsRef = ref(database, 'spinTheWheelPresets');
         onValue(presetsRef, (snapshot) => {
-            const presets = snapshot.val();
-            const presetsContainer = document.getElementById('presets-container');
-            presetsContainer.innerHTML = ''; // Clear existing presets
-
-            if (presets) {
-                Object.keys(presets).forEach(presetName => {
-                    const presetButton = document.createElement('button');
-                    presetButton.textContent = presetName;
-                    presetButton.addEventListener('click', () => displayPresetSummary(presets[presetName]));
-                    presetsContainer.appendChild(presetButton);
-                });
-            }
+            const data = snapshot.val();
+            presets = data ? Object.entries(data).reverse() : [];
+            displayPresets();
         });
     }
+
+    function displayPresets() {
+        const presetsContainer = document.getElementById('presets-container');
+        presetsContainer.innerHTML = '';
+
+        const start = currentPage * presetsPerPage;
+        const end = Math.min(start + presetsPerPage, presets.length);
+
+        for (let i = start; i < end; i++) {
+            const [presetName, presetData] = presets[i];
+            const presetButton = document.createElement('button');
+            presetButton.textContent = presetName;
+            presetButton.addEventListener('click', () => displayPresetSummary(presetData));
+            presetsContainer.appendChild(presetButton);
+        }
+
+        document.getElementById('prev-button').disabled = currentPage === 0;
+        document.getElementById('next-button').disabled = end >= presets.length;
+    }
+
+    document.getElementById('prev-button').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            displayPresets();
+        }
+    });
+
+    document.getElementById('next-button').addEventListener('click', () => {
+        if ((currentPage + 1) * presetsPerPage < presets.length) {
+            currentPage++;
+            displayPresets();
+        }
+    });
 
     function displayPresetSummary(preset) {
         const summaryText = document.getElementById('summary-text');
@@ -64,21 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function shuffleNodes(nodes) {
-        // Flatten nodes into an array where each node value appears `count` times
         let flatNodes = [];
         nodes.forEach(node => {
             for (let i = 0; i < node.count; i++) {
                 flatNodes.push(node.value);
             }
         });
-    
-        // Shuffle the flattened array
+
         for (let i = flatNodes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
         }
-    
-        // Reassemble the shuffled array into nodes with their counts
+
         let shuffledNodes = [];
         flatNodes.forEach(value => {
             let node = shuffledNodes.find(node => node.value === value);
@@ -88,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 shuffledNodes.push({ value, count: 1 });
             }
         });
-    
+
         return shuffledNodes;
     }
 
@@ -106,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (nodes) {
-            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const totalNodes = nodes.reduce((acc, node) => acc + parseInt(node.count), 0);
@@ -126,12 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
                     ctx.closePath();
 
-                    // Alternate colors for each segment
                     ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
                     ctx.fill();
                     ctx.stroke();
 
-                    // Draw text
                     ctx.save();
                     ctx.translate(centerX, centerY);
                     ctx.rotate((startAngle + endAngle) / 2);
@@ -149,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('spin-button').addEventListener('click', () => spinWheel(nodes));
     }
 
+   
     function spinWheel(nodes) {
         if (isSpinning) return;
         isSpinning = true;
