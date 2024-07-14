@@ -226,8 +226,6 @@ function updateSummary() {
 }
 
 
-
-
 document.getElementById('shuffle-button').addEventListener('click', shuffleAndSaveNodes);
 
 function shuffleAndSaveNodes() {
@@ -264,7 +262,7 @@ function flattenAndShuffleNodes(nodes) {
         }
     });
 
-    // Shuffle the flat nodes array
+    // Shuffle the flat nodes array using Fisher-Yates shuffle
     for (let i = flatNodes.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
@@ -281,7 +279,23 @@ function flattenAndShuffleNodes(nodes) {
         }
     });
 
-    return shuffledNodes;
+    // Ensure better distribution by splitting and re-shuffling small chunks
+    const chunkSize = Math.ceil(shuffledNodes.length / 3);
+    let distributedNodes = [];
+    for (let i = 0; i < shuffledNodes.length; i += chunkSize) {
+        let chunk = shuffledNodes.slice(i, i + chunkSize);
+        distributedNodes = distributedNodes.concat(shuffleChunk(chunk));
+    }
+
+    return distributedNodes;
+}
+
+function shuffleChunk(chunk) {
+    for (let i = chunk.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [chunk[i], chunk[j]] = [chunk[j], chunk[i]];
+    }
+    return chunk;
 }
 
 function generateWheel(nodes) {
