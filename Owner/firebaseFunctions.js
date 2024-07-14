@@ -1,6 +1,7 @@
 import { ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { database } from './firebaseConfig.js';
 
+// Fetch user profiles
 async function fetchUserProfiles() {
     const usersRef = ref(database, 'users');
     const usersSnapshot = await get(usersRef);
@@ -16,6 +17,7 @@ async function fetchUserProfiles() {
     return profiles;
 }
 
+// Fetch account numbers and times
 async function fetchAccountNumbersAndTimes(data) {
     const accountNumbers = {};
     const outcomeTimes = {};
@@ -38,12 +40,27 @@ async function fetchAccountNumbersAndTimes(data) {
     return { accountNumbers, outcomeTimes };
 }
 
+// Fetch commission structure
+async function fetchCommissionStructure() {
+    const commissionRef = ref(database, 'commissionStructure');
+    const snapshot = await get(commissionRef);
+    return snapshot.val();
+}
+
+// Update commission structure
+async function updateCommissionStructure(newStructure) {
+    const commissionRef = ref(database, 'commissionStructure');
+    await update(commissionRef, newStructure);
+}
+
+// Format time frame
 function formatTimeFrame(timestamp) {
     const date = new Date(timestamp);
     const options = { month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
     return date.toLocaleString('en-US', options);
 }
 
+// Create node element
 function createNodeElement(key, value, profiles, accountNumbers, outcomeTimes, path) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-container';
@@ -115,6 +132,7 @@ function createNodeElement(key, value, profiles, accountNumbers, outcomeTimes, p
     return nodeContainer;
 }
 
+// Display data
 function displayData(data, profiles, accountNumbers, outcomeTimes) {
     const container = document.getElementById('dataContainer');
     container.innerHTML = ''; // Clear previous content
@@ -125,4 +143,4 @@ function displayData(data, profiles, accountNumbers, outcomeTimes) {
     });
 }
 
-export { fetchUserProfiles, fetchAccountNumbersAndTimes, formatTimeFrame, createNodeElement, displayData };
+export { fetchUserProfiles, fetchAccountNumbersAndTimes, formatTimeFrame, createNodeElement, displayData, fetchCommissionStructure, updateCommissionStructure };
