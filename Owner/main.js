@@ -1,12 +1,37 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { auth, database } from './firebaseConfig.js';
-import { fetchUserProfiles, fetchAccountNumbersAndTimes, displayData } from './firebaseFunctions.js';
+import { fetchUserProfiles, fetchAccountNumbersAndTimes, displayData, fetchCommissionStructure, updateCommissionStructure } from './firebaseFunctions.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    createLevelPicker();
+    loadMonthlyTotals();
+    loadCommissionStructure();
+});
+
+async function loadCommissionStructure() {
+    try {
+        const commissionStructure = await fetchCommissionStructure();
+        console.log('Commission Structure:', commissionStructure);
+        // Populate the UI with commission structure data
+    } catch (error) {
+        console.error('Failed to load commission structure:', error);
+    }
+}
+
+async function saveCommissionStructure(newStructure) {
+    try {
+        await updateCommissionStructure(newStructure);
+        console.log('Commission structure updated successfully');
+    } catch (error) {
+        console.error('Failed to update commission structure:', error);
+    }
+}
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         console.log("User is authenticated", user);
-        const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
+        const userAuthorityRef = ref(database, 'users/' + user.uid + '/authorityLevel');
         const userAuthoritySnapshot = await get(userAuthorityRef);
         const authorityLevel = userAuthoritySnapshot.val();
         console.log("User authority level:", authorityLevel);
