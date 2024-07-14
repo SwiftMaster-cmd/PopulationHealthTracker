@@ -3,14 +3,14 @@ import { getDatabase, ref, update, get, push, onValue, set } from "https://www.g
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "your-api-key",
-    authDomain: "your-auth-domain",
-    databaseURL: "your-database-url",
-    projectId: "your-project-id",
-    storageBucket: "your-storage-bucket",
-    messagingSenderId: "your-messaging-sender-id",
-    appId: "your-app-id",
-    measurementId: "your-measurement-id"
+    apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
+    authDomain: "track-dac15.firebaseapp.com",
+    databaseURL: "https://track-dac15-default-rtdb.firebaseio.com",
+    projectId: "track-dac15",
+    storageBucket: "track-dac15.appspot.com",
+    messagingSenderId: "495156821305",
+    appId: "1:495156821305:web:7cbb86d257ddf9f0c3bce8",
+    measurementId: "G-RVBYB0RR06"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -224,15 +224,6 @@ function updateSummary() {
         });
     });
 }
-
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
