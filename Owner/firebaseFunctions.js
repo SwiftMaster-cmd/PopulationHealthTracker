@@ -1,4 +1,4 @@
-import { ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { auth, database } from './firebaseConfig.js';
 
 async function fetchUserProfiles() {
@@ -61,7 +61,9 @@ function createNodeElement(key, value, profiles, accountNumbers, outcomeTimes, p
     keyElement.textContent = displayKey;
     keyElement.style.cursor = 'pointer';
     keyElement.addEventListener('click', () => {
-        subContainer.style.display = subContainer.style.display === 'none' ? 'block' : 'none';
+        const isHidden = subContainer.style.display === 'none';
+        subContainer.style.display = isHidden ? 'block' : 'none';
+        keyElement.style.color = isHidden ? '#0056b3' : '#007bff';
     });
 
     const subContainer = document.createElement('div');
