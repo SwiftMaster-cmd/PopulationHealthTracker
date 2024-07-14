@@ -362,4 +362,3 @@ function displayResult(nodes, rotation, angleStep) {
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
 }
-});
