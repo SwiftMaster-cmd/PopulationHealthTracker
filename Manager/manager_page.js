@@ -64,9 +64,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function shuffleNodes(nodes) {
-        const shuffled = nodes.map(node => ({ ...node, originalIndex: Math.random() }));
-        shuffled.sort((a, b) => a.originalIndex - b.originalIndex);
-        return shuffled;
+        // Flatten nodes into an array where each node value appears `count` times
+        let flatNodes = [];
+        nodes.forEach(node => {
+            for (let i = 0; i < node.count; i++) {
+                flatNodes.push(node.value);
+            }
+        });
+    
+        // Shuffle the flattened array
+        for (let i = flatNodes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
+        }
+    
+        // Reassemble the shuffled array into nodes with their counts
+        let shuffledNodes = [];
+        flatNodes.forEach(value => {
+            let node = shuffledNodes.find(node => node.value === value);
+            if (node) {
+                node.count++;
+            } else {
+                shuffledNodes.push({ value, count: 1 });
+            }
+        });
+    
+        return shuffledNodes;
     }
 
     let isSpinning = false;
