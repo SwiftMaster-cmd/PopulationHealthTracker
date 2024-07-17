@@ -1,3 +1,19 @@
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const cheatSheetButton = document.getElementById('cheatSheetButton');
+  if (cheatSheetButton) {
+      cheatSheetButton.addEventListener('click', () => {
+          window.location.href = 'cheatSheet.html';
+      });
+  }
+
+});
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const containers = document.querySelectorAll('.container');
   
