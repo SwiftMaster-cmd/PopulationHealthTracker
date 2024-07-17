@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
             return 'Transfer';
         } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
-            return 'SelectPatientManagement';
+            return 'Select Patient Management';
         }
         return action;
     }
