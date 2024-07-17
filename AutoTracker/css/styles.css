@@ -274,8 +274,16 @@ button:active {
     padding: 0;
     margin-left: 8px; /* Adjust as needed */
     vertical-align: middle;
+    color: #007bff; /* Bootstrap primary color */
+    font-size: 24px; /* Adjust size as needed */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+    transition: transform 0.2s; /* Add transition for hover effect */
 }
 
-.copy-button svg {
-    fill: currentColor;
+.copy-button:hover {
+    transform: scale(1.1); /* Slightly enlarge the button on hover */
+}
+
+.copy-button i {
+    font-size: inherit; /* Inherit font size from parent */
 }
