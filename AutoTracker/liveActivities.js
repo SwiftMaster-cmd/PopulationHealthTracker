@@ -183,7 +183,7 @@ const style = document.createElement('style');
 style.innerHTML = `
     .copy-checkmark {
         margin-left: 8px;
-        color: .white;
+        color: white;
     }
 `;
 document.head.appendChild(style);
