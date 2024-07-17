@@ -146,10 +146,9 @@ function handleCopyClick(copyText) {
     const saleType = copyText.getAttribute('data-sale-type');
     const leadId = copyText.getAttribute('data-lead-id');
     const time = copyText.getAttribute('data-time');
-    const link = `https://phealthtracker.netlify.app?leadId=${encodeURIComponent(leadId)}&saleType=${encodeURIComponent(saleType)}&time=${encodeURIComponent(time)}`;
 
     const tempElement = document.createElement('div');
-    tempElement.innerHTML = `sold <strong>${saleType}</strong> (<strong>${leadId}</strong>) at ${time} - ${link}`;
+    tempElement.innerHTML = `sold <strong>${saleType}</strong> (<strong>${leadId}</strong>) at ${time}`;
     document.body.appendChild(tempElement);
 
     const range = document.createRange();
