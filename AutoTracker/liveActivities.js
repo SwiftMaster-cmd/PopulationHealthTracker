@@ -99,41 +99,49 @@ function renderSales(sales, container, likesRef, usersRef) {
             // Limit to 5 max live activities
             const limitedSales = sales.slice(0, 5);
 
-            limitedSales.forEach(sale => {
-                const saleElement = document.createElement('div');
-                saleElement.classList.add('activity-item');
+            // Track displayed sales
+            const displayedSales = new Set();
 
+            limitedSales.forEach(sale => {
                 // Use a sanitized path for the like button
                 const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-                saleElement.innerHTML = `
-                    <button class="like-button" data-like-path="${likePath}">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                    </button>
-                    <span class="copy-text" data-sale-type="${sale.saleType}" data-lead-id="${sale.leadId}" data-time="${sale.formattedTime}">
-                        <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> (<strong>${sale.leadId}</strong>) at ${sale.formattedTime}
-                    </span>
-                    <div class="like-info" id="like-info-${likePath}"></div>
-                `;
-                container.appendChild(saleElement);
+                // Check if the sale is already displayed
+                if (!displayedSales.has(likePath)) {
+                    displayedSales.add(likePath);
 
-                const likeButton = saleElement.querySelector('.like-button');
-                const likeInfoDiv = saleElement.querySelector('.like-info');
-                const copyText = saleElement.querySelector('.copy-text');
+                    const saleElement = document.createElement('div');
+                    saleElement.classList.add('activity-item');
 
-                initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+                    saleElement.innerHTML = `
+                        <button class="like-button" data-like-path="${likePath}">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </button>
+                        <span class="copy-text" data-sale-type="${sale.saleType}" data-lead-id="${sale.leadId}" data-time="${sale.formattedTime}">
+                            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> (<strong>${sale.leadId}</strong>) at ${sale.formattedTime}
+                        </span>
+                        <div class="like-info" id="like-info-${likePath}"></div>
+                    `;
+                    container.appendChild(saleElement);
 
-                likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+                    const likeButton = saleElement.querySelector('.like-button');
+                    const likeInfoDiv = saleElement.querySelector('.like-info');
+                    const copyText = saleElement.querySelector('.copy-text');
 
-                // Listen for changes to likes in real-time
-                likesRef.child(likePath).on('value', snapshot => {
-                    updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
-                });
+                    initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
 
-                if (copyText) {
-                    copyText.addEventListener('click', () => handleCopyClick(copyText));
+                    likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+
+                    // Listen for changes to likes in real-time
+                    likesRef.child(likePath).on('value', snapshot => {
+                        updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
+                    });
+
+                    if (copyText) {
+                        copyText.addEventListener('click', () => handleCopyClick(copyText));
+                    }
                 }
             });
         } else {
