@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chartPeriodPicker = document.getElementById('chartPeriodPicker');
 
     // Set default picker value to 'month'
-    chartPeriodPicker.value = 'month';
+    //chartPeriodPicker.value = 'month';
 
     chartPeriodPicker.addEventListener('change', () => {
         loadChart(chartPeriodPicker.value);
