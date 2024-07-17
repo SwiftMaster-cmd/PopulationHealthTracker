@@ -1,15 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const chartPeriodPicker = document.getElementById('chartPeriodPicker');
+    // Initialize all charts with different periods
+    loadChart('day', 'salesChartDay');
+    loadChart('week', 'salesChartWeek');
+    loadChart('month', 'salesChartMonth');
 
-    // Set default picker value to 'month'
-    //chartPeriodPicker.value = 'month';
-
-    chartPeriodPicker.addEventListener('change', () => {
-        loadChart(chartPeriodPicker.value);
-    });
-
-    loadChart('month');
-
+    // Load color palette from local storage if available
     const savedColor = localStorage.getItem('baseColor');
     if (savedColor) {
         applyColorPalette(savedColor);
@@ -19,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-let salesChart;
+let salesCharts = {};
 
-function loadChart(period = 'month') {
+function loadChart(period, canvasId) {
     const database = firebase.database();
     const salesTimeFramesRef = database.ref('salesTimeFrames');
 
@@ -47,19 +42,19 @@ function loadChart(period = 'month') {
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
                 const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
 
-                const ctx = document.getElementById('salesChart').getContext('2d');
+                const ctx = document.getElementById(canvasId).getContext('2d');
 
-                if (salesChart instanceof Chart) {
-                    salesChart.data = chartData;
-                    salesChart.options.scales.x.ticks.color = textColor;
-                    salesChart.options.scales.y.ticks.color = textColor;
-                    salesChart.options.scales.x.ticks.font.size = 24;
-                    salesChart.options.scales.y.ticks.font.size = 24;
-                    salesChart.options.plugins.legend.labels.color = textColor;
-                    salesChart.options.plugins.legend.labels.font.size = 24;
-                    salesChart.update();
+                if (salesCharts[canvasId] instanceof Chart) {
+                    salesCharts[canvasId].data = chartData;
+                    salesCharts[canvasId].options.scales.x.ticks.color = textColor;
+                    salesCharts[canvasId].options.scales.y.ticks.color = textColor;
+                    salesCharts[canvasId].options.scales.x.ticks.font.size = 24;
+                    salesCharts[canvasId].options.scales.y.ticks.font.size = 24;
+                    salesCharts[canvasId].options.plugins.legend.labels.color = textColor;
+                    salesCharts[canvasId].options.plugins.legend.labels.font.size = 24;
+                    salesCharts[canvasId].update();
                 } else {
-                    salesChart = new Chart(ctx, {
+                    salesCharts[canvasId] = new Chart(ctx, {
                         type: 'line',
                         data: chartData,
                         options: {
