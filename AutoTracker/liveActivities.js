@@ -96,7 +96,10 @@ function renderSales(sales, container, likesRef, usersRef) {
         if (currentUser) {
             const currentUserId = currentUser.uid;
 
-            sales.forEach(sale => {
+            // Limit to 5 max live activities
+            const limitedSales = sales.slice(0, 5);
+
+            limitedSales.forEach(sale => {
                 const saleElement = document.createElement('div');
                 saleElement.classList.add('activity-item');
 
@@ -146,7 +149,7 @@ function handleCopyClick(copyText) {
     const link = `https://phealthtracker.netlify.app?leadId=${encodeURIComponent(leadId)}&saleType=${encodeURIComponent(saleType)}&time=${encodeURIComponent(time)}`;
 
     const tempElement = document.createElement('div');
-    tempElement.innerHTML = `<a href="${link}">sold <strong>${saleType}</strong> (<strong>${leadId}</strong>) at ${time}</a>`;
+    tempElement.innerHTML = `sold <strong>${saleType}</strong> (<strong>${leadId}</strong>) at ${time} - ${link}`;
     document.body.appendChild(tempElement);
 
     const range = document.createRange();
@@ -198,7 +201,6 @@ style.innerHTML = `
     }
 `;
 document.head.appendChild(style);
-
 
 function showCopyIcon(copyText) {
     const iconElement = document.createElement('i');
