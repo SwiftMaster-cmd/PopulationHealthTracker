@@ -133,10 +133,12 @@ function loadChart(period = 'month') {
 }
 
 function getDailyChartData(salesData) {
-    const hours = Array.from({ length: 13 }, (_, i) => `${i + 8}am`);
+    const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+    const currentDayData = getCurrentDayData(salesData);
+
     const data = {
         labels: hours,
-        datasets: createDatasets(hours, salesData, 'day')
+        datasets: createDatasets(hours, currentDayData, 'day')
     };
     return data;
 }
@@ -162,6 +164,26 @@ function getMonthlyChartData(salesData) {
     return data;
 }
 
+
+function getCurrentDayData(salesData) {
+    const currentDaySales = {};
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const endOfDay = startOfDay + 24 * 60 * 60 * 1000;
+
+    for (const account in salesData) {
+        currentDaySales[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentDaySales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime).getTime();
+                return saleDate >= startOfDay && saleDate < endOfDay;
+            });
+        }
+    }
+
+    return currentDaySales;
+}
 
 function getCurrentWeekData(salesData) {
     const currentWeekSales = {};
@@ -259,11 +281,12 @@ function getSaleCountForLabel(salesData, period, saleType, label) {
     return count;
 }
 
+
+
 function formatHour(date) {
     const hours = date.getHours();
-    return hours < 12 ? `${hours}am` : `${hours - 12}pm`;
+    return `${hours}:00`;
 }
-
 function formatDay(date) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     return days[date.getDay()];
