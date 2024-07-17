@@ -178,7 +178,14 @@ function handleCopyClick(copyText) {
     }, 2000); // Remove checkmark after 2 seconds
 }
 
-
+// Add CSS for the checkmark
+const style = document.createElement('style');
+style.innerHTML = `
+    .copy-checkmark {
+        margin-left: 8px;
+        color: .white;
+    }
+`;
 document.head.appendChild(style);
 
 function showCopyIcon(copyText) {
