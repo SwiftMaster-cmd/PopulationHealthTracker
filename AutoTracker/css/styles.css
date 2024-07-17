@@ -266,3 +266,16 @@ button:active {
     background-color: var(--color-primary);
     transform: translateY(0);
 }
+
+.copy-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 8px; /* Adjust as needed */
+    vertical-align: middle;
+}
+
+.copy-button svg {
+    fill: currentColor;
+}
