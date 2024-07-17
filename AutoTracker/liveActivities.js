@@ -187,7 +187,7 @@ style.innerHTML = `
     .copy-checkmark {
         margin-left: 8px;
         color: blue;
-        opacity: 0;
+        opacity: 1;
         transition: opacity 0.5s;
     }
     .fade-in-out {
