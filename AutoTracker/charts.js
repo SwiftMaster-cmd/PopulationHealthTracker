@@ -143,9 +143,11 @@ function getDailyChartData(salesData) {
 
 function getWeeklyChartData(salesData) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentWeekData = getCurrentWeekData(salesData);
+
     const data = {
         labels: days,
-        datasets: createDatasets(days, salesData, 'week')
+        datasets: createDatasets(days, currentWeekData, 'week')
     };
     return data;
 }
@@ -159,6 +161,29 @@ function getMonthlyChartData(salesData) {
     };
     return data;
 }
+
+
+function getCurrentWeekData(salesData) {
+    const currentWeekSales = {};
+    const now = new Date();
+    const firstDayOfWeek = now.getDate() - now.getDay(); // Sunday
+
+    for (const account in salesData) {
+        currentWeekSales[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentWeekSales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime);
+                const dayDifference = Math.floor((saleDate - new Date(saleDate.getFullYear(), saleDate.getMonth(), firstDayOfWeek)) / (1000 * 60 * 60 * 24));
+                return dayDifference >= 0 && dayDifference < 7;
+            });
+        }
+    }
+
+    return currentWeekSales;
+}
+
+
 
 function createDatasets(labels, salesData, period) {
     const datasets = [
