@@ -1,63 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charts</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/charts.css">
+    <link rel="stylesheet" href="css/outcomes.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
+    <link rel="stylesheet" href="css/monthlyTotals.css">
+    <link rel="stylesheet" href="css/styles.css"> <!-- Custom CSS file for the main styles -->
 
-/* Button styling */
-button {
-    padding: 15px 30px; /* Increased padding for larger buttons */
-    border: none;
-    border-radius: 8px; /* Slightly more rounded corners */
-    background-color: var(--color-tertiary);
-    color: var(--text-white);
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;
-    font-size: 16px; /* Increased font size */
-}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    <script src="firebase-init.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="tracker.js" defer></script>
+    <script src="points.js" defer></script>
 
-button:hover {
-    background-color: var(--color-quaternary);
-    transform: translateY(-3px);
-}
+    <script src="customer-info.js" defer></script>
+    <script src="color-palette.js" defer></script>
+    <script src="sales-outcomes.js" defer></script>
+    <script src="leaderboard.js" defer></script>
+    <script src="liveActivities.js" defer></script>
+    <script src="CSsearch.js" defer></script>
 
-button:active {
-    background-color: var(--color-primary);
-    transform: translateY(0);
-}
+    <script src="monthlyTotals.js" defer></script>
+    <script src="charts.js" defer></script>
+    <script src="profilePopup.js" defer></script>
 
-/* Input field and search button styling */
-.search-container {
-    display: flex;
-    align-items: center;
-}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RVBYB0RR06');
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row bg-secondary text-white py-3">
+            <div class="col d-flex justify-content-between align-items-center">
+                <h1 class="h3">Charts</h1>
+                <div>
+                    <button id="cheatSheetButton" class="btn btn-primary mr-2">Cheat Sheet</button>
+                    <button onclick="window.location.href='Dash2.html'" class="btn btn-primary mr-2">Dashboard</button>
+                    <button onclick="window.location.href='history.html'" class="btn btn-primary mr-2">Sales History</button>
+                    <button onclick="window.location.href='leaderboard.html'" class="btn btn-primary mr-2">Leaderboard</button>
+                    <button onclick="window.location.href='totals.html'" class="btn btn-primary">Monthly Totals</button>
+                </div>
+                <div class="profile-button btn btn-primary rounded-circle">P</div>
+            </div>
+        </div>
+    </div>
 
-.search-container input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid var(--color-quaternary);
-    background-color: var(--color-secondary);
-    color: var(--text-white);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;
-}
+    <div class="container mt-4">
+        <!-- Color Picker and Name Change Container -->
+        <div class="card p-3 mb-4">
+            <h5 class="card-title">Customize</h5>
+            <div class="card-body">
+                <input type="color" id="colorPicker" class="form-control mb-2" />
+                <button id="applyColor" class="btn btn-success mb-2">Apply Color Palette</button>
+                <input type="text" id="nameInput" class="form-control mb-2" placeholder="Enter new name" />
+                <button id="changeName" class="btn btn-success mb-2">Change Name</button>
+                <button id="signOut" class="btn btn-danger mb-2">Sign Out</button>
+                <button id="googleSignInButton" class="btn btn-primary mb-2">Link with Google</button>
+                <button id="copyBookmarkletButton" class="btn btn-warning">Click me to copy AutoTracker Bookmark Script</button>
+            </div>
+        </div>
 
-.search-container button {
-    margin-left: 10px;
-    background: var(--color-tertiary);
-    border: none;
-    color: var(--text-white);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="chartPeriodPicker">Select Period</label>
+                    <select id="chartPeriodPicker" class="form-control">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                    </select>
+                </div>
+                <div id="rotateMessage" class="text-center text-danger d-none">
+                    Please rotate your device and refresh the page to view the chart.
+                </div>
+                <div id="chartContainer" class="mt-3">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.search-container button:hover {
-    background-color: var(--color-quaternary);
-    transform: translateY(-3px);
-}
+    <!-- Event Tracking for dynamically added elements -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to add event listeners to dynamically added elements
+            function addDynamicEventListeners() {
+                const leadIdContainer = document.getElementById('lead-id-container');
+                const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
+                const customerInfoContainer = document.getElementById('customer-info-container');
 
-.search-container button:active {
-    background-color: var(--color-primary);
-    transform: translateY(0);
-}
+                // Example for lead ID container
+                if (leadIdContainer) {
+                    leadIdContainer.addEventListener('click', function(event) {
+                        if (event.target && event.target.matches('.lead-id-item')) {
+                            gtag('event', 'click', {
+                                'event_category': 'Lead ID',
+                                'event_label': event.target.dataset.leadId
+                            });
+                        }
+                    });
+                }
+
+                // Example for sales outcomes container
+                if (salesOutcomesContainer) {
+                    salesOutcomesContainer.addEventListener('click', function(event) {
+                        if (event.target && event.target.matches('.sales-outcome-item')) {
+                            gtag('event', 'click', {
+                                'event_category': 'Sales Outcome',
+                                'event_label': event.target.dataset.outcomeId
+                            });
+                        }
+                    });
+                }
+
+                // Example for customer info container
+                if (customerInfoContainer) {
+                    customerInfoContainer.addEventListener('click', function(event) {
+                        if (event.target && event.target.matches('.customer-info-item')) {
+                            gtag('event', 'click', {
+                                'event_category': 'Customer Info',
+                                'event_label': event.target.dataset.customerId
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Call the function to add event listeners
+            addDynamicEventListeners();
+        });
+    </script>
+</body>
+</html>

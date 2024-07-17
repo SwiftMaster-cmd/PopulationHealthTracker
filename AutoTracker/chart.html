@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charts</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/charts.css">
     <link rel="stylesheet" href="css/outcomes.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/leaderboard.css">
     <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Custom CSS file for the main styles -->
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
@@ -38,72 +42,61 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-RVBYB0RR06');
     </script>
-
-
-  
 </head>
 <body>
-
-
-    
-    <div class="header-container">
-        <h1>Charts</h1>
-        <button id="cheatSheetButton">Cheat Sheet</button>
-        <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
-
-        <button onclick="window.location.href='history.html'" class="button">Sales History</button>
-        <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
-        <button onclick="window.location.href='totals.html'" class="button">Monthly Totals</button>
-        <button onclick="window.location.href='chart.html'" class="button">Chart</button>
-        <div class="profile-button">P</div>
-    </div>
-    
-    <!-- Color Picker and Name Change Container -->
-    <div class="color-picker-container" id="colorPickerContainer">
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-        <input type="text" id="nameInput" placeholder="Enter new name" />
-        <button id="changeName" class="button">Change Name</button>
-        <button id="signOut" class="button">Sign Out</button>
-        <button id="googleSignInButton">Link with Google</button>
-        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-        
-        <!-- Navigation Buttons -->
-
+    <div class="container-fluid">
+        <div class="row bg-secondary text-white py-3">
+            <div class="col d-flex justify-content-between align-items-center">
+                <h1 class="h3">Charts</h1>
+                <div>
+                    <button id="cheatSheetButton" class="btn btn-primary mr-2">Cheat Sheet</button>
+                    <button onclick="window.location.href='Dash2.html'" class="btn btn-primary mr-2">Dashboard</button>
+                    <button onclick="window.location.href='history.html'" class="btn btn-primary mr-2">Sales History</button>
+                    <button onclick="window.location.href='leaderboard.html'" class="btn btn-primary mr-2">Leaderboard</button>
+                    <button onclick="window.location.href='totals.html'" class="btn btn-primary">Monthly Totals</button>
+                </div>
+                <div class="profile-button btn btn-primary rounded-circle">P</div>
+            </div>
+        </div>
     </div>
 
-    <div class="main-container">
-
-
-     
-
-        <!-- Chart Container -->
-        <div class="picker-chart-container container">
-            <div class="picker-container">
-                <select id="chartPeriodPicker" class="picker">
-                    <option value="day">Day</option>
-                    <option value="week">Week</option>
-                    <option value="month">Month</option>
-                </select>
-            </div>
-            <div id="rotateMessage" style="display: none; color: black; text-align: center; text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;">
-                Please rotate your device and refresh the page to view the chart.
-            </div>
-            <div id="chartContainer">
-                <canvas id="salesChart"></canvas>
+    <div class="container mt-4">
+        <!-- Color Picker and Name Change Container -->
+        <div class="card p-3 mb-4">
+            <h5 class="card-title">Customize</h5>
+            <div class="card-body">
+                <input type="color" id="colorPicker" class="form-control mb-2" />
+                <button id="applyColor" class="btn btn-success mb-2">Apply Color Palette</button>
+                <input type="text" id="nameInput" class="form-control mb-2" placeholder="Enter new name" />
+                <button id="changeName" class="btn btn-success mb-2">Change Name</button>
+                <button id="signOut" class="btn btn-danger mb-2">Sign Out</button>
+                <button id="googleSignInButton" class="btn btn-primary mb-2">Link with Google</button>
+                <button id="copyBookmarkletButton" class="btn btn-warning">Click me to copy AutoTracker Bookmark Script</button>
             </div>
         </div>
 
-       
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="chartPeriodPicker">Select Period</label>
+                    <select id="chartPeriodPicker" class="form-control">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                    </select>
+                </div>
+                <div id="rotateMessage" class="text-center text-danger d-none">
+                    Please rotate your device and refresh the page to view the chart.
+                </div>
+                <div id="chartContainer" class="mt-3">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-
-
-    
     <!-- Event Tracking for dynamically added elements -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -154,7 +147,5 @@
             addDynamicEventListeners();
         });
     </script>
-
-    
 </body>
 </html>
