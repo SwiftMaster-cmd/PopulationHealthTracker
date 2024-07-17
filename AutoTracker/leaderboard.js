@@ -131,11 +131,10 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
-        const salesTimeFramesRef = database.ref('salesTimeFrames');
+        const salesOutcomesRef = database.ref('salesOutcomes');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
 
@@ -144,7 +143,7 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
+        salesOutcomesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
                 throw new Error('No sales data found');
@@ -162,7 +161,6 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
-
 async function processSalesData(salesData) {
     const sales = [];
 
