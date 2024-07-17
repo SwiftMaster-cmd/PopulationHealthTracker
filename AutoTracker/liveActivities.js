@@ -157,12 +157,23 @@ function handleCopyClick(copyText) {
         const successful = document.execCommand('copy');
         const msg = successful ? 'successful' : 'unsuccessful';
         console.log(`Copy command was ${msg}`);
+        showCopyIcon(copyText);
     } catch (err) {
         console.error('Oops, unable to copy', err);
     }
 
     selection.removeAllRanges();
     document.body.removeChild(tempElement);
+}
+
+function showCopyIcon(copyText) {
+    const iconElement = document.createElement('i');
+    iconElement.classList.add('fas', 'fa-check', 'copy-icon');
+    copyText.appendChild(iconElement);
+
+    setTimeout(() => {
+        iconElement.remove();
+    }, 2000); // Remove the icon after 2 seconds
 }
 
 function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
