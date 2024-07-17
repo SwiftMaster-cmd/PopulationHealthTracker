@@ -287,3 +287,8 @@ button:active {
 .copy-button i {
     font-size: inherit; /* Inherit font size from parent */
 }
+
+.copy-checkmark {
+    margin-left: 8px;
+    color: white;
+}
