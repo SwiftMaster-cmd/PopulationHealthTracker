@@ -10,18 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.toLocaleTimeString();
     }
 
-    function formatDateTime(dateTime) {
-        const date = new Date(dateTime);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        });
-    }
 
 
     
@@ -40,16 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return action;
     }
 
-    function getCurrentDayKey() {
-        const now = new Date();
-        return now.toISOString().split('T')[0];
-    }
-
-    function getCurrentWeekKey() {
-        const now = new Date();
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)));
-        return `${startOfWeek.getFullYear()}-W${startOfWeek.getWeekNumber()}`;
-    }
 
     Date.prototype.getWeekNumber = function() {
         const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
@@ -59,10 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     };
 
-    function getCurrentMonthKey() {
-        const now = new Date();
-        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    }
+
 
     function isSameDay(date1, date2) {
         return date1.getFullYear() === date2.getFullYear() &&
@@ -369,9 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Existing code...
 
-    // Add event listener for the cheat sheet button
     const cheatSheetButton = document.getElementById('cheatSheetButton');
     if (cheatSheetButton) {
         cheatSheetButton.addEventListener('click', () => {
@@ -379,7 +352,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Existing code...
 });
 
-// Existing code continues...
