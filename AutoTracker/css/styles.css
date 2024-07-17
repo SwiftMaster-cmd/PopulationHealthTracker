@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Apple+System+UI:ital,wght@0,700;1,700&display=swap');
 
-
-
 :root {
     --color-primary: rgba(0, 123, 255, 0.8);
     --color-secondary: rgba(108, 117, 125, 0.8);
@@ -40,7 +38,24 @@ body, html {
     }
 }
 
-/* Custom styling for profile button */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--margin-m);
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.header-container h1 {
+    margin: var(--margin-s) 0;
+    font-size: 1.5rem;
+}
+
 .profile-button {
     width: 40px;
     height: 40px;
@@ -54,7 +69,6 @@ body, html {
     margin-right: var(--margin-l);
 }
 
-/* Custom styling for color picker container */
 .color-picker-container {
     display: none;
     position: absolute;
@@ -67,7 +81,6 @@ body, html {
     z-index: 1000;
 }
 
-/* Custom container for main content */
 .main-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -77,134 +90,179 @@ body, html {
     margin: var(--margin-xxl) auto 0;
 }
 
-/* Chart container styling */
-#chartContainer {
-    height: 100%; /* Adjust as needed */
-    width: 100%;
+button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+.search-container {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 20px; /* Adjust spacing from the top */
-    margin-bottom: 40px; /* Adjust spacing from the bottom */
+    gap: var(--margin-xs);
 }
 
-#salesChart {
-    height: 100%;
+.search-container input {
     width: 100%;
-    box-sizing: border-box;
-}
-
-#salesChart {
-    height: 100%;
-    min-height: 100%;
-}
-
-/* Additional styling for chart responsiveness */
-@media (max-width: 768px) {
-    #chartContainer {
-        height: auto;
-    }
-
-    #salesChart {
-        height: auto;
-    }
-}
-
-/* Popup styling */
-.popup {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.popup-content {
-    background-color: var(--background-color);
+    max-width: 300px;
+    padding: var(--margin-s);
+    border-radius: var(--margin-s);
+    border: 1px solid var(--color-quaternary);
+    background-color: var(--color-secondary);
     color: var(--text-white);
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid var(--color-tertiary);
-    border-radius: 10px;
-    width: 80%;
-    max-width: 500px;
-    text-align: center;
+    font-weight: 700;
 }
 
-#closePopup {
+.search-container button {
+    background: var(--color-tertiary);
+    border: none;
+    color: var(--text-white);
+    font-size: 18px;
+    cursor: pointer;
+    padding: var(--margin-s) var(--margin-m);
+    border-radius: var(--margin-s);
+}
+
+.header-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-section h2 {
+    margin: 0;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.container, .sales-item, .summary-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--margin-s);
+    padding: var(--margin-m);
+    transition: background-color 0.3s ease, opacity 0.3s;
+    color: var(--text-white);
+}
+
+.container:hover, .sales-item:hover, .summary-item:hover {
+    opacity: 0.9;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.picker, .chart-picker {
+    padding: var(--margin-s);
+    font-size: 16px;
+    border-radius: var(--margin-s);
+    border: 1px solid #ccc;
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    cursor: pointer;
+    width: 45%;
+    max-width: 400px;
+}
+
+.picker:hover, .chart-picker:hover {
+    background-color: var(--color-tertiary);
+}
+
+.sales-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--margin-m);
+    margin-bottom: var(--margin-m);
+}
+
+.summary-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--margin-m);
+}
+
+.button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
     background-color: var(--color-tertiary);
     color: var(--text-white);
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
 }
 
-#closePopup:hover {
+.button:hover {
     background-color: var(--color-quaternary);
 }
 
-/* Leaderboard and live activities section styling */
-#leaderboard-section {
-    flex: 1;
-    min-width: 300px;
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    padding: 0;
 }
 
-#live-activities-section {
-    flex: 1;
-    min-width: 300px;
-    margin-left: 20px;
+.like-button svg {
+    fill: black;
 }
 
-.picker-leaderboard-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+.like-button.liked svg {
+    fill: red;
 }
 
-.leaderboard-container,
-#live-activities-section {
-    flex: 1;
-    margin: 10px;
-    min-width: 300px; /* Ensures the sections don't get too narrow on smaller screens */
-}
-
-.picker-header {
-    display: flex;
-    gap: 10px; /* Adjust as needed */
-    margin-bottom: 10px; /* Adjust as needed */
-}
-
-#leaderboard-title {
-    margin-bottom: 10px; /* Adjust as needed */
-}
-
-.leaderboard-item {
-    text-align: center;
-    align-items: center;
-    margin: 10px 0;
+.like-info {
+    font-size: 0.8em;
     color: var(--text-white);
-    font-size: 2em; /* Adjust based on your base font size */
-}
-
-.leaderboard-item::after {
-    content: attr(data-points);
-    font-weight: bold;
-    color: var(--color-tertiary);
-    margin-left: 10px;
+    margin-top: var(--margin-xs);
 }
 
 @media (max-width: 768px) {
-    .content-wrapper {
-        flex-direction: column;
+    .main-container {
+        grid-template-columns: 1fr;
     }
+
+    .picker-container, .chart-picker-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .navigation-container {
+        justify-content: center;
+    }
+}
+
+.leaderboard-container {
+    background: none !important;
+}
+
+#totalPoints {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-tertiary);
+    margin-right: var(--margin-m);
+}
+
+
+.button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-tertiary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+.button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
 }
