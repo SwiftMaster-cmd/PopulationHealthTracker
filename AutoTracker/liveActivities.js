@@ -186,7 +186,7 @@ const style = document.createElement('style');
 style.innerHTML = `
     .copy-checkmark {
         margin-left: 8px;
-        color: white;
+        color: blue;
         opacity: 0;
         transition: opacity 0.5s;
     }
@@ -197,8 +197,8 @@ style.innerHTML = `
         opacity: 0;
     }
 `;
-
 document.head.appendChild(style);
+
 
 function showCopyIcon(copyText) {
     const iconElement = document.createElement('i');
