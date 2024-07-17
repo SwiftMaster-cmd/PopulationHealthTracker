@@ -166,7 +166,27 @@ function handleCopyClick(copyText) {
 
     selection.removeAllRanges();
     document.body.removeChild(tempElement);
+
+    // Show checkmark
+    const checkmark = document.createElement('span');
+    checkmark.innerHTML = '✔️';
+    checkmark.classList.add('copy-checkmark');
+    copyText.appendChild(checkmark);
+
+    setTimeout(() => {
+        copyText.removeChild(checkmark);
+    }, 2000); // Remove checkmark after 2 seconds
 }
+
+// Add CSS for the checkmark
+const style = document.createElement('style');
+style.innerHTML = `
+    .copy-checkmark {
+        margin-left: 8px;
+        color: green;
+    }
+`;
+document.head.appendChild(style);
 
 function showCopyIcon(copyText) {
     const iconElement = document.createElement('i');
