@@ -176,14 +176,28 @@ async function processSalesData(salesData) {
                     const saleTime = saleTimes[timeIndex];
                     const formattedTime = new Date(saleTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                    sales.push({ userId, leadId, saleType, saleTime, formattedTime });
+                    // Create a unique identifier for each sale to avoid duplicates
+                    const saleId = `${userId}_${leadId}_${saleType}_${saleTime}`;
+                    sales.push({ saleId, userId, leadId, saleType, saleTime, formattedTime });
                 }
             }
         }
     }
 
+    // Sort the sales by saleTime in descending order
     sales.sort((a, b) => new Date(b.saleTime) - new Date(a.saleTime));
-    return sales;
+
+    // Remove duplicate sales by saleId
+    const uniqueSales = [];
+    const saleIds = new Set();
+    for (const sale of sales) {
+        if (!saleIds.has(sale.saleId)) {
+            saleIds.add(sale.saleId);
+            uniqueSales.push(sale);
+        }
+    }
+
+    return uniqueSales;
 }
 
 async function addUserNames(sales, usersRef) {
