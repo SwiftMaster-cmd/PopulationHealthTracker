@@ -170,13 +170,34 @@ function handleCopyClick(copyText) {
     // Show checkmark
     const checkmark = document.createElement('span');
     checkmark.innerHTML = '✔️';
-    checkmark.classList.add('copy-checkmark');
+    checkmark.classList.add('copy-checkmark', 'fade-in-out');
     copyText.appendChild(checkmark);
 
     setTimeout(() => {
-        copyText.removeChild(checkmark);
-    }, 2000); // Remove checkmark after 2 seconds
+        checkmark.classList.add('fade-out');
+        setTimeout(() => {
+            copyText.removeChild(checkmark);
+        }, 1000); // Ensure checkmark is removed after fade-out
+    }, 2000); // Start fading out after 2 seconds
 }
+
+// Add CSS for the checkmark and transitions
+const style = document.createElement('style');
+style.innerHTML = `
+    .copy-checkmark {
+        margin-left: 8px;
+        color: green;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+    .fade-in-out {
+        opacity: 1;
+    }
+    .fade-out {
+        opacity: 0;
+    }
+`;
+document.head.appendChild(style);
 
 // Add CSS for the checkmark
 const style = document.createElement('style');
