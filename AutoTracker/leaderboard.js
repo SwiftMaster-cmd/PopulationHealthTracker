@@ -135,7 +135,7 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
-        const salesTimeFramesRef = database.ref('salesTimeFrames');
+        const salesOutcomesRef = database.ref('salesOutcomes');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
 
@@ -144,7 +144,7 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
+        salesOutcomesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
                 throw new Error('No sales data found');
@@ -152,7 +152,7 @@ async function loadLiveActivities() {
 
             console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
-            const latestSales = sales.slice(0, 5);
+            const latestSales = sales.slice(0, 5); // Get the latest 5 unique sales
 
             console.log('Processed sales data:', latestSales);
             await addUserNames(latestSales, usersRef);
