@@ -133,7 +133,7 @@ function loadChart(period = 'month') {
 }
 
 function getDailyChartData(salesData) {
-    const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+    const hours = Array.from({ length: 15 }, (_, i) => `${i + 7}:00`);
     const currentDayData = getCurrentDayData(salesData);
 
     const data = {
@@ -267,7 +267,8 @@ function getSaleCountForLabel(salesData, period, saleType, label) {
         if (sales) {
             sales.forEach(saleTime => {
                 const saleDate = new Date(saleTime);
-                if (period === 'day' && formatHour(saleDate) === label) {
+                const saleHour = saleDate.getHours();
+                if (period === 'day' && formatHour(saleDate) === label && saleHour >= 7 && saleHour <= 21) {
                     count++;
                 } else if (period === 'week' && formatDay(saleDate) === label) {
                     count++;
@@ -280,8 +281,6 @@ function getSaleCountForLabel(salesData, period, saleType, label) {
 
     return count;
 }
-
-
 
 function formatHour(date) {
     const hours = date.getHours();
