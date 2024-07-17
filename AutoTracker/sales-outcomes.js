@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return 'Billable HRA';
         } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
             return 'Transfer';
-        } else if (normalizedAction.includes('select patient management')) {
-            return 'Select Patient Management';
+        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
+            return 'SelectPatientManagement';
         }
         return action;
     }
