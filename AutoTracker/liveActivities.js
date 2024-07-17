@@ -136,9 +136,10 @@ function handleCopyClick(sale) {
     document.body.appendChild(tempElement);
 
     const range = document.createRange();
-    range.selectNode(tempElement);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
+    range.selectNodeContents(tempElement);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
 
     try {
         const successful = document.execCommand('copy');
@@ -148,7 +149,7 @@ function handleCopyClick(sale) {
         console.error('Oops, unable to copy', err);
     }
 
-    window.getSelection().removeAllRanges();
+    selection.removeAllRanges();
     document.body.removeChild(tempElement);
 }
 
