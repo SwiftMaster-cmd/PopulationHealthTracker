@@ -106,12 +106,16 @@ function renderSales(sales, container, likesRef, usersRef) {
                 </svg>
             </button>
             <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
+            <button class="copy-button">
+                <i class="fas fa-copy"></i>
+            </button>
             <div class="like-info" id="like-info-${likePath}"></div>
         `;
         container.appendChild(saleElement);
 
         const likeButton = saleElement.querySelector('.like-button');
         const likeInfoDiv = saleElement.querySelector('.like-info');
+        const copyButton = saleElement.querySelector('.copy-button');
 
         initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
 
@@ -121,7 +125,31 @@ function renderSales(sales, container, likesRef, usersRef) {
         likesRef.child(likePath).on('value', snapshot => {
             updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
+
+        copyButton.addEventListener('click', () => handleCopyClick(sale));
     });
+}
+
+function handleCopyClick(sale) {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = `<strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}`;
+    document.body.appendChild(tempElement);
+
+    const range = document.createRange();
+    range.selectNode(tempElement);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+
+    try {
+        const successful = document.execCommand('copy');
+        const msg = successful ? 'successful' : 'unsuccessful';
+        console.log(`Copy command was ${msg}`);
+    } catch (err) {
+        console.error('Oops, unable to copy', err);
+    }
+
+    window.getSelection().removeAllRanges();
+    document.body.removeChild(tempElement);
 }
 
 function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
