@@ -131,11 +131,10 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
-        const salesOutcomesRef = database.ref('salesOutcomes');
+        const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
 
@@ -144,15 +143,17 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesOutcomesRef.orderByKey().limitToLast(5).on('value', async salesSnapshot => {
+        salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
-                throw new Error('No sales data found');
+                console.error('No sales data found');
+                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
+                return;
             }
 
             console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
-            const latestSales = sales.slice(0, 5); // Get the latest 5 unique sales
+            const latestSales = sales.slice(0, 5); // Get the latest 5 sales
 
             console.log('Processed sales data:', latestSales);
             await addUserNames(latestSales, usersRef);
@@ -233,7 +234,7 @@ function renderSales(sales, container, likesRef, usersRef) {
         saleElement.innerHTML = `
             <button class="like-button" data-like-path="${likePath}">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81        14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
             </button>
             <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
