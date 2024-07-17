@@ -342,15 +342,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    const cheatSheetButton = document.getElementById('cheatSheetButton');
-    if (cheatSheetButton) {
-        cheatSheetButton.addEventListener('click', () => {
-            window.location.href = 'cheatSheet.html';
-        });
-    }
-
-});
-
