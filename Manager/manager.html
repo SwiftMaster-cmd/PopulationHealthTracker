@@ -4,7 +4,6 @@
     <title>Manager Page</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="manager_page.js"></script>
-    <script type="module" src="wheel.js"></script>
 </head>
 <body>
     <header>
@@ -25,7 +24,8 @@
         <h3>Preset Summary</h3>
         <p id="summary-text">Select a preset to see its summary.</p>
         <canvas id="wheel-canvas" width="500" height="500"></canvas>
-        <button id="spin-button" onclick="spinWheel(currentNodes)">Spin</button>
+        <button id="spin-button">Spin</button>
     </section>
+    <script type="module" src="wheel.js"></script> <!-- Ensure this line is present -->
 </body>
 </html>
