@@ -118,16 +118,24 @@ function loadMonthlyTotals() {
                                 selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
                             }, level);
 
+                            const pushValues = {
+                                selectRX: salesTotals.selectRX + trendValues.selectRX,
+                                transfer: salesTotals.transfer + trendValues.transfer,
+                                billableHRA: salesTotals.billableHRA + trendValues.billableHRA,
+                                selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
+                            };
+
                             const trendData = {
                                 dailyAverages,
                                 trendValues,
                                 currentCommissionTotal,
-                                trendCommissionTotal
+                                trendCommissionTotal,
+                                pushValues
                             };
 
                             trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
 
-                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages);
+                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues);
                         });
                     });
                 } catch (error) {
