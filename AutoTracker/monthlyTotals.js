@@ -72,7 +72,7 @@ function loadMonthlyTotals() {
                             selectRX: 0,
                             selectPatientManagement: 0,
                             transfer: 0
-                        }, 0, 'N/A', { selectRX: 0, transfer: 0, billableHRA: 0, selectPatientManagement: 0 });
+                        }, 0, 'N/A', { selectRX: 0, transfer: 0, billableHRA: 0, selectPatientManagement: 0 }, {});
                         return;
                     }
 
@@ -95,27 +95,38 @@ function loadMonthlyTotals() {
                             const allSalesData = allSnapshot.val();
                             const average = calculateAverage(allSalesData, level);
 
-                            // Calculate trend and push values
+                            // Calculate trend values
                             const daysPassed = new Date().getDate();
                             const workingDaysLeft = getWorkingDaysLeft();
 
-                            const trendValues = {
-                                selectRX: calculateTrend(salesTotals.selectRX, daysPassed),
-                                transfer: calculateTrend(salesTotals.transfer, daysPassed),
-                                billableHRA: calculateTrend(salesTotals.billableHRA, daysPassed),
-                                selectPatientManagement: calculateTrend(salesTotals.selectPatientManagement, daysPassed)
-                            };
-
-                            // Save daily averages to "Trends" node
                             const dailyAverages = {
                                 selectRX: calculateDailyAverage(salesTotals.selectRX, daysPassed),
                                 transfer: calculateDailyAverage(salesTotals.transfer, daysPassed),
                                 billableHRA: calculateDailyAverage(salesTotals.billableHRA, daysPassed),
                                 selectPatientManagement: calculateDailyAverage(salesTotals.selectPatientManagement, daysPassed)
                             };
-                            trendsRef.child(currentUserId).child(currentMonthKey).set(dailyAverages);
 
-                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages);
+                            const trendValues = {
+                                selectRX: calculateTrend(salesTotals.selectRX, daysPassed),
+                                transfer: calculateTrend(salesTotals.transfer, daysPassed),
+                                billableHRA: calculateTrend(salesTotals.billableHRA, daysPassed),                                 selectPatientManagement: calculateTrend(salesTotals.selectPatientManagement, daysPassed)
+                            };
+
+                            // Calculate push values
+                            const pushValues = {
+                                selectRX: calculatePush(dailyAverages.selectRX, salesTotals.selectRX, commission.nextStage.srx, workingDaysLeft),
+                                transfer: calculatePush(dailyAverages.transfer, salesTotals.transfer, commission.nextStage.transfer, workingDaysLeft),
+                                billableHRA: calculatePush(dailyAverages.billableHRA, salesTotals.billableHRA, commission.nextStage.hra, workingDaysLeft),
+                                selectPatientManagement: calculatePush(dailyAverages.selectPatientManagement, salesTotals.selectPatientManagement, commission.nextStage.spm, workingDaysLeft)
+                            };
+
+                            // Save daily averages and push values to "Trends" node
+                            trendsRef.child(currentUserId).child(currentMonthKey).set({
+                                dailyAverages,
+                                pushValues
+                            });
+
+                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues);
                         });
                     });
                 } catch (error) {
@@ -128,7 +139,16 @@ function loadMonthlyTotals() {
     });
 }
 
-function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages) {
+function calculatePush(dailyAverage, currentTotal, nextStage, workingDaysLeft) {
+    const remainingSalesNeeded = nextStage - currentTotal;
+    if (remainingSalesNeeded <= 0) {
+        return 0; // Already at or above the next stage
+    }
+    return remainingSalesNeeded / workingDaysLeft;
+}
+                               
+
+function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues) {
     const total = (salesTotals.selectRX * commission.srxPayout) + (salesTotals.transfer * commission.transferPayout) + (salesTotals.billableHRA * commission.hraPayout) + (salesTotals.selectPatientManagement * commission.spmPayout);
 
     // Current values
@@ -146,11 +166,11 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
     document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + (dailyAverages.billableHRA * workingDaysLeft)) * commission.hraPayout).toFixed(2)}`;
     document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + (dailyAverages.selectPatientManagement * workingDaysLeft)) * commission.spmPayout).toFixed(2)}`;
 
-    // Push values (assuming Push is similar to Trend for now)
-    document.getElementById('srx-push').textContent = `Push: $${((dailyAverages.selectRX * workingDaysLeft) * commission.srxPayout).toFixed(2)}`;
-    document.getElementById('transfer-push').textContent = `Push: $${((dailyAverages.transfer * workingDaysLeft) * commission.transferPayout).toFixed(2)}`;
-    document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * workingDaysLeft) * commission.hraPayout).toFixed(2)}`;
-    document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * workingDaysLeft) * commission.spmPayout).toFixed(2)}`;
+    // Push values (projected needed to reach next commission stage)
+    document.getElementById('srx-push').textContent = `Push: ${pushValues.selectRX.toFixed(2)} per day`;
+    document.getElementById('transfer-push').textContent = `Push: ${pushValues.transfer.toFixed(2)} per day`;
+    document.getElementById('hra-push').textContent = `Push: ${pushValues.billableHRA.toFixed(2)} per day`;
+    document.getElementById('spm-push').textContent = `Push: ${pushValues.selectPatientManagement.toFixed(2)} per day`;
 
     document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
 
@@ -241,7 +261,16 @@ function calculateCommission(salesTotals, level) {
         ]);
     }
 
-    return { srxPayout, transferPayout, hraPayout, spmPayout };
+    return { srxPayout, transferPayout, hraPayout, spmPayout, nextStage };
+}
+
+function getPayout(count, tiers) {
+    for (const tier of tiers) {
+        if (count >= tier.min && count <= tier.max) {
+            return { payout: tier.payout, nextStage: tier.nextStage };
+        }
+    }
+    return { payout: 0, nextStage: Infinity };
 }
 
 function getPayout(count, tiers) {
