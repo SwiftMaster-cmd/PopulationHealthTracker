@@ -50,6 +50,37 @@ function applyChromaColors(levelPicker) {
     });
 }
 
+function getWorkingDaysLeft() {
+    const now = new Date();
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    let count = 0;
+
+    for (let day = now.getDate(); day <= end.getDate(); day++) {
+        const date = new Date(now.getFullYear(), now.getMonth(), day);
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) count++; // Exclude weekends
+    }
+    return count;
+}
+
+function calculateDailyAverage(total, daysPassed) {
+    return total / daysPassed;
+}
+
+function calculateTrend(total, daysPassed) {
+    const dailyAverage = calculateDailyAverage(total, daysPassed);
+    const workingDaysLeft = getWorkingDaysLeft();
+    return dailyAverage * workingDaysLeft;
+}
+
+function calculatePush(currentTotal, nextStage, workingDaysLeft) {
+    const remainingSalesNeeded = nextStage - currentTotal;
+    if (remainingSalesNeeded <= 0) {
+        return 0; // Already at or above the next stage
+    }
+    return remainingSalesNeeded / workingDaysLeft;
+}
+
 function loadMonthlyTotals() {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
@@ -167,7 +198,7 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
     document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + (dailyAverages.billableHRA * workingDaysLeft)) * commission.hraPayout).toFixed(2)}`;
     document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + (dailyAverages.selectPatientManagement * workingDaysLeft)) * commission.spmPayout).toFixed(2)}`;
 
-    // Push values (projected needed to reach next commission stage)
+    // Push values (sales needed per day to reach the next commission stage)
     document.getElementById('srx-push').textContent = `Push: ${pushValues.selectRX.toFixed(2)} per day`;
     document.getElementById('transfer-push').textContent = `Push: ${pushValues.transfer.toFixed(2)} per day`;
     document.getElementById('hra-push').textContent = `Push: ${pushValues.billableHRA.toFixed(2)} per day`;
@@ -350,27 +381,4 @@ function getCurrentMonthKey() {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
-
-function getWorkingDaysLeft() {
-    const now = new Date();
-    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    let count = 0;
-
-    for (let day = now.getDate(); day <= end.getDate(); day++) {
-        const date = new Date(now.getFullYear(), now.getMonth(), day);
-        const dayOfWeek = date.getDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) count++; // Exclude weekends
-    }
-    return count;
-}
-
-function calculateDailyAverage(total, daysPassed) {
-    return total / daysPassed;
-}
-
-function calculateTrend(total, daysPassed) {
-    const dailyAverage = calculateDailyAverage(total, daysPassed);
-    const workingDaysLeft = getWorkingDaysLeft();
-    return dailyAverage * workingDaysLeft;
-}
 
