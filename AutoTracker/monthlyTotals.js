@@ -107,20 +107,26 @@ function loadMonthlyTotals() {
     });
 }
 
-function updateSalesDisplay(salesTotals, commission, prevTotal, average) {
+function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues) {
     const total = (salesTotals.selectRX * commission.srxPayout) + (salesTotals.transfer * commission.transferPayout) + (salesTotals.billableHRA * commission.hraPayout) + (salesTotals.selectPatientManagement * commission.spmPayout);
 
-    document.getElementById('srx-value').textContent = `$${(salesTotals.selectRX * commission.srxPayout).toFixed(2)}`;
-    document.getElementById('srx-count').textContent = salesTotals.selectRX;
+    // Current values
+    document.getElementById('srx-value').textContent = `Current: $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)} (${salesTotals.selectRX})`;
+    document.getElementById('transfer-value').textContent = `Current: $${(salesTotals.transfer * commission.transferPayout).toFixed(2)} (${salesTotals.transfer})`;
+    document.getElementById('hra-value').textContent = `Current: $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)} (${salesTotals.billableHRA})`;
+    document.getElementById('spm-value').textContent = `Current: $${(salesTotals.selectPatientManagement * commission.spmPayout).toFixed(2)} (${salesTotals.selectPatientManagement})`;
 
-    document.getElementById('transfer-value').textContent = `$${(salesTotals.transfer * commission.transferPayout).toFixed(2)}`;
-    document.getElementById('transfer-count').textContent = salesTotals.transfer;
+    // Trend values
+    document.getElementById('srx-trend').textContent = `Trend: $${trendValues.selectRX.toFixed(2)}`;
+    document.getElementById('transfer-trend').textContent = `Trend: $${trendValues.transfer.toFixed(2)}`;
+    document.getElementById('hra-trend').textContent = `Trend: $${trendValues.billableHRA.toFixed(2)}`;
+    document.getElementById('spm-trend').textContent = `Trend: $${trendValues.selectPatientManagement.toFixed(2)}`;
 
-    document.getElementById('hra-value').textContent = `$${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)}`;
-    document.getElementById('hra-count').textContent = salesTotals.billableHRA;
-
-    document.getElementById('spm-value').textContent = `$${(salesTotals.selectPatientManagement * commission.spmPayout).toFixed(2)}`;
-    document.getElementById('spm-count').textContent = salesTotals.selectPatientManagement;
+    // Push values (assuming Push is same as Trend for now, or you can calculate differently)
+    document.getElementById('srx-push').textContent = `Push: $${trendValues.selectRX.toFixed(2)}`;
+    document.getElementById('transfer-push').textContent = `Push: $${trendValues.transfer.toFixed(2)}`;
+    document.getElementById('hra-push').textContent = `Push: $${trendValues.billableHRA.toFixed(2)}`;
+    document.getElementById('spm-push').textContent = `Push: $${trendValues.selectPatientManagement.toFixed(2)}`;
 
     document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
 
@@ -296,3 +302,28 @@ function getCurrentMonthKey() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
+
+
+function getWorkingDaysLeft() {
+    const now = new Date();
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    let count = 0;
+
+    for (let day = now.getDate(); day <= end.getDate(); day++) {
+        const date = new Date(now.getFullYear(), now.getMonth(), day);
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) count++; // Exclude weekends
+    }
+    return count;
+}
+
+function calculateDailyAverage(total, daysPassed) {
+    return total / daysPassed;
+}
+
+function calculateTrend(total, daysPassed) {
+    const dailyAverage = calculateDailyAverage(total, daysPassed);
+    const workingDaysLeft = getWorkingDaysLeft();
+    return dailyAverage * workingDaysLeft;
+}
+
