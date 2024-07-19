@@ -138,7 +138,7 @@ function loadMonthlyTotals() {
 
                             trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
 
-                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues);
+                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, pushCalculationData);
                         });
                     });
                 } catch (error) {
@@ -214,9 +214,16 @@ function getPayoutTiers(level) {
     };
 }
 
-function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages) {
-    const total = (salesTotals.selectRX * commission.srxPayout) + (salesTotals.transfer * commission.transferPayout) + (salesTotals.billableHRA * commission.hraPayout) + (salesTotals.selectPatientManagement * commission.spmPayout);
 
+
+
+function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, pushCalculationData) {
+    const total = (salesTotals.selectRX * commission.srxPayout) + 
+                  (salesTotals.transfer * commission.transferPayout) + 
+                  (salesTotals.billableHRA * commission.hraPayout) + 
+                  (salesTotals.selectPatientManagement * commission.spmPayout);
+
+    // Update current sales values
     document.getElementById('srx-value').textContent = `Current: $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)} (${salesTotals.selectRX})`;
     document.getElementById('transfer-value').textContent = `Current: $${(salesTotals.transfer * commission.transferPayout).toFixed(2)} (${salesTotals.transfer})`;
     document.getElementById('hra-value').textContent = `Current: $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)} (${salesTotals.billableHRA})`;
@@ -224,18 +231,22 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
 
     const workingDaysLeft = getWorkingDaysLeft();
 
+    // Update trend values
     document.getElementById('srx-trend').textContent = `Trend: $${((salesTotals.selectRX + trendValues.selectRX) * commission.srxPayout).toFixed(2)}`;
     document.getElementById('transfer-trend').textContent = `Trend: $${((salesTotals.transfer + trendValues.transfer) * commission.transferPayout).toFixed(2)}`;
     document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + trendValues.billableHRA) * commission.hraPayout).toFixed(2)}`;
     document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + trendValues.selectPatientManagement) * commission.spmPayout).toFixed(2)}`;
 
-    document.getElementById('srx-push').textContent = `Push: $${((dailyAverages.selectRX * workingDaysLeft) * commission.srxPayout).toFixed(2)}`;
-    document.getElementById('transfer-push').textContent = `Push: $${((dailyAverages.transfer * workingDaysLeft) * commission.transferPayout).toFixed(2)}`;
-    document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * workingDaysLeft) * commission.hraPayout).toFixed(2)}`;
-    document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * workingDaysLeft) * commission.spmPayout).toFixed(2)}`;
+    // Update push values
+    document.getElementById('srx-push').textContent = `Push: $${((pushValues.selectRX) * commission.srxPayout).toFixed(2)}`;
+    document.getElementById('transfer-push').textContent = `Push: $${((pushValues.transfer) * commission.transferPayout).toFixed(2)}`;
+    document.getElementById('hra-push').textContent = `Push: $${((pushValues.billableHRA) * commission.hraPayout).toFixed(2)}`;
+    document.getElementById('spm-push').textContent = `Push: $${((pushValues.selectPatientManagement) * commission.spmPayout).toFixed(2)}`;
 
+    // Update total values
     document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
 
+    // Update last month values
     const lastMonthElement = document.getElementById('last-month-value');
     if (prevTotal === 'N/A') {
         lastMonthElement.textContent = 'N/A';
@@ -244,9 +255,19 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
         lastMonthElement.style.color = prevTotal > total ? 'green' : 'red';
     }
 
+    // Update average values
     const averageElement = document.getElementById('average-value');
     averageElement.textContent = `$${average.toFixed(2)}`;
     averageElement.style.color = average > total ? 'red' : 'green';
+
+    // Display push calculation data
+    for (const saleType in pushCalculationData) {
+        const pushCalc = pushCalculationData[saleType];
+        document.getElementById(`${saleType}-push-calc`).textContent = `Next Payout: $${pushCalc.nextPayoutValue ? pushCalc.nextPayoutValue.toFixed(2) : 'N/A'}`;
+        document.getElementById(`${saleType}-additional-sales`).textContent = `Additional Sales Needed: ${pushCalc.additionalSalesNeeded.toFixed(2)}`;
+        document.getElementById(`${saleType}-sales-per-day`).textContent = `Sales Per Day Needed: ${pushCalc.salesPerDayNeeded.toFixed(2)}`;
+        document.getElementById(`${saleType}-projected-commission`).textContent = `Projected Commission: $${pushCalc.projectedCommission.toFixed(2)}`;
+    }
 }
 
 function calculateCommission(salesTotals, level) {
