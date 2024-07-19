@@ -125,20 +125,17 @@ function loadMonthlyTotals() {
                                 selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
                             };
 
-                            const pushCalculationData = calculatePushCalculationData(pushValues, level, workingDaysLeft);
-
                             const trendData = {
                                 dailyAverages,
                                 trendValues,
                                 currentCommissionTotal,
                                 trendCommissionTotal,
-                                pushValues,
-                                pushCalculationData
+                                pushValues
                             };
 
                             trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
 
-                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, pushCalculationData);
+                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues);
                         });
                     });
                 } catch (error) {
@@ -151,79 +148,9 @@ function loadMonthlyTotals() {
     });
 }
 
-function calculatePushCalculationData(pushValues, level, workingDaysLeft) {
-    const payoutTiers = getPayoutTiers(level);
+function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages) {
+    const total = (salesTotals.selectRX * commission.srxPayout) + (salesTotals.transfer * commission.transferPayout) + (salesTotals.billableHRA * commission.hraPayout) + (salesTotals.selectPatientManagement * commission.spmPayout);
 
-    const pushCalculationData = {};
-    for (const saleType in pushValues) {
-        const currentTotal = pushValues[saleType];
-        const nextTier = getNextPayoutTier(currentTotal, payoutTiers[saleType]);
-        const additionalSalesNeeded = nextTier ? nextTier.min - currentTotal : 0;
-        const salesPerDayNeeded = additionalSalesNeeded / workingDaysLeft;
-        const projectedCommission = nextTier ? calculateTotal({ [saleType]: nextTier.min }, level) : 0;
-
-        pushCalculationData[saleType] = {
-            currentTotal,
-            nextPayoutValue: nextTier ? nextTier.payout : null,
-            additionalSalesNeeded,
-            salesPerDayNeeded,
-            projectedCommission
-        };
-    }
-
-    return pushCalculationData;
-}
-
-function getNextPayoutTier(currentTotal, tiers) {
-    for (const tier of tiers) {
-        if (currentTotal < tier.min) {
-            return tier;
-        }
-    }
-    return null;
-}
-
-function getPayoutTiers(level) {
-    // Define payout tiers for each sale type based on the level
-    // Example structure, adjust according to your actual payout tiers
-    return {
-        selectRX: [
-            { min: 75, max: Infinity, payout: level === 3 ? 17.00 : level === 2 ? 18.00 : 19.00 },
-            { min: 65, max: 74, payout: level === 3 ? 16.50 : level === 2 ? 17.50 : 18.50 },
-            { min: 30, max: 64, payout: level === 3 ? 16.00 : level === 2 ? 17.00 : 18.00 },
-            { min: 15, max: 29, payout: level === 3 ? 15.50 : level === 2 ? 16.50 : 17.50 },
-            { min: 0, max: 14, payout: level === 3 ? 15.00 : level === 2 ? 16.00 : 17.00 }
-        ],
-        transfer: [
-            { min: 50, max: Infinity, payout: level === 3 ? 11.00 : level === 2 ? 10.00 : 8.00 },
-            { min: 35, max: 49, payout: level === 3 ? 10.00 : level === 2 ? 9.25 : 7.50 },
-            { min: 20, max: 34, payout: level === 3 ? 9.00 : level === 2 ? 8.50 : 7.00 },
-            { min: 10, max: 19, payout: level === 3 ? 8.00 : level === 2 ? 7.75 : 6.50 },
-            { min: 0, max: 9, payout: level === 3 ? 7.00 : level === 2 ? 7.00 : 6.00 }
-        ],
-        billableHRA: [
-            { min: 50, max: Infinity, payout: level === 3 ? 6.00 : level === 2 ? 5.00 : 4.00 },
-            { min: 35, max: 49, payout: level === 3 ? 5.00 : level === 2 ? 4.25 : 3.50 },
-            { min: 20, max: 34, payout: level === 3 ? 4.00 : level === 2 ? 3.50 : 3.00 },
-            { min: 10, max: 19, payout: level === 3 ? 3.00 : level === 2 ? 2.75 : 2.50 },
-            { min: 0, max: 9, payout: level === 3 ? 2.00 : level === 2 ? 2.00 : 2.00 }
-        ],
-        selectPatientManagement: [
-            { min: 3, max: Infinity, payout: 11.00 }
-        ]
-    };
-}
-
-
-
-
-function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, pushCalculationData) {
-    const total = (salesTotals.selectRX * commission.srxPayout) + 
-                  (salesTotals.transfer * commission.transferPayout) + 
-                  (salesTotals.billableHRA * commission.hraPayout) + 
-                  (salesTotals.selectPatientManagement * commission.spmPayout);
-
-    // Update current sales values
     document.getElementById('srx-value').textContent = `Current: $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)} (${salesTotals.selectRX})`;
     document.getElementById('transfer-value').textContent = `Current: $${(salesTotals.transfer * commission.transferPayout).toFixed(2)} (${salesTotals.transfer})`;
     document.getElementById('hra-value').textContent = `Current: $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)} (${salesTotals.billableHRA})`;
@@ -231,22 +158,18 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
 
     const workingDaysLeft = getWorkingDaysLeft();
 
-    // Update trend values
     document.getElementById('srx-trend').textContent = `Trend: $${((salesTotals.selectRX + trendValues.selectRX) * commission.srxPayout).toFixed(2)}`;
     document.getElementById('transfer-trend').textContent = `Trend: $${((salesTotals.transfer + trendValues.transfer) * commission.transferPayout).toFixed(2)}`;
     document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + trendValues.billableHRA) * commission.hraPayout).toFixed(2)}`;
     document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + trendValues.selectPatientManagement) * commission.spmPayout).toFixed(2)}`;
 
-    // Update push values
-    document.getElementById('srx-push').textContent = `Push: $${((pushValues.selectRX) * commission.srxPayout).toFixed(2)}`;
-    document.getElementById('transfer-push').textContent = `Push: $${((pushValues.transfer) * commission.transferPayout).toFixed(2)}`;
-    document.getElementById('hra-push').textContent = `Push: $${((pushValues.billableHRA) * commission.hraPayout).toFixed(2)}`;
-    document.getElementById('spm-push').textContent = `Push: $${((pushValues.selectPatientManagement) * commission.spmPayout).toFixed(2)}`;
+    document.getElementById('srx-push').textContent = `Push: $${((dailyAverages.selectRX * workingDaysLeft) * commission.srxPayout).toFixed(2)}`;
+    document.getElementById('transfer-push').textContent = `Push: $${((dailyAverages.transfer * workingDaysLeft) * commission.transferPayout).toFixed(2)}`;
+    document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * workingDaysLeft) * commission.hraPayout).toFixed(2)}`;
+    document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * workingDaysLeft) * commission.spmPayout).toFixed(2)}`;
 
-    // Update total values
     document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
 
-    // Update last month values
     const lastMonthElement = document.getElementById('last-month-value');
     if (prevTotal === 'N/A') {
         lastMonthElement.textContent = 'N/A';
@@ -255,19 +178,9 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
         lastMonthElement.style.color = prevTotal > total ? 'green' : 'red';
     }
 
-    // Update average values
     const averageElement = document.getElementById('average-value');
     averageElement.textContent = `$${average.toFixed(2)}`;
     averageElement.style.color = average > total ? 'red' : 'green';
-
-    // Display push calculation data
-    for (const saleType in pushCalculationData) {
-        const pushCalc = pushCalculationData[saleType];
-        document.getElementById(`${saleType}-push-calc`).textContent = `Next Payout: $${pushCalc.nextPayoutValue ? pushCalc.nextPayoutValue.toFixed(2) : 'N/A'}`;
-        document.getElementById(`${saleType}-additional-sales`).textContent = `Additional Sales Needed: ${pushCalc.additionalSalesNeeded.toFixed(2)}`;
-        document.getElementById(`${saleType}-sales-per-day`).textContent = `Sales Per Day Needed: ${pushCalc.salesPerDayNeeded.toFixed(2)}`;
-        document.getElementById(`${saleType}-projected-commission`).textContent = `Projected Commission: $${pushCalc.projectedCommission.toFixed(2)}`;
-    }
 }
 
 function calculateCommission(salesTotals, level) {
