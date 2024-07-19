@@ -224,6 +224,8 @@ function calculateCommission(salesTotals, level) {
     let transferPayout;
     let hraPayout;
     let spmPayout = 11;  // Example value, adjust accordingly
+    let nextStage = { srx: Infinity, transfer: Infinity, hra: Infinity, spm: Infinity }
+
 
     if (level === 3) {
         srxPayout = getPayout(salesTotals.selectRX, [
