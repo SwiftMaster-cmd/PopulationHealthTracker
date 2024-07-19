@@ -273,14 +273,7 @@ function getPayout(count, tiers) {
     return { payout: 0, nextStage: Infinity };
 }
 
-function getPayout(count, tiers) {
-    for (const tier of tiers) {
-        if (count >= tier.min && count <= tier.max) {
-            return tier.payout;
-        }
-    }
-    return 0;
-}
+
 
 function calculateTotal(salesData, level) {
     const commission = calculateCommission(salesData, level);
