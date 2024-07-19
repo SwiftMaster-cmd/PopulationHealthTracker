@@ -109,7 +109,8 @@ function loadMonthlyTotals() {
                             const trendValues = {
                                 selectRX: calculateTrend(salesTotals.selectRX, daysPassed),
                                 transfer: calculateTrend(salesTotals.transfer, daysPassed),
-                                billableHRA: calculateTrend(salesTotals.billableHRA, daysPassed),                                 selectPatientManagement: calculateTrend(salesTotals.selectPatientManagement, daysPassed)
+                                billableHRA: calculateTrend(salesTotals.billableHRA, daysPassed),
+                                selectPatientManagement: calculateTrend(salesTotals.selectPatientManagement, daysPassed)
                             };
 
                             // Calculate push values
