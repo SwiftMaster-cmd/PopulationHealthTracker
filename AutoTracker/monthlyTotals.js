@@ -125,12 +125,15 @@ function loadMonthlyTotals() {
                                 selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
                             };
 
+                            const pushCalculationData = calculatePushCalculationData(pushValues, level, workingDaysLeft);
+
                             const trendData = {
                                 dailyAverages,
                                 trendValues,
                                 currentCommissionTotal,
                                 trendCommissionTotal,
-                                pushValues
+                                pushValues,
+                                pushCalculationData
                             };
 
                             trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
@@ -146,6 +149,69 @@ function loadMonthlyTotals() {
             console.error('No user is signed in.');
         }
     });
+}
+
+function calculatePushCalculationData(pushValues, level, workingDaysLeft) {
+    const payoutTiers = getPayoutTiers(level);
+
+    const pushCalculationData = {};
+    for (const saleType in pushValues) {
+        const currentTotal = pushValues[saleType];
+        const nextTier = getNextPayoutTier(currentTotal, payoutTiers[saleType]);
+        const additionalSalesNeeded = nextTier ? nextTier.min - currentTotal : 0;
+        const salesPerDayNeeded = additionalSalesNeeded / workingDaysLeft;
+        const projectedCommission = nextTier ? calculateTotal({ [saleType]: nextTier.min }, level) : 0;
+
+        pushCalculationData[saleType] = {
+            currentTotal,
+            nextPayoutValue: nextTier ? nextTier.payout : null,
+            additionalSalesNeeded,
+            salesPerDayNeeded,
+            projectedCommission
+        };
+    }
+
+    return pushCalculationData;
+}
+
+function getNextPayoutTier(currentTotal, tiers) {
+    for (const tier of tiers) {
+        if (currentTotal < tier.min) {
+            return tier;
+        }
+    }
+    return null;
+}
+
+function getPayoutTiers(level) {
+    // Define payout tiers for each sale type based on the level
+    // Example structure, adjust according to your actual payout tiers
+    return {
+        selectRX: [
+            { min: 75, max: Infinity, payout: level === 3 ? 17.00 : level === 2 ? 18.00 : 19.00 },
+            { min: 65, max: 74, payout: level === 3 ? 16.50 : level === 2 ? 17.50 : 18.50 },
+            { min: 30, max: 64, payout: level === 3 ? 16.00 : level === 2 ? 17.00 : 18.00 },
+            { min: 15, max: 29, payout: level === 3 ? 15.50 : level === 2 ? 16.50 : 17.50 },
+            { min: 0, max: 14, payout: level === 3 ? 15.00 : level === 2 ? 16.00 : 17.00 }
+        ],
+        transfer: [
+            { min: 50, max: Infinity, payout: level === 3 ? 11.00 : level === 2 ? 10.00 : 8.00 },
+            { min: 35, max: 49, payout: level === 3 ? 10.00 : level === 2 ? 9.25 : 7.50 },
+            { min: 20, max: 34, payout: level === 3 ? 9.00 : level === 2 ? 8.50 : 7.00 },
+            { min: 10, max: 19, payout: level === 3 ? 8.00 : level === 2 ? 7.75 : 6.50 },
+            { min: 0, max: 9, payout: level === 3 ? 7.00 : level === 2 ? 7.00 : 6.00 }
+        ],
+        billableHRA: [
+            { min: 50, max: Infinity, payout: level === 3 ? 6.00 : level === 2 ? 5.00 : 4.00 },
+            { min: 35, max: 49, payout: level === 3 ? 5.00 : level === 2 ? 4.25 : 3.50 },
+            { min: 20, max: 34, payout: level === 3 ? 4.00 : level === 2 ? 3.50 : 3.00 },
+            { min: 10, max: 19, payout: level === 3 ? 3.00 : level === 2 ? 2.75 : 2.50 },
+            { min: 0, max: 9, payout: level === 3 ? 2.00 : level === 2 ? 2.00 : 2.00 }
+        ],
+        selectPatientManagement: [
+            { min: 3, max: Infinity, payout: 11.00 }
+        ]
+    };
 }
 
 function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages) {
