@@ -109,7 +109,23 @@ function loadMonthlyTotals() {
                                 billableHRA: calculateDailyAverage(salesTotals.billableHRA, daysPassed),
                                 selectPatientManagement: calculateDailyAverage(salesTotals.selectPatientManagement, daysPassed)
                             };
-                            trendsRef.child(currentUserId).child(currentMonthKey).set(trendValues);
+
+                            const currentCommissionTotal = calculateTotal(salesTotals, level);
+                            const trendCommissionTotal = calculateTotal({
+                                selectRX: salesTotals.selectRX + trendValues.selectRX,
+                                transfer: salesTotals.transfer + trendValues.transfer,
+                                billableHRA: salesTotals.billableHRA + trendValues.billableHRA,
+                                selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
+                            }, level);
+
+                            const trendData = {
+                                dailyAverages,
+                                trendValues,
+                                currentCommissionTotal,
+                                trendCommissionTotal
+                            };
+
+                            trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
 
                             updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages);
                         });
@@ -127,22 +143,18 @@ function loadMonthlyTotals() {
 function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages) {
     const total = (salesTotals.selectRX * commission.srxPayout) + (salesTotals.transfer * commission.transferPayout) + (salesTotals.billableHRA * commission.hraPayout) + (salesTotals.selectPatientManagement * commission.spmPayout);
 
-    // Current values
     document.getElementById('srx-value').textContent = `Current: $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)} (${salesTotals.selectRX})`;
     document.getElementById('transfer-value').textContent = `Current: $${(salesTotals.transfer * commission.transferPayout).toFixed(2)} (${salesTotals.transfer})`;
     document.getElementById('hra-value').textContent = `Current: $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)} (${salesTotals.billableHRA})`;
     document.getElementById('spm-value').textContent = `Current: $${(salesTotals.selectPatientManagement * commission.spmPayout).toFixed(2)} (${salesTotals.selectPatientManagement})`;
 
-    // Calculate the remaining working days in the month
     const workingDaysLeft = getWorkingDaysLeft();
 
-    // Trend values (current total + projected trend)
-    document.getElementById('srx-trend').textContent = `Trend: $${((salesTotals.selectRX + (dailyAverages.selectRX * workingDaysLeft)) * commission.srxPayout).toFixed(2)}`;
-    document.getElementById('transfer-trend').textContent = `Trend: $${((salesTotals.transfer + (dailyAverages.transfer * workingDaysLeft)) * commission.transferPayout).toFixed(2)}`;
-    document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + (dailyAverages.billableHRA * workingDaysLeft)) * commission.hraPayout).toFixed(2)}`;
-    document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + (dailyAverages.selectPatientManagement * workingDaysLeft)) * commission.spmPayout).toFixed(2)}`;
+    document.getElementById('srx-trend').textContent = `Trend: $${((salesTotals.selectRX + trendValues.selectRX) * commission.srxPayout).toFixed(2)}`;
+    document.getElementById('transfer-trend').textContent = `Trend: $${((salesTotals.transfer + trendValues.transfer) * commission.transferPayout).toFixed(2)}`;
+    document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + trendValues.billableHRA) * commission.hraPayout).toFixed(2)}`;
+    document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + trendValues.selectPatientManagement) * commission.spmPayout).toFixed(2)}`;
 
-    // Push values (assuming Push is similar to Trend for now)
     document.getElementById('srx-push').textContent = `Push: $${((dailyAverages.selectRX * workingDaysLeft) * commission.srxPayout).toFixed(2)}`;
     document.getElementById('transfer-push').textContent = `Push: $${((dailyAverages.transfer * workingDaysLeft) * commission.transferPayout).toFixed(2)}`;
     document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * workingDaysLeft) * commission.hraPayout).toFixed(2)}`;
