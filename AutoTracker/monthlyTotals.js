@@ -198,10 +198,10 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
     document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + (dailyAverages.selectPatientManagement * workingDaysLeft)) * commission.spmPayout).toFixed(2)}`;
 
     // Push values (sales needed per day to reach the next commission stage)
-    document.getElementById('srx-push').textContent = `Push: ${pushValues.selectRX.toFixed(2)} per day`;
-    document.getElementById('transfer-push').textContent = `Push: ${pushValues.transfer.toFixed(2)} per day`;
-    document.getElementById('hra-push').textContent = `Push: ${pushValues.billableHRA.toFixed(2)} per day`;
-    document.getElementById('spm-push').textContent = `Push: ${pushValues.selectPatientManagement.toFixed(2)} per day`;
+    document.getElementById('srx-push').textContent = `Push: ${pushValues.selectRX.additionalSalesPerDay.toFixed(2)} per day for $${pushValues.selectRX.totalCommission.toFixed(2)}`;
+    document.getElementById('transfer-push').textContent = `Push: ${pushValues.transfer.additionalSalesPerDay.toFixed(2)} per day for $${pushValues.transfer.totalCommission.toFixed(2)}`;
+    document.getElementById('hra-push').textContent = `Push: ${pushValues.billableHRA.additionalSalesPerDay.toFixed(2)} per day for $${pushValues.billableHRA.totalCommission.toFixed(2)}`;
+    document.getElementById('spm-push').textContent = `Push: ${pushValues.selectPatientManagement.additionalSalesPerDay.toFixed(2)} per day for $${pushValues.selectPatientManagement.totalCommission.toFixed(2)}`;
 
     document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
 
