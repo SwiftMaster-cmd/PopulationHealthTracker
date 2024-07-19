@@ -73,12 +73,17 @@ function calculateTrend(total, daysPassed) {
     return dailyAverage * workingDaysLeft;
 }
 
-function calculatePush(currentTotal, nextStage, workingDaysLeft) {
-    const remainingSalesNeeded = nextStage - currentTotal;
+function calculatePush(dailyAverage, currentTotal, nextStage, workingDaysLeft, payout) {
+    const trendTotal = currentTotal + (dailyAverage * workingDaysLeft);
+    const remainingSalesNeeded = nextStage - trendTotal;
+    const additionalSalesPerDay = remainingSalesNeeded / workingDaysLeft;
+    const totalWithPush = currentTotal + (dailyAverage + additionalSalesPerDay) * workingDaysLeft;
+    const totalCommission = totalWithPush * payout;
+
     if (remainingSalesNeeded <= 0) {
-        return 0; // Already at or above the next stage
+        return { additionalSalesPerDay: 0, totalCommission: trendTotal * payout }; // Already at or above the next stage
     }
-    return remainingSalesNeeded / workingDaysLeft;
+    return { additionalSalesPerDay, totalCommission };
 }
 
 function loadMonthlyTotals() {
@@ -146,10 +151,10 @@ function loadMonthlyTotals() {
 
                             // Calculate push values
                             const pushValues = {
-                                selectRX: calculatePush(dailyAverages.selectRX, salesTotals.selectRX, commission.nextStage.srx, workingDaysLeft),
-                                transfer: calculatePush(dailyAverages.transfer, salesTotals.transfer, commission.nextStage.transfer, workingDaysLeft),
-                                billableHRA: calculatePush(dailyAverages.billableHRA, salesTotals.billableHRA, commission.nextStage.hra, workingDaysLeft),
-                                selectPatientManagement: calculatePush(dailyAverages.selectPatientManagement, salesTotals.selectPatientManagement, commission.nextStage.spm, workingDaysLeft)
+                                selectRX: calculatePush(dailyAverages.selectRX, salesTotals.selectRX, commission.nextStage.srx, workingDaysLeft, commission.srxPayout),
+                                transfer: calculatePush(dailyAverages.transfer, salesTotals.transfer, commission.nextStage.transfer, workingDaysLeft, commission.transferPayout),
+                                billableHRA: calculatePush(dailyAverages.billableHRA, salesTotals.billableHRA, commission.nextStage.hra, workingDaysLeft, commission.hraPayout),
+                                selectPatientManagement: calculatePush(dailyAverages.selectPatientManagement, salesTotals.selectPatientManagement, commission.nextStage.spm, workingDaysLeft, commission.spmPayout)
                             };
 
                             // Save daily averages and push values to "Trends" node
@@ -171,13 +176,7 @@ function loadMonthlyTotals() {
     });
 }
 
-function calculatePush(dailyAverage, currentTotal, nextStage, workingDaysLeft) {
-    const remainingSalesNeeded = nextStage - currentTotal;
-    if (remainingSalesNeeded <= 0) {
-        return 0; // Already at or above the next stage
-    }
-    return remainingSalesNeeded / workingDaysLeft;
-}
+
                                
 
 function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues) {
