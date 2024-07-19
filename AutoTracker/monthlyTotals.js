@@ -137,18 +137,20 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
     document.getElementById('hra-value').textContent = `Current: $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)} (${salesTotals.billableHRA})`;
     document.getElementById('spm-value').textContent = `Current: $${(salesTotals.selectPatientManagement * commission.spmPayout).toFixed(2)} (${salesTotals.selectPatientManagement})`;
 
-    // Trend values
-    document.getElementById('srx-trend').textContent = `Trend: $${trendValues.selectRX.toFixed(2)}`;
-    document.getElementById('transfer-trend').textContent = `Trend: $${trendValues.transfer.toFixed(2)}`;
-    document.getElementById('hra-trend').textContent = `Trend: $${trendValues.billableHRA.toFixed(2)}`;
-    document.getElementById('spm-trend').textContent = `Trend: $${trendValues.selectPatientManagement.toFixed(2)}`;
-
-    // Push values (calculating projected totals based on daily averages)
+    // Calculate the remaining working days in the month
     const workingDaysLeft = getWorkingDaysLeft();
-    document.getElementById('srx-push').textContent = `Push: $${(dailyAverages.selectRX * workingDaysLeft * commission.srxPayout).toFixed(2)}`;
-    document.getElementById('transfer-push').textContent = `Push: $${(dailyAverages.transfer * workingDaysLeft * commission.transferPayout).toFixed(2)}`;
-    document.getElementById('hra-push').textContent = `Push: $${(dailyAverages.billableHRA * workingDaysLeft * commission.hraPayout).toFixed(2)}`;
-    document.getElementById('spm-push').textContent = `Push: $${(dailyAverages.selectPatientManagement * workingDaysLeft * commission.spmPayout).toFixed(2)}`;
+
+    // Trend values (current total + projected trend)
+    document.getElementById('srx-trend').textContent = `Trend: $${((salesTotals.selectRX + (dailyAverages.selectRX * workingDaysLeft)) * commission.srxPayout).toFixed(2)}`;
+    document.getElementById('transfer-trend').textContent = `Trend: $${((salesTotals.transfer + (dailyAverages.transfer * workingDaysLeft)) * commission.transferPayout).toFixed(2)}`;
+    document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + (dailyAverages.billableHRA * workingDaysLeft)) * commission.hraPayout).toFixed(2)}`;
+    document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + (dailyAverages.selectPatientManagement * workingDaysLeft)) * commission.spmPayout).toFixed(2)}`;
+
+    // Push values (assuming Push is similar to Trend for now)
+    document.getElementById('srx-push').textContent = `Push: $${((dailyAverages.selectRX * workingDaysLeft) * commission.srxPayout).toFixed(2)}`;
+    document.getElementById('transfer-push').textContent = `Push: $${((dailyAverages.transfer * workingDaysLeft) * commission.transferPayout).toFixed(2)}`;
+    document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * workingDaysLeft) * commission.hraPayout).toFixed(2)}`;
+    document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * workingDaysLeft) * commission.spmPayout).toFixed(2)}`;
 
     document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
 
