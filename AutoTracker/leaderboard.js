@@ -131,6 +131,8 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
+
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
