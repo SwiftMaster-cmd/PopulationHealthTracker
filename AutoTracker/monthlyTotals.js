@@ -93,49 +93,19 @@ function loadMonthlyTotals() {
                             const allSalesData = allSnapshot.val();
                             const average = calculateAverage(allSalesData, level);
 
-                            const daysPassed = new Date().getDate();
-                            const workingDaysLeft = getWorkingDaysLeft();
+                            // Fetch trend and current commission totals from Firebase
+                            trendsRef.child(currentUserId).child(currentMonthKey).once('value', trendSnapshot => {
+                                const trendData = trendSnapshot.val();
+                                const currentCommissionTotal = trendData ? trendData.currentCommissionTotal : calculateTotal(salesTotals, level);
+                                const trendCommissionTotal = trendData ? trendData.trendCommissionTotal : calculateTotal({
+                                    selectRX: salesTotals.selectRX + trendData.trendValues.selectRX,
+                                    transfer: salesTotals.transfer + trendData.trendValues.transfer,
+                                    billableHRA: salesTotals.billableHRA + trendData.trendValues.billableHRA,
+                                    selectPatientManagement: salesTotals.selectPatientManagement + trendData.trendValues.selectPatientManagement
+                                }, level);
 
-                            const trendValues = {
-                                selectRX: calculateTrend(salesTotals.selectRX, daysPassed),
-                                transfer: calculateTrend(salesTotals.transfer, daysPassed),
-                                billableHRA: calculateTrend(salesTotals.billableHRA, daysPassed),
-                                selectPatientManagement: calculateTrend(salesTotals.selectPatientManagement, daysPassed)
-                            };
-
-                            const dailyAverages = {
-                                selectRX: calculateDailyAverage(salesTotals.selectRX, daysPassed),
-                                transfer: calculateDailyAverage(salesTotals.transfer, daysPassed),
-                                billableHRA: calculateDailyAverage(salesTotals.billableHRA, daysPassed),
-                                selectPatientManagement: calculateDailyAverage(salesTotals.selectPatientManagement, daysPassed)
-                            };
-
-                            const currentCommissionTotal = calculateTotal(salesTotals, level);
-                            const trendCommissionTotal = calculateTotal({
-                                selectRX: salesTotals.selectRX + trendValues.selectRX,
-                                transfer: salesTotals.transfer + trendValues.transfer,
-                                billableHRA: salesTotals.billableHRA + trendValues.billableHRA,
-                                selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
-                            }, level);
-
-                            const pushValues = {
-                                selectRX: salesTotals.selectRX + trendValues.selectRX,
-                                transfer: salesTotals.transfer + trendValues.transfer,
-                                billableHRA: salesTotals.billableHRA + trendValues.billableHRA,
-                                selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
-                            };
-
-                            const trendData = {
-                                dailyAverages,
-                                trendValues,
-                                currentCommissionTotal,
-                                trendCommissionTotal,
-                                pushValues
-                            };
-
-                            trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
-
-                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues);
+                                updateSalesDisplay(salesTotals, commission, prevTotal, average, trendData.trendValues, trendData.dailyAverages, trendData.pushValues, currentCommissionTotal, trendCommissionTotal);
+                            });
                         });
                     });
                 } catch (error) {
