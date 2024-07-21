@@ -110,14 +110,6 @@ function loadMonthlyTotals() {
                                 selectPatientManagement: calculateDailyAverage(salesTotals.selectPatientManagement, daysPassed)
                             };
 
-                            const currentCommissionTotal = calculateTotal(salesTotals, level);
-                            const trendCommissionTotal = calculateTotal({
-                                selectRX: salesTotals.selectRX + trendValues.selectRX,
-                                transfer: salesTotals.transfer + trendValues.transfer,
-                                billableHRA: salesTotals.billableHRA + trendValues.billableHRA,
-                                selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
-                            }, level);
-
                             const pushValues = {
                                 selectRX: salesTotals.selectRX + trendValues.selectRX,
                                 transfer: salesTotals.transfer + trendValues.transfer,
@@ -128,21 +120,13 @@ function loadMonthlyTotals() {
                             const trendData = {
                                 dailyAverages,
                                 trendValues,
-                                currentCommissionTotal,
-                                trendCommissionTotal,
                                 pushValues
                             };
 
-                            // Save the correctly calculated totals back to Firebase
-                            trendsRef.child(currentUserId).child(currentMonthKey).set({
-                                currentCommissionTotal: currentCommissionTotal,
-                                trendCommissionTotal: trendCommissionTotal,
-                                trendValues,
-                                dailyAverages,
-                                pushValues
-                            });
+                            // Save the trend data back to Firebase
+                            trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
 
-                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, currentCommissionTotal, trendCommissionTotal);
+                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues);
                         });
                     });
                 } catch (error) {
