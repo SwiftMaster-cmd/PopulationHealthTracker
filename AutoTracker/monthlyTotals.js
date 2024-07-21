@@ -93,19 +93,50 @@ function loadMonthlyTotals() {
                             const allSalesData = allSnapshot.val();
                             const average = calculateAverage(allSalesData, level);
 
-                            // Fetch trend and current commission totals from Firebase
-                            trendsRef.child(currentUserId).child(currentMonthKey).once('value', trendSnapshot => {
-                                const trendData = trendSnapshot.val();
-                                const currentCommissionTotal = trendData ? trendData.currentCommissionTotal : calculateTotal(salesTotals, level);
-                                const trendCommissionTotal = trendData ? trendData.trendCommissionTotal : calculateTotal({
-                                    selectRX: salesTotals.selectRX + trendData.trendValues.selectRX,
-                                    transfer: salesTotals.transfer + trendData.trendValues.transfer,
-                                    billableHRA: salesTotals.billableHRA + trendData.trendValues.billableHRA,
-                                    selectPatientManagement: salesTotals.selectPatientManagement + trendData.trendValues.selectPatientManagement
-                                }, level);
+                            const daysPassed = new Date().getDate();
+                            const workingDaysLeft = getWorkingDaysLeft();
 
-                                updateSalesDisplay(salesTotals, commission, prevTotal, average, trendData.trendValues, trendData.dailyAverages, trendData.pushValues, currentCommissionTotal, trendCommissionTotal);
-                            });
+                            const trendValues = {
+                                selectRX: calculateTrend(salesTotals.selectRX, daysPassed),
+                                transfer: calculateTrend(salesTotals.transfer, daysPassed),
+                                billableHRA: calculateTrend(salesTotals.billableHRA, daysPassed),
+                                selectPatientManagement: calculateTrend(salesTotals.selectPatientManagement, daysPassed)
+                            };
+
+                            const dailyAverages = {
+                                selectRX: calculateDailyAverage(salesTotals.selectRX, daysPassed),
+                                transfer: calculateDailyAverage(salesTotals.transfer, daysPassed),
+                                billableHRA: calculateDailyAverage(salesTotals.billableHRA, daysPassed),
+                                selectPatientManagement: calculateDailyAverage(salesTotals.selectPatientManagement, daysPassed)
+                            };
+
+                            const currentCommissionTotal = calculateTotal(salesTotals, level);
+                            const trendCommissionTotal = calculateTotal({
+                                selectRX: salesTotals.selectRX + trendValues.selectRX,
+                                transfer: salesTotals.transfer + trendValues.transfer,
+                                billableHRA: salesTotals.billableHRA + trendValues.billableHRA,
+                                selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
+                            }, level);
+
+                            const pushValues = {
+                                selectRX: salesTotals.selectRX + trendValues.selectRX,
+                                transfer: salesTotals.transfer + trendValues.transfer,
+                                billableHRA: salesTotals.billableHRA + trendValues.billableHRA,
+                                selectPatientManagement: salesTotals.selectPatientManagement + trendValues.selectPatientManagement
+                            };
+
+                            const trendData = {
+                                dailyAverages,
+                                trendValues,
+                                currentCommissionTotal,
+                                trendCommissionTotal,
+                                pushValues
+                            };
+
+                            // Save the correctly calculated totals back to Firebase
+                            trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
+
+                            updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, currentCommissionTotal, trendCommissionTotal);
                         });
                     });
                 } catch (error) {
@@ -118,9 +149,7 @@ function loadMonthlyTotals() {
     });
 }
 
-function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages) {
-    const total = (salesTotals.selectRX * commission.srxPayout) + (salesTotals.transfer * commission.transferPayout) + (salesTotals.billableHRA * commission.hraPayout) + (salesTotals.selectPatientManagement * commission.spmPayout);
-
+function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, currentCommissionTotal, trendCommissionTotal) {
     document.getElementById('srx-value').textContent = `Current: $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)} (${salesTotals.selectRX})`;
     document.getElementById('transfer-value').textContent = `Current: $${(salesTotals.transfer * commission.transferPayout).toFixed(2)} (${salesTotals.transfer})`;
     document.getElementById('hra-value').textContent = `Current: $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)} (${salesTotals.billableHRA})`;
@@ -138,19 +167,19 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
     document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * workingDaysLeft) * commission.hraPayout).toFixed(2)}`;
     document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * workingDaysLeft) * commission.spmPayout).toFixed(2)}`;
 
-    document.getElementById('total-value').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('total-value').textContent = `$${currentCommissionTotal.toFixed(2)}`;
 
     const lastMonthElement = document.getElementById('last-month-value');
     if (prevTotal === 'N/A') {
         lastMonthElement.textContent = 'N/A';
     } else {
         lastMonthElement.textContent = `$${prevTotal.toFixed(2)}`;
-        lastMonthElement.style.color = prevTotal > total ? 'green' : 'red';
+        lastMonthElement.style.color = prevTotal > currentCommissionTotal ? 'green' : 'red';
     }
 
     const averageElement = document.getElementById('average-value');
     averageElement.textContent = `$${average.toFixed(2)}`;
-    averageElement.style.color = average > total ? 'red' : 'green';
+    averageElement.style.color = average > currentCommissionTotal ? 'red' : 'green';
 }
 
 function calculateCommission(salesTotals, level) {
