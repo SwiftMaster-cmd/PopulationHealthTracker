@@ -134,7 +134,13 @@ function loadMonthlyTotals() {
                             };
 
                             // Save the correctly calculated totals back to Firebase
-                            trendsRef.child(currentUserId).child(currentMonthKey).set(trendData);
+                            trendsRef.child(currentUserId).child(currentMonthKey).set({
+                                currentCommissionTotal: currentCommissionTotal,
+                                trendCommissionTotal: trendCommissionTotal,
+                                trendValues,
+                                dailyAverages,
+                                pushValues
+                            });
 
                             updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, currentCommissionTotal, trendCommissionTotal);
                         });
