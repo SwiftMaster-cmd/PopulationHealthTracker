@@ -31,6 +31,8 @@ h2 {
     margin: 20px 0;
     color: #fff;
     transition: opacity 0.5s ease, box-shadow 0.5s ease;
+    width: 80%;
+    height: 45%;
 }
 
 .login-container:hover, .register-container:hover,
