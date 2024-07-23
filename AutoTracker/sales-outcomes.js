@@ -63,14 +63,15 @@ document.addEventListener('DOMContentLoaded', function() {
     async function importSalesData(newData) {
         const database = firebase.database();
         const salesOutcomesRef = database.ref('salesOutcomes');
-
+    
         try {
             // Fetch all existing sales outcomes
             const existingSnapshot = await salesOutcomesRef.once('value');
             const existingData = existingSnapshot.val() || {};
             const seenOutcomes = {};
-
+    
             // Index existing data
+            console.log("Indexing existing data...");
             for (const userId in existingData) {
                 for (const outcomeId in existingData[userId]) {
                     const outcome = existingData[userId][outcomeId];
@@ -78,20 +79,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     seenOutcomes[key] = { userId, outcomeId, outcomeTime: outcome.outcomeTime };
                 }
             }
-
+            console.log("Existing data indexed:", seenOutcomes);
+    
             // Process each user in the new data
             for (const userId in newData) {
                 const userSalesRef = salesOutcomesRef.child(userId);
-
+    
                 // Iterate over each sale and add it to Firebase if not a duplicate
                 for (const outcomeId in newData[userId]) {
                     const newSale = newData[userId][outcomeId];
                     const key = generateUniqueKey(newSale);
-
+    
                     if (seenOutcomes[key]) {
                         const existingTime = new Date(seenOutcomes[key].outcomeTime);
                         const newTime = new Date(newSale.outcomeTime);
-
+    
                         if (newTime > existingTime) {
                             // If the new sale is newer, update the existing record
                             await userSalesRef.child(seenOutcomes[key].outcomeId).set(newSale);
