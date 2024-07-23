@@ -39,6 +39,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     };
 
+
+
+
+
+
+
+
+    
     document.getElementById('exportSalesData').addEventListener('click', async function() {
         const database = firebase.database();
         const salesOutcomesRef = database.ref('salesOutcomes');
@@ -64,56 +72,89 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Handle file input change for import
-    document.getElementById('importSalesData').addEventListener('change', handleFileSelect, false);
-
-    document.getElementById('importSalesDataButton').addEventListener('click', function() {
-        document.getElementById('importSalesData').click();
-    });
-
-    async function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            const contents = e.target.result;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Other existing code
+    
+        document.getElementById('exportSalesData').addEventListener('click', async function() {
+            const database = firebase.database();
+            const salesOutcomesRef = database.ref('salesOutcomes');
+            
             try {
-                const data = JSON.parse(contents);
-                await importSalesData(data);
+                const snapshot = await salesOutcomesRef.once('value');
+                const data = snapshot.val();
+                if (data) {
+                    const jsonData = JSON.stringify(data);
+                    const blob = new Blob([jsonData], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'salesData.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    console.log('Sales data exported successfully');
+                } else {
+                    console.log('No sales data found');
+                }
             } catch (error) {
-                console.error('Error reading or importing sales data:', error);
+                console.error('Error exporting sales data:', error);
             }
-        };
-        reader.readAsText(file);
-    }
-
-    async function importSalesData(newData) {
-        const database = firebase.database();
-        const salesOutcomesRef = database.ref('salesOutcomes');
-
-        try {
-            // Process each user in the new data
-            for (const userId in newData) {
-                const userSalesRef = salesOutcomesRef.child(userId);
-
-                // Fetch existing data for the user
-                const userSnapshot = await userSalesRef.once('value');
-                const existingUserData = userSnapshot.val() || {};
-
-                // Merge new data with existing data
-                const mergedUserData = { ...existingUserData, ...newData[userId] };
-
-                // Update Firebase with merged data
-                await userSalesRef.set(mergedUserData);
-                console.log(`Sales data for user ${userId} imported successfully`);
+        });
+    
+        // Handle file input change for import
+        document.getElementById('importSalesData').addEventListener('change', handleFileSelect, false);
+    
+        document.getElementById('importSalesDataButton').addEventListener('click', function() {
+            document.getElementById('importSalesData').click();
+        });
+    
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
             }
-        } catch (error) {
-            console.error('Error importing sales data:', error);
+    
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const contents = e.target.result;
+                try {
+                    const data = JSON.parse(contents);
+                    await importSalesData(data);
+                } catch (error) {
+                    console.error('Error reading or importing sales data:', error);
+                }
+            };
+            reader.readAsText(file);
         }
-    }
+    
+        async function importSalesData(newData) {
+            const database = firebase.database();
+            const salesOutcomesRef = database.ref('salesOutcomes');
+    
+            try {
+                // Process each user in the new data
+                for (const userId in newData) {
+                    const userSalesRef = salesOutcomesRef.child(userId);
+    
+                    // Fetch existing data for the user
+                    const userSnapshot = await userSalesRef.once('value');
+                    const existingUserData = userSnapshot.val() || {};
+    
+                    console.log(`Existing data for user ${userId}:`, existingUserData);
+    
+                    // Merge new data with existing data
+                    const mergedUserData = { ...existingUserData, ...newData[userId] };
+    
+                    console.log(`Merged data for user ${userId}:`, mergedUserData);
+    
+                    // Update Firebase with merged data
+                    await userSalesRef.set(mergedUserData);
+                    console.log(`Sales data for user ${userId} imported successfully`);
+                }
+            } catch (error) {
+                console.error('Error importing sales data:', error);
+            }
+        }
+    });
 
 
     function isSameDay(date1, date2) {
