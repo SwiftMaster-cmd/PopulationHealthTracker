@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
 
+
     
         document.getElementById('exportSalesData').addEventListener('click', async function() {
             const database = firebase.database();
@@ -69,29 +70,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (const userId in newData) {
                     const userSalesRef = salesOutcomesRef.child(userId);
     
-                    // Fetch existing data for the user
-                    const userSnapshot = await userSalesRef.once('value');
-                    const existingUserData = userSnapshot.val() || {};
-    
-                    console.log(`Existing data for user ${userId}:`, existingUserData);
-    
-                    // Merge new data with existing data
-                    const updates = {};
+                    // Iterate over each sale and push it to Firebase
                     for (const outcomeId in newData[userId]) {
-                        updates[outcomeId] = newData[userId][outcomeId];
+                        const newSale = newData[userId][outcomeId];
+                        await userSalesRef.push(newSale);
+                        console.log(`Added sale for user ${userId}:`, newSale);
                     }
-    
-                    console.log(`Updates for user ${userId}:`, updates);
-    
-                    // Update Firebase with merged data
-                    await userSalesRef.update(updates);
-                    console.log(`Sales data for user ${userId} imported successfully`);
                 }
+                console.log('Sales data imported successfully');
             } catch (error) {
                 console.error('Error importing sales data:', error);
             }
         }
-
 
 
 
