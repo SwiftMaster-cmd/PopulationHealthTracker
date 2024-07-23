@@ -5,70 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.toLocaleDateString();
     }
     
-        
 
-    function formatTime(dateTime) {
-        const date = new Date(dateTime);
-        return date.toLocaleTimeString();
-    }
-
-
-
-    
-    function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-
-        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-            return 'Select RX';
-        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-            return 'Billable HRA';
-        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-            return 'Transfer';
-        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
-            return 'Select Patient Management';
-        }
-        return action;
-    }
-
-
-    Date.prototype.getWeekNumber = function() {
-        const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-        const dayNum = d.getUTCDay() || 7;
-        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    };
-
-    document.getElementById('exportSalesData').addEventListener('click', async function() {
-        const database = firebase.database();
-        const salesOutcomesRef = database.ref('salesOutcomes');
-        
-        try {
-            const snapshot = await salesOutcomesRef.once('value');
-            const data = snapshot.val();
-            if (data) {
-                const jsonData = JSON.stringify(data);
-                const blob = new Blob([jsonData], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'salesData.json';
-                a.click();
-                URL.revokeObjectURL(url);
-                console.log('Sales data exported successfully');
-            } else {
-                console.log('No sales data found');
-            }
-        } catch (error) {
-            console.error('Error exporting sales data:', error);
-        }
-    });
-
-    // Handle file input change for import
-    document.getElementById('importSalesData').addEventListener('change', handleFileSelect, false);
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Other existing code
     
         document.getElementById('exportSalesData').addEventListener('click', async function() {
             const database = firebase.database();
@@ -149,7 +86,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error importing sales data:', error);
             }
         }
-    });
+    
+
+
+
+    function formatTime(dateTime) {
+        const date = new Date(dateTime);
+        return date.toLocaleTimeString();
+    }
+
+
+
+    
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+
+        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
+            return 'Select RX';
+        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+            return 'Billable HRA';
+        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+            return 'Transfer';
+        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
+            return 'Select Patient Management';
+        }
+        return action;
+    }
+
+
+    Date.prototype.getWeekNumber = function() {
+        const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    };
+
 
 
     function isSameDay(date1, date2) {
