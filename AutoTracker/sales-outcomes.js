@@ -5,6 +5,72 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.toLocaleDateString();
     }
 
+
+ document.getElementById('exportSalesData').addEventListener('click', async function() {
+        const database = firebase.database();
+        const salesOutcomesRef = database.ref('salesOutcomes');
+        
+        try {
+            const snapshot = await salesOutcomesRef.once('value');
+            const data = snapshot.val();
+            if (data) {
+                const jsonData = JSON.stringify(data);
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'salesData.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                console.log('Sales data exported successfully');
+            } else {
+                console.log('No sales data found');
+            }
+        } catch (error) {
+            console.error('Error exporting sales data:', error);
+        }
+    });
+
+    // Handle file input change for import
+    document.getElementById('importSalesData').addEventListener('change', handleFileSelect, false);
+
+    document.getElementById('importSalesDataButton').addEventListener('click', function() {
+        document.getElementById('importSalesData').click();
+    });
+
+    async function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const contents = e.target.result;
+            try {
+                const data = JSON.parse(contents);
+                await importSalesData(data);
+            } catch (error) {
+                console.error('Error reading or importing sales data:', error);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    async function importSalesData(data) {
+        const database = firebase.database();
+        const salesOutcomesRef = database.ref('salesOutcomes');
+
+        try {
+            await salesOutcomesRef.update(data);
+            console.log('Sales data imported successfully');
+        } catch (error) {
+            console.error('Error importing sales data:', error);
+        }
+    }
+
+
+
     function formatTime(dateTime) {
         const date = new Date(dateTime);
         return date.toLocaleTimeString();
