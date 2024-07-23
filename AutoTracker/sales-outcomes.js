@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 console.error('Error exporting sales data:', error);
             }
-        });
+      
     
         // Function to handle file selection for import
         async function handleFileSelect(event) {
