@@ -13,121 +13,124 @@ document.addEventListener('DOMContentLoaded', function() {
       
 
 
-    document.getElementById('exportSalesData').addEventListener('click', async function() {
-        const database = firebase.database();
-        const salesOutcomesRef = database.ref('salesOutcomes');
-        
-        try {
-            const snapshot = await salesOutcomesRef.once('value');
-            const data = snapshot.val();
-            if (data) {
-                const jsonData = JSON.stringify(data);
-                const blob = new Blob([jsonData], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'salesData.json';
-                a.click();
-                URL.revokeObjectURL(url);
-                console.log('Sales data exported successfully');
-            } else {
-                console.log('No sales data found');
-            }
-        } catch (error) {
-            console.error('Error exporting sales data:', error);
-        }
-    });
-
-    // Function to handle file selection for import
-    async function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            const contents = e.target.result;
+        document.getElementById('exportSalesData').addEventListener('click', async function() {
+            const database = firebase.database();
+            const salesOutcomesRef = database.ref('salesOutcomes');
+            
             try {
-                const data = JSON.parse(contents);
-                console.log('Data to import:', data);
-                await importSalesData(data);
-            } catch (error) {
-                console.error('Error reading or importing sales data:', error);
-            }
-        };
-        reader.readAsText(file);
-    }
-
-    // Attach the file select handler
-    document.getElementById('importSalesData').addEventListener('change', handleFileSelect, false);
-    document.getElementById('importSalesDataButton').addEventListener('click', function() {
-        document.getElementById('importSalesData').click();
-    });
-
-    // Function to import sales data into Firebase
-    async function importSalesData(newData) {
-        const database = firebase.database();
-        const salesOutcomesRef = database.ref('salesOutcomes');
-
-        try {
-            // Fetch all existing sales outcomes
-            const existingSnapshot = await salesOutcomesRef.once('value');
-            const existingData = existingSnapshot.val() || {};
-            const seenOutcomes = {};
-
-            // Index existing data
-            console.log("Indexing existing data...");
-            for (const userId in existingData) {
-                for (const outcomeId in existingData[userId]) {
-                    const outcome = existingData[userId][outcomeId];
-                    const key = generateUniqueKey(outcome);
-                    seenOutcomes[key] = { userId, outcomeId, outcomeTime: outcome.outcomeTime };
+                const snapshot = await salesOutcomesRef.once('value');
+                const data = snapshot.val();
+                if (data) {
+                    const jsonData = JSON.stringify(data);
+                    const blob = new Blob([jsonData], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'salesData.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    console.log('Sales data exported successfully');
+                } else {
+                    console.log('No sales data found');
                 }
+            } catch (error) {
+                console.error('Error exporting sales data:', error);
             }
-            console.log("Existing data indexed:", seenOutcomes);
-
-            // Process each user in the new data
-            for (const userId in newData) {
-                const userSalesRef = salesOutcomesRef.child(userId);
-
-                // Iterate over each sale and add it to Firebase if not a duplicate
-                for (const outcomeId in newData[userId]) {
-                    const newSale = newData[userId][outcomeId];
-                    const key = generateUniqueKey(newSale);
-
-                    if (seenOutcomes[key]) {
-                        const existingTime = new Date(seenOutcomes[key].outcomeTime);
-                        const newTime = new Date(newSale.outcomeTime);
-
-                        if (newTime > existingTime) {
-                            // If the new sale is newer, update the existing record
-                            await userSalesRef.child(seenOutcomes[key].outcomeId).set(newSale);
-                            seenOutcomes[key] = { userId, outcomeId, outcomeTime: newSale.outcomeTime };
-                            console.log(`Updated sale for user ${userId}:`, newSale);
-                        }
-                    } else {
-                        // If not a duplicate, add the new sale
-                        const newOutcomeRef = await userSalesRef.push(newSale);
-                        seenOutcomes[key] = { userId, outcomeId: newOutcomeRef.key, outcomeTime: newSale.outcomeTime };
-                        console.log(`Added sale for user ${userId}:`, newSale);
+        });
+    
+        // Function to handle file selection for import
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+    
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const contents = e.target.result;
+                try {
+                    const data = JSON.parse(contents);
+                    console.log('Data to import:', data);
+                    await importSalesData(data);
+                } catch (error) {
+                    console.error('Error reading or importing sales data:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+    
+        // Attach the file select handler
+        document.getElementById('importSalesData').addEventListener('change', handleFileSelect, false);
+        document.getElementById('importSalesDataButton').addEventListener('click', function() {
+            document.getElementById('importSalesData').click();
+        });
+    
+        // Function to import sales data into Firebase
+        async function importSalesData(newData) {
+            const database = firebase.database();
+            const salesOutcomesRef = database.ref('salesOutcomes');
+    
+            try {
+                // Fetch all existing sales outcomes
+                const existingSnapshot = await salesOutcomesRef.once('value');
+                const existingData = existingSnapshot.val() || {};
+                const seenOutcomes = {};
+    
+                // Index existing data
+                console.log("Indexing existing data...");
+                for (const userId in existingData) {
+                    for (const outcomeId in existingData[userId]) {
+                        const outcome = existingData[userId][outcomeId];
+                        const key = generateUniqueKey(outcome);
+                        seenOutcomes[key] = { userId, outcomeId, outcomeTime: outcome.outcomeTime };
                     }
                 }
+                console.log("Existing data indexed:", seenOutcomes);
+    
+                // Process each user in the new data
+                for (const userId in newData) {
+                    const userSalesRef = salesOutcomesRef.child(userId);
+    
+                    // Iterate over each sale and add it to Firebase if not a duplicate
+                    for (const outcomeId in newData[userId]) {
+                        const newSale = newData[userId][outcomeId];
+                        const key = generateUniqueKey(newSale);
+    
+                        if (seenOutcomes[key]) {
+                            const existingTime = new Date(seenOutcomes[key].outcomeTime);
+                            const newTime = new Date(newSale.outcomeTime);
+    
+                            if (newTime > existingTime) {
+                                // If the new sale is newer, update the existing record
+                                console.log(`Updating sale for user ${userId}:`, newSale);
+                                await userSalesRef.child(seenOutcomes[key].outcomeId).set(newSale);
+                                seenOutcomes[key] = { userId, outcomeId, outcomeTime: newSale.outcomeTime };
+                            } else {
+                                console.log(`Skipping older sale for user ${userId}:`, newSale);
+                            }
+                        } else {
+                            // If not a duplicate, add the new sale
+                            console.log(`Adding new sale for user ${userId}:`, newSale);
+                            const newOutcomeRef = await userSalesRef.push(newSale);
+                            seenOutcomes[key] = { userId, outcomeId: newOutcomeRef.key, outcomeTime: newSale.outcomeTime };
+                        }
+                    }
+                }
+                console.log('Sales data imported successfully');
+            } catch (error) {
+                console.error('Error importing sales data:', error);
             }
-            console.log('Sales data imported successfully');
-        } catch (error) {
-            console.error('Error importing sales data:', error);
         }
-    }
-
-    // Function to generate a unique key for each sale outcome
-    function generateUniqueKey(outcome) {
-        const action = outcome.assignAction;
-        const accountNumber = outcome.accountNumber;
-        const firstName = outcome.customerInfo.firstName;
-        const lastName = outcome.customerInfo.lastName;
-        return `${accountNumber}-${firstName}-${lastName}-${action}`;
-    }
+    
+        // Function to generate a unique key for each sale outcome
+        function generateUniqueKey(outcome) {
+            const action = outcome.assignAction;
+            const accountNumber = outcome.accountNumber;
+            const firstName = outcome.customerInfo.firstName;
+            const lastName = outcome.customerInfo.lastName;
+            return `${accountNumber}-${firstName}-${lastName}-${action}`;
+        }
+    });
 
 
 
