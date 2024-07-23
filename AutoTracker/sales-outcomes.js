@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     
-    document.addEventListener('DOMContentLoaded', function() {
-        // Other existing code
+
     
         document.getElementById('exportSalesData').addEventListener('click', async function() {
             const database = firebase.database();
@@ -92,8 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error importing sales data:', error);
             }
         }
-    });
-    
+
 
 
 
