@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
 
-    document.addEventListener('DOMContentLoaded', function() {
+
         document.getElementById('exportSalesData').addEventListener('click', async function() {
             const database = firebase.database();
             const salesOutcomesRef = database.ref('salesOutcomes');
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const lastName = outcome.customerInfo.lastName;
             return `${accountNumber}-${firstName}-${lastName}-${action}`;
         }
-    });
+
 
     function generateUniqueKey(outcome) {
         const action = outcome.assignAction;
