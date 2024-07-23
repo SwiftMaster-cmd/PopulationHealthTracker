@@ -371,52 +371,56 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     // Helper functions
 
-    // Function to remove duplicates
-    function removeDuplicates(user) {
+    async function removeDuplicates() {
         const database = firebase.database();
-        const outcomesRef = database.ref('salesOutcomes/' + user.uid);
+        const salesOutcomesRef = database.ref('salesOutcomes');
 
-        outcomesRef.once('value', (snapshot) => {
-            const outcomes = snapshot.val();
+        try {
+            const snapshot = await salesOutcomesRef.once('value');
+            const allOutcomes = snapshot.val();
             const seenOutcomes = {};
 
-            snapshot.forEach(childSnapshot => {
-                const outcome = childSnapshot.val();
-                const action = outcome.assignAction;
-                const accountNumber = outcome.accountNumber;
-                const firstName = outcome.customerInfo.firstName;
-                const lastName = outcome.customerInfo.lastName;
-                const key = `${accountNumber}-${firstName}-${lastName}-${action}`;
+            for (const userId in allOutcomes) {
+                const userOutcomes = allOutcomes[userId];
+                for (const outcomeId in userOutcomes) {
+                    const outcome = userOutcomes[outcomeId];
+                    const action = outcome.assignAction;
+                    const accountNumber = outcome.accountNumber;
+                    const firstName = outcome.customerInfo.firstName;
+                    const lastName = outcome.customerInfo.lastName;
+                    const key = `${accountNumber}-${firstName}-${lastName}-${action}`;
 
-                if (seenOutcomes[key]) {
-                    // If we have already seen this combination, compare the timestamps
-                    const existingTime = new Date(seenOutcomes[key].outcomeTime);
-                    const currentTime = new Date(outcome.outcomeTime);
+                    if (seenOutcomes[key]) {
+                        // If we have already seen this combination, compare the timestamps
+                        const existingTime = new Date(seenOutcomes[key].outcomeTime);
+                        const currentTime = new Date(outcome.outcomeTime);
 
-                    if (currentTime > existingTime) {
-                        // Remove the older record
-                        outcomesRef.child(seenOutcomes[key].key).remove();
-                        // Update the seenOutcomes with the latest record
-                        seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
+                        if (currentTime > existingTime) {
+                            // Remove the older record
+                            await salesOutcomesRef.child(`${userId}/${seenOutcomes[key].key}`).remove();
+                            // Update the seenOutcomes with the latest record
+                            seenOutcomes[key] = { key: outcomeId, outcomeTime: outcome.outcomeTime };
+                        } else {
+                            // Remove the current record as it is older
+                            await salesOutcomesRef.child(`${userId}/${outcomeId}`).remove();
+                        }
                     } else {
-                        // Remove the current record as it is older
-                        outcomesRef.child(childSnapshot.key).remove();
+                        // Add the record to seenOutcomes
+                        seenOutcomes[key] = { key: outcomeId, outcomeTime: outcome.outcomeTime };
                     }
-                } else {
-                    // Add the record to seenOutcomes
-                    seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
                 }
-            });
-        }, (error) => {
+            }
+            console.log('Duplicates removed successfully');
+        } catch (error) {
             console.error('Error fetching sales outcomes:', error);
-        });
+        }
     }
 
     // Authenticate and call removeDuplicates
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             console.log('Authenticated user:', user.displayName);
-            removeDuplicates(user);
+            removeDuplicates();
         } else {
             console.error('User not authenticated');
         }
