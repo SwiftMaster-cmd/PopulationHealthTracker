@@ -39,14 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     };
 
-
-
-
-
-
-
-
-    
     document.getElementById('exportSalesData').addEventListener('click', async function() {
         const database = firebase.database();
         const salesOutcomesRef = database.ref('salesOutcomes');
@@ -71,6 +63,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error exporting sales data:', error);
         }
     });
+
+    // Handle file input change for import
+    document.getElementById('importSalesData').addEventListener('change', handleFileSelect, false);
 
     document.addEventListener('DOMContentLoaded', function() {
         // Other existing code
