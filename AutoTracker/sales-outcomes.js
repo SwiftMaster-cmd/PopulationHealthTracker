@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (error) {
                 console.error('Error exporting sales data:', error);
             }
-      
+        });
     
         // Function to handle file selection for import
         async function handleFileSelect(event) {
@@ -71,49 +71,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const salesOutcomesRef = database.ref('salesOutcomes');
     
             try {
-                // Fetch all existing sales outcomes
-                const existingSnapshot = await salesOutcomesRef.once('value');
-                const existingData = existingSnapshot.val() || {};
-                const seenOutcomes = {};
-    
-                // Index existing data
-                console.log("Indexing existing data...");
-                for (const userId in existingData) {
-                    for (const outcomeId in existingData[userId]) {
-                        const outcome = existingData[userId][outcomeId];
-                        const key = generateUniqueKey(outcome);
-                        seenOutcomes[key] = { userId, outcomeId, outcomeTime: outcome.outcomeTime };
-                    }
-                }
-                console.log("Existing data indexed:", seenOutcomes);
-    
                 // Process each user in the new data
                 for (const userId in newData) {
                     const userSalesRef = salesOutcomesRef.child(userId);
     
-                    // Iterate over each sale and add it to Firebase if not a duplicate
+                    // Iterate over each sale and push it to Firebase
                     for (const outcomeId in newData[userId]) {
                         const newSale = newData[userId][outcomeId];
-                        const key = generateUniqueKey(newSale);
-    
-                        if (seenOutcomes[key]) {
-                            const existingTime = new Date(seenOutcomes[key].outcomeTime);
-                            const newTime = new Date(newSale.outcomeTime);
-    
-                            if (newTime > existingTime) {
-                                // If the new sale is newer, update the existing record
-                                console.log(`Updating sale for user ${userId}:`, newSale);
-                                await userSalesRef.child(seenOutcomes[key].outcomeId).set(newSale);
-                                seenOutcomes[key] = { userId, outcomeId, outcomeTime: newSale.outcomeTime };
-                            } else {
-                                console.log(`Skipping older sale for user ${userId}:`, newSale);
-                            }
-                        } else {
-                            // If not a duplicate, add the new sale
-                            console.log(`Adding new sale for user ${userId}:`, newSale);
-                            const newOutcomeRef = await userSalesRef.push(newSale);
-                            seenOutcomes[key] = { userId, outcomeId: newOutcomeRef.key, outcomeTime: newSale.outcomeTime };
-                        }
+                        console.log(`Adding new sale for user ${userId}:`, newSale);
+                        await userSalesRef.push(newSale);
                     }
                 }
                 console.log('Sales data imported successfully');
@@ -122,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     
-        // Function to generate a unique key for each sale outcome
+        // Function to generate a unique key for each sale outcome (optional, can be removed if not used)
         function generateUniqueKey(outcome) {
             const action = outcome.assignAction;
             const accountNumber = outcome.accountNumber;
@@ -130,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const lastName = outcome.customerInfo.lastName;
             return `${accountNumber}-${firstName}-${lastName}-${action}`;
         }
-    });
 
 
 
