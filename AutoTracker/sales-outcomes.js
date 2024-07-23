@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fetch all existing sales outcomes
             const existingSnapshot = await salesOutcomesRef.once('value');
             const existingData = existingSnapshot.val() || {};
-
             const seenOutcomes = {};
 
             // Index existing data
@@ -101,8 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     } else {
                         // If not a duplicate, add the new sale
-                        await userSalesRef.push(newSale);
-                        seenOutcomes[key] = { userId, outcomeId, outcomeTime: newSale.outcomeTime };
+                        const newOutcomeRef = await userSalesRef.push(newSale);
+                        seenOutcomes[key] = { userId, outcomeId: newOutcomeRef.key, outcomeTime: newSale.outcomeTime };
                         console.log(`Added sale for user ${userId}:`, newSale);
                     }
                 }
