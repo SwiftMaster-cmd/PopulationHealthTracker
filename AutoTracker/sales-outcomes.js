@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     
+    document.addEventListener('DOMContentLoaded', function() {
+        // Other existing code
+    
         document.getElementById('exportSalesData').addEventListener('click', async function() {
             const database = firebase.database();
             const salesOutcomesRef = database.ref('salesOutcomes');
@@ -74,18 +77,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log(`Existing data for user ${userId}:`, existingUserData);
     
                     // Merge new data with existing data
-                    const mergedUserData = { ...existingUserData, ...newData[userId] };
+                    const updates = {};
+                    for (const outcomeId in newData[userId]) {
+                        updates[outcomeId] = newData[userId][outcomeId];
+                    }
     
-                    console.log(`Merged data for user ${userId}:`, mergedUserData);
+                    console.log(`Updates for user ${userId}:`, updates);
     
                     // Update Firebase with merged data
-                    await userSalesRef.set(mergedUserData);
+                    await userSalesRef.update(updates);
                     console.log(`Sales data for user ${userId} imported successfully`);
                 }
             } catch (error) {
                 console.error('Error importing sales data:', error);
             }
         }
+    });
     
 
 
