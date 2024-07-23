@@ -4,7 +4,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(dateTime);
         return date.toLocaleDateString();
     }
+    
+        
 
+    function formatTime(dateTime) {
+        const date = new Date(dateTime);
+        return date.toLocaleTimeString();
+    }
+
+
+
+    
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+
+        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
+            return 'Select RX';
+        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+            return 'Billable HRA';
+        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+            return 'Transfer';
+        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
+            return 'Select Patient Management';
+        }
+        return action;
+    }
+
+
+    Date.prototype.getWeekNumber = function() {
+        const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    };
 
     document.getElementById('exportSalesData').addEventListener('click', async function() {
         const database = firebase.database();
@@ -62,62 +95,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const salesOutcomesRef = database.ref('salesOutcomes');
 
         try {
-            // Fetch existing data
-            const snapshot = await salesOutcomesRef.once('value');
-            const existingData = snapshot.val() || {};
-
-            // Merge new data with existing data
+            // Process each user in the new data
             for (const userId in newData) {
-                if (!existingData[userId]) {
-                    existingData[userId] = newData[userId];
-                } else {
-                    for (const outcomeId in newData[userId]) {
-                        existingData[userId][outcomeId] = newData[userId][outcomeId];
-                    }
-                }
-            }
+                const userSalesRef = salesOutcomesRef.child(userId);
 
-            // Update Firebase with merged data
-            await salesOutcomesRef.set(existingData);
-            console.log('Sales data imported successfully');
+                // Fetch existing data for the user
+                const userSnapshot = await userSalesRef.once('value');
+                const existingUserData = userSnapshot.val() || {};
+
+                // Merge new data with existing data
+                const mergedUserData = { ...existingUserData, ...newData[userId] };
+
+                // Update Firebase with merged data
+                await userSalesRef.set(mergedUserData);
+                console.log(`Sales data for user ${userId} imported successfully`);
+            }
         } catch (error) {
             console.error('Error importing sales data:', error);
         }
     }
-
-
-    function formatTime(dateTime) {
-        const date = new Date(dateTime);
-        return date.toLocaleTimeString();
-    }
-
-
-
-    
-    function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-
-        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-            return 'Select RX';
-        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-            return 'Billable HRA';
-        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-            return 'Transfer';
-        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
-            return 'Select Patient Management';
-        }
-        return action;
-    }
-
-
-    Date.prototype.getWeekNumber = function() {
-        const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-        const dayNum = d.getUTCDay() || 7;
-        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    };
-
 
 
     function isSameDay(date1, date2) {
