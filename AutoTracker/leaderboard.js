@@ -42,7 +42,9 @@ function checkAndSetUserName(userId) {
     });
 }
 
-function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+    await resetDailySalesCounts();
+
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
@@ -64,74 +66,86 @@ function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
         const users = [];
 
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                usersRef.once('value', usersSnapshot => {
-                    const usersData = usersSnapshot.val();
-                    const currentUserId = user.uid;
+        usersRef.once('value', usersSnapshot => {
+            const usersData = usersSnapshot.val();
 
-                    for (const userId in salesData) {
-                        const userData = salesData[userId];
-                        let count = 0;
+            for (const userId in salesData) {
+                const userData = salesData[userId];
+                let count = 0;
 
-                        if (period === 'day') {
-                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
-                        } else if (period === 'week') {
-                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                        } else if (period === 'month') {
-                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
-                        }
+                if (period === 'day') {
+                    count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
+                } else if (period === 'week') {
+                    count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                } else if (period === 'month') {
+                    count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
+                }
 
-                        let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        if (name.length > 10) {
-                            name = name.substring(0, 8); // Truncate name to 8 characters
-                        }
-                        users.push({ userId, name, count });
-                    }
-
-                    users.sort((a, b) => b.count - a.count);
-
-                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
-                    let start = 0, end = 5;
-
-                    if (currentUserIndex === 0) {
-                        // If current user is in the first place
-                        start = 0;
-                        end = Math.min(5, users.length);
-                    } else if (currentUserIndex === users.length - 1) {
-                        // If current user is in the last place
-                        start = Math.max(users.length - 5, 0);
-                        end = users.length;
-                    } else {
-                        // If current user is in the middle
-                        start = Math.max(0, currentUserIndex - 2);
-                        end = Math.min(users.length, currentUserIndex + 3);
-                        if (end - start < 5) {
-                            start = Math.max(0, end - 5);
-                        }
-                    }
-
-                    leaderboardSection.innerHTML = '';
-
-                    for (let i = start; i < end; i++) {
-                        const user = users[i];
-                        const userElement = document.createElement('div');
-                        userElement.classList.add('leaderboard-item');
-                        if (user.userId === currentUserId) {
-                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
-                        }
-                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
-                        leaderboardSection.appendChild(userElement);
-                    }
-                });
-            } else {
-                console.error('No user is signed in.');
+                let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                if (name.length > 10) {
+                    name = name.substring(0, 8); // Truncate name to 8 characters
+                }
+                users.push({ userId, name, count });
             }
+
+            users.sort((a, b) => b.count - a.count);
+
+            leaderboardSection.innerHTML = '';
+
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+                const userElement = document.createElement('div');
+                userElement.classList.add('leaderboard-item');
+                userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
+                leaderboardSection.appendChild(userElement);
+            }
+        }, error => {
+            console.error('Error fetching users data:', error);
         });
     }, error => {
         console.error('Error fetching sales data:', error);
     });
 }
+
+async function resetDailySalesCounts() {
+    const database = firebase.database();
+    const salesCountsRef = database.ref('salesCounts');
+    const lastResetRef = database.ref('lastReset');
+
+    const now = new Date();
+    const today = now.toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+
+    // Check the last reset date
+    const lastResetSnapshot = await lastResetRef.once('value');
+    const lastResetDate = lastResetSnapshot.val();
+
+    if (lastResetDate !== today) {
+        const salesCountsSnapshot = await salesCountsRef.once('value');
+        const salesCountsData = salesCountsSnapshot.val();
+
+        if (!salesCountsData) {
+            console.error('No sales counts data found');
+            return;
+        }
+
+        const updates = {};
+
+        for (const userId in salesCountsData) {
+            updates[`${userId}/day`] = {
+                billableHRA: 0,
+                selectRX: 0,
+                selectPatientManagement: 0,
+                transfer: 0
+            };
+        }
+
+        // Update sales counts and last reset date in Firebase
+        await salesCountsRef.update(updates);
+        await lastResetRef.set(today);
+        console.log('Sales counts reset successfully');
+    }
+}
+
 
 
 async function loadLiveActivities() {
