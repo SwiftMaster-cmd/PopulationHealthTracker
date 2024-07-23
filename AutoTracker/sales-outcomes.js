@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
- document.getElementById('exportSalesData').addEventListener('click', async function() {
+    document.getElementById('exportSalesData').addEventListener('click', async function() {
         const database = firebase.database();
         const salesOutcomesRef = database.ref('salesOutcomes');
         
@@ -57,18 +57,33 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsText(file);
     }
 
-    async function importSalesData(data) {
+    async function importSalesData(newData) {
         const database = firebase.database();
         const salesOutcomesRef = database.ref('salesOutcomes');
 
         try {
-            await salesOutcomesRef.update(data);
+            // Fetch existing data
+            const snapshot = await salesOutcomesRef.once('value');
+            const existingData = snapshot.val() || {};
+
+            // Merge new data with existing data
+            for (const userId in newData) {
+                if (!existingData[userId]) {
+                    existingData[userId] = newData[userId];
+                } else {
+                    for (const outcomeId in newData[userId]) {
+                        existingData[userId][outcomeId] = newData[userId][outcomeId];
+                    }
+                }
+            }
+
+            // Update Firebase with merged data
+            await salesOutcomesRef.set(existingData);
             console.log('Sales data imported successfully');
         } catch (error) {
             console.error('Error importing sales data:', error);
         }
     }
-
 
 
     function formatTime(dateTime) {
