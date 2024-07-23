@@ -42,56 +42,95 @@ function checkAndSetUserName(userId) {
     });
 }
 
-async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+    const database = firebase.database();
+    const salesCountsRef = database.ref('salesCounts');
+    const usersRef = database.ref('users');
+
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
         console.error('Leaderboard section element not found');
         return;
     }
 
-    try {
-        const loadLeaderboardFunction = firebase.functions().httpsCallable('loadLeaderboard');
-        const result = await loadLeaderboardFunction({ period, saleType });
-        const users = result.data;
+    salesCountsRef.off('value');
+
+    salesCountsRef.on('value', salesSnapshot => {
+        const salesData = salesSnapshot.val();
+        if (!salesData) {
+            console.error('No sales data found');
+            return;
+        }
+
+        const users = [];
 
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                const currentUserId = user.uid;
-                let start = 0, end = 5;
+                usersRef.once('value', usersSnapshot => {
+                    const usersData = usersSnapshot.val();
+                    const currentUserId = user.uid;
 
-                const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
-                if (currentUserIndex === 0) {
-                    start = 0;
-                    end = Math.min(5, users.length);
-                } else if (currentUserIndex === users.length - 1) {
-                    start = Math.max(users.length - 5, 0);
-                    end = users.length;
-                } else {
-                    start = Math.max(0, currentUserIndex - 2);
-                    end = Math.min(users.length, currentUserIndex + 3);
-                    if (end - start < 5) {
-                        start = Math.max(0, end - 5);
-                    }
-                }
+                    for (const userId in salesData) {
+                        const userData = salesData[userId];
+                        let count = 0;
 
-                leaderboardSection.innerHTML = '';
-                for (let i = start; i < end; i++) {
-                    const user = users[i];
-                    const userElement = document.createElement('div');
-                    userElement.classList.add('leaderboard-item');
-                    if (user.userId === currentUserId) {
-                        userElement.style.color = 'var(--color-quinary)'; // Highlight current user
+                        if (period === 'day') {
+                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
+                        } else if (period === 'week') {
+                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                        } else if (period === 'month') {
+                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
+                        }
+
+                        let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                        if (name.length > 10) {
+                            name = name.substring(0, 8); // Truncate name to 8 characters
+                        }
+                        users.push({ userId, name, count });
                     }
-                    userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
-                    leaderboardSection.appendChild(userElement);
-                }
+
+                    users.sort((a, b) => b.count - a.count);
+
+                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
+                    let start = 0, end = 5;
+
+                    if (currentUserIndex === 0) {
+                        // If current user is in the first place
+                        start = 0;
+                        end = Math.min(5, users.length);
+                    } else if (currentUserIndex === users.length - 1) {
+                        // If current user is in the last place
+                        start = Math.max(users.length - 5, 0);
+                        end = users.length;
+                    } else {
+                        // If current user is in the middle
+                        start = Math.max(0, currentUserIndex - 2);
+                        end = Math.min(users.length, currentUserIndex + 3);
+                        if (end - start < 5) {
+                            start = Math.max(0, end - 5);
+                        }
+                    }
+
+                    leaderboardSection.innerHTML = '';
+
+                    for (let i = start; i < end; i++) {
+                        const user = users[i];
+                        const userElement = document.createElement('div');
+                        userElement.classList.add('leaderboard-item');
+                        if (user.userId === currentUserId) {
+                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
+                        }
+                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
+                        leaderboardSection.appendChild(userElement);
+                    }
+                });
             } else {
                 console.error('No user is signed in.');
             }
         });
-    } catch (error) {
-        console.error('Error loading leaderboard:', error);
-    }
+    }, error => {
+        console.error('Error fetching sales data:', error);
+    });
 }
 
 
