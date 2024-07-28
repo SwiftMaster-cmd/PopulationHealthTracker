@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 function checkAndSetUserName(userId) {
     const usersRef = firebase.database().ref('users/' + userId);
 
@@ -42,48 +41,7 @@ function checkAndSetUserName(userId) {
     });
 }
 
-async function resetDailySalesCounts() {
-    const database = firebase.database();
-    const salesCountsRef = database.ref('salesCounts');
-    const lastResetRef = database.ref('lastReset');
-
-    const now = new Date();
-    const today = now.toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
-
-    // Check the last reset date
-    const lastResetSnapshot = await lastResetRef.once('value');
-    const lastResetDate = lastResetSnapshot.val();
-
-    if (lastResetDate !== today) {
-        const salesCountsSnapshot = await salesCountsRef.once('value');
-        const salesCountsData = salesCountsSnapshot.val();
-
-        if (!salesCountsData) {
-            console.error('No sales counts data found');
-            return;
-        }
-
-        const updates = {};
-
-        for (const userId in salesCountsData) {
-            updates[`${userId}/day`] = {
-                billableHRA: 0,
-                selectRX: 0,
-                selectPatientManagement: 0,
-                transfer: 0
-            };
-        }
-
-        // Update sales counts and last reset date in Firebase
-        await salesCountsRef.update(updates);
-        await lastResetRef.set(today);
-        console.log('Sales counts reset successfully');
-    }
-}
-
-async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
-    await resetDailySalesCounts();
-
+function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
@@ -173,7 +131,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
-
 
 
 async function loadLiveActivities() {
