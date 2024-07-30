@@ -41,7 +41,9 @@ function checkAndSetUserName(userId) {
     });
 }
 
-function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+    await resetDailySalesCounts();
+
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
