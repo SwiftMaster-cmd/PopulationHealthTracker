@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
 function checkAndSetUserName(userId) {
     const usersRef = firebase.database().ref('users/' + userId);
 
@@ -41,8 +42,9 @@ function checkAndSetUserName(userId) {
     });
 }
 
+
+
 async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
-    await resetDailySalesCounts();
 
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
@@ -133,6 +135,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 async function loadLiveActivities() {
