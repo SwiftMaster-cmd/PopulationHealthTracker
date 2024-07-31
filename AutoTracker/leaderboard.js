@@ -75,7 +75,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
-                        let count = 0;
+                        let count = 0; 
 
                         if (period === 'day') {
                             count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
