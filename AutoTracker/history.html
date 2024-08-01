@@ -147,36 +147,34 @@
             // Call the function to add event listeners
             addDynamicEventListeners();
 
-            // Screenshot and clipboard functionality
-            document.getElementById('screenshotButton').addEventListener('click', function() {
-                const container = document.querySelector('.main-container');
-                html2canvas(container).then(canvas => {
-                    const img = canvas.toDataURL("image/png");
-                    const link = document.createElement('a');
-                    link.href = img;
-                    link.download = 'screenshot.png';
-                    link.click();
+           // Screenshot button functionality
+    document.getElementById('screenshotButton').addEventListener('click', function() {
+        const container = document.querySelector('.main-container');
+        html2canvas(container).then(canvas => {
+            const img = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            link.href = img;
+            link.download = 'screenshot.png';
+            link.click();
+        }).catch(error => {
+            console.error('Screenshot error:', error);
+        });
+    });  // Copy to clipboard functionality
+    document.getElementById('copyToClipboardButton').addEventListener('click', function() {
+        const container = document.querySelector('.main-container');
+        html2canvas(container).then(canvas => {
+            canvas.toBlob(blob => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                    console.log('Screenshot copied to clipboard.');
                 }).catch(error => {
-                    console.error('Screenshot error:', error);
+                    console.error('Clipboard error:', error);
                 });
             });
-
-            document.getElementById('copyToClipboardButton').addEventListener('click', function() {
-                const container = document.querySelector('.main-container');
-                html2canvas(container).then(canvas => {
-                    canvas.toBlob(blob => {
-                        navigator.clipboard.write([
-                            new ClipboardItem({ 'image/png': blob })
-                        ]).then(() => {
-                            console.log('Screenshot copied to clipboard.');
-                        }).catch(error => {
-                            console.error('Clipboard error:', error);
-                        });
-                    });
-                }).catch(error => {
-                    console.error('Screenshot error:', error);
-                });
-            });
+        }).catch(error => {
+            console.error('Screenshot error:', error);
+        });
+    });
         });
     </script>
 </body>
