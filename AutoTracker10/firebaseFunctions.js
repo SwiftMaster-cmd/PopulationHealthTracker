@@ -1,5 +1,5 @@
 import { ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { auth, database } from '../Owner/firebaseConfig.js';
+import { auth, database } from './firebaseConfig.js';
 
 async function fetchUserProfiles() {
     const usersRef = ref(database, 'users');
