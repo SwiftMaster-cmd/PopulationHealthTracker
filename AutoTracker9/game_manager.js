@@ -26,7 +26,7 @@ onAuthStateChanged(auth, (user) => {
         const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
         get(userAuthorityRef).then((snapshot) => {
             const authorityLevel = snapshot.val();
-            if (authorityLevel !== 3) {
+            if (authorityLevel >= 9) {
                 alert("You do not have permission to view this page.");
                 window.location.href = 'index.html';
             } else {

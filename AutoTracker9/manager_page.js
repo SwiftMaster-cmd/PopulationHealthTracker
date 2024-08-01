@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let presets = [];
     let currentPage = 0;
-    const presetsPerPage = 3;
+    const presetsPerPage = 5;
     let shuffledNodes = []; // Define shuffledNodes here
 
     onAuthStateChanged(auth, (user) => {
