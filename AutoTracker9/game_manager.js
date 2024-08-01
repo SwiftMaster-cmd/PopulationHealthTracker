@@ -27,12 +27,13 @@ onAuthStateChanged(auth, (user) => {
         get(userAuthorityRef).then((snapshot) => {
             const authorityLevel = snapshot.val();
             if (authorityLevel >= 9) {
-                alert("You do not have permission to view this page.");
-                window.location.href = 'index.html';
-            } else {
                 loadCurrentConfiguration();
                 loadCurrentRules();
                 listenForChanges();
+            } else {
+               
+                alert("You do not have permission to view this page.");
+                window.location.href = 'index.html';
             }
         });
     } else {
