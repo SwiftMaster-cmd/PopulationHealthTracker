@@ -294,8 +294,3 @@ function calculateDailyAverage(total, daysPassed) {
     return total / daysPassed;
 }
 
-function calculateTrend(total, daysPassed) {
-    const dailyAverage = calculateDailyAverage(total, daysPassed);
-    const workingDaysLeft = getWorkingDaysLeft();
-    return dailyAverage * workingDaysLeft;
-}
