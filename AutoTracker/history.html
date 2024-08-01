@@ -16,6 +16,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="tracker.js" defer></script>
@@ -38,23 +39,14 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-RVBYB0RR06');
     </script>
-
-
-  
 </head>
 <body>
-
-
-    
-    
     <div class="header-container">
         <h1>Sales History</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
         <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
-
         <button onclick="window.location.href='history.html'" class="button">Sales History</button>
         <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
         <button onclick="window.location.href='totals.html'" class="button">Monthly Totals</button>
@@ -71,16 +63,9 @@
         <button id="signOut" class="button">Sign Out</button>
         <button id="googleSignInButton">Link with Google</button>
         <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-        
-        <!-- Navigation Buttons -->
-
     </div>
 
     <div class="main-container">
-
-
-        
-
         <div class="sales-history-container container">
             <div class="header-section">
                 <h2>Sales History</h2>
@@ -102,6 +87,8 @@
                 <button id="prev" class="button">Prev</button>
                 <span id="counter">1 of 3</span>
                 <button id="next" class="button">Next</button>
+                <button id="screenshotButton" class="button">Take Screenshot</button>
+                <button id="copyToClipboardButton" class="button">Copy to Clipboard</button>
             </div>
             <div class="bottom-right-buttons">
                 <button id="exportSalesData" class="button">Export Sales Data</button>
@@ -111,10 +98,6 @@
         </div>
     </div>
 
-
-
-
-    
     <!-- Event Tracking for dynamically added elements -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -163,9 +146,38 @@
 
             // Call the function to add event listeners
             addDynamicEventListeners();
+
+            // Screenshot and clipboard functionality
+            document.getElementById('screenshotButton').addEventListener('click', function() {
+                const container = document.querySelector('.main-container');
+                html2canvas(container).then(canvas => {
+                    const img = canvas.toDataURL("image/png");
+                    const link = document.createElement('a');
+                    link.href = img;
+                    link.download = 'screenshot.png';
+                    link.click();
+                }).catch(error => {
+                    console.error('Screenshot error:', error);
+                });
+            });
+
+            document.getElementById('copyToClipboardButton').addEventListener('click', function() {
+                const container = document.querySelector('.main-container');
+                html2canvas(container).then(canvas => {
+                    canvas.toBlob(blob => {
+                        navigator.clipboard.write([
+                            new ClipboardItem({ 'image/png': blob })
+                        ]).then(() => {
+                            console.log('Screenshot copied to clipboard.');
+                        }).catch(error => {
+                            console.error('Clipboard error:', error);
+                        });
+                    });
+                }).catch(error => {
+                    console.error('Screenshot error:', error);
+                });
+            });
         });
     </script>
-
-    
 </body>
 </html>
