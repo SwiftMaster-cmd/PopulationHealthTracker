@@ -26,6 +26,8 @@
     <script src="sales-outcomes.js" defer></script>
     <script src="leaderboard.js" defer></script>
     <script src="liveActivities.js" defer></script>
+    <script src="game_manager.js" defer></script>
+
     <script src="CSsearch.js" defer></script>
 
     <script src="monthlyTotals.js" defer></script>
@@ -76,7 +78,24 @@
 
 
             
-
+        <button onclick="window.location.href='game_manager.html'">Go to Game Manager</button>
+        <section id="presets">
+            <h3>Game Presets</h3>
+            <div class="navigation">
+                <button id="prev-button">&larr; Prev</button>
+                <div id="presets-container">
+                    <!-- Preset buttons will be added here dynamically -->
+                </div>
+                <button id="next-button">Next &rarr;</button>
+            </div>
+        </section>
+        <section id="preset-summary">
+            <h3>Preset Summary</h3>
+            <p id="summary-text">Select a preset to see its summary.</p>
+            <canvas id="wheel-canvas" width="500" height="500"></canvas>
+            <button id="spin-button">Spin</button>
+        </section>
+        <script type="module" src="wheel.js"></script> <!-- Ensure this line is present -->
 
 
     
