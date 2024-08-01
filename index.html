@@ -42,12 +42,9 @@
         // Redirect based on authority level
         if (authorityLevel == 1) {
             window.location.href = 'AutoTracker/Dash2.html';
-        } else if (authorityLevel >= 2 && authorityLevel <= 8) {
+        } else if (authorityLevel >= 2 && authorityLevel <= 10) {
             window.location.href = `AutoTracker${authorityLevel}/Dash2.html`;
-        } else if (authorityLevel == 9) {
-            window.location.href = 'Manager/manager.html';
-        } else if (authorityLevel == 10) {
-            window.location.href = 'Owner/owner.html';
+        
         } else {
             console.error('Invalid authority level:', authorityLevel);
             showErrorMessage('loginError', 'Invalid authority level. Please contact support.');
