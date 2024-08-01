@@ -76,7 +76,7 @@ async function emailPasswordSignIn(email, password) {
         } else if (authorityLevel >= 2 && authorityLevel <= 8) {
             window.location.href = `AutoTracker${authorityLevel}/Dash2.html`;
         } else if (authorityLevel == 9 || authorityLevel == 10) {
-            window.location.href = `AutoTracker${authorityLevel}/owner.html`;
+            window.location.href = `AutoTracker${authorityLevel}/Dash2.html`;
         } else {
             console.error('Invalid authority level:', authorityLevel);
             showErrorMessage('loginError', 'Invalid authority level. Please contact support.');
