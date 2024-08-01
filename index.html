@@ -25,33 +25,38 @@
         const database = getDatabase(app);
 
         async function emailPasswordSignIn(email, password) {
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-                // Check if the user has an authority level set
-                const userAuthorityRef = ref(database, 'users/' + userCredential.user.uid + '/authority');
-                const userAuthoritySnapshot = await get(userAuthorityRef);
+        // Check if the user has an authority level set
+        const userAuthorityRef = ref(database, 'users/' + userCredential.user.uid + '/authority');
+        const userAuthoritySnapshot = await get(userAuthorityRef);
 
-                if (!userAuthoritySnapshot.exists()) {
-                    // Set default authority level to 1 if not set
-                    await set(userAuthorityRef, 1);
-                }
-
-                const authorityLevel = userAuthoritySnapshot.val() || 1;
-
-                // Redirect based on authority level
-                if (authorityLevel == 2) {
-                    window.location.href = 'Manager/manager.html';
-                } else if (authorityLevel == 3) {
-                    window.location.href = 'Owner/owner.html';
-                } else {
-                    window.location.href = 'AutoTracker/Dash2.html';
-                }
-            } catch (error) {
-                console.error('Error during email sign-in:', error);
-                showErrorMessage('loginError', 'Failed to sign in. Please check your email and password.');
-            }
+        if (!userAuthoritySnapshot.exists()) {
+            // Set default authority level to 1 if not set
+            await set(userAuthorityRef, 1);
         }
+
+        const authorityLevel = userAuthoritySnapshot.val() || 1;
+
+        // Redirect based on authority level
+        if (authorityLevel == 1) {
+            window.location.href = 'AutoTracker/Dash2.html';
+        } else if (authorityLevel >= 2 && authorityLevel <= 8) {
+            window.location.href = `AutoTracker${authorityLevel}/Dash2.html`;
+        } else if (authorityLevel == 9) {
+            window.location.href = 'Manager/manager.html';
+        } else if (authorityLevel == 10) {
+            window.location.href = 'Owner/owner.html';
+        } else {
+            console.error('Invalid authority level:', authorityLevel);
+            showErrorMessage('loginError', 'Invalid authority level. Please contact support.');
+        }
+    } catch (error) {
+        console.error('Error during email sign-in:', error);
+        showErrorMessage('loginError', 'Failed to sign in. Please check your email and password.');
+    }
+}
 
         async function registerUser(email, password) {
             if (!email.includes('@') || !email.includes('.')) {
