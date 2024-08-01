@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
             get(userAuthorityRef).then((snapshot) => {
                 const authorityLevel = snapshot.val();
-                if (authorityLevel >= 2) {
+                if (authorityLevel >= 9) {
                     loadPresets();
                 } else {
                     alert("You do not have permission to view this page.");
