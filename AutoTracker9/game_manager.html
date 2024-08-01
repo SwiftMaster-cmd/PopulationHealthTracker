@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/charts.css">
+    <link rel="stylesheet" href="css/outcomes.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
+    <link rel="stylesheet" href="css/monthlyTotals.css">
+    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    <script src="firebase-init.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="tracker.js" defer></script>
+    <script src="points.js" defer></script>
+
+    <script src="customer-info.js" defer></script>
+    <script src="color-palette.js" defer></script>
+    <script src="sales-outcomes.js" defer></script>
+    <script src="leaderboard.js" defer></script>
+    <script src="liveActivities.js" defer></script>
+    <script src="game_manager.js" defer></script>
+
+    <script src="CSsearch.js" defer></script>
+
+    <script src="monthlyTotals.js" defer></script>
+    <script src="charts.js" defer></script>
+    <script src="profilePopup.js" defer></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-RVBYB0RR06');
+    </script>
+
+
+  
+</head>
+<body>
+
+
+    
+    <div class="header-container">
+        <h1>Dashboard</h1>
+        <button id="cheatSheetButton" class="button">Cheat Sheet</button>
+        <button onclick="window.location.href='Dash2.html'" class="button">Manager</button>
+        <button onclick="window.location.href='game_manager.html'" class="button">Game Manager</button>
+
+        <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
+        <div class="profile-button">P</div>
+    </div>
+    
+    <!-- Color Picker and Name Change Container -->
+    <div class="color-picker-container" id="colorPickerContainer">
+        <input type="color" id="colorPicker" />
+        <button id="applyColor" class="button">Apply Color Palette</button>
+        <input type="text" id="nameInput" placeholder="Enter new name" />
+        <button id="changeName" class="button">Change Name</button>
+        <button id="signOut" class="button">Sign Out</button>
+        <button id="googleSignInButton">Link with Google</button>
+        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
+        
+        <!-- Navigation Buttons -->
+
+    </div>
+
+    <div class="main-container">
+
+
+        <header>
+            <h1>Game Manager</h1>
+        </header>
+        <!-- Back button to navigate to the Manager Page -->
+    
+        <section id="wheel-configuration">
+            <h3>Wheel Configuration</h3>
+            <div id="nodes-container">
+                <!-- Node fields will be added here dynamically -->
+            </div>
+            <button id="add-node-field">Add Node Field</button>
+        </section>
+    
+        <section id="spin-rules">
+            <h3>Spin Rules</h3>
+            <div id="rules-container">
+                <!-- Rules will be added here dynamically -->
+            </div>
+            <button id="add-rule-field">Add Rule Field</button>
+            <ul id="rules-list">
+                <!-- List of rules will be dynamically added here -->
+            </ul>
+        </section>
+    
+        <section id="save-preset">
+            <h3>Save Preset</h3>
+            <input type="text" id="preset-name" placeholder="Preset Name">
+            <button id="save-preset-button">Save Preset</button>
+        </section>
+    
+        <section id="summary">
+            <h3>Summary</h3>
+            <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
+            <canvas id="wheel-canvas" width="500" height="500"></canvas>
+            <button id="spin-button" onclick="spinWheel(currentNodes)">Spin</button>
+            <!-- Add the shuffle button here -->
+            <button id="shuffle-button">Shuffle Nodes</button>
+        </section>
+    
+    <!-- Event Tracking for dynamically added elements -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to add event listeners to dynamically added elements
+            function addDynamicEventListeners() {
+                const leadIdContainer = document.getElementById('lead-id-container');
+                const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
+                const customerInfoContainer = document.getElementById('customer-info-container');
+
+                // Example for lead ID container
+                if (leadIdContainer) {
+                    leadIdContainer.addEventListener('click', function(event) {
+                        if (event.target && event.target.matches('.lead-id-item')) {
+                            gtag('event', 'click', {
+                                'event_category': 'Lead ID',
+                                'event_label': event.target.dataset.leadId
+                            });
+                        }
+                    });
+                }
+
+                // Example for sales outcomes container
+                if (salesOutcomesContainer) {
+                    salesOutcomesContainer.addEventListener('click', function(event) {
+                        if (event.target && event.target.matches('.sales-outcome-item')) {
+                            gtag('event', 'click', {
+                                'event_category': 'Sales Outcome',
+                                'event_label': event.target.dataset.outcomeId
+                            });
+                        }
+                    });
+                }
+
+                // Example for customer info container
+                if (customerInfoContainer) {
+                    customerInfoContainer.addEventListener('click', function(event) {
+                        if (event.target && event.target.matches('.customer-info-item')) {
+                            gtag('event', 'click', {
+                                'event_category': 'Customer Info',
+                                'event_label': event.target.dataset.customerId
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Call the function to add event listeners
+            addDynamicEventListeners();
+        });
+    </script>
+
+    
+</body>
+</html>
