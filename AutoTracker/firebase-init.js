@@ -10,14 +10,31 @@ document.addEventListener('DOMContentLoaded', function() {
         measurementId: "G-RVBYB0RR06"
     };
 
-    // Check if Firebase has been initialized
+    // Initialize Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     } else {
         firebase.app();
     }
 
-    // Check Google link status
+    // Initialize Vertex AI
+    const vertexAI = getVertexAI(firebase.app());
+    const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash" });
+
+    async function runGeminiAPI() {
+        try {
+            const prompt = "Write a story about a magic backpack.";
+            const result = await model.generateContent(prompt);
+            const response = result.response;
+            const text = response.text();
+            console.log(text);
+        } catch (error) {
+            console.error("Error generating content: ", error);
+        }
+    }
+
+    document.addEventListener('firebaseInitialized', runGeminiAPI);
+
     firebase.auth().onAuthStateChanged(async user => {
         if (user) {
             const userRef = firebase.database().ref('users/' + user.uid);
@@ -34,7 +51,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Dispatch custom event to notify other scripts
     document.dispatchEvent(new Event('firebaseInitialized'));
 });
-

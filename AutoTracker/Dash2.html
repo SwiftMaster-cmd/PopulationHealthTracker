@@ -100,75 +100,15 @@
             <div id="live-activities-section"></div>
         </div>
 
-        <!-- Monthly Sales Totals Container -->
-        <div class="monthly-sales-totals-container container">
-            <h2>Monthly Sales Totals</h2>
-            <div class="sales-container">
-                <div class="sales-item">
-                    <p class="sales-label">SRX</p>
-                    <p class="sales-value" id="srx-value">$0</p>
-                    <p class="sales-count" id="srx-count">0</p>
-                </div>
-                <div class="sales-item">
-                    <p class="sales-label">Transfer</p>
-                    <p class="sales-value" id="transfer-value">$0</p>
-                    <p class="sales-count" id="transfer-count">0</p>
-                </div>
-                <div class="sales-item">
-                    <p class="sales-label">HRA</p>
-                    <p class="sales-value" id="hra-value">$0</p>
-                    <p class="sales-count" id="hra-count">0</p>
-                </div>
-                <div class="sales-item">
-                    <p class="sales-label">SPM</p>
-                    <p class="sales-value" id="spm-value">$0</p>
-                    <p class="sales-count" id="spm-count">0</p>
-                </div>
-            </div>
-            <div class="summary-container">
-                <div class="summary-item">
-                    <p class="summary-label">Last Month</p>
-                    <p class="summary-value" id="last-month-value">$0</p>
-                </div>
-                <div class="summary-item">
-                    <p class="summary-label">TOTAL</p>
-                    <p class="summary-value" id="total-value">$0</p>
-                </div>
-                <div class="summary-item">
-                    <p class="summary-label">Average</p>
-                    <p class="summary-value" id="average-value">$0</p>
-                </div>
-            </div>
-        </div>
-
-     
-
-        <div class="sales-history-container container">
-            <div class="header-section">
-                <h2>Sales History</h2>
-                <div class="search-container">
-                    <input type="text" id="searchById" placeholder="Search by lead ID">
-                    <button id="clearSearch" style="display: none;">&times;</button>
-                </div>
-            </div>
-            <div class="lead-id-container container" id="lead-id-container">
-                <!-- Lead ID will be dynamically added here -->
-            </div>
-            <div class="sales-history-content container" id="sales-outcomes-container">
-                <!-- Sales outcomes will be dynamically added here -->
-            </div>
-            <div class="customer-info-container container" id="customer-info-container">
-                <!-- Customer info will be dynamically added here -->
-            </div>
-            <div class="navigation-container">
-                <button id="prev" class="button">Prev</button>
-                <span id="counter">1 of 3</span>
-                <button id="next" class="button">Next</button>
-            </div>
+            
+        <!-- Gemini API Container -->
+        <div class="gemini-container container">
+            <h2>Gemini API Response</h2>
+            <textarea id="geminiPrompt" placeholder="Enter your prompt here..."></textarea>
+            <button id="generateContent" class="button">Generate Content</button>
+            <pre id="geminiResponse"></pre>
         </div>
     </div>
-
-
 
 
     
