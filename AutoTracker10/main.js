@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { auth, database } from './firebaseConfig.js';
+import { auth, database } from '../Owner/firebaseConfig.js';
 import { fetchUserProfiles, fetchAccountNumbersAndTimes, displayData } from './firebaseFunctions.js';
 
 onAuthStateChanged(auth, async (user) => {

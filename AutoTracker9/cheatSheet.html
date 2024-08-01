@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pop Health Cheat Sheet</title>
+  <link rel="stylesheet" href="css/CS.css">
+  <script src="https://cdn.jsdelivr.net/npm/mark.js/dist/mark.min.js"></script>
+  <script src="CSsearch.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+  <header class="header-container">
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for info..." onkeyup="liveSearch()">
+        <button id="refineButton" onclick="refineSearch()">Refine</button>
+    </div>
+</header>
+  <div class="main-container">
+
+
+
+<div class="cheatSheet-title container">
+  <h1>Pop Health Cheat Sheet</h1>
+
+  <h2>Unicorn = HRA + SRX + VBC</h2>
+  <h2>Comet = HRA + SRX + NDR</h2>
+  <h2>Crown = HRA + SRX + FLOSSY</h2>
+  <h2>Diamond = SRX + SPM</h2>
+</div>
+  <div class="services-paused container">
+    <h2>Services Paused 🚫</h2>
+    <ul>
+      <li>IBIS/Sensio</li>
+      <li>Marley Medical</li>
+      <li>Restore First</li>
+      <li>Iora (One Medical)</li>
+      <li>DO NOT ENROLL HUMANA (Leaving Humana is OK to enroll), TRI-CARE, PRIORITY HEALTH, CIGNA, or KAISER in SRX</li>
+    </ul>
+  </div>
+
+  <div class="hra container">
+    <h2>HRA</h2>
+    <ul>
+      <li>Billable HRA - Complete full HRA (Anthem, Cigna, Clear Spring, Humana, Devoted, Zing, Wellcare (DSNP, CSNP))</li>
+      <li>Make first appointment for Zing if you have access - Job Aid</li>
+      <li>Sunfire Link for Humana <a href="#">HERE</a></li>
+      <ul>
+        <li>EMO ID = Confirmation # on MA&PDP Tab</li>
+        <li>EMO ID = No Confirmation # use SQ00000000</li>
+      </ul>
+      <li>Sunfire Link for Cigna <a href="#">HERE</a></li>
+      <li>MEL-AI Transfers and Dummy Plan IDs</li>
+      <li>Follow up questions to “I don’t know” or “unsure” answers GUIDE</li>
+    </ul>
+  </div>
+
+  <div class="selectrx container">
+    <h2>SelectRX</h2>
+    <ul>
+      <li>Express Scripts can enroll in SRX if PA Facility, DO NOT Enroll Simple Meds</li>
+      <li>NO SRX for HUMANA, CIGNA, KAISER, TRI-CARE, or PRIORITY plans</li>
+      <li>NO SRX in Arkansas</li>
+      <li>Centene/Wellcare plans minimum of 8 meds</li>
+      <li>ChampVA can be enrolled</li>
+      <li>If CRM says Blacklisted DO NOT ENROLL</li>
+      <li>Centerwell Zip Code – 45069 (Select phone number ending in 0092)</li>
+      <li>Patient portal, and a "Pay my bill" link on the SelectRX website</li>
+      <li>For Double SRX - the second person can have 1 less medication and still qualify. One person must have 6+ meds</li>
+      <li>Read 4 questions and wrap up script VERBATIM from google doc <a href="#">HERE</a></li>
+      <li>Pitches & Common Rebuttals for objections <a href="#">LINKED HERE</a></li>
+      <li>Kick back on SSN?</li>
+      <ul>
+        <li>Copy and paste this and send to their email <a href="#">HERE</a></li>
+        <li>DO NOT just use last 4 numbers or 000-00-0000 must be full SSN</li>
+      </ul>
+    </ul>
+  </div>
+
+  <div class="spm container">
+    <h2>SPM</h2>
+    <ul>
+      <li>Have a current medicare plan (UHC, Anthem or Aetna)</li>
+      <li>All 50 states are eligible</li>
+      <li>Full Extra Help or none (Dual or only medicaid not eligible)</li>
+      <li>Dual or DSNP Plan eligible for ID, AZ, OR, WA</li>
+      <li>CPT Code to provide to insurance for copays/deductibles #99490</li>
+      <li>For cancellations only (855) 749-2385</li>
+      <li>Job Aid and Script</li>
+      <li>Cheat Sheet</li>
+      <li>Fill Form</li>
+      <li>GenieMD Portal</li>
+      <li>Elevator Pitches</li>
+    </ul>
+  </div>
+
+  <div class="vbc container">
+    <h2>VBC</h2>
+    <ul>
+      <li>Oak Street and Agilon (Paused) = Data Transfer</li>
+      <ul>
+        <li>Agilon Pitch Script</li>
+      </ul>
+      <li>Archwell appointment form in CRM or linked <a href="#">HERE</a></li>
+      <ul>
+        <li>Member Identifier = Account #</li>
+      </ul>
+      <li>ChenMed = Warm Transfer</li>
+      <li>Make sure to say PCP will change if they decide to move forward</li>
+      <li>VBC Availability Sheet <a href="#">HERE</a></li>
+      <li>VBC Pitches <a href="#">HERE</a></li>
+    </ul>
+  </div>
+
+  <div class="fe container">
+    <h2>Final Expense (FE)</h2>
+    <ul>
+      <li>Must have active bank account, debit card, or credit card</li>
+      <li>Ages 50-80 (Under 75 if in NY)</li>
+      <li>English speaking and US Citizen or Permanent Resident</li>
+      <li>Must be the client on the phone (No third party like spouse or POA)</li>
+      <li>Use extension 001 for Term Life, someone still working, or wants higher $ policy (ex: 1 million dollars)</li>
+      <li>Warm Transfer 599-568-2019</li>
+      <ul>
+        <li>Share Name, DOB, Zip Code, and name of policy carrier if they have one</li>
+      </ul>
+      <li>Pitch Script</li>
+    </ul>
+  </div>
+
+  <div class="dvh container">
+    <h2>DVH (Dental Transfers)</h2>
+    <ul>
+      <li>Anyone who needs dental insurance & wants to speak with a licensed specialist</li>
+      <li>Warm Transfer 599-557-3884</li>
+      <li>DO NOT PITCH for CT, DE, ME, MT, NH, SD, VT, AK, HI, Puerto Rico</li>
+      <li>Pitch Script</li>
+    </ul>
+  </div>
+
+  <div class="ndr container">
+    <h2>National Debt Relief</h2>
+    <ul>
+      <li>$10,000 or more in unsecured debt</li>
+      <li>No income = DO NOT PITCH</li>
+      <li>If in litigation (legal status) = DO NOT PITCH</li>
+      <li>Warm Transfer 8005887312</li>
+      <li>Pitch Script</li>
+    </ul>
+  </div>
+
+  <div class="flossy container">
+    <h2>Flossy</h2>
+    <ul>
+      <li>No monthly fee or membership</li>
+      <li>Arizona, Pennsylvania, New Jersey, Washington DC</li>
+      <li>Warm Transfer (702) 867-9951</li>
+      <li>Pitch Script</li>
+    </ul>
+  </div>
+
+  <div class="charlie-financial container">
+    <h2>Charlie Financial</h2>
+    <ul>
+      <li>Age 62+</li>
+      <li>Must be receiving social security benefits, have a cell phone, & email address</li>
+      <li>Warm Transfer 943-230-2416</li>
+      <li>Pitch Script</li>
+    </ul>
+  </div>
+
+  <div class="ibis container">
+    <h2>IBIS (Paused)</h2>
+    <ul>
+      <li>Must be MA, NH, RI, ME, PA to qualify</li
+        <li>Ask questions in CRM</li>
+        <li>Data Transfer</li>
+        <li>Pitch Script</li>
+      </ul>
+    </div>
+  
+    <div class="retirable container">
+      <h2>Retirable</h2>
+      <ul>
+        <li>New HRA Questions</li>
+        <li>Warm Transfer (888) 846-1298</li>
+        <li>Pitch Script</li>
+      </ul>
+    </div>
+  
+    <div class="marley-medical container">
+      <h2>Marley Medical (Paused)</h2>
+      <ul>
+        <li>Schedule 20 min consultation</li>
+        <li>DO NOT pitch if:</li>
+        <ul>
+          <li>Insulin dependent (type 1 diabetes), managed blood pressure, chronic kidney disease, has a pacemaker or ICD (device in heart), has no medical insurance</li>
+        </ul>
+        <li>Type 1 Diabetes are insulin dependent, type 2 diabetes is insulin resistant. Most people with type 1 have had it since childhood</li>
+        <li>Email address required</li>
+        <li>Missouri, Illinois, Wisconsin, Minnesota, Michigan, Ohio</li>
+        <li>Pitch Script</li>
+      </ul>
+    </div>
+  
+    <div class="important-numbers container">
+      <h2>Important Numbers</h2>
+      <ul>
+        <li>CCA: 855-307-7874 or 855-359-3489</li>
+        <li>SQ Home & Auto: 855-297-6856</li>
+        <li>SRX: 855-398-6471</li>
+        <li>Life Alert: 866-211-6067</li>
+        <li>Mom's Meals: 877-508-6667</li>
+        <li>MedSource (DME): 888-510-5100</li>
+      </ul>
+    </div>
+  
+    <div class="policies-scripts container">
+      <h2>Policies, Scripts, Other Links</h2>
+      <ul>
+        <li>General Script</li>
+        <li>PINDI</li>
+        <li>Ohana Team Website</li>
+        <li>Daily Pop</li>
+        <li>State Medicaid Programs</li>
+        <li>Tactics, Pitches, and Tips</li>
+        <li>PVerify Steps</li>
+        <li>Partners Hours of Operation</li>
+        <li>Pharmacy Zip Codes</li>
+        <li>NPI Look Up</li>
+        <li>Common Medications</li>
+        <li>Five9 Password Reset</li>
+        <li>DNC Removal Form</li>
+        <li>CRM Problems/Broken</li>
+        <li>Attendance Policy</li>
+        <li>Team Ohana Intro’s</li>
+        <li>PH Teams PTO Availability</li>
+        <li>QA Scorecard</li>
+        <li>Objections/Rebuttals</li>
+        <li>Docebo Training Link</li>
+      </ul>
+    </div>
+  
+    <div class="mel-ai container">
+      <h2>MEL AI</h2>
+      <ul>
+        <li>Humana = H0000-879</li>
+        <li>Cigna = H6666-666</li>
+        <li>Aetna = H0000-765</li>
+        <li>Devoted = 7777-777</li>
+        <li>Aetna Alina = H0000-345</li>
+        <li>Aetna DSNP = H0000-212</li>
+      </ul>
+    </div>
+  
+    <div class="dummy-plan-ids container">
+      <h2>Dummy Plan IDs</h2>
+      <ul>
+        <li>UHC: H1111-111</li>
+        <li>HUMANA: H2222-222</li>
+        <li>WELLCARE: H3333-333</li>
+        <li>AETNA: H4444-444</li>
+        <li>ANTHEM: H5555-555</li>
+        <li>CIGNA: H6666-666</li>
+        <li>DEVOTED: H7777-777</li>
+        <li>BCBS: H8888-888</li>
+        <li>SCAN: H9999-999</li>
+        <li>SVG: H0111-111</li>
+        <li>CLEAR SPRING: H0222-222</li>
+        <li>ZING: H0333-333</li>
+        <li>OSCAR: H0444-444</li>
+        <li>MUTUAL OF OMAHA: H0555-555</li>
+      </ul>
+    </div>
+  
+    <div class="pharmacy-zip-codes container">
+      <h2>Pharmacy Zip Codes</h2>
+      <ul>
+        <li>Carelon RX - 85704</li>
+        <li>VA Pharmacy: Google their local VA pharm zip code</li>
+        <li>Optum Rx (UHC/AARP): 32765 or 66211</li>
+        <li>Aetna- CVS Caremark Mail Service Pharmacy 85072</li>
+        <li>Wellcare- CVS/Caremark: 78265 or 85072</li>
+        <li>Express Scripts: 63134</li>
+        <li>Reminder-We’re only allowed to enroll Express Scripts clients into SRx if they are in a PA facility state (see Daily Pop)</li>
+        <li>Exactcare (CVS): 44125</li>
+        <li>Pillpack: 03101</li>
+        <li>SmartScripts: 52353</li>
+        <li>Divvydose: 61265</li>
+        <li>LifeScript Pharmacy: 58104</li>
+        <li>Amazon Pharmacy: 78744</li>
+        <li>AllianceRx Walgreens: 32819</li>
+        <li>HomeFree: 08054</li>
+        <li>Humana/Centerwell: 45069 (Select phone number ending in 0092)</li>
+        <li>Use ONLY if this is their current pharmacy and they’re enrolling into SRx</li>
+        <li>Reminder- Look at the future plan- Future Humana clients are NOT eligible for SRx</li>
+      </ul>
+    </div>
+  
+    <div class="parent-companies container">
+      <h2>Parent Companies</h2>
+      <ul>
+        <li>UHC – Peoples Health, AARP</li>
+        <li>Humana – Care Source</li>
+        <li>Cigna – HealthSpring, Medco</li>
+        <li>Anthem – BCBS, Wellpoint</li>
+        <li>Centene – Wellcare</li>
+        <li>Allegheny – Highmark</li>
+        <li>Aetna – Silver Script</li>
+      </ul>
+    </div>
+  
+    <div class="medicaid-states container">
+      <h2>Medicaid States (Eligible)</h2>
+      <a href="#">LINK to google doc</a>
+    </div>
+  
+    <div class="medicaid-plans container">
+      <h2>Medicaid Plans that Indianapolis can take as Primary</h2>
+      <ul>
+        <li>Arizona (AZ)</li>
+        <li>Colorado (CO)</li>
+        <li>DC Contract being renewed</li>
+        <li>Idaho (ID)</li>
+        <li>Illinois (IL) Contract being renewed</li>
+        <li>Indiana (IN)</li>
+        <li>Maryland (MD)</li>
+        <li>Minnesota (MN)</li>
+        <li>Mississippi (MS)</li>
+        <li>Montana (MT)</li>
+        <li>New Mexico (NM)</li>
+        <li>Ohio (OH) Buckeye medicaid transfer to PA</li>
+        <li>Oklahoma (OK)</li>
+        <li>Oregon (OR)</li>
+        <li>South Carolina (SC) Contract being renewed</li>
+        <li>Virginia (VA) Contract being renewed</li>
+        <li>Washington (WA) Contract being renewed</li>
+      </ul>
+      <h2>Medicaid Plans that Monaca(Pittsburg/PA) can take as Primary</h2>
+      <ul>
+        <li>Pennsylvania (PA)</li>
+        <li>Ohio (OH)</li>
+        <li>West Virginia (WV)</li>
+        <li>Maryland (MD)</li>
+      </ul>
+    </div>
+  
+    <div class="lead-gen-calls container">
+      <h2>Lead Gen Calls</h2>
+      <a href="#">How do you know if it's a Lead Gen call? Click Here</a>
+      <p>Job Aid</p>
+    </div>
+  
+    <div class="crm-glitches container">
+      <h2>CRM Glitches/Work Arounds</h2>
+      <ol>
+        <li>During SRX enrollment you are unable to add a Pharmacy try exiting out of the enrollment. Changing the zip code on their profile in the CRM (ex: 66211 to 66212) and then reopen the enrollment. Please remember to fix the zip code once the pharmacy is         added.</li>
+        <li>If you chose “I Don’t Know” as a plan option during HRA, the E will not light up for SRX enrollment. Go to HRA and then click “Manage HRA” and change the answer if it allows you.</li>
+        <li>If ESI Consent Doesn’t pull double check spelling of name, DOB, zip code. Sometimes adding a middle initial will do the trick or make sure it matches Pverify!</li>
+        <li>If a client doesn’t have their routing number for their bank account you can always google it.</li>
+        <li>Press F5 if client gets transferred over with a Humana Loyalty or Caption Cal pop up.</li>
+        <li>Use the new “MARX” to see if they have Medicaid/LIS or plan information.</li>
+      </ol>
+    </div>
+  
+    <div class="report-ethics container">
+      <p>Call 844-916-1271 or visit <a href="http://www.selectquote.ethicspoint.com" target="_blank">www.selectquote.ethicspoint.com</a> to use the company’s hotline to report ethics and associate concerns.</p>
+    </div>
+  </div>
+  </body>
+  </html>
