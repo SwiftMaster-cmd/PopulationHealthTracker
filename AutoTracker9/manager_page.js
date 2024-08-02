@@ -52,10 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayPresets() {
         const presetsContainer = document.getElementById('presets-container');
         presetsContainer.innerHTML = '';
-
+    
         const start = currentPage * presetsPerPage;
         const end = Math.min(start + presetsPerPage, presets.length);
-
+    
         for (let i = start; i < end; i++) {
             const preset = presets[i];
             const presetButton = document.createElement('button');
@@ -63,29 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
             presetButton.addEventListener('click', () => displayPresetSummary(preset));
             presetsContainer.appendChild(presetButton);
         }
-
+    
         document.getElementById('prev-button').disabled = currentPage === 0;
         document.getElementById('next-button').disabled = end >= presets.length;
     }
 
-    document.getElementById('prev-button').addEventListener('click', () => {
-        if (currentPage > 0) {
-            currentPage--;
-            displayPresets();
-        }
-    });
-
-    document.getElementById('next-button').addEventListener('click', () => {
-        if ((currentPage + 1) * presetsPerPage < presets.length) {
-            currentPage++;
-            displayPresets();
-        }
-    });
-
     function displayPresetSummary(preset) {
         const summaryText = document.getElementById('summary-text');
         summaryText.textContent = `Preset: ${preset.name}`;
-
+    
         const nodes = preset.nodes.map(node => {
             let expandedNodes = [];
             for (let i = 0; i < node.count; i++) {
@@ -98,15 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
         shuffledNodes = shuffleNodes(nodes);
         drawWheel(shuffledNodes); // Use drawWheel from wheel.js
     }
+    
 
     function shuffleNodes(nodes) {
         let flatNodes = nodes.slice();
-
+    
         for (let i = flatNodes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
         }
-
+    
         let shuffledNodes = [];
         flatNodes.forEach(value => {
             let node = shuffledNodes.find(node => node.value === value);
@@ -116,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 shuffledNodes.push({ value, count: 1 });
             }
         });
-
+    
         return shuffledNodes;
     }
 
