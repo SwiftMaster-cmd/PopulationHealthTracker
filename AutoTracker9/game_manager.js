@@ -72,17 +72,32 @@ function addNodeField(value = 0, probability = 0) {
 document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
 document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
 
+
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
     let nodes = [];
+    let totalProbability = 0;
 
+    // Collect node values and probabilities
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
         const nodeProbability = parseInt(nodeFields[i].querySelector('input[placeholder="Probability (%)"]').value);
-        nodes.push({ value: nodeValue, probability: nodeProbability });
+        for (let j = 0; j < nodeProbability; j++) {
+            nodes.push(nodeValue);
+        }
+        totalProbability += nodeProbability;
     }
 
+    if (totalProbability !== 100) {
+        alert('Total probability must add up to 100%');
+        return;
+    }
+
+    // Shuffle the nodes array to randomize the order
+    nodes = shuffle(nodes);
+
+    // Save each node individually to Firebase
     const nodesRef = ref(database, 'gameConfiguration/nodes');
     set(nodesRef, nodes).then(() => {
         console.log('Configuration updated successfully.');
@@ -196,7 +211,11 @@ function loadCurrentConfiguration() {
         const nodes = snapshot.val();
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            nodes.forEach(node => addNodeField(node.value, node.probability));
+            const counts = nodes.reduce((acc, value) => {
+                acc[value] = (acc[value] || 0) + 1;
+                return acc;
+            }, {});
+            Object.entries(counts).forEach(([value, count]) => addNodeField(value, count));
         }
         updateSummary();
     });
@@ -260,7 +279,6 @@ function shuffle(array) {
     }
     return array;
 }
-
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -276,7 +294,7 @@ function generateWheel(nodes) {
         const centerY = canvas.height / 2;
         let currentAngle = 0;
 
-        nodes.forEach((node, index) => {
+        nodes.forEach((nodeValue, index) => {
             const startAngle = currentAngle;
             const endAngle = startAngle + angleStep;
 
@@ -297,7 +315,7 @@ function generateWheel(nodes) {
             ctx.textAlign = 'right';
             ctx.fillStyle = '#000';
             ctx.font = '20px Arial';
-            ctx.fillText(`$${node.value}`, radius - 10, 10);
+            ctx.fillText(`$${nodeValue}`, radius - 10, 10);
             ctx.restore();
 
             currentAngle += angleStep;
