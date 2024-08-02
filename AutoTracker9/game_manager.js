@@ -41,15 +41,19 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-function addNodeField(value = 0) {
+function addNodeField(value = 0, probability = 0) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
 
     const nodeValueInput = document.createElement('input');
     nodeValueInput.type = 'number';
-    nodeValueInput.placeholder = 'Node Value';
+    nodeValueInput.placeholder = 'Dollar Amount';
     nodeValueInput.value = value;
-    nodeValueInput.addEventListener('input', updateConfiguration);
+
+    const nodeProbabilityInput = document.createElement('input');
+    nodeProbabilityInput.type = 'number';
+    nodeProbabilityInput.placeholder = 'Probability (%)';
+    nodeProbabilityInput.value = probability;
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
@@ -59,10 +63,34 @@ function addNodeField(value = 0) {
     });
 
     nodeContainer.appendChild(nodeValueInput);
+    nodeContainer.appendChild(nodeProbabilityInput);
     nodeContainer.appendChild(removeButton);
 
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
+
+document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
+document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+
+function saveConfiguration() {
+    const nodesContainer = document.getElementById('nodes-container');
+    const nodeFields = nodesContainer.getElementsByClassName('node-field');
+    let nodes = [];
+
+    for (let i = 0; i < nodeFields.length; i++) {
+        const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
+        const nodeProbability = parseInt(nodeFields[i].querySelector('input[placeholder="Probability (%)"]').value);
+        nodes.push({ value: nodeValue, probability: nodeProbability });
+    }
+
+    const nodesRef = ref(database, 'gameConfiguration/nodes');
+    set(nodesRef, nodes).then(() => {
+        console.log('Configuration updated successfully.');
+    }).catch((error) => {
+        console.error('Error updating configuration:', error);
+    });
+}
+
 function addRuleField(salesType = 'billableHRA', quantity = 0) {
     const ruleContainer = document.createElement('div');
     ruleContainer.className = 'rule-field';
@@ -168,7 +196,7 @@ function loadCurrentConfiguration() {
         const nodes = snapshot.val();
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            nodes.forEach(node => addNodeField(node)); // Each node is added with its value
+            nodes.forEach(node => addNodeField(node.value, node.probability));
         }
         updateSummary();
     });
@@ -248,7 +276,7 @@ function generateWheel(nodes) {
         const centerY = canvas.height / 2;
         let currentAngle = 0;
 
-        nodes.forEach((nodeValue, index) => {
+        nodes.forEach((node, index) => {
             const startAngle = currentAngle;
             const endAngle = startAngle + angleStep;
 
@@ -269,7 +297,7 @@ function generateWheel(nodes) {
             ctx.textAlign = 'right';
             ctx.fillStyle = '#000';
             ctx.font = '20px Arial';
-            ctx.fillText(nodeValue, radius - 10, 10);
+            ctx.fillText(`$${node.value}`, radius - 10, 10);
             ctx.restore();
 
             currentAngle += angleStep;
