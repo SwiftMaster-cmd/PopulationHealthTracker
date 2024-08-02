@@ -313,3 +313,73 @@ button:active {
 .bottom-right-buttons .button:hover {
     background-color: #0056b3;
 }
+
+
+
+input[type="text"], input[type="color"], input[type="number"] {
+    padding: var(--margin-s);
+    border-radius: var(--margin-s);
+    border: 1px solid var(--color-quaternary);
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    width: 100%;
+    max-width: 300px;
+}
+
+input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: var(--color-tertiary);
+}
+
+input::placeholder {
+    color: var(--text-white);
+    opacity: 0.7;
+}
+
+
+.picker, .chart-picker {
+    padding: var(--margin-s);
+    font-size: 16px;
+    border-radius: var(--margin-s);
+    border: 1px solid #ccc;
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    cursor: pointer;
+    width: 45%;
+    max-width: 400px;
+}
+
+.picker:hover, .chart-picker:hover {
+    background-color: var(--color-tertiary);
+}
+
+.arrow-button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-tertiary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.arrow-button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+.arrow-button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+.arrow-button svg {
+    fill: var(--text-white);
+}
+
+.arrow-button svg:hover {
+    fill: var(--color-quaternary);
+}
+
