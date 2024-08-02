@@ -41,7 +41,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-function addNodeField(value = 0, probability = 0) {
+function addNodeField(value = 0, count = 0) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
 
@@ -50,10 +50,10 @@ function addNodeField(value = 0, probability = 0) {
     nodeValueInput.placeholder = 'Dollar Amount';
     nodeValueInput.value = value;
 
-    const nodeProbabilityInput = document.createElement('input');
-    nodeProbabilityInput.type = 'number';
-    nodeProbabilityInput.placeholder = 'Probability (%)';
-    nodeProbabilityInput.value = probability;
+    const nodeCountInput = document.createElement('input');
+    nodeCountInput.type = 'number';
+    nodeCountInput.placeholder = 'Count';
+    nodeCountInput.value = count;
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
@@ -63,7 +63,7 @@ function addNodeField(value = 0, probability = 0) {
     });
 
     nodeContainer.appendChild(nodeValueInput);
-    nodeContainer.appendChild(nodeProbabilityInput);
+    nodeContainer.appendChild(nodeCountInput);
     nodeContainer.appendChild(removeButton);
 
     document.getElementById('nodes-container').appendChild(nodeContainer);
@@ -72,26 +72,18 @@ function addNodeField(value = 0, probability = 0) {
 document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
 document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
 
-
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
     let nodes = [];
-    let totalProbability = 0;
 
-    // Collect node values and probabilities
+    // Collect node values and counts
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
-        const nodeProbability = parseInt(nodeFields[i].querySelector('input[placeholder="Probability (%)"]').value);
-        for (let j = 0; j < nodeProbability; j++) {
+        const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
+        for (let j = 0; j < nodeCount; j++) {
             nodes.push(nodeValue);
         }
-        totalProbability += nodeProbability;
-    }
-
-    if (totalProbability !== 100) {
-        alert('Total probability must add up to 100%');
-        return;
     }
 
     // Shuffle the nodes array to randomize the order
@@ -105,7 +97,6 @@ function saveConfiguration() {
         console.error('Error updating configuration:', error);
     });
 }
-
 function addRuleField(salesType = 'billableHRA', quantity = 0) {
     const ruleContainer = document.createElement('div');
     ruleContainer.className = 'rule-field';
