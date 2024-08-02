@@ -115,8 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please select a preset first.');
         }
     });
-
-    // Event listener for shuffle button
+    
     document.getElementById('shuffle-button').addEventListener('click', () => {
         if (shuffledNodes.length > 0) {
             shuffledNodes = shuffleNodes(shuffledNodes);
@@ -124,5 +123,4 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert('Please select a preset first.');
         }
-    });
 });
