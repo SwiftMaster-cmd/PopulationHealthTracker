@@ -202,6 +202,8 @@ function savePreset() {
     });
 }
 
+
+
 function loadCurrentConfiguration() {
     const configRef = ref(database, 'gameConfiguration/nodes');
     onValue(configRef, (snapshot) => {
@@ -276,6 +278,102 @@ function shuffle(array) {
     }
     return array;
 }
+
+// Event listener for the shuffle button
+document.getElementById('shuffle-button').addEventListener('click', shuffleNodes);
+
+function shuffleNodes() {
+    const configRef = ref(database, 'gameConfiguration/nodes');
+    get(configRef).then((snapshot) => {
+        let nodes = snapshot.val();
+        if (nodes) {
+            nodes = shuffle(nodes);
+            set(configRef, nodes).then(() => {
+                console.log('Nodes shuffled successfully.');
+                loadCurrentConfiguration(); // Reload the configuration to reflect changes
+            }).catch((error) => {
+                console.error('Error shuffling nodes:', error);
+            });
+        }
+    });
+}
+
+// Event listener for the spin button
+document.getElementById('spin-button').addEventListener('click', () => {
+    const configRef = ref(database, 'gameConfiguration/nodes');
+    get(configRef).then((snapshot) => {
+        const nodes = snapshot.val();
+        if (nodes) {
+            spinWheel(nodes);
+        }
+    });
+});
+
+function spinWheel(nodes) {
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+    const totalNodes = nodes.length;
+    const angleStep = (2 * Math.PI) / totalNodes;
+    const radius = canvas.width / 2;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    let currentRotation = 0;
+    let currentSegment = 0;
+
+    const spinDuration = 5000; // Total duration of the spin in milliseconds
+    const spinSpeed = 0.02; // Initial speed of the spin
+    const deceleration = 0.00098; // Deceleration rate
+
+    function drawWheel(rotation) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        nodes.forEach((nodeValue, index) => {
+            const startAngle = index * angleStep + rotation;
+            const endAngle = startAngle + angleStep;
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+
+            ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((startAngle + endAngle) / 2);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#000';
+            ctx.font = '20px Arial';
+            ctx.fillText(`$${nodeValue}`, radius - 10, 10);
+            ctx.restore();
+        });
+    }
+
+    function animateSpin(timestamp) {
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
+
+        if (elapsed < spinDuration) {
+            currentRotation += spinSpeed * (1 - (elapsed / spinDuration) * deceleration);
+            currentSegment = Math.floor((totalNodes * currentRotation / (2 * Math.PI)) % totalNodes);
+            drawWheel(currentRotation);
+            requestAnimationFrame(animateSpin);
+        } else {
+            drawWheel(currentRotation);
+            console.log('Selected segment:', nodes[currentSegment]);
+        }
+    }
+
+    let start;
+    requestAnimationFrame(animateSpin);
+}
+
+
+
+
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
