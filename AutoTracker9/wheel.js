@@ -1,5 +1,3 @@
-// wheel.js
-
 let isSpinning = false;
 let currentAngle = 0;
 let animationFrameId;

@@ -31,7 +31,6 @@ onAuthStateChanged(auth, (user) => {
                 loadCurrentRules();
                 listenForChanges();
             } else {
-               
                 alert("You do not have permission to view this page.");
                 window.location.href = 'index.html';
             }
@@ -71,7 +70,6 @@ function addNodeField(value = 0, count = 1) {
 document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
 document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
 
-
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
@@ -97,7 +95,6 @@ function saveConfiguration() {
         console.error('Error updating configuration:', error);
     });
 }
-
 
 function addRuleField(salesType = 'billableHRA', quantity = 0) {
     const ruleContainer = document.createElement('div');
@@ -132,29 +129,6 @@ function addRuleField(salesType = 'billableHRA', quantity = 0) {
     document.getElementById('rules-container').appendChild(ruleContainer);
 }
 
-function updateConfiguration() {
-    const nodesContainer = document.getElementById('nodes-container');
-    const nodeFields = nodesContainer.getElementsByClassName('node-field');
-    let nodes = [];
-
-    // Collect node values
-    for (let i = 0; i < nodeFields.length; i++) {
-        const nodeValue = parseInt(nodeFields[i].querySelector('input[type="number"]').value);
-        nodes.push(nodeValue);
-    }
-
-    // Shuffle the nodes array to randomize the order
-    nodes = shuffle(nodes);
-
-    // Save each node individually to Firebase
-    const nodesRef = ref(database, 'gameConfiguration/nodes');
-    set(nodesRef, nodes).then(() => {
-        console.log('Configuration updated successfully.');
-    }).catch((error) => {
-        console.error('Error updating configuration:', error);
-    });
-}
-
 function updateRules() {
     const rulesContainer = document.getElementById('rules-container');
     const ruleFields = rulesContainer.getElementsByClassName('rule-field');
@@ -172,6 +146,7 @@ function updateRules() {
         console.error('Error updating rules:', error);
     });
 }
+
 function savePreset() {
     const presetName = document.getElementById('preset-name').value;
     if (!presetName) {
@@ -202,8 +177,6 @@ function savePreset() {
     });
 }
 
-
-
 function loadCurrentConfiguration() {
     const configRef = ref(database, 'gameConfiguration/nodes');
     onValue(configRef, (snapshot) => {
@@ -216,7 +189,6 @@ function loadCurrentConfiguration() {
             }, {});
             Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
         }
-        updateSummary();
     });
 }
 
@@ -228,7 +200,6 @@ function loadCurrentRules() {
         document.getElementById('rules-container').innerHTML = ''; // Clear existing rule fields
         if (rules) {
             rules.forEach(rule => addRuleField(rule.salesType, rule.quantity));
-            updateSummary();
         }
     });
 }
@@ -239,37 +210,12 @@ function listenForChanges() {
 
     onValue(configRef, () => {
         loadCurrentConfiguration();
-        updateSummary();
     });
 
     onValue(rulesRef, () => {
         loadCurrentRules();
-        updateSummary();
     });
 }
-
-function updateSummary() {
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    const rulesRef = ref(database, 'gameRules');
-
-    get(configRef).then((snapshot) => {
-        const nodes = snapshot.val();
-        generateWheel(nodes); // Call the separated wheel generation function
-
-        get(rulesRef).then((snapshot) => {
-            const rules = snapshot.val();
-            let summaryText = 'Spin Rules:\n';
-            if (rules) {
-                rules.forEach(rule => {
-                    summaryText += `Sales Type: ${rule.salesType}, Quantity: ${rule.quantity}\n`;
-                });
-            }
-            document.getElementById('summary-text').textContent = summaryText;
-        });
-    });
-}
-
-
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -298,122 +244,35 @@ function shuffleNodes() {
     });
 }
 
-// Event listener for the spin button
-document.getElementById('spin-button').addEventListener('click', () => {
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    get(configRef).then((snapshot) => {
-        const nodes = snapshot.val();
-        if (nodes) {
-            spinWheel(nodes);
+function loadPresets() {
+    const presetsRef = ref(database, 'spinTheWheelPresets');
+    onValue(presetsRef, (snapshot) => {
+        const data = snapshot.val();
+        const presetsContainer = document.getElementById('presets-container');
+        presetsContainer.innerHTML = '';
+        if (data) {
+            Object.keys(data).forEach((key) => {
+                const button = document.createElement('button');
+                button.textContent = key;
+                button.addEventListener('click', () => loadPreset(key));
+                presetsContainer.appendChild(button);
+            });
         }
     });
-});
-
-function spinWheel(nodes) {
-    const canvas = document.getElementById('wheel-canvas');
-    const ctx = canvas.getContext('2d');
-    const totalNodes = nodes.length;
-    const angleStep = (2 * Math.PI) / totalNodes;
-    const radius = canvas.width / 2;
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-
-    let currentRotation = 0;
-    let currentSegment = 0;
-
-    const spinDuration = 5000; // Total duration of the spin in milliseconds
-    const spinSpeed = 0.02; // Initial speed of the spin
-    const deceleration = 0.00098; // Deceleration rate
-
-    function drawWheel(rotation) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        nodes.forEach((nodeValue, index) => {
-            const startAngle = index * angleStep + rotation;
-            const endAngle = startAngle + angleStep;
-
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.closePath();
-
-            ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.save();
-            ctx.translate(centerX, centerY);
-            ctx.rotate((startAngle + endAngle) / 2);
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#000';
-            ctx.font = '20px Arial';
-            ctx.fillText(`$${nodeValue}`, radius - 10, 10);
-            ctx.restore();
-        });
-    }
-
-    function animateSpin(timestamp) {
-        if (!start) start = timestamp;
-        const elapsed = timestamp - start;
-
-        if (elapsed < spinDuration) {
-            currentRotation += spinSpeed * (1 - (elapsed / spinDuration) * deceleration);
-            currentSegment = Math.floor((totalNodes * currentRotation / (2 * Math.PI)) % totalNodes);
-            drawWheel(currentRotation);
-            requestAnimationFrame(animateSpin);
-        } else {
-            drawWheel(currentRotation);
-            console.log('Selected segment:', nodes[currentSegment]);
-        }
-    }
-
-    let start;
-    requestAnimationFrame(animateSpin);
 }
 
-
-
-
-function generateWheel(nodes) {
-    const canvas = document.getElementById('wheel-canvas');
-    const ctx = canvas.getContext('2d');
-
-    if (nodes) {
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const totalNodes = nodes.length;
-        const angleStep = (2 * Math.PI) / totalNodes;
-        const radius = canvas.width / 2;
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        let currentAngle = 0;
-
-        nodes.forEach((nodeValue, index) => {
-            const startAngle = currentAngle;
-            const endAngle = startAngle + angleStep;
-
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.closePath();
-
-            // Alternate colors for each segment
-            ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
-            ctx.fill();
-            ctx.stroke();
-
-            // Draw text
-            ctx.save();
-            ctx.translate(centerX, centerY);
-            ctx.rotate((startAngle + endAngle) / 2);
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#000';
-            ctx.font = '20px Arial';
-            ctx.fillText(`$${nodeValue}`, radius - 10, 10);
-            ctx.restore();
-
-            currentAngle += angleStep;
-        });
-    }
+function loadPreset(presetName) {
+    const presetsRef = ref(database, `spinTheWheelPresets/${presetName}`);
+    get(presetsRef).then((snapshot) => {
+        const preset = snapshot.val();
+        if (preset) {
+            const nodesContainer = document.getElementById('nodes-container');
+            nodesContainer.innerHTML = '';
+            const counts = preset.nodes.reduce((acc, value) => {
+                acc[value] = (acc[value] || 0) + 1;
+                return acc;
+            }, {});
+            Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
+        }
+    });
 }
