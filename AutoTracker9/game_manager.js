@@ -161,9 +161,7 @@ function savePreset() {
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
         const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
-        for (let j = 0; j < nodeCount; j++) {
-            nodes.push(nodeValue);
-        }
+        nodes.push({ value: nodeValue, count: nodeCount });
     }
 
     const preset = { nodes };
@@ -176,6 +174,7 @@ function savePreset() {
         console.error('Error saving preset:', error);
     });
 }
+
 
 function loadCurrentConfiguration() {
     const configRef = ref(database, 'gameConfiguration/nodes');
