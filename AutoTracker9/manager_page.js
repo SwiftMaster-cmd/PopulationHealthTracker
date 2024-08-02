@@ -22,15 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let presets = [];
     const presetsPerPage = 5;
     let currentPage = 0;
-    
+    let shuffledNodes = [];
+
     function loadPresets() {
         const presetsRef = ref(database, 'spinTheWheelPresets');
         onValue(presetsRef, (snapshot) => {
             const data = snapshot.val();
-            presets = data ? Object.entries(data) : [];
+            presets = data ? Object.entries(data).reverse() : [];
             displayPresets();
         });
     }
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
@@ -48,47 +50,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function loadPresets() {
-        const presetsRef = ref(database, 'spinTheWheelPresets');
-        onValue(presetsRef, (snapshot) => {
-            const data = snapshot.val();
-            presets = data ? Object.entries(data).reverse() : [];
+    function displayPresets() {
+        const presetsContainer = document.getElementById('presets-container');
+        presetsContainer.innerHTML = '';
+
+        const start = currentPage * presetsPerPage;
+        const end = Math.min(start + presetsPerPage, presets.length);
+
+        for (let i = start; i < end; i++) {
+            const [presetName, presetData] = presets[i];
+            const presetButton = document.createElement('button');
+            presetButton.textContent = presetName;
+            presetButton.addEventListener('click', () => displayPresetSummary(presetData));
+            presetsContainer.appendChild(presetButton);
+        }
+
+        document.getElementById('prev-button').disabled = currentPage === 0;
+        document.getElementById('next-button').disabled = end >= presets.length;
+    }
+
+    document.getElementById('prev-button').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
             displayPresets();
-        });
-    }
+        }
+    });
 
-   function displayPresets() {
-    const presetsContainer = document.getElementById('presets-container');
-    presetsContainer.innerHTML = '';
+    document.getElementById('next-button').addEventListener('click', () => {
+        if ((currentPage + 1) * presetsPerPage < presets.length) {
+            currentPage++;
+            displayPresets();
+        }
+    });
 
-    const start = currentPage * presetsPerPage;
-    const end = Math.min(start + presetsPerPage, presets.length);
-
-    for (let i = start; i < end; i++) {
-        const [presetName, presetData] = presets[i];
-        const presetButton = document.createElement('button');
-        presetButton.textContent = presetName;
-        presetButton.addEventListener('click', () => displayPresetSummary(presetData));
-        presetsContainer.appendChild(presetButton);
-    }
-
-    document.getElementById('prev-button').disabled = currentPage === 0;
-    document.getElementById('next-button').disabled = end >= presets.length;
-}
-
-document.getElementById('prev-button').addEventListener('click', () => {
-    if (currentPage > 0) {
-        currentPage--;
-        displayPresets();
-    }
-});
-
-document.getElementById('next-button').addEventListener('click', () => {
-    if ((currentPage + 1) * presetsPerPage < presets.length) {
-        currentPage++;
-        displayPresets();
-    }
-});
     function displayPresetSummary(preset) {
         const summaryText = document.getElementById('summary-text');
         summaryText.textContent = `Preset: ${preset.name}`;
@@ -125,10 +119,18 @@ document.getElementById('next-button').addEventListener('click', () => {
         return shuffledNodes;
     }
 
-    // Event listener for spin button
     document.getElementById('spin-button').addEventListener('click', () => {
         if (shuffledNodes.length > 0) {
             spinWheel(shuffledNodes); // Use spinWheel from wheel.js
+        } else {
+            alert('Please select a preset first.');
+        }
+    });
+
+    document.getElementById('shuffle-button').addEventListener('click', () => {
+        if (shuffledNodes.length > 0) {
+            shuffledNodes = shuffleNodes(shuffledNodes);
+            drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
         } else {
             alert('Please select a preset first.');
         }
