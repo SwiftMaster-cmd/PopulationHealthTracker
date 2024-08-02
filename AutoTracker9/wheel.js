@@ -6,7 +6,7 @@ export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
 
-    const totalNodes = nodes.length;
+    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
 
     let spinDuration = 5000 + Math.random() * 2000; // Spin duration between 5000ms to 7000ms
@@ -54,36 +54,38 @@ export function drawWheel(nodes, rotation = 0) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const totalNodes = nodes.length;
+    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
     const radius = canvas.width / 2;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
-    nodes.forEach((nodeValue, index) => {
-        const startAngle = currentAngle;
-        const endAngle = startAngle + angleStep;
+    nodes.forEach((node) => {
+        for (let i = 0; i < node.count; i++) {
+            const startAngle = currentAngle;
+            const endAngle = startAngle + angleStep;
 
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.closePath();
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
 
-        ctx.fillStyle = (index % 2 === 0) ? '#FFCC00' : '#FF9900';
-        ctx.fill();
-        ctx.stroke();
+            ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
+            ctx.fill();
+            ctx.stroke();
 
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate((startAngle + endAngle) / 2);
-        ctx.textAlign = 'right';
-        ctx.fillStyle = '#000';
-        ctx.font = '20px Arial';
-        ctx.fillText(`$${nodeValue}`, radius - 10, 10);
-        ctx.restore();
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((startAngle + endAngle) / 2);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#000';
+            ctx.font = '20px Arial';
+            ctx.fillText(node.value, radius - 10, 10);
+            ctx.restore();
 
-        currentAngle += angleStep;
+            currentAngle += angleStep;
+        }
     });
 
     drawNeedle();
@@ -111,10 +113,20 @@ function drawNeedle() {
 }
 
 function displayResult(nodes, rotation, angleStep) {
-    const totalNodes = nodes.length;
+    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
-    const result = nodes[winningIndex];
+    let currentNodeIndex = 0;
+    let result;
+
+    nodes.forEach((node) => {
+        for (let i = 0; i < node.count; i++) {
+            if (currentNodeIndex === winningIndex) {
+                result = node.value;
+            }
+            currentNodeIndex++;
+        }
+    });
 
     const resultElement = document.getElementById('result');
-    resultElement.textContent = `Result: $${result}`;
+    resultElement.textContent = `Result: ${result}`;
 }
