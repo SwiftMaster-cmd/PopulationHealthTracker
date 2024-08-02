@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="css/buttons.css">
-   
     <link rel="stylesheet" href="css/monthlyTotals.css">
     <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
 
@@ -18,38 +17,27 @@
     <script type="module" src="game_manager.js"></script>
     <script type="module" src="wheel.js"></script>
     <script src="color-palette.js" defer></script>
-
-
     <script src="profilePopup.js" defer></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-RVBYB0RR06');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RVBYB0RR06');
     </script>
-
-
-  
 </head>
 <body>
-
-
-    
     <div class="header-container">
         <h1>Dashboard</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
         <button onclick="window.location.href='Dash2.html'" class="button">Manager</button>
         <button onclick="window.location.href='game_manager.html'" class="button">Game Manager</button>
-
         <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
         <div class="profile-button">P</div>
     </div>
-    
-    <!-- Color Picker and Name Change Container -->
+
     <div class="color-picker-container" id="colorPickerContainer">
         <input type="color" id="colorPicker" />
         <button id="applyColor" class="button">Apply Color Palette</button>
@@ -58,55 +46,46 @@
         <button id="signOut" class="button">Sign Out</button>
         <button id="googleSignInButton">Link with Google</button>
         <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-        
-        <!-- Navigation Buttons -->
-
     </div>
 
     <div class="main-container">
-
-
         <header>
             <h1>Game Manager</h1>
         </header>
-        <!-- Back button to navigate to the Manager Page -->
-    
-        <section id="wheel-configuration">
+
+        <section id="wheel-configuration" class="container">
             <h3>Wheel Configuration</h3>
-            <div id="nodes-container">
+            <div id="nodes-container" class="flex-container">
                 <!-- Node fields will be added here dynamically -->
             </div>
-            <button id="add-node-field">Add Dollar Amount</button>
-            <button id="save-configuration">Save Configuration</button>
+            <button id="add-node-field" class="button">Add Dollar Amount</button>
+            <button id="save-configuration" class="button">Save Configuration</button>
         </section>
-    
-        <section id="spin-rules">
+
+        <section id="spin-rules" class="container">
             <h3>Spin Rules</h3>
-            <div id="rules-container">
+            <div id="rules-container" class="flex-container">
                 <!-- Rules will be added here dynamically -->
             </div>
-            <button id="add-rule-field">Add Rule Field</button>
+            <button id="add-rule-field" class="button">Add Rule Field</button>
             <ul id="rules-list">
                 <!-- List of rules will be dynamically added here -->
             </ul>
         </section>
-    
-        <section id="save-preset">
+
+        <section id="save-preset" class="container">
             <h3>Save Preset</h3>
             <input type="text" id="preset-name" placeholder="Preset Name">
-            <button id="save-preset-button">Save Preset</button>
+            <button id="save-preset-button" class="button">Save Preset</button>
         </section>
-    
-        <section id="summary">
+
+        <section id="summary" class="container">
             <h3>Summary</h3>
             <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
             <canvas id="wheel-canvas" width="500" height="500"></canvas>
-            <button id="spin-button" onclick="spinWheel(currentNodes)">Spin</button>
-            <!-- Add the shuffle button here -->
-            <button id="shuffle-button">Shuffle Nodes</button>
+            <button id="spin-button" class="button" onclick="spinWheel(currentNodes)">Spin</button>
+            <button id="shuffle-button" class="button">Shuffle Nodes</button>
         </section>
-    
-
-    
+    </div>
 </body>
 </html>

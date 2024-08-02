@@ -383,3 +383,77 @@ input::placeholder {
     fill: var(--color-quaternary);
 }
 
+/* General container styles */
+.container {
+    background-color: var(--background-color);
+    border-radius: var(--margin-s);
+    padding: var(--margin-m);
+    margin-bottom: var(--margin-l);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific section styles */
+#wheel-configuration, #spin-rules, #save-preset, #summary {
+    background-color: var(--background-color);
+    padding: var(--margin-m);
+    border-radius: var(--margin-s);
+    margin-bottom: var(--margin-l);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Flex container styles */
+.flex-container {
+    display: flex;
+    gap: var(--margin-m);
+    flex-wrap: wrap;
+}
+
+.flex-container input[type="text"],
+.flex-container input[type="number"],
+.flex-container select {
+    flex: 1;
+}
+
+/* Button styles */
+.button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-tertiary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+.button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+/* Ensure input and select fields are styled properly */
+input[type="text"], input[type="color"], input[type="number"], select {
+    padding: var(--margin-s);
+    border-radius: var(--margin-s);
+    border: 1px solid var(--color-quaternary);
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    width: 100%;
+    max-width: 300px;
+}
+
+input::placeholder {
+    color: var(--text-white);
+    opacity: 0.7;
+}
+
+input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--color-tertiary);
+}
