@@ -41,7 +41,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-function addNodeField(value = 0, count = 0) {
+function addNodeField(value = 0, count = 1) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
 
@@ -59,7 +59,6 @@ function addNodeField(value = 0, count = 0) {
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
         nodeContainer.remove();
-        updateConfiguration();
     });
 
     nodeContainer.appendChild(nodeValueInput);
@@ -71,6 +70,8 @@ function addNodeField(value = 0, count = 0) {
 
 document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
 document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+
+
 
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
@@ -97,6 +98,8 @@ function saveConfiguration() {
         console.error('Error updating configuration:', error);
     });
 }
+
+
 function addRuleField(salesType = 'billableHRA', quantity = 0) {
     const ruleContainer = document.createElement('div');
     ruleContainer.className = 'rule-field';
@@ -206,7 +209,7 @@ function loadCurrentConfiguration() {
                 acc[value] = (acc[value] || 0) + 1;
                 return acc;
             }, {});
-            Object.entries(counts).forEach(([value, count]) => addNodeField(value, count));
+            Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
         }
         updateSummary();
     });
