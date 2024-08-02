@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, update, get, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
