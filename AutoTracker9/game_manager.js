@@ -72,7 +72,6 @@ document.getElementById('add-node-field').addEventListener('click', () => addNod
 document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
 
 
-
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
@@ -173,7 +172,6 @@ function updateRules() {
         console.error('Error updating rules:', error);
     });
 }
-
 function savePreset() {
     const presetName = document.getElementById('preset-name').value;
     if (!presetName) {
@@ -181,21 +179,26 @@ function savePreset() {
         return;
     }
 
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    const rulesRef = ref(database, 'gameRules');
+    const nodesContainer = document.getElementById('nodes-container');
+    const nodeFields = nodesContainer.getElementsByClassName('node-field');
+    let nodes = [];
 
-    Promise.all([get(configRef), get(rulesRef)]).then((snapshots) => {
-        const nodes = snapshots[0].val();
-        const rules = snapshots[1].val();
-        const preset = { nodes, rules };
+    for (let i = 0; i < nodeFields.length; i++) {
+        const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
+        const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
+        for (let j = 0; j < nodeCount; j++) {
+            nodes.push(nodeValue);
+        }
+    }
 
-        set(ref(database, `spinTheWheelPresets/${presetName}`), preset).then(() => {
-            alert('Preset saved successfully.');
-        }).catch((error) => {
-            console.error('Error saving preset:', error);
-        });
+    const preset = { nodes };
+
+    const presetsRef = ref(database, `spinTheWheelPresets/${presetName}`);
+    set(presetsRef, preset).then(() => {
+        alert('Preset saved successfully.');
+        loadPresets(); // Refresh the presets list after saving
     }).catch((error) => {
-        console.error('Error retrieving configuration or rules:', error);
+        console.error('Error saving preset:', error);
     });
 }
 
