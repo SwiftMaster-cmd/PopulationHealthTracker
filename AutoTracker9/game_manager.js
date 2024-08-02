@@ -41,7 +41,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-function addNodeField(value = 0, count = 1) {
+function addNodeField(value = 0) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
 
@@ -51,12 +51,6 @@ function addNodeField(value = 0, count = 1) {
     nodeValueInput.value = value;
     nodeValueInput.addEventListener('input', updateConfiguration);
 
-    const nodeCountInput = document.createElement('input');
-    nodeCountInput.type = 'number';
-    nodeCountInput.placeholder = 'Count';
-    nodeCountInput.value = count;
-    nodeCountInput.addEventListener('input', updateConfiguration);
-
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
@@ -65,12 +59,10 @@ function addNodeField(value = 0, count = 1) {
     });
 
     nodeContainer.appendChild(nodeValueInput);
-    nodeContainer.appendChild(nodeCountInput);
     nodeContainer.appendChild(removeButton);
 
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
-
 function addRuleField(salesType = 'billableHRA', quantity = 0) {
     const ruleContainer = document.createElement('div');
     ruleContainer.className = 'rule-field';
@@ -109,14 +101,10 @@ function updateConfiguration() {
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
     let nodes = [];
 
-    // Collect node values and counts
+    // Collect node values
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[type="number"]').value);
-        const nodeCount = parseInt(nodeFields[i].querySelector('input[type="number"]:nth-child(2)').value);
-
-        for (let j = 0; j < nodeCount; j++) {
-            nodes.push(nodeValue);
-        }
+        nodes.push(nodeValue);
     }
 
     // Shuffle the nodes array to randomize the order
@@ -180,7 +168,7 @@ function loadCurrentConfiguration() {
         const nodes = snapshot.val();
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            nodes.forEach(node => addNodeField(node, 1)); // Each node is added with a count of 1
+            nodes.forEach(node => addNodeField(node)); // Each node is added with its value
         }
         updateSummary();
     });
@@ -244,6 +232,7 @@ function shuffle(array) {
     }
     return array;
 }
+
 function generateWheel(nodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
