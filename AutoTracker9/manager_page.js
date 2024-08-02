@@ -21,8 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let presets = [];
     const presetsPerPage = 5;
     let currentPage = 0;
-    let shuffledNodes = [];
-
+    
+    function loadPresets() {
+        const presetsRef = ref(database, 'spinTheWheelPresets');
+        onValue(presetsRef, (snapshot) => {
+            const data = snapshot.val();
+            presets = data ? Object.entries(data) : [];
+            displayPresets();
+        });
+    }
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
@@ -44,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const presetsRef = ref(database, 'spinTheWheelPresets');
         onValue(presetsRef, (snapshot) => {
             const data = snapshot.val();
-            presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value })) : [];
+            presets = data ? Object.entries(data).reverse() : [];
             displayPresets();
         });
     }
@@ -57,10 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const end = Math.min(start + presetsPerPage, presets.length);
 
         for (let i = start; i < end; i++) {
-            const preset = presets[i];
+            const [presetName, presetData] = presets[i];
             const presetButton = document.createElement('button');
-            presetButton.textContent = preset.name;
-            presetButton.addEventListener('click', () => displayPresetSummary(preset));
+            presetButton.textContent = presetName;
+            presetButton.addEventListener('click', () => displayPresetSummary(presetData));
             presetsContainer.appendChild(presetButton);
         }
 
@@ -86,15 +93,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const summaryText = document.getElementById('summary-text');
         summaryText.textContent = `Preset: ${preset.name}`;
 
-        const nodes = preset.nodes.map(value => ({ value, count: 1 }));
-        
+        const nodes = preset.nodes;
         console.log('Preset nodes:', nodes); // Debugging
-        shuffledNodes = shuffleNodes(nodes);
+        shuffledNodes = shuffleNodes(nodes); // Define shuffledNodes here
         drawWheel(shuffledNodes); // Use drawWheel from wheel.js
     }
 
     function shuffleNodes(nodes) {
-        let flatNodes = nodes.flatMap(node => Array(node.count).fill(node.value));
+        let flatNodes = [];
+        nodes.forEach(node => {
+            for (let i = 0; i < node.count; i++) {
+                flatNodes.push(node.value);
+            }
+        });
 
         for (let i = flatNodes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -114,18 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return shuffledNodes;
     }
 
+    // Event listener for spin button
     document.getElementById('spin-button').addEventListener('click', () => {
         if (shuffledNodes.length > 0) {
             spinWheel(shuffledNodes); // Use spinWheel from wheel.js
-        } else {
-            alert('Please select a preset first.');
-        }
-    });
-
-    document.getElementById('shuffle-button').addEventListener('click', () => {
-        if (shuffledNodes.length > 0) {
-            shuffledNodes = shuffleNodes(shuffledNodes);
-            drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
         } else {
             alert('Please select a preset first.');
         }
