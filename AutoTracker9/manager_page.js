@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const presetsRef = ref(database, 'spinTheWheelPresets');
         onValue(presetsRef, (snapshot) => {
             const data = snapshot.val();
-            presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
+            presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value })) : [];
             displayPresets();
         });
     }
@@ -52,10 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayPresets() {
         const presetsContainer = document.getElementById('presets-container');
         presetsContainer.innerHTML = '';
-    
+
         const start = currentPage * presetsPerPage;
         const end = Math.min(start + presetsPerPage, presets.length);
-    
+
         for (let i = start; i < end; i++) {
             const preset = presets[i];
             const presetButton = document.createElement('button');
@@ -63,37 +63,44 @@ document.addEventListener('DOMContentLoaded', () => {
             presetButton.addEventListener('click', () => displayPresetSummary(preset));
             presetsContainer.appendChild(presetButton);
         }
-    
+
         document.getElementById('prev-button').disabled = currentPage === 0;
         document.getElementById('next-button').disabled = end >= presets.length;
     }
 
+    document.getElementById('prev-button').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            displayPresets();
+        }
+    });
+
+    document.getElementById('next-button').addEventListener('click', () => {
+        if ((currentPage + 1) * presetsPerPage < presets.length) {
+            currentPage++;
+            displayPresets();
+        }
+    });
+
     function displayPresetSummary(preset) {
         const summaryText = document.getElementById('summary-text');
         summaryText.textContent = `Preset: ${preset.name}`;
-    
-        const nodes = preset.nodes.map(node => {
-            let expandedNodes = [];
-            for (let i = 0; i < node.count; i++) {
-                expandedNodes.push(node.value);
-            }
-            return expandedNodes;
-        }).flat();
+
+        const nodes = preset.nodes.map(value => ({ value, count: 1 }));
         
         console.log('Preset nodes:', nodes); // Debugging
         shuffledNodes = shuffleNodes(nodes);
         drawWheel(shuffledNodes); // Use drawWheel from wheel.js
     }
-    
 
     function shuffleNodes(nodes) {
-        let flatNodes = nodes.slice();
-    
+        let flatNodes = nodes.flatMap(node => Array(node.count).fill(node.value));
+
         for (let i = flatNodes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
         }
-    
+
         let shuffledNodes = [];
         flatNodes.forEach(value => {
             let node = shuffledNodes.find(node => node.value === value);
@@ -103,11 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 shuffledNodes.push({ value, count: 1 });
             }
         });
-    
+
         return shuffledNodes;
     }
 
-    // Event listener for spin button
     document.getElementById('spin-button').addEventListener('click', () => {
         if (shuffledNodes.length > 0) {
             spinWheel(shuffledNodes); // Use spinWheel from wheel.js
@@ -115,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please select a preset first.');
         }
     });
-    
+
     document.getElementById('shuffle-button').addEventListener('click', () => {
         if (shuffledNodes.length > 0) {
             shuffledNodes = shuffleNodes(shuffledNodes);
@@ -123,4 +129,5 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert('Please select a preset first.');
         }
+    });
 });
