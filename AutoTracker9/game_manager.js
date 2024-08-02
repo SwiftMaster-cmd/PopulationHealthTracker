@@ -243,36 +243,41 @@ function shuffleNodes() {
         }
     });
 }
-
 function loadPresets() {
     const presetsRef = ref(database, 'spinTheWheelPresets');
     onValue(presetsRef, (snapshot) => {
         const data = snapshot.val();
-        const presetsContainer = document.getElementById('presets-container');
-        presetsContainer.innerHTML = '';
-        if (data) {
-            Object.keys(data).forEach((key) => {
-                const button = document.createElement('button');
-                button.textContent = key;
-                button.addEventListener('click', () => loadPreset(key));
-                presetsContainer.appendChild(button);
-            });
-        }
+        presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
+        displayPresets();
     });
 }
 
-function loadPreset(presetName) {
-    const presetsRef = ref(database, `spinTheWheelPresets/${presetName}`);
-    get(presetsRef).then((snapshot) => {
-        const preset = snapshot.val();
-        if (preset) {
-            const nodesContainer = document.getElementById('nodes-container');
-            nodesContainer.innerHTML = '';
-            const counts = preset.nodes.reduce((acc, value) => {
-                acc[value] = (acc[value] || 0) + 1;
-                return acc;
-            }, {});
-            Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
-        }
-    });
+function displayPresets() {
+    const presetsContainer = document.getElementById('presets-container');
+    presetsContainer.innerHTML = '';
+
+    const start = currentPage * presetsPerPage;
+    const end = Math.min(start + presetsPerPage, presets.length);
+
+    for (let i = start; i < end; i++) {
+        const preset = presets[i];
+        const presetButton = document.createElement('button');
+        presetButton.textContent = preset.name;
+        presetButton.addEventListener('click', () => displayPresetSummary(preset));
+        presetsContainer.appendChild(presetButton);
+    }
+
+    document.getElementById('prev-button').disabled = currentPage === 0;
+    document.getElementById('next-button').disabled = end >= presets.length;
 }
+
+function displayPresetSummary(preset) {
+    const summaryText = document.getElementById('summary-text');
+    summaryText.textContent = `Preset: ${preset.name}`;
+
+    const nodes = preset.nodes;
+    console.log('Preset nodes:', nodes); // Debugging
+    shuffledNodes = shuffleNodes(nodes);
+    drawWheel(shuffledNodes); // Use drawWheel from wheel.js
+}
+
