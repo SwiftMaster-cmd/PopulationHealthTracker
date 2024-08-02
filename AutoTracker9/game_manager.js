@@ -107,15 +107,24 @@ function addRuleField(salesType = 'billableHRA', quantity = 0) {
 function updateConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
-    const nodes = [];
+    let nodes = [];
 
+    // Collect node values and counts
     for (let i = 0; i < nodeFields.length; i++) {
-        const nodeValue = nodeFields[i].querySelector('input[type="number"]').value;
-        const nodeCount = nodeFields[i].querySelector('input[type="number"]:nth-child(2)').value;
-        nodes.push({ value: nodeValue, count: nodeCount });
+        const nodeValue = parseInt(nodeFields[i].querySelector('input[type="number"]').value);
+        const nodeCount = parseInt(nodeFields[i].querySelector('input[type="number"]:nth-child(2)').value);
+
+        for (let j = 0; j < nodeCount; j++) {
+            nodes.push(nodeValue);
+        }
     }
 
-    set(ref(database, 'gameConfiguration'), { nodes }).then(() => {
+    // Shuffle the nodes array to randomize the order
+    nodes = shuffle(nodes);
+
+    // Save each node individually to Firebase
+    const nodesRef = ref(database, 'gameConfiguration/nodes');
+    set(nodesRef, nodes).then(() => {
         console.log('Configuration updated successfully.');
     }).catch((error) => {
         console.error('Error updating configuration:', error);
@@ -171,7 +180,7 @@ function loadCurrentConfiguration() {
         const nodes = snapshot.val();
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            nodes.forEach(node => addNodeField(node.value, node.count));
+            nodes.forEach(node => addNodeField(node, 1)); // Each node is added with a count of 1
         }
         updateSummary();
     });
@@ -240,28 +249,17 @@ function generateWheel(nodes) {
     const ctx = canvas.getContext('2d');
 
     if (nodes) {
-        // Flatten nodes into a list of values based on their count
-        let allNodes = [];
-        nodes.forEach(node => {
-            for (let i = 0; i < node.count; i++) {
-                allNodes.push(node.value);
-            }
-        });
-
-        // Shuffle the nodes array to randomize the order
-        allNodes = shuffle(allNodes);
-
         // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const totalNodes = allNodes.length;
+        const totalNodes = nodes.length;
         const angleStep = (2 * Math.PI) / totalNodes;
         const radius = canvas.width / 2;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         let currentAngle = 0;
 
-        allNodes.forEach((nodeValue, index) => {
+        nodes.forEach((nodeValue, index) => {
             const startAngle = currentAngle;
             const endAngle = startAngle + angleStep;
 
