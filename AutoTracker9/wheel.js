@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel } from './wheel.js';
+import { drawWheel, spinWheel } from './wheel_core.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const firebaseConfig = {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
         console.log('Preset nodes:', nodes); // Debugging
         shuffledNodes = flattenAndShuffleNodes(nodes); // Define shuffledNodes here
-        drawWheel(shuffledNodes); // Use drawWheel from wheel.js
+        drawWheel(shuffledNodes); // Use drawWheel from wheel_core.js
     }
 
     function flattenAndShuffleNodes(nodes) {
