@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { spinWheel, drawWheel } from './wheel.js'; // Ensure this import path is correct
+import { drawWheel, spinWheel } from './wheel.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const firebaseConfig = {
@@ -86,9 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const summaryText = document.getElementById('summary-text');
         summaryText.textContent = `Preset: ${preset.name}`;
 
-        const nodes = Object.entries(preset.nodes).map(([value, count]) => ({
-            value: parseInt(value),
-            count: parseInt(count)
+        const nodes = Object.entries(preset.nodes).map(([_, node]) => ({
+            value: node.value,
+            count: node.count
         }));
         console.log('Preset nodes:', nodes); // Debugging
         shuffledNodes = shuffleNodes(nodes); // Define shuffledNodes here
@@ -121,22 +121,36 @@ document.addEventListener('DOMContentLoaded', () => {
         return shuffledNodes;
     }
 
-    // Event listener for spin button
+    function fetchAndDrawWheel() {
+        const nodesRef = ref(database, 'shuffledGameConfiguration/nodes');
+        onValue(nodesRef, (snapshot) => {
+            const nodes = snapshot.val();
+            if (nodes) {
+                const formattedNodes = Object.entries(nodes).map(([_, node]) => ({
+                    value: node.value,
+                    count: node.count
+                }));
+                drawWheel(formattedNodes);
+            }
+        });
+    }
+
     document.getElementById('spin-button').addEventListener('click', () => {
-        if (shuffledNodes.length > 0) {
-            spinWheel(shuffledNodes); // Use spinWheel from wheel.js
-        } else {
-            alert('Please select a preset first.');
-        }
+        const nodesRef = ref(database, 'shuffledGameConfiguration/nodes');
+        get(nodesRef).then((snapshot) => {
+            const nodes = snapshot.val();
+            if (nodes) {
+                const formattedNodes = Object.entries(nodes).map(([_, node]) => ({
+                    value: node.value,
+                    count: node.count
+                }));
+                spinWheel(formattedNodes);
+            } else {
+                alert('No nodes configured.');
+            }
+        });
     });
 
-    // Event listener for shuffle button
-    document.getElementById('shuffle-button').addEventListener('click', () => {
-        if (shuffledNodes.length > 0) {
-            shuffledNodes = shuffleNodes(shuffledNodes);
-            drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
-        } else {
-            alert('Please select a preset first.');
-        }
-    });
+    // Initial fetch and draw of the wheel
+    fetchAndDrawWheel();
 });
