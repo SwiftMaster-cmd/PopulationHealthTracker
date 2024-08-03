@@ -21,9 +21,9 @@ export function spinWheel(nodes) {
 
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
-    const maxSpinSpeed = (7 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
-    const speedAt4Seconds = (4 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
-    const speedAt6Seconds = (2 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
+    const maxSpinSpeed = (218 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
+    const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
+    const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
     let start = null;
 
@@ -46,7 +46,7 @@ export function spinWheel(nodes) {
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
         }
 
-        currentAngle = (savedAngle + (currentSpeed / 60) * progress / 1000) % (2 * Math.PI);
+        currentAngle = (savedAngle + (currentSpeed / 60) * (progress / 1000)) % (2 * Math.PI);
         drawWheel(nodes, currentAngle);
 
         // Log current speed in revolutions per minute (RPM)
