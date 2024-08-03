@@ -125,7 +125,7 @@ function displayResult(nodes, rotation, angleStep) {
             }
             currentNodeIndex++;
         }
-    });
+    }); 
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
