@@ -10,12 +10,12 @@ export function spinWheel(nodes) {
     const angleStep = (2 * Math.PI) / totalNodes;
 
     const spinDuration = 10000; // Total spin duration of 10 seconds
-    const maxSpinSpeed = 2; // Reduce spin speed for realism
-    const accelerationDuration = 3000; // 3 seconds to reach max speed
-    const decelerationDuration = 6000; // Last 6 seconds for deceleration
-    const peakTime = accelerationDuration;
+    const accelerationDuration = 2000; // 2 seconds to reach max speed
+    const constantSpeedDuration = 4000; // 4 seconds of constant speed
+    const decelerationDuration = 4000; // 4 seconds to decelerate
 
     let start = null;
+    let maxSpinSpeed = 0;
 
     function animate(timestamp) {
         if (!start) start = timestamp;
@@ -23,14 +23,14 @@ export function spinWheel(nodes) {
 
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
-            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
-        } else if (progress <= peakTime) {
-            const easedProgress = 1; // Max speed constant for peak time
-            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+            maxSpinSpeed = 10 * easedProgress; // Adjust max speed for realism
+            currentAngle += maxSpinSpeed % (2 * Math.PI);
+        } else if (progress <= accelerationDuration + constantSpeedDuration) {
+            currentAngle += maxSpinSpeed % (2 * Math.PI);
         } else if (progress <= spinDuration) {
-            const decelerationProgress = (progress - peakTime) / decelerationDuration;
+            const decelerationProgress = (progress - (accelerationDuration + constantSpeedDuration)) / decelerationDuration;
             const easedProgress = easeOutCubic(1 - decelerationProgress);
-            currentAngle += (maxSpinSpeed * easedProgress * (1 - getNeedleEffect(currentAngle, nodes, angleStep))) % (2 * Math.PI);
+            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
         }
 
         drawWheel(nodes, currentAngle);
@@ -90,7 +90,6 @@ export function drawWheel(nodes, rotation = 0) {
             ctx.fill();
             ctx.stroke();
 
-            // Draw spike
             ctx.save();
             ctx.translate(centerX, centerY);
             ctx.rotate(startAngle);
@@ -129,7 +128,7 @@ function drawNeedle() {
     const centerY = canvas.height / 2;
     const needleLength = centerY * 0.8;
 
-    ctx.clearRect(centerX - 10, 0, 20, centerY); // Clear any previous needle
+    ctx.clearRect(centerX - 10, 0, 20, centerY);
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY - needleLength);
