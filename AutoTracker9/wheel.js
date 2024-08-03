@@ -95,23 +95,12 @@ export function drawWheel(nodes, rotation = 0) {
 
             ctx.save();
             ctx.translate(centerX, centerY);
-            ctx.rotate(startAngle);
-            ctx.beginPath();
-            ctx.moveTo(radius, 0);
-            ctx.lineTo(radius + 10, -5);
-            ctx.lineTo(radius + 10, 5);
-            ctx.closePath();
-            ctx.fillStyle = '#000';
-            ctx.fill();
-            ctx.restore();
-
-            ctx.save();
-            ctx.translate(centerX, centerY);
             ctx.rotate((startAngle + endAngle) / 2);
-            ctx.textAlign = 'right';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = '#000';
             ctx.font = '20px Arial';
-            ctx.fillText(node.value, radius - 10, 10);
+            ctx.fillText(node.value, radius * 0.8, 0);
             ctx.restore();
 
             currentAngle += angleStep;
