@@ -11,9 +11,9 @@ export function spinWheel(nodes) {
 
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
-    const maxSpinSpeed = (46 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
-    const speedAt4Seconds = (13 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
-    const speedAt6Seconds = (6 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
+    const maxSpinSpeed = (218 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
+    const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
+    const speedAt6Seconds = (35 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
     let start = null;
 
