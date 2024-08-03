@@ -20,7 +20,6 @@
     <script src="auth.js" defer></script>
     <script src="tracker.js" defer></script>
     <script src="points.js" defer></script>
-
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="sales-outcomes.js" defer></script>
@@ -28,13 +27,14 @@
     <script src="liveActivities.js" defer></script>
     <script src="game_manager.js" defer></script>
     <script type="module" src="manager_page.js"></script>
-    <script type="module" src="wheel.js"></script>
-
     <script src="CSsearch.js" defer></script>
-
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
     <script src="profilePopup.js" defer></script>
+
+    <!-- Winwheel.js and GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Winwheel.js/2.7.0/Winwheel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
@@ -45,20 +45,13 @@
 
       gtag('config', 'G-RVBYB0RR06');
     </script>
-
-
-  
 </head>
 <body>
-
-
-    
     <div class="header-container">
         <h1>Dashboard</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
         <button onclick="window.location.href='Dash2.html'" class="button">Manager</button>
         <button onclick="window.location.href='game_manager.html'" class="button">Game Manager</button>
-
         <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
         <div class="profile-button">P</div>
     </div>
@@ -72,15 +65,9 @@
         <button id="signOut" class="button">Sign Out</button>
         <button id="googleSignInButton">Link with Google</button>
         <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-        
-        <!-- Navigation Buttons -->
-
     </div>
 
     <div class="main-container">
-
-
-            
         <button onclick="window.location.href='game_manager.html'">Go to Game Manager</button>
         <section id="presets">
             <h3>Game Presets</h3>
@@ -97,22 +84,19 @@
             <p id="summary-text">Select a preset to see its summary.</p>
             <canvas id="wheel-canvas" width="500" height="500"></canvas>
             <button id="spin-button">Spin</button>
-            <button id="shuffle-button">Shuffle</button> <!-- Add this line for the shuffle button -->
+            <button id="shuffle-button">Shuffle</button>
+            <p id="result"></p>
         </section>
-        <script type="module" src="wheel.js"></script> <!-- Ensure this line is present -->
+        <script src="wheel.js"></script>
+    </div>
 
-
-    
-    <!-- Event Tracking for dynamically added elements -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Function to add event listeners to dynamically added elements
             function addDynamicEventListeners() {
                 const leadIdContainer = document.getElementById('lead-id-container');
                 const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
                 const customerInfoContainer = document.getElementById('customer-info-container');
 
-                // Example for lead ID container
                 if (leadIdContainer) {
                     leadIdContainer.addEventListener('click', function(event) {
                         if (event.target && event.target.matches('.lead-id-item')) {
@@ -124,7 +108,6 @@
                     });
                 }
 
-                // Example for sales outcomes container
                 if (salesOutcomesContainer) {
                     salesOutcomesContainer.addEventListener('click', function(event) {
                         if (event.target && event.target.matches('.sales-outcome-item')) {
@@ -136,7 +119,6 @@
                     });
                 }
 
-                // Example for customer info container
                 if (customerInfoContainer) {
                     customerInfoContainer.addEventListener('click', function(event) {
                         if (event.target && event.target.matches('.customer-info-item')) {
@@ -149,11 +131,8 @@
                 }
             }
 
-            // Call the function to add event listeners
             addDynamicEventListeners();
         });
     </script>
-
-    
 </body>
 </html>
