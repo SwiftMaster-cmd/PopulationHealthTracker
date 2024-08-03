@@ -1,86 +1,132 @@
-const canvas = document.getElementById('wheelCanvas');
-const ctx = canvas.getContext('2d');
-const startButton = document.getElementById('startButton');
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 2;
-const outerRadius = Math.min(centerX, centerY) - 20;
-const innerRadius = 20;
-let angle = 0;
-let spinning = false;
-let spinTime = 0;
-let spinTimeTotal = 0;
+let isSpinning = false;
+let currentAngle = 0;
+let animationFrameId;
 
-const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A6', '#A633FF', '#33FFF2', '#FFDA33'];
-let nodes = [];
+export function spinWheel(nodes) {
+    if (isSpinning) return;
+    isSpinning = true;
 
-function drawWheel() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const arc = Math.PI / (nodes.length / 2);
+    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
+    const angleStep = (2 * Math.PI) / totalNodes;
 
-    for (let i = 0; i < nodes.length; i++) {
-        const angleStart = angle + i * arc;
-        const angleEnd = angleStart + arc;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, outerRadius, angleStart, angleEnd, false);
-        ctx.arc(centerX, centerY, innerRadius, angleEnd, angleStart, true);
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.fill();
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate((angleStart + angleEnd) / 2);
-        ctx.fillStyle = '#000';
-        ctx.fillText(nodes[i], outerRadius - 70, 0);
-        ctx.restore();
+    let spinDuration = 5000 + Math.random() * 2000; // Spin duration between 5000ms to 7000ms
+    let maxSpinSpeed = 5 + Math.random() * 5; // Spin speed between 5 and 10
+    let accelerationDuration = spinDuration * 0.4; // 40% of the duration for acceleration
+    let decelerationDuration = spinDuration * 0.6; // 60% of the duration for deceleration
+    let peakTime = accelerationDuration;
+    let start = null;
+
+    function animate(timestamp) {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+
+        if (progress <= accelerationDuration) {
+            const easedProgress = easeInOutCubic(progress / accelerationDuration);
+            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+        } else if (progress <= spinDuration) {
+            const decelerationProgress = (progress - peakTime) / decelerationDuration;
+            const easedProgress = easeInOutCubic(1 - decelerationProgress);
+            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+        }
+
+        drawWheel(nodes, currentAngle);
+
+        if (progress < spinDuration) {
+            animationFrameId = requestAnimationFrame(animate);
+        } else {
+            isSpinning = false;
+            displayResult(nodes, currentAngle, angleStep);
+        }
     }
 
-    // Draw the center circle
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
-    ctx.fillStyle = '#fff';
-    ctx.fill();
+    animationFrameId = requestAnimationFrame(animate);
+}
 
-    // Draw the needle
+function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+export function drawWheel(nodes, rotation = 0) {
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
+    const angleStep = (2 * Math.PI) / totalNodes;
+    const radius = canvas.width / 2;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    let currentAngle = rotation;
+
+    nodes.forEach((node) => {
+        for (let i = 0; i < node.count; i++) {
+            const startAngle = currentAngle;
+            const endAngle = startAngle + angleStep;
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+
+            ctx.fillStyle = (i % 2 === 0) ? '#FFCC00' : '#FF9900';
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate((startAngle + endAngle) / 2);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#000';
+            ctx.font = '20px Arial';
+            ctx.fillText(node.value, radius - 10, 10);
+            ctx.restore();
+
+            currentAngle += angleStep;
+        }
+    });
+
+    drawNeedle();
+}
+
+function drawNeedle() {
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const needleLength = centerY * 0.8;
+
+    ctx.clearRect(centerX - 10, 0, 20, centerY); // Clear any previous needle
+
     ctx.beginPath();
-    ctx.moveTo(centerX - 10, centerY - outerRadius);
-    ctx.lineTo(centerX + 10, centerY - outerRadius);
-    ctx.lineTo(centerX, centerY - outerRadius - 20);
+    ctx.moveTo(centerX, centerY - needleLength);
+    ctx.lineTo(centerX - 10, centerY);
+    ctx.lineTo(centerX + 10, centerY);
+    ctx.closePath();
     ctx.fillStyle = 'red';
     ctx.fill();
 }
 
-function rotateWheel() {
-    if (spinning) {
-        spinTime += 30;
-        if (spinTime >= spinTimeTotal) {
-            spinning = false;
-            return;
+function displayResult(nodes, rotation, angleStep) {
+    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
+    const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
+    let currentNodeIndex = 0;
+    let result;
+
+    nodes.forEach((node) => {
+        for (let i = 0; i < node.count; i++) {
+            if (currentNodeIndex === winningIndex) {
+                result = node.value;
+            }
+            currentNodeIndex++;
         }
-        const spinAngle = easeOut(spinTime, 0, Math.PI * 4, spinTimeTotal);
-        angle += spinAngle * Math.PI / 180;
-        drawWheel();
-        setTimeout(rotateWheel, 30);
-    }
+    });
+
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `Result: ${result}`;
 }
-
-function easeOut(t, b, c, d) {
-    const ts = (t /= d) * t;
-    const tc = ts * t;
-    return b + c * (tc + -3 * ts + 3 * t);
-}
-
-startButton.addEventListener('click', () => {
-    if (!spinning) {
-        spinning = true;
-        spinTime = 0;
-        spinTimeTotal = Math.random() * 3000 + 4000;
-        rotateWheel();
-    }
-});
-
-function drawWheelWithNodes(newNodes) {
-    nodes = newNodes;
-    drawWheel();
-}
-
-// Export the drawWheelWithNodes function for use in other scripts
-export { drawWheelWithNodes };
