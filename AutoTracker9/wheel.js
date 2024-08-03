@@ -10,9 +10,9 @@ export function spinWheel(nodes) {
     const angleStep = (2 * Math.PI) / totalNodes;
 
     let spinDuration = 8000 + Math.random() * 2000; // Spin duration between 8000ms to 10000ms
-    let maxSpinSpeed = 8 + Math.random() * 4; // Spin speed between 8 and 12
-    let accelerationDuration = spinDuration * 0.3; // 30% of the duration for acceleration
-    let decelerationDuration = spinDuration * 0.7; // 70% of the duration for deceleration
+    let maxSpinSpeed = 10 + Math.random() * 4; // Spin speed between 10 and 14
+    let accelerationDuration = spinDuration * 0.2; // 20% of the duration for acceleration
+    let decelerationDuration = spinDuration * 0.8; // 80% of the duration for deceleration
     let peakTime = accelerationDuration;
     let start = null;
 
