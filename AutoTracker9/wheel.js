@@ -67,7 +67,7 @@ export function drawWheel(nodes, rotation = 0) {
 
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
-    const radius = canvas.width / 2;
+    const radius = Math.min(canvas.width, canvas.height) / 2;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
@@ -125,12 +125,12 @@ function drawNeedle() {
     const centerY = canvas.height / 2;
     const needleLength = centerY * 0.8;
 
-    ctx.clearRect(0, 0, canvas.width, centerY); // Clear any previous needle
+    ctx.clearRect(centerX - 10, 0, 20, centerY); // Clear any previous needle
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY - needleLength);
-    ctx.lineTo(centerX - 10, centerY);
-    ctx.lineTo(centerX + 10, centerY);
+    ctx.lineTo(centerX - 5, centerY - needleLength + 15);
+    ctx.lineTo(centerX + 5, centerY - needleLength + 15);
     ctx.closePath();
     ctx.fillStyle = 'red';
     ctx.fill();
