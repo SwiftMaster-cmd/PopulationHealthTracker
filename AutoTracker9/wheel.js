@@ -11,12 +11,11 @@ export function spinWheel(nodes) {
 
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
-    const maxSpinSpeed = (218 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
-    const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
-    const speedAt6Seconds = (35 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
+    const maxSpinSpeed = (7 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
+    const speedAt4Seconds = (4 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
+    const speedAt6Seconds = (2 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
     let start = null;
-    const initialRotation = currentAngle;
 
     function animate(timestamp) {
         if (!start) start = timestamp;
@@ -26,21 +25,18 @@ export function spinWheel(nodes) {
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
-            currentAngle = initialRotation + (currentSpeed / 60) * progress / 1000 % (2 * Math.PI);
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
             currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
-            currentAngle = initialRotation + (currentSpeed / 60) * progress / 1000 % (2 * Math.PI);
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
             currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
-            currentAngle = initialRotation + (currentSpeed / 60) * progress / 1000 % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
-            currentAngle = initialRotation + (currentSpeed / 60) * progress / 1000 % (2 * Math.PI);
         }
 
+        currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         drawWheel(nodes, currentAngle);
 
         // Log current speed in revolutions per minute (RPM)
