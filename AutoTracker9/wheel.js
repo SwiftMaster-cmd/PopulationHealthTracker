@@ -10,9 +10,9 @@ export function spinWheel(nodes) {
     const angleStep = (2 * Math.PI) / totalNodes;
 
     let spinDuration = 8000 + Math.random() * 2000; // Spin duration between 8000ms to 10000ms
-    let maxSpinSpeed = 10 + Math.random() * 4; // Spin speed between 10 and 14
-    let accelerationDuration = spinDuration * 0.2; // 20% of the duration for acceleration
-    let decelerationDuration = spinDuration * 0.8; // 80% of the duration for deceleration
+    let maxSpinSpeed = 6 + Math.random() * 2; // Spin speed between 6 and 8
+    let accelerationDuration = spinDuration * 0.3; // 30% of the duration for acceleration
+    let decelerationDuration = spinDuration * 0.7; // 70% of the duration for deceleration
     let peakTime = accelerationDuration;
     let start = null;
 
@@ -26,7 +26,7 @@ export function spinWheel(nodes) {
         } else if (progress <= spinDuration) {
             const decelerationProgress = (progress - peakTime) / decelerationDuration;
             const easedProgress = easeOutQuad(1 - decelerationProgress);
-            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+            currentAngle += (maxSpinSpeed * easedProgress * (1 - getNeedleEffect(currentAngle, nodes, angleStep))) % (2 * Math.PI);
         }
 
         drawWheel(nodes, currentAngle);
@@ -48,6 +48,13 @@ function easeInQuad(t) {
 
 function easeOutQuad(t) {
     return t * (2 - t);
+}
+
+function getNeedleEffect(angle, nodes, angleStep) {
+    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
+    const segment = Math.floor(angle / angleStep) % totalNodes;
+    const spikeEffect = 0.1; // How much the needle slows down the wheel, can be adjusted
+    return (segment < totalNodes) ? spikeEffect : 0;
 }
 
 export function drawWheel(nodes, rotation = 0) {
@@ -78,6 +85,19 @@ export function drawWheel(nodes, rotation = 0) {
             ctx.fillStyle = (Math.random() > 0.5) ? '#FFCC00' : '#FF9900';
             ctx.fill();
             ctx.stroke();
+
+            // Draw spike
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(startAngle);
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(radius + 10, -5);
+            ctx.lineTo(radius + 10, 5);
+            ctx.closePath();
+            ctx.fillStyle = '#000';
+            ctx.fill();
+            ctx.restore();
 
             ctx.save();
             ctx.translate(centerX, centerY);
