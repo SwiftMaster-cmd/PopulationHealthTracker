@@ -10,9 +10,9 @@ export function spinWheel(nodes) {
     const angleStep = (2 * Math.PI) / totalNodes;
 
     const spinDuration = 9000; // Total spin duration of 10 seconds
-    const accelerationDuration = 4000; // 2 seconds to reach max speed
+    const accelerationDuration = 2000; // 2 seconds to reach max speed
     const constantSpeedDuration = 1000; // 4 seconds of constant speed
-    const decelerationDuration = 4000; // 4 seconds to decelerate
+    const decelerationDuration = 6000; // 4 seconds to decelerate
 
     let start = null;
     let maxSpinSpeed = 0.1;
