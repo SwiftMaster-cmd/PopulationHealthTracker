@@ -20,25 +20,30 @@ export function spinWheel(nodes) {
     function animate(timestamp) {
         if (!start) start = timestamp;
         const progress = timestamp - start;
+        let currentSpeed = 0;
 
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
-            currentAngle += (maxSpinSpeed * easedProgress / 60) % (2 * Math.PI);
+            currentSpeed = maxSpinSpeed * easedProgress;
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
-            const speed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
-            currentAngle += (speed / 60) % (2 * Math.PI);
+            currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
-            const speed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
-            currentAngle += (speed / 60) % (2 * Math.PI);
+            currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
-            const speed = speedAt6Seconds - ((speedAt6Seconds) * easedProgress);
-            currentAngle += (speed / 60) % (2 * Math.PI);
+            currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
         drawWheel(nodes, currentAngle);
+
+        // Log current speed in revolutions per second
+        console.log(`Current Speed: ${(currentSpeed / (2 * Math.PI)).toFixed(2)} rps`);
 
         if (progress < spinDuration) {
             animationFrameId = requestAnimationFrame(animate);
