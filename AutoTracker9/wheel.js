@@ -1,16 +1,6 @@
 let isSpinning = false;
 let currentAngle = 0;
 let animationFrameId;
-let savedAngle = 0;
-
-export function shuffleNodes(nodes) {
-    savedAngle = currentAngle; // Save the current angle before shuffling
-    for (let i = nodes.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [nodes[i], nodes[j]] = [nodes[j], nodes[i]];
-    }
-    drawWheel(nodes, savedAngle); // Redraw the wheel with the shuffled nodes
-}
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
@@ -35,18 +25,21 @@ export function spinWheel(nodes) {
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
             currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
             currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
-        currentAngle = (savedAngle + (currentSpeed / 60) * (progress / 1000)) % (2 * Math.PI);
         drawWheel(nodes, currentAngle);
 
         // Log current speed in revolutions per minute (RPM)
@@ -56,7 +49,6 @@ export function spinWheel(nodes) {
             animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
-            savedAngle = currentAngle; // Save the final angle after spinning
             displayResult(nodes, currentAngle, angleStep);
         }
     }
