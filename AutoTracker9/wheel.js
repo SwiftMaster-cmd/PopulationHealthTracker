@@ -9,13 +9,13 @@ export function spinWheel(nodes) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    const spinDuration = 10000; // Total spin duration of 10 seconds
+    const spinDuration = 7000; // Total spin duration of 10 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
     const constantSpeedDuration = 4000; // 4 seconds of constant speed
     const decelerationDuration = 4000; // 4 seconds to decelerate
 
     let start = null;
-    let maxSpinSpeed = 0;
+    let maxSpinSpeed = 2;
 
     function animate(timestamp) {
         if (!start) start = timestamp;
