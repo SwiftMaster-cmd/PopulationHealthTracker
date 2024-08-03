@@ -9,13 +9,13 @@ export function spinWheel(nodes) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    const spinDuration = 9000; // Total spin duration of 10 seconds
+    const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
-    const constantSpeedDuration = 1000; // 4 seconds of constant speed
-    const decelerationDuration = 6000; // 4 seconds to decelerate
+    const maxSpinSpeed = 7 * 2 * Math.PI; // 7 revolutions per second in radians
+    const speedAt4Seconds = 4 * 2 * Math.PI; // 4 revolutions per second in radians
+    const speedAt6Seconds = 2 * 2 * Math.PI; // 2 revolutions per second in radians
 
     let start = null;
-    let maxSpinSpeed = 0.1;
 
     function animate(timestamp) {
         if (!start) start = timestamp;
@@ -23,14 +23,19 @@ export function spinWheel(nodes) {
 
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
-            maxSpinSpeed = 10 * easedProgress; // Adjust max speed for realism
-            currentAngle += maxSpinSpeed % (2 * Math.PI);
-        } else if (progress <= accelerationDuration + constantSpeedDuration) {
-            currentAngle += maxSpinSpeed % (2 * Math.PI);
+            currentAngle += (maxSpinSpeed * easedProgress / 60) % (2 * Math.PI);
+        } else if (progress <= 4000) {
+            const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
+            const speed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
+            currentAngle += (speed / 60) % (2 * Math.PI);
+        } else if (progress <= 6000) {
+            const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
+            const speed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
+            currentAngle += (speed / 60) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
-            const decelerationProgress = (progress - (accelerationDuration + constantSpeedDuration)) / decelerationDuration;
-            const easedProgress = easeOutCubic(1 - decelerationProgress);
-            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
+            const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
+            const speed = speedAt6Seconds - ((speedAt6Seconds) * easedProgress);
+            currentAngle += (speed / 60) % (2 * Math.PI);
         }
 
         drawWheel(nodes, currentAngle);
@@ -50,15 +55,8 @@ function easeInQuad(t) {
     return t * t;
 }
 
-function easeOutCubic(t) {
-    return (--t) * t * t + 1;
-}
-
-function getNeedleEffect(angle, nodes, angleStep) {
-    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
-    const segment = Math.floor(angle / angleStep) % totalNodes;
-    const spikeEffect = 0.05; // Slow down by 5% when passing a node
-    return (segment < totalNodes) ? spikeEffect : 0;
+function easeOutQuad(t) {
+    return t * (2 - t);
 }
 
 export function drawWheel(nodes, rotation = 0) {
