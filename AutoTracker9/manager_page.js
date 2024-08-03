@@ -91,11 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
             count: node.count
         }));
         console.log('Preset nodes:', nodes); // Debugging
-        shuffledNodes = shuffleNodes(nodes); // Define shuffledNodes here
+        shuffledNodes = flattenAndShuffleNodes(nodes); // Define shuffledNodes here
         drawWheel(shuffledNodes); // Use drawWheel from wheel.js
     }
 
-    function shuffleNodes(nodes) {
+    function flattenAndShuffleNodes(nodes) {
         let flatNodes = [];
         nodes.forEach(node => {
             for (let i = 0; i < node.count; i++) {
@@ -108,28 +108,24 @@ document.addEventListener('DOMContentLoaded', () => {
             [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
         }
 
-        let shuffledNodes = [];
-        flatNodes.forEach(value => {
-            let node = shuffledNodes.find(node => node.value === value);
-            if (node) {
-                node.count++;
-            } else {
-                shuffledNodes.push({ value, count: 1 });
-            }
-        });
-
-        return shuffledNodes;
+        return flatNodes.map(value => ({ value, count: 1 }));
     }
+
+    document.getElementById('shuffle-button').addEventListener('click', () => {
+        shuffledNodes = flattenAndShuffleNodes(shuffledNodes);
+        drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
+    });
 
     function fetchAndDrawWheel() {
         const nodesRef = ref(database, 'shuffledGameConfiguration/nodes');
         onValue(nodesRef, (snapshot) => {
             const nodes = snapshot.val();
             if (nodes) {
-                const formattedNodes = Object.entries(nodes).map(([_, node]) => ({
+                const formattedNodes = flattenAndShuffleNodes(Object.values(nodes).map(node => ({
                     value: node.value,
                     count: node.count
-                }));
+                })));
+                shuffledNodes = formattedNodes;
                 drawWheel(formattedNodes);
             }
         });
@@ -140,10 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
         get(nodesRef).then((snapshot) => {
             const nodes = snapshot.val();
             if (nodes) {
-                const formattedNodes = Object.entries(nodes).map(([_, node]) => ({
+                const formattedNodes = flattenAndShuffleNodes(Object.values(nodes).map(node => ({
                     value: node.value,
                     count: node.count
-                }));
+                })));
+                shuffledNodes = formattedNodes;
                 spinWheel(formattedNodes);
             } else {
                 alert('No nodes configured.');
@@ -151,6 +148,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initial fetch and draw of the wheel
     fetchAndDrawWheel();
 });
