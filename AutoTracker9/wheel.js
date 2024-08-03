@@ -9,13 +9,12 @@ export function spinWheel(nodes) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    let spinDuration = 8000; // Total spin duration of 8 seconds
-    let maxSpinSpeed = 5; // Max spin speed reduced by 60%
-    let accelerationDuration = 1000; // 1 second to reach max speed
-    let decelerationStart = 1000; // Start deceleration after 1 second
-    let dramaticSlowdownStart = 4000; // Start dramatic slowdown after 4 seconds
-    let dramaticSlowdownDuration = 3000; // Last 3 seconds for dramatic slowdown
-    let peakTime = accelerationDuration;
+    const spinDuration = 8000; // Total spin duration of 8 seconds
+    const maxSpinSpeed = 5; // Adjust spin speed for realism
+    const accelerationDuration = 2000; // 2 seconds to reach max speed
+    const decelerationDuration = 4000; // Last 4 seconds for deceleration
+    const peakTime = accelerationDuration;
+
     let start = null;
 
     function animate(timestamp) {
@@ -23,15 +22,14 @@ export function spinWheel(nodes) {
         const progress = timestamp - start;
 
         if (progress <= accelerationDuration) {
-            const easedProgress = easeInQuad(progress / accelerationDuration);
+            const easedProgress = easeInCubic(progress / accelerationDuration);
             currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
-        } else if (progress <= dramaticSlowdownStart) {
-            const decelerationProgress = (progress - decelerationStart) / (dramaticSlowdownStart - decelerationStart);
-            const easedProgress = easeOutQuad(1 - decelerationProgress);
-            currentAngle += (maxSpinSpeed * easedProgress * (1 - getNeedleEffect(currentAngle, nodes, angleStep))) % (2 * Math.PI);
+        } else if (progress <= peakTime) {
+            const easedProgress = 1; // Max speed constant for peak time
+            currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
-            const dramaticSlowdownProgress = (progress - dramaticSlowdownStart) / dramaticSlowdownDuration;
-            const easedProgress = easeOutQuint(1 - dramaticSlowdownProgress);
+            const decelerationProgress = (progress - peakTime) / decelerationDuration;
+            const easedProgress = easeOutQuint(1 - decelerationProgress);
             currentAngle += (maxSpinSpeed * easedProgress * (1 - getNeedleEffect(currentAngle, nodes, angleStep))) % (2 * Math.PI);
         }
 
@@ -48,12 +46,8 @@ export function spinWheel(nodes) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
-function easeInQuad(t) {
-    return t * t;
-}
-
-function easeOutQuad(t) {
-    return t * (2 - t);
+function easeInCubic(t) {
+    return t * t * t;
 }
 
 function easeOutQuint(t) {
