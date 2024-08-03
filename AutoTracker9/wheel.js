@@ -9,10 +9,10 @@ export function spinWheel(nodes) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    let spinDuration = 5000 + Math.random() * 2000; // Spin duration between 5000ms to 7000ms
-    let maxSpinSpeed = 5 + Math.random() * 5; // Spin speed between 5 and 10
-    let accelerationDuration = spinDuration * 0.4; // 40% of the duration for acceleration
-    let decelerationDuration = spinDuration * 0.6; // 60% of the duration for deceleration
+    let spinDuration = 8000 + Math.random() * 2000; // Spin duration between 8000ms to 10000ms
+    let maxSpinSpeed = 8 + Math.random() * 4; // Spin speed between 8 and 12
+    let accelerationDuration = spinDuration * 0.3; // 30% of the duration for acceleration
+    let decelerationDuration = spinDuration * 0.7; // 70% of the duration for deceleration
     let peakTime = accelerationDuration;
     let start = null;
 
@@ -21,11 +21,11 @@ export function spinWheel(nodes) {
         const progress = timestamp - start;
 
         if (progress <= accelerationDuration) {
-            const easedProgress = easeInOutCubic(progress / accelerationDuration);
+            const easedProgress = easeInQuad(progress / accelerationDuration);
             currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const decelerationProgress = (progress - peakTime) / decelerationDuration;
-            const easedProgress = easeInOutCubic(1 - decelerationProgress);
+            const easedProgress = easeOutQuad(1 - decelerationProgress);
             currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
         }
 
@@ -42,8 +42,12 @@ export function spinWheel(nodes) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
-function easeInOutCubic(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+function easeInQuad(t) {
+    return t * t;
+}
+
+function easeOutQuad(t) {
+    return t * (2 - t);
 }
 
 export function drawWheel(nodes, rotation = 0) {
