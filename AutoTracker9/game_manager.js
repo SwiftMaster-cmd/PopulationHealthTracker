@@ -175,6 +175,60 @@ function savePreset() {
     });
 }
 
+// Shuffle button event listener
+document.getElementById('shuffle-button').addEventListener('click', () => {
+    shuffledNodes = shuffleNodes(shuffledNodes);
+    drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const firebaseConfig = { /* your config */ };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+    let presets = [];
+    const presetsPerPage = 5;
+    let currentPage = 0;
+    let shuffledNodes = [];
+
+    // Existing functions...
+
+    function shuffleNodes(nodes) {
+        let flatNodes = [];
+        nodes.forEach(node => {
+            for (let i = 0; i < node.count; i++) {
+                flatNodes.push(node.value);
+            }
+        });
+
+        for (let i = flatNodes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
+        }
+
+        let shuffledNodes = [];
+        flatNodes.forEach(value => {
+            let node = shuffledNodes.find(node => node.value === value);
+            if (node) {
+                node.count++;
+            } else {
+                shuffledNodes.push({ value, count: 1 });
+            }
+        });
+
+        return shuffledNodes;
+    }
+
+    // Shuffle button event listener
+    document.getElementById('shuffle-button').addEventListener('click', () => {
+        shuffledNodes = shuffleNodes(shuffledNodes);
+        drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
+    });
+
+    // Initial fetch and draw of the wheel
+    fetchAndDrawWheel();
+});
+
 
 function loadCurrentConfiguration() {
     const configRef = ref(database, 'gameConfiguration/nodes');
