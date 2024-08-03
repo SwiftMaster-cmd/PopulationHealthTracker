@@ -193,11 +193,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Existing functions...
 
-    function shuffleNodes(nodes) {
+    function flattenAndShuffleNodes(nodes) {
         let flatNodes = [];
         nodes.forEach(node => {
             for (let i = 0; i < node.count; i++) {
-                flatNodes.push(node.value);
+                flatNodes.push({ value: node.value });
             }
         });
 
@@ -206,26 +206,44 @@ document.addEventListener('DOMContentLoaded', () => {
             [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
         }
 
-        let shuffledNodes = [];
-        flatNodes.forEach(value => {
-            let node = shuffledNodes.find(node => node.value === value);
-            if (node) {
-                node.count++;
-            } else {
-                shuffledNodes.push({ value, count: 1 });
-            }
-        });
-
-        return shuffledNodes;
+        return flatNodes;
     }
 
-    // Shuffle button event listener
     document.getElementById('shuffle-button').addEventListener('click', () => {
-        shuffledNodes = shuffleNodes(shuffledNodes);
+        shuffledNodes = flattenAndShuffleNodes(shuffledNodes);
         drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
     });
 
-    // Initial fetch and draw of the wheel
+    function fetchAndDrawWheel() {
+        const nodesRef = ref(database, 'shuffledGameConfiguration/nodes');
+        onValue(nodesRef, (snapshot) => {
+            const nodes = snapshot.val();
+            if (nodes) {
+                shuffledNodes = flattenAndShuffleNodes(Object.values(nodes).map(node => ({
+                    value: node.value,
+                    count: node.count
+                })));
+                drawWheel(shuffledNodes);
+            }
+        });
+    }
+
+    document.getElementById('spin-button').addEventListener('click', () => {
+        const nodesRef = ref(database, 'shuffledGameConfiguration/nodes');
+        get(nodesRef).then((snapshot) => {
+            const nodes = snapshot.val();
+            if (nodes) {
+                shuffledNodes = flattenAndShuffleNodes(Object.values(nodes).map(node => ({
+                    value: node.value,
+                    count: node.count
+                })));
+                spinWheel(shuffledNodes);
+            } else {
+                alert('No nodes configured.');
+            }
+        });
+    });
+
     fetchAndDrawWheel();
 });
 
