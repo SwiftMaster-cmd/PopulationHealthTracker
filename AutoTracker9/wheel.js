@@ -79,7 +79,7 @@ export function drawWheel(nodes, rotation = 0) {
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
-    nodes.forEach((node) => {
+    nodes.forEach((node, index) => {
         for (let i = 0; i < node.count; i++) {
             const startAngle = currentAngle;
             const endAngle = startAngle + angleStep;
@@ -89,7 +89,7 @@ export function drawWheel(nodes, rotation = 0) {
             ctx.arc(centerX, centerY, radius, startAngle, endAngle);
             ctx.closePath();
 
-            ctx.fillStyle = (Math.random() > 0.5) ? '#FFCC00' : '#FF9900';
+            ctx.fillStyle = index % 2 === 0 ? '#FFCC00' : '#FF9900';
             ctx.fill();
             ctx.stroke();
 
