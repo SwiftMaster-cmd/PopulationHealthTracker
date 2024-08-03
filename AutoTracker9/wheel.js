@@ -9,8 +9,8 @@ export function spinWheel(nodes) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    let spinDuration = 8000 + Math.random() * 2000; // Spin duration between 8000ms to 10000ms
-    let maxSpinSpeed = 6 + Math.random() * 2; // Spin speed between 6 and 8
+    let spinDuration = 10000 + Math.random() * 2000; // Spin duration between 10000ms to 12000ms
+    let maxSpinSpeed = 2 + Math.random() * 1; // Spin speed between 2 and 3
     let accelerationDuration = spinDuration * 0.3; // 30% of the duration for acceleration
     let decelerationDuration = spinDuration * 0.7; // 70% of the duration for deceleration
     let peakTime = accelerationDuration;
@@ -53,7 +53,7 @@ function easeOutQuad(t) {
 function getNeedleEffect(angle, nodes, angleStep) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const segment = Math.floor(angle / angleStep) % totalNodes;
-    const spikeEffect = 0.1; // How much the needle slows down the wheel, can be adjusted
+    const spikeEffect = 0.05; // Slow down by 5% when passing a node
     return (segment < totalNodes) ? spikeEffect : 0;
 }
 
