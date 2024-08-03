@@ -125,7 +125,7 @@ function drawNeedle() {
     const centerY = canvas.height / 2;
     const needleLength = centerY * 0.8;
 
-    ctx.clearRect(centerX - 10, 0, 20, centerY); // Clear any previous needle
+    ctx.clearRect(0, 0, canvas.width, centerY); // Clear any previous needle
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY - needleLength);
