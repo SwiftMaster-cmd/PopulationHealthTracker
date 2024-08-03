@@ -9,10 +9,10 @@ export function spinWheel(nodes) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    const spinDuration = 8000; // Total spin duration of 8 seconds
-    const maxSpinSpeed = 5; // Adjust spin speed for realism
-    const accelerationDuration = 2000; // 2 seconds to reach max speed
-    const decelerationDuration = 4000; // Last 4 seconds for deceleration
+    const spinDuration = 10000; // Total spin duration of 10 seconds
+    const maxSpinSpeed = 2; // Reduce spin speed for realism
+    const accelerationDuration = 3000; // 3 seconds to reach max speed
+    const decelerationDuration = 6000; // Last 6 seconds for deceleration
     const peakTime = accelerationDuration;
 
     let start = null;
@@ -22,14 +22,14 @@ export function spinWheel(nodes) {
         const progress = timestamp - start;
 
         if (progress <= accelerationDuration) {
-            const easedProgress = easeInCubic(progress / accelerationDuration);
+            const easedProgress = easeInQuad(progress / accelerationDuration);
             currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
         } else if (progress <= peakTime) {
             const easedProgress = 1; // Max speed constant for peak time
             currentAngle += (maxSpinSpeed * easedProgress) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const decelerationProgress = (progress - peakTime) / decelerationDuration;
-            const easedProgress = easeOutQuint(1 - decelerationProgress);
+            const easedProgress = easeOutCubic(1 - decelerationProgress);
             currentAngle += (maxSpinSpeed * easedProgress * (1 - getNeedleEffect(currentAngle, nodes, angleStep))) % (2 * Math.PI);
         }
 
@@ -46,12 +46,12 @@ export function spinWheel(nodes) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
-function easeInCubic(t) {
-    return t * t * t;
+function easeInQuad(t) {
+    return t * t;
 }
 
-function easeOutQuint(t) {
-    return 1 + (--t) * t * t * t * t;
+function easeOutCubic(t) {
+    return (--t) * t * t + 1;
 }
 
 function getNeedleEffect(angle, nodes, angleStep) {
