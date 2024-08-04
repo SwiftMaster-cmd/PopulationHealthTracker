@@ -7,7 +7,9 @@ let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadNodesConfiguration((nodes, rotation) => {
-        drawWheel(nodes, rotation);
+        const shuffledNodes = shuffleNodes(nodes); // Automatically shuffle nodes
+        drawWheel(shuffledNodes, rotation);
+        saveNodesConfiguration(shuffledNodes); // Save the shuffled configuration
     });
 });
 
@@ -90,7 +92,6 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
-
 
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
@@ -195,23 +196,26 @@ export function loadNodesConfiguration(callback) {
         get(rotationRef).then((rotationSnapshot) => {
             const rotation = rotationSnapshot.val();
             currentAngle = rotation || 0;
-            callback(nodes, currentAngle);
+            if (nodes) {
+                const shuffledNodes = shuffleNodes(nodes);
+                callback(shuffledNodes, currentAngle);
+                saveNodesConfiguration(shuffledNodes); // Save the shuffled configuration
+                saveCurrentRotation(currentAngle); // Save the current rotation angle
+            } else {
+                callback([], currentAngle);
+            }
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
+
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [values[i], values[j]] = [values[j], values[i]];
     }
-    // Check if any node shows [object Object] and shuffle automatically
-    if (values.some(value => typeof value === 'object')) {
-        return shuffleNodes(nodes);
-    }
     return values;
 }
-
 
 export function shuffleAndUpdateWheel(nodes) {
     const savedAngle = currentAngle; // Save the current angle
