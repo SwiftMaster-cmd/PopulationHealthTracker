@@ -105,10 +105,10 @@ export function drawWheel(nodes, rotation = 0) {
         currentAngle += angleStep;
     });
 
-    drawNeedle();
+    drawNeedle(rotation);
 }
 
-function drawNeedle() {
+function drawNeedle(rotation) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -120,13 +120,19 @@ function drawNeedle() {
 
     ctx.clearRect(centerX - 10, 0, 20, centerY);
 
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(rotation + Math.PI / 2);
+
     ctx.beginPath();
-    ctx.moveTo(centerX, centerY - needleLength);
-    ctx.lineTo(centerX - 5, centerY - needleLength + 15);
-    ctx.lineTo(centerX + 5, centerY - needleLength + 15);
+    ctx.moveTo(0, -needleLength);
+    ctx.lineTo(-5, -needleLength + 15);
+    ctx.lineTo(5, -needleLength + 15);
     ctx.closePath();
     ctx.fillStyle = 'red';
     ctx.fill();
+
+    ctx.restore();
 }
 
 function displayResult(nodes, rotation, angleStep) {
