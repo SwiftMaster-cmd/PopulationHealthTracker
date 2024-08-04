@@ -1,7 +1,3 @@
-let isSpinning = false;
-let animationFrameId;
-let currentAngle = 0;
-
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 export function spinWheel(nodes, currentAngle) {
@@ -64,8 +60,8 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-export function drawWheel(nodes, rotation = 0) {
-    const canvas = document.getElementById('wheel-canvas');
+export function drawWheel(nodes, rotation = 0, canvasId = 'wheel-canvas') {
+    const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext('2d');
 
     if (!ctx) return;
@@ -107,11 +103,11 @@ export function drawWheel(nodes, rotation = 0) {
         }
     });
 
-    drawNeedle();
+    drawNeedle(canvasId);
 }
 
-function drawNeedle() {
-    const canvas = document.getElementById('wheel-canvas');
+function drawNeedle(canvasId) {
+    const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext('2d');
 
     if (!ctx) return;
@@ -133,8 +129,7 @@ function drawNeedle() {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
-    const adjustedRotation = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); // Normalize rotation to [0, 2π]
-    const winningIndex = Math.floor((2 * Math.PI - adjustedRotation) / angleStep) % totalNodes;
+    const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
     let currentNodeIndex = 0;
     let result;
 

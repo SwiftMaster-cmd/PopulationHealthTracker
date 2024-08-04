@@ -1,7 +1,7 @@
 import { database, auth } from './firebase-init.js';
-import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, saveNodesConfiguration, loadNodesConfiguration, shuffleNodes } from './wheel.js';
+import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration, shuffleNodes } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const authorityLevel = snapshot.val();
                 if (authorityLevel >= 9) {
                     loadCurrentConfiguration();
+                    listenForChanges();
                 } else {
                     alert("You do not have permission to view this page.");
                     window.location.href = 'index.html';
@@ -85,11 +86,7 @@ function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            const counts = nodes.reduce((acc, node) => {
-                acc[node.value] = (acc[node.value] || 0) + node.count;
-                return acc;
-            }, {});
-            Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
+            nodes.forEach(node => addNodeField(node.value, node.count));
             currentNodes = nodes;
             currentRotation = rotation;
             drawWheel(currentNodes, currentRotation);
@@ -108,6 +105,13 @@ function drawCurrentConfiguration() {
         const nodeElement = document.createElement('div');
         nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
         currentNodesContainer.appendChild(nodeElement);
+    });
+}
+
+function listenForChanges() {
+    const configRef = ref(database, 'gameConfiguration/nodes');
+    onValue(configRef, () => {
+        loadCurrentConfiguration();
     });
 }
 
