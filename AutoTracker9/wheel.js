@@ -12,9 +12,6 @@ export function spinWheel(nodes, currentAngle) {
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    // The final angle should position the first node at the 90-degree position
-    const finalAngle = angleStep * 0 - Math.PI / 2;
-
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
     const maxSpinSpeed = (218 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
@@ -46,21 +43,14 @@ export function spinWheel(nodes, currentAngle) {
             currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
-        // Slow down the spin as it approaches the final angle
-        if (progress > spinDuration - 1000) {
-            const remainingAngle = (finalAngle - currentAngle + 2 * Math.PI) % (2 * Math.PI);
-            currentAngle += remainingAngle * 0.1;
-        }
-
         drawWheel(nodes, currentAngle);
-        drawNeedle(centerX, centerY, radius); // Ensure the needle is always drawn after the wheel
         saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
             animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
-            displayResult(nodes, finalAngle, angleStep); // Use finalAngle for displayResult
+            displayResult(nodes, currentAngle, angleStep); // Pass angleStep to displayResult
         }
     }
 
@@ -78,14 +68,18 @@ function easeOutQuad(t) {
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
     const adjustedRotation = (rotation + Math.PI / 2) % (2 * Math.PI); // Adjusting to capture from the right
-    const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
+    const winningIndex = Math.floor((adjustedRotation + angleStep / 2) / angleStep) % totalNodes;
     const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
 }
 
-
+function saveCurrentRotation(rotation) {
+    const db = getDatabase();
+    const rotationRef = ref(db, 'wheel/rotation');
+    set(rotationRef, rotation);
+}
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -176,6 +170,7 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     }
 }
+
 
 
 
