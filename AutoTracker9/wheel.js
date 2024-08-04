@@ -1,6 +1,7 @@
 let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
+import { colorPalette } from './color-palette.js';
 
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
@@ -75,11 +76,17 @@ export function drawWheel(nodes, rotation = 0) {
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const radius = Math.min(canvas.height, canvas.height) / 2;
-    const centerX = radius; // Align wheel to the left
+    const centerX = radius;
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
-    const colors = ['#007BFF', '#5A9EF9']; // Two shades of blue
+    const colors = [
+        colorPalette.primary,
+        colorPalette.secondary,
+        colorPalette.tertiary,
+        colorPalette.quaternary,
+        colorPalette.quinary,
+    ];
 
     nodes.forEach((value, index) => {
         const startAngle = currentAngle;
@@ -92,7 +99,7 @@ export function drawWheel(nodes, rotation = 0) {
 
         ctx.fillStyle = colors[index % colors.length];
         ctx.fill();
-        ctx.strokeStyle = '#FFFFFF';
+        ctx.strokeStyle = colorPalette.textWhite;
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -101,7 +108,7 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.rotate((startAngle + endAngle) / 2);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#FFFFFF';
+        ctx.fillStyle = colorPalette.textWhite;
         ctx.font = '20px Arial';
         ctx.fillText(value, radius * 0.8, 0);
         ctx.restore();
@@ -109,8 +116,9 @@ export function drawWheel(nodes, rotation = 0) {
         currentAngle += angleStep;
     });
 
-    drawNeedle(centerX, centerY, radius); // Pass centerX, centerY, and radius to drawNeedle
+    drawNeedle(centerX, centerY, radius);
 }
+
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -127,23 +135,20 @@ function drawNeedle(centerX, centerY, radius) {
         const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
-        ctx.translate(needleXPosition, needleYPosition);
-        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
-        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
+        ctx.globalCompositeOperation = 'source-over'; // Ensure the needle is drawn over the wheel
+        ctx.drawImage(needleImg, needleXPosition, needleYPosition, needleWidth, needleHeight);
         ctx.restore();
     };
 
-    // Draw the needle immediately if the image is already loaded
     if (needleImg.complete) {
-        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
-        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
-        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+        const needleWidth = needleImg.width * 0.735;
+        const needleHeight = needleImg.height * 0.735;
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160;
+        const needleYPosition = centerY - needleHeight / 2;
 
         ctx.save();
-        ctx.translate(needleXPosition, needleYPosition);
-        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
-        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.drawImage(needleImg, needleXPosition, needleYPosition, needleWidth, needleHeight);
         ctx.restore();
     }
 }
