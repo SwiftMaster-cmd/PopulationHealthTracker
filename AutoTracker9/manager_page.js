@@ -22,38 +22,24 @@ let currentNodes = [];
 let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Ensure all elements are available before attaching event listeners
-    if (!document.getElementById('add-node-field')) {
-        console.error('Element #add-node-field not found.');
-        return;
-    }
-    if (!document.getElementById('add-rule-field')) {
-        console.error('Element #add-rule-field not found.');
-        return;
-    }
-    if (!document.getElementById('save-preset-button')) {
-        console.error('Element #save-preset-button not found.');
-        return;
-    }
-    if (!document.getElementById('save-configuration')) {
-        console.error('Element #save-configuration not found.');
-        return;
-    }
-    if (!document.getElementById('spin-button')) {
-        console.error('Element #spin-button not found.');
-        return;
-    }
-    if (!document.getElementById('shuffle-button')) {
-        console.error('Element #shuffle-button not found.');
+    const addNodeFieldButton = document.getElementById('add-node-field');
+    const addRuleFieldButton = document.getElementById('add-rule-field');
+    const savePresetButton = document.getElementById('save-preset-button');
+    const saveConfigurationButton = document.getElementById('save-configuration');
+    const spinButton = document.getElementById('spin-button');
+    const shuffleButton = document.getElementById('shuffle-button');
+
+    if (!addNodeFieldButton || !addRuleFieldButton || !savePresetButton || !saveConfigurationButton || !spinButton || !shuffleButton) {
+        console.error('One or more elements not found. Ensure all elements are correctly referenced.');
         return;
     }
 
-    document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
-    document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
-    document.getElementById('save-preset-button').addEventListener('click', savePreset);
-    document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
-    document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
+    addNodeFieldButton.addEventListener('click', () => addNodeField());
+    addRuleFieldButton.addEventListener('click', () => addRuleField());
+    savePresetButton.addEventListener('click', savePreset);
+    saveConfigurationButton.addEventListener('click', saveConfiguration);
+    spinButton.addEventListener('click', () => spinWheel(currentNodes, currentRotation));
+    shuffleButton.addEventListener('click', shuffleCurrentNodes);
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
