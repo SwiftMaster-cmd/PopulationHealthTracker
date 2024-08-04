@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel, shuffleNodes } from './wheel.js'; // Correct import statement
+import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -21,30 +21,32 @@ const database = getDatabase(app);
 let currentNodes = [];
 let currentRotation = 0;
 
-document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
-document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
-document.getElementById('save-preset-button').addEventListener('click', savePreset);
-document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
-document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
+    document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
+    document.getElementById('save-preset-button').addEventListener('click', savePreset);
+    document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
+    document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
-        get(userAuthorityRef).then((snapshot) => {
-            const authorityLevel = snapshot.val();
-            if (authorityLevel >= 9) {
-                loadCurrentConfiguration();
-                loadCurrentRules();
-                listenForChanges();
-            } else {
-                alert("You do not have permission to view this page.");
-                window.location.href = 'index.html';
-            }
-        });
-    } else {
-        window.location.href = 'index.html';
-    }
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
+            get(userAuthorityRef).then((snapshot) => {
+                const authorityLevel = snapshot.val();
+                if (authorityLevel >= 9) {
+                    loadCurrentConfiguration();
+                    loadCurrentRules();
+                    listenForChanges();
+                } else {
+                    alert("You do not have permission to view this page.");
+                    window.location.href = 'index.html';
+                }
+            });
+        } else {
+            window.location.href = 'index.html';
+        }
+    });
 });
 
 function addNodeField(value = 0, count = 1) {
@@ -82,16 +84,18 @@ function saveConfiguration() {
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
         const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
+
+        // Validation
+        if (isNaN(nodeValue) || isNaN(nodeCount) || nodeValue <= 0 || nodeCount <= 0) {
+            alert("Please enter valid numbers for all node fields.");
+            return;
+        }
+
         nodes.push({ value: nodeValue, count: nodeCount });
     }
 
-    const nodesRef = ref(database, 'gameConfiguration/nodes');
-    set(nodesRef, nodes).then(() => {
-        console.log('Configuration updated successfully.');
-        loadCurrentConfiguration(); // Reload the configuration to reflect changes
-    }).catch((error) => {
-        console.error('Error updating configuration:', error);
-    });
+    saveNodesConfiguration(nodes);
+    console.log('Configuration updated successfully.');
 }
 
 function addRuleField(salesType = 'billableHRA', quantity = 0) {
@@ -159,6 +163,13 @@ function savePreset() {
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
         const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
+
+        // Validation
+        if (isNaN(nodeValue) || isNaN(nodeCount) || nodeValue <= 0 || nodeCount <= 0) {
+            alert("Please enter valid numbers for all node fields.");
+            return;
+        }
+
         nodes.push({ value: nodeValue, count: nodeCount });
     }
 
@@ -174,10 +185,7 @@ function savePreset() {
 }
 
 function loadCurrentConfiguration() {
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    onValue(configRef, (snapshot) => {
-        const nodes = snapshot.val();
-        console.log('Loaded nodes:', nodes); // Debugging
+    loadNodesConfiguration((nodes, rotation) => {
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
             const counts = nodes.reduce((acc, value) => {
@@ -186,6 +194,7 @@ function loadCurrentConfiguration() {
             }, {});
             Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
             currentNodes = nodes;
+            currentRotation = rotation;
             drawWheel(currentNodes, currentRotation);
         } else {
             console.error('No nodes found in configuration.');
@@ -221,7 +230,7 @@ function listenForChanges() {
 function shuffleCurrentNodes() {
     currentNodes = shuffleNodes(currentNodes);
     drawWheel(currentNodes, currentRotation);
-    saveConfiguration();
+    saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
 }
 
 function loadPresets() {
@@ -262,5 +271,7 @@ function displayPresetSummary(preset) {
     const nodes = preset.nodes;
     console.log('Preset nodes:', nodes); // Debugging
     currentNodes = nodes;
+    currentRotation = 0; // Reset rotation to zero when loading a new preset
     drawWheel(currentNodes, currentRotation);
+    saveNodesConfiguration(currentNodes); // Save the nodes configuration to Firebase
 }
