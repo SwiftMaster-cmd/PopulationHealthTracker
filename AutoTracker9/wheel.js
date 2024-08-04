@@ -14,7 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
-
+// Hide the shuffle button
+const shuffleButton = document.getElementById('shuffle-button');
+if (shuffleButton) {
+    shuffleButton.style.display = 'none';
+}
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const spinDuration = 9000;
