@@ -22,7 +22,6 @@ export function spinWheel(nodes) {
     let previousTimestamp = null;
     let initialAngle = currentAngle; // Preserve the initial angle before the spin starts
     let totalRotation = 0;
-
     function animate(timestamp) {
         if (!start) {
             start = timestamp;
@@ -32,6 +31,7 @@ export function spinWheel(nodes) {
         const deltaTime = timestamp - previousTimestamp;
         previousTimestamp = timestamp;
         let currentSpeed = 0;
+    
 
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
@@ -50,21 +50,21 @@ export function spinWheel(nodes) {
         totalRotation += (currentSpeed * deltaTime / 1000);
         currentAngle = (initialAngle + totalRotation) % (2 * Math.PI);
 
-        if (progress < spinDuration) {
-            drawWheel(nodes, currentAngle);
-            animationFrameId = requestAnimationFrame(animate);
-        } else {
-            isSpinning = false;
-            currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
-            drawWheel(nodes, currentAngle);
-            saveCurrentRotation(currentAngle); // Save current rotation
-            logWinningNode(nodes, currentAngle, angleStep); // Log the winning node
-        }
+       
+    if (progress < spinDuration) {
+        drawWheel(nodes, currentAngle);
+        animationFrameId = requestAnimationFrame(animate);
+    } else {
+        isSpinning = false;
+        currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
+        drawWheel(nodes, currentAngle);
+        saveCurrentRotation(currentAngle); // Save current rotation
+        logWinningNode(nodes, currentAngle, angleStep); // Log the winning node
     }
+}
 
     animationFrameId = requestAnimationFrame(animate);
 }
-
 
 function easeInQuad(t) {
     return t * t;
@@ -138,7 +138,6 @@ export function drawWheel(nodes, rotation = 0) {
 
     drawNeedle(centerX, centerY, radius);
 }
-
 
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
@@ -214,7 +213,7 @@ export function shuffleNodes(nodes) {
 
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
-    // No need to change the angle here, just preserve it
+    currentAngle = Math.random() * 2 * Math.PI; // Set the angle to a random value between 0 and 2π
     drawWheel(shuffledNodes, currentAngle);
     return shuffledNodes;
 }
