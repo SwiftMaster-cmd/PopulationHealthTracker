@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPresets(); // Add this line to load presets
 });
 
-
 function addNodeField(value = 0, count = 1) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
@@ -70,6 +69,7 @@ function saveConfiguration() {
     console.log('Configuration updated successfully.');
     shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
+
 function loadPresets() {
     const presetsRef = ref(database, 'spinTheWheelPresets');
     onValue(presetsRef, (snapshot) => {
@@ -78,6 +78,7 @@ function loadPresets() {
         displayPresets(presets);
     });
 }
+
 function displayPresets(presets) {
     const presetsContainer = document.getElementById('presets-container');
     presetsContainer.innerHTML = '';
@@ -89,16 +90,16 @@ function displayPresets(presets) {
         presetsContainer.appendChild(presetButton);
     });
 }
+
 function loadPreset(preset) {
     currentNodes = preset.nodes;
     currentRotation = 0; // Reset rotation when loading a new preset
-    drawWheel(currentNodes, currentRotation);
-    drawCurrentConfiguration();
-    saveNodesConfiguration(currentNodes);
+    const shuffledNodes = shuffleNodes(currentNodes); // Automatically shuffle nodes
+    drawWheel(shuffledNodes, currentRotation);
+    drawCurrentConfiguration(shuffledNodes);
+    saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
     console.log(`Loaded preset: ${preset.name}`);
 }
-
-
 
 function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
@@ -115,11 +116,11 @@ function loadCurrentConfiguration() {
     });
 }
 
-function drawCurrentConfiguration() {
+function drawCurrentConfiguration(nodes = currentNodes) {
     const currentNodesContainer = document.getElementById('current-nodes-container');
     currentNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    currentNodes.forEach(node => {
+    nodes.forEach(node => {
         const nodeElement = document.createElement('div');
         nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
         currentNodesContainer.appendChild(nodeElement);
