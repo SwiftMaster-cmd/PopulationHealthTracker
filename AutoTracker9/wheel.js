@@ -79,6 +79,8 @@ export function drawWheel(nodes, rotation = 0) {
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
+    const colors = ['#FFCC00', '#FF9900', '#0099FF', '#33CC33', '#FF6699', '#9933FF', '#FF3300', '#00CCFF'];
+
     nodes.forEach((value, index) => {
         const startAngle = currentAngle;
         const endAngle = startAngle + angleStep;
@@ -88,8 +90,10 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.closePath();
 
-        ctx.fillStyle = index % 2 === 0 ? '#FFCC00' : '#FF9900';
+        ctx.fillStyle = colors[index % colors.length];
         ctx.fill();
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
         ctx.stroke();
 
         ctx.save();
@@ -117,17 +121,23 @@ function drawNeedle() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const needleLength = centerY * 0.8;
+    const needleWidth = 10;
 
-    ctx.clearRect(centerX - 10, 0, 20, centerY);
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
 
     ctx.beginPath();
-    ctx.moveTo(centerX, centerY - needleLength);
-    ctx.lineTo(centerX - 5, centerY - needleLength + 15);
-    ctx.lineTo(centerX + 5, centerY - needleLength + 15);
+    ctx.moveTo(0, -needleLength);
+    ctx.lineTo(needleWidth / 2, -needleLength + 20);
+    ctx.lineTo(-needleWidth / 2, -needleLength + 20);
     ctx.closePath();
     ctx.fillStyle = 'red';
     ctx.fill();
+    ctx.restore();
 }
+
+
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
