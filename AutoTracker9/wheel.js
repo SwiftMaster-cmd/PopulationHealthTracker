@@ -86,7 +86,6 @@ function logWinningNode(nodes, currentAngle, angleStep) {
 }
 
 
-
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -218,8 +217,8 @@ export function shuffleNodes(nodes) {
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
     const angleStep = (2 * Math.PI) / shuffledNodes.length;
-    const nodeIndexAtCurrentAngle = Math.floor(currentAngle / angleStep);
     const preservedAngle = currentAngle % angleStep; // Preserve the current angle within a node's segment
+    const nodeIndexAtCurrentAngle = Math.floor(currentAngle / angleStep);
 
     // Adjust the angle based on the new node configuration while preserving the relative position
     currentAngle = nodeIndexAtCurrentAngle * angleStep + preservedAngle;
@@ -229,3 +228,4 @@ export function shuffleAndUpdateAngle(nodes) {
 
     return shuffledNodes;
 }
+
