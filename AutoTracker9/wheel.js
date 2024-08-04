@@ -122,9 +122,9 @@ function drawNeedle(centerX, centerY, radius) {
     needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
     needleImg.onload = () => {
-        const needleWidth = needleImg.width * 0.515; // Adjust the size to 51.5% of the original
-        const needleHeight = needleImg.height * 0.515; // Adjust the size to 51.5% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 80; // Move needle 80px to the right
+        const needleWidth = needleImg.width * 0.35; // Adjust the size to 35% of the original
+        const needleHeight = needleImg.height * 0.35; // Adjust the size to 35% of the original
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
         const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
