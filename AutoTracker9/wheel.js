@@ -21,6 +21,7 @@ export function spinWheel(nodes) {
     let start = null;
     let previousTimestamp = null;
     let initialAngle = currentAngle; // Preserve the initial angle before the spin starts
+    let totalRotation = 0;
 
     function animate(timestamp) {
         if (!start) {
@@ -31,7 +32,6 @@ export function spinWheel(nodes) {
         const deltaTime = timestamp - previousTimestamp;
         previousTimestamp = timestamp;
         let currentSpeed = 0;
-        let rotationDelta = 0;
 
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
@@ -47,8 +47,8 @@ export function spinWheel(nodes) {
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
         }
 
-        rotationDelta += currentSpeed * deltaTime / 1000;
-        currentAngle = (initialAngle + rotationDelta) % (2 * Math.PI);
+        totalRotation += (currentSpeed * deltaTime / 1000);
+        currentAngle = (initialAngle + totalRotation) % (2 * Math.PI);
 
         if (progress < spinDuration) {
             drawWheel(nodes, currentAngle);
@@ -178,6 +178,7 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     }
 }
+
 
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
