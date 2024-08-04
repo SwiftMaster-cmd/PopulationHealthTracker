@@ -68,7 +68,7 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-export function drawWheel(nodes, rotation = currentAngle) {
+export function drawWheel(nodes, rotation) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -121,6 +121,7 @@ export function drawWheel(nodes, rotation = currentAngle) {
 
     drawNeedle(centerX, centerY, radius);
 }
+
 
 
 function drawNeedle(centerX, centerY, radius) {
