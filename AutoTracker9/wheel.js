@@ -126,7 +126,7 @@ export function drawWheel(nodes, rotation = 0, winningIndex = null, highlightOpa
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const offset = 75 * (Math.PI / 180); // Convert 75 degrees to radians (2.5 times the previous 30 degrees)
+    const offset = 45 * (Math.PI / 180); // Convert 45 degrees to radians (1.5 times the previous 30 degrees)
     const adjustedRotation = (rotation + Math.PI / 2 + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
     const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
     const result = nodes[winningIndex];
@@ -160,6 +160,7 @@ function displayResult(nodes, rotation, angleStep) {
 
     animateHighlight();
 }
+
 
 
 function displayResult(nodes, rotation, angleStep) {
