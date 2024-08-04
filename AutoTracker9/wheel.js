@@ -50,6 +50,9 @@ export function spinWheel(nodes) {
             isSpinning = false;
             drawWheel(nodes, currentAngle);
             saveCurrentRotation(currentAngle); // Save current rotation
+
+            const winningNode = calculateWinningNode(nodes, currentAngle);
+            displayWinningNode(winningNode);
         }
     }
 
@@ -159,6 +162,23 @@ function saveCurrentRotation(rotation) {
     const db = getDatabase();
     const rotationRef = ref(db, 'wheel/rotation');
     set(rotationRef, rotation);
+}
+
+function calculateWinningNode(nodes, rotation) {
+    const totalNodes = nodes.length;
+    const angleStep = (2 * Math.PI) / totalNodes;
+    const needleAngle = Math.PI / 2; // 90 degrees in radians
+
+    // Calculate the angle of the winning node
+    const winningAngle = (rotation + needleAngle) % (2 * Math.PI);
+    const nodeIndex = Math.floor(winningAngle / angleStep);
+
+    return nodes[nodeIndex % totalNodes];
+}
+
+function displayWinningNode(winningNode) {
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `Result: ${winningNode}`;
 }
 
 export function saveNodesConfiguration(nodes) {
