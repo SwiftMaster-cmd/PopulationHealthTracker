@@ -65,10 +65,14 @@ function easeOutQuad(t) {
 }
 
 export function drawWheel(nodes, rotation = 0) {
+    console.log('Drawing wheel with nodes:', nodes, 'and rotation:', rotation); // Debugging
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
-    if (!ctx) return;
+    if (!ctx) {
+        console.error('No canvas context found');
+        return;
+    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
