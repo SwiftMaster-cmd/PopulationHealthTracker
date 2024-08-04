@@ -87,8 +87,15 @@ function logWinningNode(nodes, currentAngle, angleStep) {
 
 export function drawWheel(nodes, rotation) {
     const canvas = document.getElementById('wheel-canvas');
+    if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+    }
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+        console.error('Canvas context not found');
+        return;
+    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -166,20 +173,24 @@ function drawNeedle(centerX, centerY, radius) {
 function saveConfiguration() {
     const db = getDatabase();
     const configRef = ref(db, 'wheel');
-    set(configRef, { nodes: currentNodes, rotation: currentAngle });
+    set(configRef, { nodes: currentNodes, rotation: currentAngle })
+        .then(() => console.log('Configuration saved'))
+        .catch((error) => console.error('Error saving configuration:', error));
 }
 
 function loadConfiguration() {
     const db = getDatabase();
     const configRef = ref(db, 'wheel');
-    get(configRef).then((snapshot) => {
-        const config = snapshot.val();
-        if (config) {
-            currentNodes = config.nodes || [];
-            currentAngle = config.rotation || 0;
-            drawWheel(currentNodes, currentAngle);
-        }
-    });
+    get(configRef)
+        .then((snapshot) => {
+            const config = snapshot.val();
+            if (config) {
+                currentNodes = config.nodes || [];
+                currentAngle = config.rotation || 0;
+                drawWheel(currentNodes, currentAngle);
+            }
+        })
+        .catch((error) => console.error('Error loading configuration:', error));
 }
 
 export function shuffleNodes(nodes) {
