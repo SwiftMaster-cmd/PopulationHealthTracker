@@ -202,18 +202,18 @@ export function shuffleNodes(nodes) {
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
     const angleStep = (2 * Math.PI) / shuffledNodes.length;
-    currentAngle = 0; // Reset angle
+    const preservedAngle = currentAngle; // Preserve the current angle
 
-    // Set currentAngle based on the new shuffled nodes
-    shuffledNodes.forEach((value, index) => {
-        currentAngle += angleStep;
-    });
+    // Calculate the new angle to align with the preserved angle
+    const nodeIndexAtPreservedAngle = Math.floor(preservedAngle / angleStep);
+    const newAngleOffset = nodeIndexAtPreservedAngle * angleStep;
 
-    currentAngle %= 2 * Math.PI; // Ensure the angle is within 0 to 2*PI range
-
-    drawWheel(shuffledNodes, currentAngle);
+    // Redraw the wheel with the preserved angle
+    drawWheel(shuffledNodes, preservedAngle - newAngleOffset);
+    
     return shuffledNodes;
 }
+
 
 function logWinningNode(nodes, currentAngle, angleStep) {
     const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
