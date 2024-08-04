@@ -65,7 +65,6 @@ export function spinWheel(nodes) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
-
 function easeInQuad(t) {
     return t * t;
 }
@@ -84,7 +83,6 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
-
 
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
@@ -140,7 +138,6 @@ export function drawWheel(nodes, rotation = 0) {
     drawNeedle(centerX, centerY, radius);
 }
 
-
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -177,7 +174,6 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     }
 }
-
 
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
@@ -217,15 +213,10 @@ export function shuffleNodes(nodes) {
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
     const angleStep = (2 * Math.PI) / shuffledNodes.length;
-    const preservedAngle = currentAngle % angleStep; // Preserve the current angle within a node's segment
-    const nodeIndexAtCurrentAngle = Math.floor(currentAngle / angleStep);
-
-    // Adjust the angle based on the new node configuration while preserving the relative position
-    currentAngle = nodeIndexAtCurrentAngle * angleStep + preservedAngle;
+    const preservedAngle = currentAngle; // Preserve the current angle exactly
 
     // Redraw the wheel with the new nodes and the preserved angle
-    drawWheel(shuffledNodes, currentAngle);
+    drawWheel(shuffledNodes, preservedAngle);
 
     return shuffledNodes;
 }
-
