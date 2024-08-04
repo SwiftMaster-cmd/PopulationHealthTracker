@@ -176,8 +176,8 @@ function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            const counts = nodes.reduce((acc, value) => {
-                acc[value] = (acc[value] || 0) + 1;
+            const counts = nodes.reduce((acc, node) => {
+                acc[node.value] = (acc[node.value] || 0) + node.count;
                 return acc;
             }, {});
             Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));

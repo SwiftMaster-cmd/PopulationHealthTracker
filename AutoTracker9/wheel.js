@@ -1,8 +1,8 @@
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-
 let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
+
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 export function spinWheel(nodes, currentAngle) {
     if (isSpinning) return;
@@ -133,19 +133,18 @@ function drawNeedle() {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
-    const adjustedRotation = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); // Ensure the rotation is between 0 and 2*PI
-    const winningIndex = Math.floor((2 * Math.PI - adjustedRotation) / angleStep) % totalNodes;
-
-    let cumulativeCount = 0;
+    const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
+    let currentNodeIndex = 0;
     let result;
 
-    nodes.some((node) => {
-        cumulativeCount += node.count;
-        if (winningIndex < cumulativeCount) {
-            result = node.value;
-            return true;
+    nodes.forEach((node) => {
+        for (let i = 0; i < node.count; i++) {
+            if (currentNodeIndex === winningIndex) {
+                result = node.value;
+                break;
+            }
+            currentNodeIndex++;
         }
-        return false;
     });
 
     const resultElement = document.getElementById('result');
@@ -155,21 +154,13 @@ function displayResult(nodes, rotation, angleStep) {
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
     const rotationRef = ref(db, 'wheel/rotation');
-    set(rotationRef, rotation).then(() => {
-        console.log('Rotation saved successfully.');
-    }).catch((error) => {
-        console.error('Error saving rotation:', error);
-    });
+    set(rotationRef, rotation);
 }
 
 export function saveNodesConfiguration(nodes) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
-    set(nodesRef, nodes).then(() => {
-        console.log('Nodes configuration saved successfully.');
-    }).catch((error) => {
-        console.error('Error saving nodes configuration:', error);
-    });
+    set(nodesRef, nodes);
 }
 
 export function loadNodesConfiguration(callback) {
@@ -183,8 +174,6 @@ export function loadNodesConfiguration(callback) {
             const rotation = rotationSnapshot.val();
             callback(nodes, rotation);
         });
-    }).catch((error) => {
-        console.error('Error loading nodes configuration:', error);
     });
 }
 
