@@ -65,7 +65,7 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-export function drawWheel(nodes, rotation = 0) {
+export function drawWheel(nodes, rotation = 0, winningIndex = null, highlightOpacity = 0.1) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -97,7 +97,11 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.closePath();
 
-        ctx.fillStyle = colors[index % colors.length];
+        if (index === winningIndex) {
+            ctx.fillStyle = `rgba(255, 0, 0, ${highlightOpacity})`; // Highlight with fading opacity
+        } else {
+            ctx.fillStyle = colors[index % colors.length];
+        }
         ctx.fill();
         ctx.strokeStyle = colorPalette.textWhite;
         ctx.lineWidth = 2;
@@ -157,7 +161,6 @@ function drawNeedle(centerX, centerY, radius) {
 }
 
 
-
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
     const offset = 30 * (Math.PI / 180); // Convert 30 degrees to radians
@@ -168,21 +171,24 @@ function displayResult(nodes, rotation, angleStep) {
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
 
-    // Draw the red dot
-    const canvas = document.getElementById('wheel-canvas');
-    const ctx = canvas.getContext('2d');
-    const radius = Math.min(canvas.height, canvas.height) / 2;
-    const centerX = radius;
-    const centerY = canvas.height / 2;
-    const redDotAngle = winningIndex * angleStep - (Math.PI / 2); // Calculate the angle for the red dot
+    // Start the highlight animation
+    let highlightOpacity = 0.1;
+    let increasing = true;
 
-    const redDotX = centerX + (radius * 0.9) * Math.cos(redDotAngle); // Slightly inside the edge of the wheel
-    const redDotY = centerY + (radius * 0.9) * Math.sin(redDotAngle);
+    function animateHighlight() {
+        if (increasing) {
+            highlightOpacity += 0.01;
+            if (highlightOpacity >= 0.6) increasing = false;
+        } else {
+            highlightOpacity -= 0.01;
+            if (highlightOpacity <= 0.1) increasing = true;
+        }
 
-    ctx.beginPath();
-    ctx.arc(redDotX, redDotY, 5, 0, 2 * Math.PI); // Draw a small red dot
-    ctx.fillStyle = 'red';
-    ctx.fill();
+        drawWheel(nodes, rotation, winningIndex, highlightOpacity);
+        requestAnimationFrame(animateHighlight);
+    }
+
+    animateHighlight();
 }
 
 
