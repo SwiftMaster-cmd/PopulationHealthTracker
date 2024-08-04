@@ -198,8 +198,18 @@ export function shuffleNodes(nodes) {
     return values;
 }
 
-export function shuffleAndDrawNodes(nodes) {
+export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
+    const angleStep = (2 * Math.PI) / shuffledNodes.length;
+    currentAngle = 0; // Reset angle
+
+    // Set currentAngle based on the new shuffled nodes
+    shuffledNodes.forEach((value, index) => {
+        currentAngle += angleStep;
+    });
+
+    currentAngle %= 2 * Math.PI; // Ensure the angle is within 0 to 2*PI range
+
     drawWheel(shuffledNodes, currentAngle);
     return shuffledNodes;
 }
