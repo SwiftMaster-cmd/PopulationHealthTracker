@@ -84,10 +84,19 @@ function saveConfiguration() {
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
         const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
+
+        // Validation
+        if (isNaN(nodeValue) || isNaN(nodeCount) || nodeValue <= 0 || nodeCount <= 0) {
+            alert("Please enter valid numbers for all node fields.");
+            return;
+        }
+
         nodes.push({ value: nodeValue, count: nodeCount });
     }
 
     saveNodesConfiguration(nodes);
+    currentNodes = nodes;
+    drawCurrentConfiguration();
     console.log('Configuration updated successfully.');
 }
 
@@ -149,17 +158,7 @@ function savePreset() {
         return;
     }
 
-    const nodesContainer = document.getElementById('nodes-container');
-    const nodeFields = nodesContainer.getElementsByClassName('node-field');
-    let nodes = [];
-
-    for (let i = 0; i < nodeFields.length; i++) {
-        const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
-        const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
-        nodes.push({ value: nodeValue, count: nodeCount });
-    }
-
-    const preset = { nodes };
+    const preset = { nodes: currentNodes };
 
     const presetsRef = ref(database, `spinTheWheelPresets/${presetName}`);
     set(presetsRef, preset).then(() => {
@@ -182,9 +181,21 @@ function loadCurrentConfiguration() {
             currentNodes = nodes;
             currentRotation = rotation;
             drawWheel(currentNodes, currentRotation);
+            drawCurrentConfiguration();
         } else {
             console.error('No nodes found in configuration.');
         }
+    });
+}
+
+function drawCurrentConfiguration() {
+    const currentNodesContainer = document.getElementById('current-nodes-container');
+    currentNodesContainer.innerHTML = ''; // Clear existing nodes
+
+    currentNodes.forEach(node => {
+        const nodeElement = document.createElement('div');
+        nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
+        currentNodesContainer.appendChild(nodeElement);
     });
 }
 
@@ -259,5 +270,6 @@ function displayPresetSummary(preset) {
     currentNodes = nodes;
     currentRotation = 0; // Reset rotation to zero when loading a new preset
     drawWheel(currentNodes, currentRotation);
+    drawCurrentConfiguration();
     saveNodesConfiguration(currentNodes); // Save the nodes configuration to Firebase
 }
