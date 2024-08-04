@@ -19,13 +19,20 @@ export function spinWheel(nodes) {
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
     let start = null;
+    let previousTimestamp = null;
     let initialAngle = currentAngle; // Preserve the initial angle before the spin starts
 
     function animate(timestamp) {
-        if (!start) start = timestamp;
+        if (!start) {
+            start = timestamp;
+            previousTimestamp = timestamp;
+        }
         const progress = timestamp - start;
-
+        const deltaTime = timestamp - previousTimestamp;
+        previousTimestamp = timestamp;
         let currentSpeed = 0;
+        let rotationDelta = 0;
+
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
@@ -40,12 +47,12 @@ export function spinWheel(nodes) {
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
         }
 
-        const rotationDelta = (currentSpeed * (timestamp - start) / 1000) % (2 * Math.PI);
+        rotationDelta = (currentSpeed * deltaTime / 1000) % (2 * Math.PI);
         currentAngle = (initialAngle + rotationDelta) % (2 * Math.PI);
 
         if (progress < spinDuration) {
             drawWheel(nodes, currentAngle);
-            requestAnimationFrame(animate);
+            animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
             currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
@@ -55,10 +62,8 @@ export function spinWheel(nodes) {
         }
     }
 
-    requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(animate);
 }
-
-
 
 function easeInQuad(t) {
     return t * t;
@@ -78,7 +83,6 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
-
 
 
 export function drawWheel(nodes, rotation = 0) {
