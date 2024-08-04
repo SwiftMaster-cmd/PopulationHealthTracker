@@ -177,6 +177,7 @@ function loadCurrentConfiguration() {
     const configRef = ref(database, 'gameConfiguration/nodes');
     onValue(configRef, (snapshot) => {
         const nodes = snapshot.val();
+        console.log('Loaded nodes:', nodes); // Debugging
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
             const counts = nodes.reduce((acc, value) => {
@@ -186,6 +187,8 @@ function loadCurrentConfiguration() {
             Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
             currentNodes = nodes;
             drawWheel(currentNodes, currentRotation);
+        } else {
+            console.error('No nodes found in configuration.');
         }
     });
 }
