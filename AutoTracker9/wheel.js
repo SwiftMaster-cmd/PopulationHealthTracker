@@ -7,11 +7,11 @@ let currentAngle = 0; // This will hold the current angle and be updated to the 
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
+
     isSpinning = true;
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
     const maxSpinSpeed = (218 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
@@ -20,7 +20,7 @@ export function spinWheel(nodes) {
 
     let start = null;
     let previousTimestamp = null;
-    let initialAngle = currentAngle; // Preserve the current angle before the spin starts
+    let initialAngle = currentAngle; // Use the current angle as the initial angle
     let totalRotation = 0;
 
     function animate(timestamp) {
@@ -28,9 +28,11 @@ export function spinWheel(nodes) {
             start = timestamp;
             previousTimestamp = timestamp;
         }
+
         const progress = timestamp - start;
         const deltaTime = timestamp - previousTimestamp;
         previousTimestamp = timestamp;
+
         let currentSpeed = 0;
 
         if (progress <= accelerationDuration) {
@@ -64,6 +66,7 @@ export function spinWheel(nodes) {
 
     animationFrameId = requestAnimationFrame(animate);
 }
+
 
 
 function easeInQuad(t) {
