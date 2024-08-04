@@ -11,6 +11,7 @@ export function spinWheel(nodes) {
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
+    let start = null; // Initialize start here
 
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
@@ -51,12 +52,11 @@ export function spinWheel(nodes) {
             drawWheel(nodes, currentAngle);
             saveCurrentRotation(currentAngle); // Save current rotation
     
-            const winningNode = calculateWinningNode(nodes, initialAngle, currentAngle);
+            const winningNode = calculateWinningNode(nodes, initialAngle, currentAngle, angleStep);
             displayWinningNode(winningNode);
         }
     }
     
-
     animationFrameId = requestAnimationFrame(animate);
 }
 
@@ -122,8 +122,6 @@ export function drawWheel(nodes, rotation) {
     drawNeedle(centerX, centerY, radius);
 }
 
-
-
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -167,9 +165,8 @@ function saveCurrentRotation(rotation) {
     set(rotationRef, rotation);
 }
 
-function calculateWinningNode(nodes, initialAngle, finalAngle) {
+function calculateWinningNode(nodes, initialAngle, finalAngle, angleStep) {
     const totalNodes = nodes.length;
-    const angleStep = (2 * Math.PI) / totalNodes;
     const needleAngle = Math.PI / 2; // 90 degrees in radians
 
     // Calculate the final rotation angle adjusted to start from the top middle (0 degrees)
@@ -181,10 +178,11 @@ function calculateWinningNode(nodes, initialAngle, finalAngle) {
     return nodes[winningNodeIndex];
 }
 
-
 function displayWinningNode(winningNode) {
     const resultElement = document.getElementById('result');
-    resultElement.textContent = `Result: ${winningNode}`;
+    if (resultElement) {
+        resultElement.textContent = `Result: ${winningNode}`;
+    }
 }
 
 export function saveNodesConfiguration(nodes) {
