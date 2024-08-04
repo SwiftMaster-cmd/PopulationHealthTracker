@@ -1,5 +1,6 @@
 let isSpinning = false;
 let animationFrameId;
+let currentAngle = 0;
 
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
@@ -174,4 +175,12 @@ export function loadNodesConfiguration(callback) {
             callback(nodes, rotation);
         });
     });
+}
+
+export function shuffleNodes(nodes) {
+    for (let i = nodes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [nodes[i], nodes[j]] = [nodes[j], nodes[i]];
+    }
+    return nodes;
 }
