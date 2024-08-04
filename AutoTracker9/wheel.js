@@ -173,7 +173,7 @@ function calculateWinningNode(nodes, rotation) {
     const winningAngle = (rotation + needleAngle) % (2 * Math.PI);
     const nodeIndex = Math.floor(winningAngle / angleStep);
 
-    return nodes[nodeIndex % totalNodes];
+    return nodes[nodeIndex];
 }
 
 function displayWinningNode(winningNode) {
