@@ -69,8 +69,6 @@ export function spinWheel(nodes) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
-
-
 function easeInQuad(t) {
     return t * t;
 }
@@ -137,62 +135,41 @@ export function drawWheel(nodes, rotation = 0, winningIndex = null, highlightOpa
     drawNeedle(centerX, centerY, radius);
 }
 
-export function drawWheel(nodes, rotation = 0, winningIndex = null, highlightOpacity = 0.1) {
+function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
     if (!ctx) return;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const needleImg = new Image();
+    needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
-    const totalNodes = nodes.length;
-    const angleStep = (2 * Math.PI) / totalNodes;
-    const radius = Math.min(canvas.height, canvas.height) / 2;
-    const centerX = radius;
-    const centerY = canvas.height / 2;
-    let currentAngle = rotation;
-
-    const colors = [
-        colorPalette.primary,
-        colorPalette.secondary,
-        colorPalette.tertiary,
-        colorPalette.quaternary,
-        colorPalette.quinary,
-    ];
-
-    nodes.forEach((value, index) => {
-        const startAngle = currentAngle;
-        const endAngle = startAngle + angleStep;
-
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.closePath();
-
-        if (index === winningIndex) {
-            ctx.fillStyle = `rgba(255, 0, 0, ${highlightOpacity})`; // Highlight with fading opacity
-        } else {
-            ctx.fillStyle = colors[index % colors.length];
-        }
-        ctx.fill();
-        ctx.strokeStyle = colorPalette.textWhite;
-        ctx.lineWidth = 2;
-        ctx.stroke();
+    needleImg.onload = () => {
+        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
+        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
+        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate((startAngle + endAngle) / 2);
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = colorPalette.textWhite;
-        ctx.font = '20px Arial';
-        ctx.fillText(value, radius * 0.8, 0);
+        ctx.translate(needleXPosition, needleYPosition);
+        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
         ctx.restore();
+    };
 
-        currentAngle += angleStep;
-    });
+    // Draw the needle immediately if the image is already loaded
+    if (needleImg.complete) {
+        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
+        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
+        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
-    drawNeedle(centerX, centerY, radius);
+        ctx.save();
+        ctx.translate(needleXPosition, needleYPosition);
+        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
+        ctx.restore();
+    }
 }
 
 function displayResult(nodes, rotation, angleStep) {
@@ -226,8 +203,6 @@ function displayResult(nodes, rotation, angleStep) {
 
     animateHighlight();
 }
-
-
 
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
