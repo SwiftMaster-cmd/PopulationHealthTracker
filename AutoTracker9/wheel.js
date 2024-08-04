@@ -65,6 +65,7 @@ export function spinWheel(nodes) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
+
 function easeInQuad(t) {
     return t * t;
 }
@@ -137,6 +138,7 @@ export function drawWheel(nodes, rotation = 0) {
 
     drawNeedle(centerX, centerY, radius);
 }
+
 
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
@@ -212,11 +214,7 @@ export function shuffleNodes(nodes) {
 
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
-    const angleStep = (2 * Math.PI) / shuffledNodes.length;
-    const preservedAngle = currentAngle; // Preserve the current angle exactly
-
-    // Redraw the wheel with the new nodes and the preserved angle
-    drawWheel(shuffledNodes, preservedAngle);
-
+    // No need to change the angle here, just preserve it
+    drawWheel(shuffledNodes, currentAngle);
     return shuffledNodes;
 }
