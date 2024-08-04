@@ -7,9 +7,7 @@ let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadNodesConfiguration((nodes, rotation) => {
-        const shuffledNodes = shuffleNodes(nodes); // Automatically shuffle nodes
-        drawWheel(shuffledNodes, rotation);
-        saveNodesConfiguration(shuffledNodes); // Save the shuffled configuration
+        drawWheel(nodes, rotation);
     });
 });
 
@@ -92,6 +90,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
@@ -179,6 +178,7 @@ function saveCurrentRotation(rotation) {
         .catch((error) => console.error('Error saving rotation:', error));
 }
 
+
 export function saveNodesConfiguration(nodes) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
@@ -186,6 +186,23 @@ export function saveNodesConfiguration(nodes) {
         .then(() => console.log('Nodes configuration saved'))
         .catch((error) => console.error('Error saving nodes configuration:', error));
 }
+
+function loadCurrentConfiguration() {
+    loadNodesConfiguration((nodes, rotation) => {
+        document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
+        if (nodes.length > 0) {
+            nodes.forEach(node => addNodeField(node.value, node.count));
+            currentNodes = nodes;
+            currentRotation = rotation;
+            drawWheel(currentNodes, currentRotation);
+            drawCurrentConfiguration();
+        } else {
+            console.error('No nodes found in configuration.');
+        }
+    });
+}
+
+
 
 export function loadNodesConfiguration(callback) {
     const db = getDatabase();
@@ -207,6 +224,7 @@ export function loadNodesConfiguration(callback) {
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
+
 
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));

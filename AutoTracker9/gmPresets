@@ -28,12 +28,24 @@ function savePreset() {
     });
 }
 
+
+
 function loadPresets() {
     const presetsRef = ref(database, 'spinTheWheelPresets');
     onValue(presetsRef, (snapshot) => {
         const data = snapshot.val();
         const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
         displayPresets(presets);
+    });
+}
+// gmPresets.js
+
+export function loadPresetConfiguration(presetName, callback) {
+    const db = getDatabase();
+    const presetRef = ref(db, `presets/${presetName}`);
+    get(presetRef).then((snapshot) => {
+        const preset = snapshot.val();
+        callback(preset.nodes);
     });
 }
 
