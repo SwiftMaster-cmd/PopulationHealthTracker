@@ -1,4 +1,3 @@
-
 import { colorPalette } from './color-palette.js';
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
@@ -205,8 +204,9 @@ export function shuffleNodes(nodes) {
 }
 
 export function shuffleAndUpdateWheel(nodes) {
-    const shuffledNodes = shuffleNodes(nodes);
-    drawWheel(shuffledNodes, currentAngle); // Draw the wheel with the current rotation
+    const savedAngle = currentAngle; // Save the current angle
+    const shuffledNodes = shuffleNodes(nodes); // Shuffle the nodes
+    drawWheel(shuffledNodes, savedAngle); // Draw the wheel with the saved angle
     saveNodesConfiguration(shuffledNodes); // Save the new node configuration
     return shuffledNodes;
 }
