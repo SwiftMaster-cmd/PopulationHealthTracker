@@ -3,24 +3,23 @@ import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/1
 
 let isSpinning = false;
 let animationFrameId;
-let currentAngle = 0; // This will hold the current angle and be updated to the final angle after spinning
+let currentAngle = 0;
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
-
     isSpinning = true;
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-    const spinDuration = 9000; // Total spin duration of 9 seconds
-    const accelerationDuration = 2000; // 2 seconds to reach max speed
-    const maxSpinSpeed = (218 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
-    const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
-    const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
+    const spinDuration = 9000;
+    const accelerationDuration = 2000;
+    const maxSpinSpeed = (218 / 60) * 2 * Math.PI;
+    const speedAt4Seconds = (96 / 60) * 2 * Math.PI;
+    const speedAt6Seconds = (3 / 60) * 2 * Math.PI;
 
     let start = null;
     let previousTimestamp = null;
-    let initialAngle = currentAngle; // Use the current angle as the initial angle
+    let initialAngle = currentAngle;
     let totalRotation = 0;
 
     function animate(timestamp) {
@@ -57,17 +56,15 @@ export function spinWheel(nodes) {
             animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
-            currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
+            currentAngle = currentAngle % (2 * Math.PI);
             drawWheel(nodes, currentAngle);
-            saveCurrentRotation(currentAngle); // Save current rotation
-            logWinningNode(nodes, currentAngle, angleStep); // Log the winning node
+            saveCurrentRotation(currentAngle);
+            logWinningNode(nodes, currentAngle, angleStep);
         }
     }
 
     animationFrameId = requestAnimationFrame(animate);
 }
-
-
 
 function easeInQuad(t) {
     return t * t;
@@ -81,7 +78,6 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
     const winningNodeIndex = Math.floor(winningAngle / angleStep);
     const winningNode = nodes[winningNodeIndex];
-
     console.log("Current Angle (radians):", currentAngle);
     console.log("Winning Angle (radians):", winningAngle);
     console.log("Winning Node Index:", winningNodeIndex);
@@ -91,7 +87,6 @@ function logWinningNode(nodes, currentAngle, angleStep) {
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
-
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -99,7 +94,7 @@ export function drawWheel(nodes, rotation = 0) {
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const radius = Math.min(canvas.width, canvas.height) / 2;
-    const centerX = canvas.width / 2;
+    const centerX = radius;
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
@@ -111,7 +106,7 @@ export function drawWheel(nodes, rotation = 0) {
         colorPalette.quinary,
     ];
 
-    nodes.forEach((node, index) => {
+    nodes.forEach((value, index) => {
         const startAngle = currentAngle;
         const endAngle = startAngle + angleStep;
 
@@ -132,12 +127,8 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = colorPalette.textWhite;
-        ctx.font = 'bold 20px Arial';
-        
-        // Adjust text position based on text length
-        const textRadius = radius * (node.value.length > 10 ? 0.7 : 0.8);
-        ctx.fillText(node.value, textRadius, 0);
-        
+        ctx.font = '20px Arial';
+        ctx.fillText(value, radius * 0.8, 0);
         ctx.restore();
 
         currentAngle += angleStep;
@@ -187,7 +178,6 @@ export function loadNodesConfiguration(callback) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
     const rotationRef = ref(db, 'wheel/rotation');
-
     get(nodesRef).then((snapshot) => {
         const nodes = snapshot.val();
         get(rotationRef).then((rotationSnapshot) => {
@@ -205,15 +195,10 @@ export function shuffleNodes(nodes) {
     }
     return values;
 }
-document.getElementById('shuffleButton').addEventListener('click', () => {
-    const updatedNodes = shuffleAndUpdateAngle(nodes);
-    nodes = updatedNodes; // Update the global nodes array
-    saveNodesConfiguration(nodes); // Save the new configuration to the database
-});
+
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
-    currentAngle = Math.random() * 2 * Math.PI; // Set the angle to a random value between 0 and 2π
+    currentAngle = Math.random() * 2 * Math.PI;
     drawWheel(shuffledNodes, currentAngle);
-    saveCurrentRotation(currentAngle); // Save the new rotation to the database
     return shuffledNodes;
 }
