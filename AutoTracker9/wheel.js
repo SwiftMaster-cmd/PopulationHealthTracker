@@ -43,6 +43,7 @@ export function spinWheel(nodes, currentAngle) {
         }
 
         drawWheel(nodes, currentAngle);
+        drawNeedle(); // Ensure the needle is always drawn after the wheel
         saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
@@ -108,8 +109,6 @@ export function drawWheel(nodes, rotation = 0) {
 
         currentAngle += angleStep;
     });
-
-    drawNeedle(); // Draw the needle after the wheel to keep it on top
 }
 
 function drawNeedle() {
@@ -124,14 +123,25 @@ function drawNeedle() {
     needleImg.onload = () => {
         const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
         const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
-        const needleXPosition = canvas.width / 2 - needleWidth / 2; // Center horizontally
+        const needleXPosition = (canvas.width / 2) - (needleWidth / 2); // Center horizontally
         const needleYPosition = 10; // Adjust as needed for vertical positioning
 
         ctx.save();
-        ctx.translate(needleXPosition, needleYPosition);
-        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
+        ctx.drawImage(needleImg, needleXPosition, needleYPosition, needleWidth, needleHeight);
         ctx.restore();
     };
+
+    // Draw the needle immediately if the image is already loaded
+    if (needleImg.complete) {
+        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
+        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
+        const needleXPosition = (canvas.width / 2) - (needleWidth / 2); // Center horizontally
+        const needleYPosition = 10; // Adjust as needed for vertical positioning
+
+        ctx.save();
+        ctx.drawImage(needleImg, needleXPosition, needleYPosition, needleWidth, needleHeight);
+        ctx.restore();
+    }
 }
 
 function displayResult(nodes, rotation, angleStep) {
