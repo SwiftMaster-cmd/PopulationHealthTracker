@@ -187,21 +187,6 @@ export function saveNodesConfiguration(nodes) {
         .catch((error) => console.error('Error saving nodes configuration:', error));
 }
 
-function loadCurrentConfiguration() {
-    loadNodesConfiguration((nodes, rotation) => {
-        document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
-        if (nodes.length > 0) {
-            nodes.forEach(node => addNodeField(node.value, node.count));
-            currentNodes = nodes;
-            currentRotation = rotation;
-            drawWheel(currentNodes, currentRotation);
-            drawCurrentConfiguration();
-        } else {
-            console.error('No nodes found in configuration.');
-        }
-    });
-}
-
 
 
 export function loadNodesConfiguration(callback) {
@@ -224,7 +209,6 @@ export function loadNodesConfiguration(callback) {
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
-
 
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
