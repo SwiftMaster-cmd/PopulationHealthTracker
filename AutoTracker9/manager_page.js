@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
+import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration, shuffleNodes } from './wheel.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -22,6 +22,32 @@ let currentNodes = [];
 let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Ensure all elements are available before attaching event listeners
+    if (!document.getElementById('add-node-field')) {
+        console.error('Element #add-node-field not found.');
+        return;
+    }
+    if (!document.getElementById('add-rule-field')) {
+        console.error('Element #add-rule-field not found.');
+        return;
+    }
+    if (!document.getElementById('save-preset-button')) {
+        console.error('Element #save-preset-button not found.');
+        return;
+    }
+    if (!document.getElementById('save-configuration')) {
+        console.error('Element #save-configuration not found.');
+        return;
+    }
+    if (!document.getElementById('spin-button')) {
+        console.error('Element #spin-button not found.');
+        return;
+    }
+    if (!document.getElementById('shuffle-button')) {
+        console.error('Element #shuffle-button not found.');
+        return;
+    }
+
     document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
     document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
     document.getElementById('save-preset-button').addEventListener('click', savePreset);
