@@ -197,7 +197,7 @@ function displayResult(nodes, rotation, angleStep) {
             if (highlightOpacity >= 0.6) increasing = false;
         } else {
             highlightOpacity -= 0.01;
-            if (highlightOpacity <= 0.1) increasing is true;
+            if (highlightOpacity <= 0.1) increasing = true;
         }
 
         drawWheel(nodes, rotation, winningIndex, highlightOpacity);
@@ -206,6 +206,7 @@ function displayResult(nodes, rotation, angleStep) {
 
     animateHighlight();
 }
+
 
 
 
