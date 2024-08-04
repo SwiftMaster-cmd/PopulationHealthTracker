@@ -43,7 +43,6 @@ export function spinWheel(nodes, currentAngle) {
         }
 
         drawWheel(nodes, currentAngle);
-        drawNeedle(); // Ensure the needle is always drawn after the wheel
         saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
@@ -64,6 +63,7 @@ function easeInQuad(t) {
 function easeOutQuad(t) {
     return t * (2 - t);
 }
+
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -74,7 +74,7 @@ export function drawWheel(nodes, rotation = 0) {
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-    const radius = Math.min(canvas.width, canvas.height) / 2; // Corrected
+    const radius = Math.min(canvas.height, canvas.height) / 2; // Corrected
     const centerX = radius; // Align wheel to the left
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
@@ -146,6 +146,9 @@ function drawNeedle() {
 }
 
 
+
+
+
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
     const adjustedRotation = (rotation + Math.PI / 2) % (2 * Math.PI);
@@ -153,7 +156,7 @@ function displayResult(nodes, rotation, angleStep) {
     const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
-    resultElement.textContent = `Result: ${result}`;
+    resultElement.textContent = Result: ${result};
 }
 
 function saveCurrentRotation(rotation) {
