@@ -131,7 +131,8 @@ function drawNeedle() {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const winningIndex = Math.floor((2 * Math.PI - rotation + angleStep / 2) / angleStep) % totalNodes;
+    const adjustedRotation = (rotation + angleStep / 2) % (2 * Math.PI);
+    const winningIndex = Math.floor((2 * Math.PI - adjustedRotation) / angleStep) % totalNodes;
     const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
