@@ -18,14 +18,10 @@ export function spinWheel(nodes) {
     const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
-    const initialRotation = Math.PI / 2; // Start at 90 degrees
+    const initialRotation = 0; // No initial rotation adjustment
 
-    const winningIndex = Math.floor(Math.random() * totalNodes);
-    const winningAngle = winningIndex * angleStep;
-    const finalAngle = (2 * Math.PI - winningAngle + initialRotation) % (2 * Math.PI);
-    
     const totalRotations = 5; // Number of full rotations before stopping
-    const finalRotationAngle = finalAngle + totalRotations * 2 * Math.PI;
+    const finalRotationAngle = currentAngle + totalRotations * 2 * Math.PI;
 
     let start = null;
 
@@ -58,7 +54,7 @@ export function spinWheel(nodes) {
         } else {
             currentAngle = finalRotationAngle % (2 * Math.PI);
             isSpinning = false;
-            drawWheel(nodes, currentAngle + initialRotation, winningIndex);
+            drawWheel(nodes, currentAngle + initialRotation);
             saveCurrentRotation(currentAngle); // Save current rotation
             displayResult(nodes, currentAngle, angleStep); // Ensure result is displayed without altering the wheel
         }
@@ -75,7 +71,7 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-export function drawWheel(nodes, rotation = 0, winningIndex = null, highlightOpacity = 0.1) {
+export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -107,11 +103,7 @@ export function drawWheel(nodes, rotation = 0, winningIndex = null, highlightOpa
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.closePath();
 
-        if (index === winningIndex) {
-            ctx.fillStyle = `rgba(255, 0, 0, ${highlightOpacity})`; // Highlight with fading opacity
-        } else {
-            ctx.fillStyle = colors[index % colors.length];
-        }
+        ctx.fillStyle = colors[index % colors.length];
         ctx.fill();
         ctx.strokeStyle = colorPalette.textWhite;
         ctx.lineWidth = 2;
@@ -172,8 +164,7 @@ function drawNeedle(centerX, centerY, radius) {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const offset = Math.PI / 2; // Fixed 90 degrees
-    const adjustedRotation = (rotation + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
+    const adjustedRotation = rotation % (2 * Math.PI); // No offset adjustment
     const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
     const result = nodes[winningIndex];
 
@@ -193,7 +184,7 @@ function displayResult(nodes, rotation, angleStep) {
             if (highlightOpacity <= 0.1) increasing = true;
         }
 
-        drawWheel(nodes, rotation, winningIndex, highlightOpacity);
+        drawWheel(nodes, rotation, highlightOpacity);
         if (!isSpinning) {
             requestAnimationFrame(animateHighlight);
         }
