@@ -2,9 +2,9 @@
 import { colorPalette } from './color-palette.js';
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
+let currentAngle = 0;
 let isSpinning = false;
 let animationFrameId;
-let currentAngle = 0;
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
@@ -183,7 +183,8 @@ export function loadNodesConfiguration(callback) {
         const nodes = snapshot.val();
         get(rotationRef).then((rotationSnapshot) => {
             const rotation = rotationSnapshot.val();
-            callback(nodes, rotation);
+            currentAngle = rotation || 0;
+            callback(nodes, currentAngle);
         });
     });
 }
@@ -197,11 +198,10 @@ export function shuffleNodes(nodes) {
     return values;
 }
 
-export function shuffleAndUpdateAngle(nodes) {
+export function shuffleAndUpdateWheel(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
-    currentAngle = Math.random() * 2 * Math.PI;
-    drawWheel(shuffledNodes, currentAngle);
-    saveCurrentRotation(currentAngle); // Save the new rotation angle
+    drawWheel(shuffledNodes, currentAngle); // Draw the wheel with the current rotation
+    saveNodesConfiguration(shuffledNodes); // Save the new node configuration
     return shuffledNodes;
 }
 
