@@ -198,6 +198,12 @@ export function shuffleNodes(nodes) {
     return values;
 }
 
+export function shuffleAndDrawNodes(nodes) {
+    const shuffledNodes = shuffleNodes(nodes);
+    drawWheel(shuffledNodes, currentAngle);
+    return shuffledNodes;
+}
+
 function logWinningNode(nodes, currentAngle, angleStep) {
     const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
     const winningNodeIndex = Math.floor(winningAngle / angleStep);
