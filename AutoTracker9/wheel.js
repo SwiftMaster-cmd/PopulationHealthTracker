@@ -133,18 +133,19 @@ function drawNeedle() {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
-    const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
-    let currentNodeIndex = 0;
+    const adjustedRotation = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI); // Ensure the rotation is between 0 and 2*PI
+    const winningIndex = Math.floor((2 * Math.PI - adjustedRotation) / angleStep) % totalNodes;
+
+    let cumulativeCount = 0;
     let result;
 
-    nodes.forEach((node) => {
-        for (let i = 0; i < node.count; i++) {
-            if (currentNodeIndex === winningIndex) {
-                result = node.value;
-                break;
-            }
-            currentNodeIndex++;
+    nodes.some((node) => {
+        cumulativeCount += node.count;
+        if (winningIndex < cumulativeCount) {
+            result = node.value;
+            return true;
         }
+        return false;
     });
 
     const resultElement = document.getElementById('result');
