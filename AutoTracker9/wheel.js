@@ -178,9 +178,39 @@ export function loadNodesConfiguration(callback) {
 }
 
 export function shuffleNodes(nodes) {
-    for (let i = nodes.length - 1; i > 0; i--) {
+    let flattenedNodes = [];
+
+    // Flatten the nodes based on their counts
+    nodes.forEach(node => {
+        for (let i = 0; i < node.count; i++) {
+            flattenedNodes.push(node.value);
+        }
+    });
+
+    // Shuffle the flattened array
+    for (let i = flattenedNodes.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [nodes[i], nodes[j]] = [nodes[j], nodes[i]];
+        [flattenedNodes[i], flattenedNodes[j]] = [flattenedNodes[j], flattenedNodes[i]];
     }
-    return nodes;
+
+    // Reconstruct the nodes array
+    let shuffledNodes = [];
+    let nodeCounts = flattenedNodes.reduce((acc, value) => {
+        if (!acc[value]) {
+            acc[value] = 0;
+        }
+        acc[value]++;
+        return acc;
+    }, {});
+
+    Object.entries(nodeCounts).forEach(([value, count]) => {
+        shuffledNodes.push({ value: parseInt(value), count });
+    });
+
+    // Save the shuffled nodes
+    const db = getDatabase();
+    const shuffledNodesRef = ref(db, 'wheel/shuffledNodes');
+    set(shuffledNodesRef, shuffledNodes);
+
+    return shuffledNodes;
 }
