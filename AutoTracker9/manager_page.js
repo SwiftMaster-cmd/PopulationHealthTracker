@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
+import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration, currentAngle } from './wheel.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const firebaseConfig = {
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('spin-button').addEventListener('click', () => {
         loadNodesConfiguration((nodes, rotation) => {
             shuffledNodes = nodes;
-            currentAngle = rotation;
+            currentAngle = rotation; // Correctly set currentAngle
             spinWheel(nodes);
         });
     });

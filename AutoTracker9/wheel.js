@@ -1,8 +1,8 @@
 let isSpinning = false;
-let currentAngle = 0;
+export let currentAngle = 0; // Export currentAngle
 let animationFrameId;
 
-import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
