@@ -5,9 +5,13 @@ let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
 
+
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
+
+    // Reset the current angle to 0 before starting the spin
+    currentAngle = 0;
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
@@ -65,6 +69,8 @@ export function spinWheel(nodes) {
 
     animationFrameId = requestAnimationFrame(animate);
 }
+
+
 
 function easeInQuad(t) {
     return t * t;
