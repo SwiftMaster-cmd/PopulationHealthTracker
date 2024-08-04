@@ -167,13 +167,13 @@ function saveCurrentRotation(rotation) {
 function calculateWinningNode(nodes, rotation) {
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-    const needleAngle = Math.PI / 2; // 90 degrees in radians
+    const needleAngle = Math.PI / 2; // 90 degrees in radians (right side of the wheel)
 
     // Calculate the angle of the winning node
-    const winningAngle = (rotation + needleAngle) % (2 * Math.PI);
-    const nodeIndex = Math.floor(winningAngle / angleStep);
+    const adjustedAngle = (rotation + needleAngle) % (2 * Math.PI);
+    const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
 
-    return nodes[nodeIndex];
+    return nodes[winningNodeIndex];
 }
 
 function displayWinningNode(winningNode) {
