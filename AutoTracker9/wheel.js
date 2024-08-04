@@ -138,6 +138,7 @@ function drawNeedle() {
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
     const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
+    console.log('Winning Index:', winningIndex); // Debugging
     let currentNodeIndex = 0;
     let result;
 
@@ -150,6 +151,8 @@ function displayResult(nodes, rotation, angleStep) {
             currentNodeIndex++;
         }
     });
+
+    console.log('Winning Node Value:', result); // Debugging
 
     const resultElement = document.getElementById('result');
     if (resultElement) {
