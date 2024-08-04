@@ -1,5 +1,5 @@
 import { database } from './firebase-init.js';
-import { ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { drawWheel, saveNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
@@ -7,7 +7,6 @@ let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('save-preset-button').addEventListener('click', savePreset);
-    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
     loadPresets();
 });
 
@@ -83,5 +82,3 @@ function drawCurrentConfiguration() {
         currentNodesContainer.appendChild(nodeElement);
     });
 }
-
-export { loadPresets, displayPresetSummary };
