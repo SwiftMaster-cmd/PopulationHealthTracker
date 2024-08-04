@@ -81,8 +81,8 @@ function easeOutQuad(t) {
 }
 
 function logWinningNode(nodes, currentAngle, angleStep) {
-    // Calculate the angle for the right side of the wheel
-    const rightSideAngle = (currentAngle + Math.PI) % (2 * Math.PI);
+    // Calculate the angle for the right side of the wheel (90 degrees from the top)
+    const rightSideAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
     const winningNodeIndex = Math.floor(rightSideAngle / angleStep);
     const winningNode = nodes[winningNodeIndex];
     console.log("Current Angle (radians):", currentAngle);
@@ -90,6 +90,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
