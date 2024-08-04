@@ -121,7 +121,7 @@ function drawNeedle() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const needleImg = new Image();
-    needleImg.src = './path/to/your/needle-image.png'; // Replace with the path to the uploaded needle image
+    needleImg.src = '.nav.png'; // Replace with the path to the uploaded needle image
 
     needleImg.onload = () => {
         const needleWidth = needleImg.width * 4;
