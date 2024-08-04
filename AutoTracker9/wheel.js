@@ -160,10 +160,9 @@ function drawNeedle(centerX, centerY, radius) {
     }
 }
 
-
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const offset = 30 * (Math.PI / 180); // Convert 30 degrees to radians
+    const offset = (30 + 60) * (Math.PI / 180); // Convert 90 degrees to radians (30 degrees + 60 degrees)
     const adjustedRotation = (rotation + Math.PI / 2 + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
     const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
     const result = nodes[winningIndex];
@@ -190,6 +189,7 @@ function displayResult(nodes, rotation, angleStep) {
 
     animateHighlight();
 }
+
 
 
 
