@@ -203,13 +203,21 @@ export function loadNodesConfiguration(callback) {
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
-export function shuffleNodes(nodes) {
-    const values = nodes.flatMap(node => Array(node.count).fill(node.value));
-    for (let i = values.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [values[i], values[j]] = [values[j], values[i]];
+function shuffleNodes() {
+    const container = document.getElementById('nodes-container');
+    for (let i = container.children.length; i >= 0; i--) {
+        container.appendChild(container.children[Math.random() * i | 0]);
     }
-    return values;
+    // Update the selected configuration with the shuffled nodes
+    updateSelectedConfiguration();
+}
+
+// Function to update the selected wheel configuration
+function updateSelectedConfiguration() {
+    const container = document.getElementById('nodes-container');
+    const nodes = Array.from(container.children).map(node => node.value);
+    // Assuming selectedConfiguration is the current selected configuration
+    selectedConfiguration.nodes = nodes;
 }
 
 export function shuffleAndUpdateWheel(nodes) {
