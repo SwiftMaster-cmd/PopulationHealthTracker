@@ -106,7 +106,7 @@ function saveConfiguration() {
         nodes.push({ value: nodeValue, count: nodeCount });
     }
 
-    saveNodesConfiguration(nodes);
+    saveNodesConfiguration(nodes, currentRotation);
     currentNodes = nodes;
     drawCurrentConfiguration();
     console.log('Configuration updated successfully.');
@@ -185,8 +185,8 @@ function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            const counts = nodes.reduce((acc, value) => {
-                acc[value] = (acc[value] || 0) + 1;
+            const counts = nodes.reduce((acc, node) => {
+                acc[node.value] = (acc[node.value] || 0) + node.count;
                 return acc;
             }, {});
             Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
@@ -256,7 +256,7 @@ function displayPresets(presets) {
     presetsContainer.innerHTML = '';
 
     const presetsPerPage = 5;
-    const currentPage = 0;
+    let currentPage = 0;
 
     const start = currentPage * presetsPerPage;
     const end = Math.min(start + presetsPerPage, presets.length);
@@ -271,6 +271,20 @@ function displayPresets(presets) {
 
     document.getElementById('prev-button').disabled = currentPage === 0;
     document.getElementById('next-button').disabled = end >= presets.length;
+
+    document.getElementById('prev-button').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            displayPresets(presets);
+        }
+    });
+
+    document.getElementById('next-button').addEventListener('click', () => {
+        if ((currentPage + 1) * presetsPerPage < presets.length) {
+            currentPage++;
+            displayPresets(presets);
+        }
+    });
 }
 
 function displayPresetSummary(preset) {
