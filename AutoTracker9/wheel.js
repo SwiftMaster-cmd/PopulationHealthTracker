@@ -3,7 +3,7 @@ import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/1
 
 let isSpinning = false;
 let animationFrameId;
-let currentAngle = 0; // This will hold the starting angle and be updated to the final angle after spinning
+let currentAngle = 0; // This will hold the current angle and be updated to the final angle after spinning
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
@@ -19,37 +19,42 @@ export function spinWheel(nodes) {
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
     let start = null;
+    let previousTimestamp = null;
 
     function animate(timestamp) {
-        if (!start) start = timestamp;
+        if (!start) {
+            start = timestamp;
+            previousTimestamp = timestamp;
+        }
         const progress = timestamp - start;
+        const deltaTime = timestamp - previousTimestamp;
+        previousTimestamp = timestamp;
         let currentSpeed = 0;
         let rotationDelta = 0;
 
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
-            rotationDelta = (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
             currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
-            rotationDelta = (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
             currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
-            rotationDelta = (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
-            rotationDelta = (currentSpeed / 60) % (2 * Math.PI);
         }
 
+        rotationDelta = (currentSpeed * deltaTime / 1000) % (2 * Math.PI);
+        currentAngle = (currentAngle + rotationDelta) % (2 * Math.PI);
+
         if (progress < spinDuration) {
-            drawWheel(nodes, currentAngle + rotationDelta);
+            drawWheel(nodes, currentAngle);
             animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
-            currentAngle = (currentAngle + rotationDelta) % (2 * Math.PI); // Update current angle to the final angle after the spin
+            currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
             drawWheel(nodes, currentAngle);
             saveCurrentRotation(currentAngle); // Save current rotation
             logWinningNode(nodes, currentAngle, angleStep); // Log the winning node
