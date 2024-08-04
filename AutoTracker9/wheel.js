@@ -123,41 +123,42 @@ export function drawWheel(nodes, rotation = 0, winningIndex = null, highlightOpa
     drawNeedle(centerX, centerY, radius);
 }
 
-function drawNeedle(centerX, centerY, radius) {
-    const canvas = document.getElementById('wheel-canvas');
-    const ctx = canvas.getContext('2d');
 
-    if (!ctx) return;
+function displayResult(nodes, rotation, angleStep) {
+    const totalNodes = nodes.length;
+    const offset = 75 * (Math.PI / 180); // Convert 75 degrees to radians (2.5 times the previous 30 degrees)
+    const adjustedRotation = (rotation + Math.PI / 2 + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
+    const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
+    const result = nodes[winningIndex];
 
-    const needleImg = new Image();
-    needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `Result: ${result}`;
 
-    needleImg.onload = () => {
-        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
-        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
-        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+    // Calculate the angle to rotate the wheel so that the winning index is aligned with the needle
+    const winningAngle = winningIndex * angleStep;
+    const finalRotation = (Math.PI / 2 - winningAngle + offset) % (2 * Math.PI);
 
-        ctx.save();
-        ctx.translate(needleXPosition, needleYPosition);
-        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
-        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
-        ctx.restore();
-    };
+    // Redraw the wheel with the final rotation to align the winning index with the needle
+    drawWheel(nodes, finalRotation, winningIndex);
 
-    // Draw the needle immediately if the image is already loaded
-    if (needleImg.complete) {
-        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
-        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
-        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+    // Start the highlight animation
+    let highlightOpacity = 0.1;
+    let increasing = true;
 
-        ctx.save();
-        ctx.translate(needleXPosition, needleYPosition);
-        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
-        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
-        ctx.restore();
+    function animateHighlight() {
+        if (increasing) {
+            highlightOpacity += 0.01;
+            if (highlightOpacity >= 0.6) increasing = false;
+        } else {
+            highlightOpacity -= 0.01;
+            if (highlightOpacity <= 0.1) increasing = true;
+        }
+
+        drawWheel(nodes, finalRotation, winningIndex, highlightOpacity);
+        requestAnimationFrame(animateHighlight);
     }
+
+    animateHighlight();
 }
 
 
