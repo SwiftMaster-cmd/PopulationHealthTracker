@@ -47,7 +47,7 @@ export function spinWheel(nodes) {
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
         }
 
-        rotationDelta = (currentSpeed * deltaTime / 1000) % (2 * Math.PI);
+        rotationDelta += currentSpeed * deltaTime / 1000;
         currentAngle = (initialAngle + rotationDelta) % (2 * Math.PI);
 
         if (progress < spinDuration) {
@@ -64,6 +64,7 @@ export function spinWheel(nodes) {
 
     animationFrameId = requestAnimationFrame(animate);
 }
+
 
 function easeInQuad(t) {
     return t * t;
@@ -83,6 +84,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 
 export function drawWheel(nodes, rotation = 0) {
@@ -226,5 +228,3 @@ export function shuffleAndUpdateAngle(nodes) {
 
     return shuffledNodes;
 }
-
-
