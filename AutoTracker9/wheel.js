@@ -24,7 +24,7 @@ export function spinWheel(nodes, currentAngle) {
         if (!start) start = timestamp;
         const progress = timestamp - start;
         let currentSpeed = 0;
-
+    
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
@@ -42,10 +42,10 @@ export function spinWheel(nodes, currentAngle) {
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
             currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
-
+    
         drawWheel(nodes, currentAngle);
         saveCurrentRotation(currentAngle); // Save current rotation
-
+    
         if (progress < spinDuration) {
             animationFrameId = requestAnimationFrame(animate);
         } else {
@@ -53,7 +53,7 @@ export function spinWheel(nodes, currentAngle) {
             displayResult(nodes, currentAngle, angleStep);
         }
     }
-
+    
     animationFrameId = requestAnimationFrame(animate);
 }
 
@@ -160,7 +160,6 @@ function drawNeedle(centerX, centerY, radius) {
 
 
 
-
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
     const adjustedRotation = (rotation + Math.PI / 2) % (2 * Math.PI); // Adjusting to capture from the right
@@ -170,6 +169,7 @@ function displayResult(nodes, rotation, angleStep) {
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
 }
+
 
 
 
