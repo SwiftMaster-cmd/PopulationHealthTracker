@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
         updateStyles(isDark);
     }
 
+    
+
     function updateStyles(isDark) {
         const styles = document.documentElement.style;
         const whiteTextColor = '#ffffff';
@@ -103,3 +105,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+export const colorPalette = {
+    primary: 'rgba(75, 0, 130, 0.9)', // Indigo
+    secondary: 'rgba(138, 43, 226, 0.9)', // BlueViolet
+    tertiary: 'rgba(0, 191, 255, 0.9)', // DeepSkyBlue
+    quaternary: 'rgba(50, 205, 50, 0.9)', // LimeGreen
+    quinary: 'rgba(255, 215, 0, 0.9)', // Gold
+    textWhite: 'rgba(255, 255, 255, 1)',
+    backgroundColor: 'rgba(20, 20, 20, 1)', // Dark Background
+};
