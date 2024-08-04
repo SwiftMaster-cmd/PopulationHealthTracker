@@ -124,7 +124,7 @@ function drawNeedle(centerX, centerY, radius) {
     needleImg.onload = () => {
         const needleWidth = needleImg.width * 0.35; // Adjust the size to 35% of the original
         const needleHeight = needleImg.height * 0.35; // Adjust the size to 35% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
+        const needleXPosition = centerX + radius - needleWidth / 2 + 80; // Move needle 80px to the right
         const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
