@@ -173,7 +173,7 @@ function displayResult(nodes, rotation, angleStep) {
 
     // Calculate the angle to rotate the wheel so that the winning index is aligned with the needle
     const winningAngle = winningIndex * angleStep;
-    const finalRotation = (Math.PI / 2 - winningAngle) % (2 * Math.PI);
+    const finalRotation = (Math.PI / 2 - winningAngle - Math.PI / 2) % (2 * Math.PI); // Subtract 90 degrees for counterclockwise rotation
 
     // Redraw the wheel with the final rotation to align the winning index with the needle
     drawWheel(nodes, finalRotation, winningIndex);
@@ -197,6 +197,7 @@ function displayResult(nodes, rotation, angleStep) {
 
     animateHighlight();
 }
+
 
 
 
