@@ -18,12 +18,12 @@ export function spinWheel(nodes, currentAngle) {
     const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
-    let start = null;
-
     // Randomly select a winning index for the spin
     const winningIndex = Math.floor(Math.random() * totalNodes);
     const winningAngle = winningIndex * angleStep;
     const finalAngle = (2 * Math.PI - winningAngle + Math.PI / 2) % (2 * Math.PI);
+
+    let start = null;
 
     function animate(timestamp) {
         if (!start) start = timestamp;
@@ -49,7 +49,7 @@ export function spinWheel(nodes, currentAngle) {
         }
 
         // Ensure the final angle aligns with the winning segment
-        if (progress >= spinDuration) {
+        if (progress >= spinDuration - 16) { // Check near the end of the animation
             currentAngle = finalAngle;
         }
 
@@ -191,10 +191,10 @@ function displayResult(nodes, rotation, angleStep) {
     function animateHighlight() {
         if (increasing) {
             highlightOpacity += 0.01;
-            if (highlightOpacity >= 0.6) increasing is false;
+            if (highlightOpacity >= 0.6) increasing = false;
         } else {
             highlightOpacity -= 0.01;
-            if (highlightOpacity <= 0.1) increasing is true;
+            if (highlightOpacity <= 0.1) increasing = true;
         }
 
         drawWheel(nodes, rotation, winningIndex, highlightOpacity);
