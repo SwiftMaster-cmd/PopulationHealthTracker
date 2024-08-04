@@ -3,20 +3,19 @@ import { colorPalette } from './color-palette.js';
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 let currentAngle = 0;
+let currentNodes = [];
 let isSpinning = false;
 let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadNodesConfiguration((nodes, rotation) => {
-        drawWheel(nodes, rotation);
-    });
+    loadConfiguration();
 });
 
-export function spinWheel(nodes) {
+export function spinWheel() {
     if (isSpinning) return;
     isSpinning = true;
 
-    const totalNodes = nodes.length;
+    const totalNodes = currentNodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const spinDuration = 9000;
     const accelerationDuration = 2000;
@@ -58,28 +57,23 @@ export function spinWheel(nodes) {
         totalRotation += (currentSpeed * deltaTime / 1000);
         let newAngle = (initialAngle + totalRotation) % (2 * Math.PI);
 
-        drawWheel(nodes, newAngle);
+        drawWheel(currentNodes, newAngle);
 
         if (progress < spinDuration) {
             animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
             currentAngle = newAngle;
-            saveCurrentRotation(currentAngle);
-            logWinningNode(nodes, currentAngle, angleStep);
+            saveConfiguration();
+            logWinningNode(currentNodes, currentAngle, angleStep);
         }
     }
 
     animationFrameId = requestAnimationFrame(animate);
 }
 
-function easeInQuad(t) {
-    return t * t;
-}
-
-function easeOutQuad(t) {
-    return t * (2 - t);
-}
+function easeInQuad(t) { return t * t; }
+function easeOutQuad(t) { return t * (2 - t); }
 
 function logWinningNode(nodes, currentAngle, angleStep) {
     const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
@@ -91,7 +85,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node:", winningNode);
 }
 
-export function drawWheel(nodes, rotation = 0) {
+export function drawWheel(nodes, rotation) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -103,7 +97,7 @@ export function drawWheel(nodes, rotation = 0) {
     const radius = Math.min(canvas.width, canvas.height) / 2;
     const centerX = radius;
     const centerY = canvas.height / 2;
-    let currentAngle = rotation;
+    let drawAngle = rotation;
 
     const colors = [
         colorPalette.primary,
@@ -114,7 +108,7 @@ export function drawWheel(nodes, rotation = 0) {
     ];
 
     nodes.forEach((value, index) => {
-        const startAngle = currentAngle;
+        const startAngle = drawAngle;
         const endAngle = startAngle + angleStep;
 
         ctx.beginPath();
@@ -138,7 +132,7 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.fillText(value, radius * 0.8, 0);
         ctx.restore();
 
-        currentAngle += angleStep;
+        drawAngle += angleStep;
     });
 
     drawNeedle(centerX, centerY, radius);
@@ -169,29 +163,22 @@ function drawNeedle(centerX, centerY, radius) {
     }
 }
 
-function saveCurrentRotation(rotation) {
+function saveConfiguration() {
     const db = getDatabase();
-    const rotationRef = ref(db, 'wheel/rotation');
-    set(rotationRef, rotation);
+    const configRef = ref(db, 'wheel');
+    set(configRef, { nodes: currentNodes, rotation: currentAngle });
 }
 
-export function saveNodesConfiguration(nodes) {
+function loadConfiguration() {
     const db = getDatabase();
-    const nodesRef = ref(db, 'wheel/nodes');
-    set(nodesRef, nodes);
-}
-
-export function loadNodesConfiguration(callback) {
-    const db = getDatabase();
-    const nodesRef = ref(db, 'wheel/nodes');
-    const rotationRef = ref(db, 'wheel/rotation');
-    get(nodesRef).then((snapshot) => {
-        const nodes = snapshot.val();
-        get(rotationRef).then((rotationSnapshot) => {
-            const rotation = rotationSnapshot.val();
-            currentAngle = rotation || 0;
-            callback(nodes, currentAngle);
-        });
+    const configRef = ref(db, 'wheel');
+    get(configRef).then((snapshot) => {
+        const config = snapshot.val();
+        if (config) {
+            currentNodes = config.nodes || [];
+            currentAngle = config.rotation || 0;
+            drawWheel(currentNodes, currentAngle);
+        }
     });
 }
 
@@ -204,9 +191,15 @@ export function shuffleNodes(nodes) {
     return values;
 }
 
-export function shuffleAndUpdateWheel(nodes) {
-    const shuffledNodes = shuffleNodes(nodes);
-    drawWheel(shuffledNodes, currentAngle); // Draw the wheel with the current rotation
-    saveNodesConfiguration(shuffledNodes); // Save the new node configuration
-    return shuffledNodes;
+export function shuffleAndUpdateWheel() {
+    currentNodes = shuffleNodes(currentNodes);
+    drawWheel(currentNodes, currentAngle);
+    saveConfiguration();
 }
+
+export function updateNodes(newNodes) {
+    currentNodes = newNodes;
+    drawWheel(currentNodes, currentAngle);
+    saveConfiguration();
+}
+
