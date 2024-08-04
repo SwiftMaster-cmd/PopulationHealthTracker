@@ -14,11 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
-// Hide the shuffle button
-const shuffleButton = document.getElementById('shuffle-button');
-if (shuffleButton) {
-    shuffleButton.style.display = 'none';
-}
+
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const spinDuration = 9000;
@@ -209,8 +205,13 @@ export function shuffleNodes(nodes) {
         const j = Math.floor(Math.random() * (i + 1));
         [values[i], values[j]] = [values[j], values[i]];
     }
+    // Check if any node shows [object Object] and shuffle automatically
+    if (values.some(value => typeof value === 'object')) {
+        return shuffleNodes(nodes);
+    }
     return values;
 }
+
 
 export function shuffleAndUpdateWheel(nodes) {
     const savedAngle = currentAngle; // Save the current angle
