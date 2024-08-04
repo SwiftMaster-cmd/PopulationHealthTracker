@@ -29,7 +29,6 @@ function savePreset() {
 }
 
 
-
 function loadPresets() {
     const presetsRef = ref(database, 'spinTheWheelPresets');
     onValue(presetsRef, (snapshot) => {

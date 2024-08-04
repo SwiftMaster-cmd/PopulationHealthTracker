@@ -1,5 +1,5 @@
 import { database } from './firebase-init.js';
-import { ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
@@ -64,30 +64,10 @@ function saveConfiguration() {
 
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
+    drawCurrentConfiguration();
     drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
-    shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
-function loadPresets() {
-    const presetsRef = ref(database, 'spinTheWheelPresets');
-    onValue(presetsRef, (snapshot) => {
-        const data = snapshot.val();
-        const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
-        displayPresets(presets);
-    });
-}
-function displayPresets(presets) {
-    const presetsContainer = document.getElementById('presets-container');
-    presetsContainer.innerHTML = '';
-
-    presets.forEach(preset => {
-        const presetButton = document.createElement('button');
-        presetButton.textContent = preset.name;
-        presetButton.addEventListener('click', () => loadPreset(preset));
-        presetsContainer.appendChild(presetButton);
-    });
-}
-
 
 function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
@@ -124,14 +104,13 @@ function listenForChanges() {
 }
 
 function shuffleCurrentNodes() {
-    const shuffledNodes = shuffleNodes(currentNodes);
-    drawWheel(shuffledNodes, currentRotation);
+    currentNodes = shuffleNodes(currentNodes);
+    drawWheel(currentNodes, currentRotation);
+    saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
 
     // Save the shuffled nodes as a separate subnode
     const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    set(shuffledNodesRef, shuffledNodes);
-
-    drawRandomConfiguration(shuffledNodes); // Update the random configuration display
+    set(shuffledNodesRef, currentNodes);
 }
 
 function loadCurrentRandomConfiguration() {
