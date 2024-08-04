@@ -1,37 +1,19 @@
-import { database, auth } from './firebase-init.js';
-import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration, shuffleNodes } from './wheel.js';
+import { database } from './firebase-init.js';
+import { ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
-    document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
-    document.getElementById('save-preset-button').addEventListener('click', savePreset);
     document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
+    document.getElementById('spin-button').addEventListener('click', () => loadShuffledNodesAndSpin());
     document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
-            get(userAuthorityRef).then((snapshot) => {
-                const authorityLevel = snapshot.val();
-                if (authorityLevel >= 9) {
-                    loadCurrentConfiguration();
-                    loadCurrentRules();
-                    listenForChanges();
-                } else {
-                    alert("You do not have permission to view this page.");
-                    window.location.href = 'index.html';
-                }
-            });
-        } else {
-            window.location.href = 'index.html';
-        }
-    });
+    loadCurrentConfiguration();
+    listenForChanges();
+    loadCurrentRandomConfiguration(); // Load current random configuration on page load
 });
 
 function addNodeField(value = 0, count = 1) {
@@ -52,6 +34,7 @@ function addNodeField(value = 0, count = 1) {
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
         nodeContainer.remove();
+        saveConfiguration();
     });
 
     nodeContainer.appendChild(nodeValueInput);
@@ -81,78 +64,9 @@ function saveConfiguration() {
 
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
-    drawCurrentConfiguration();
-    shuffleCurrentNodes(); // Shuffle nodes when saving configuration
+    drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
-}
-
-function addRuleField(salesType = 'billableHRA', quantity = 0) {
-    const ruleContainer = document.createElement('div');
-    ruleContainer.className = 'rule-field';
-
-    const salesTypeSelect = document.createElement('select');
-    salesTypeSelect.innerHTML = `
-        <option value="billableHRA" ${salesType === 'billableHRA' ? 'selected' : ''}>Billable HRA</option>
-        <option value="selectPatientManagement" ${salesType === 'selectPatientManagement' ? 'selected' : ''}>Select Patient Management</option>
-        <option value="selectRX" ${salesType === 'selectRX' ? 'selected' : ''}>Select RX</option>
-        <option value="transfer" ${salesType === 'transfer' ? 'selected' : ''}>Transfer</option>
-    `;
-    salesTypeSelect.addEventListener('change', updateRules);
-
-    const quantityInput = document.createElement('input');
-    quantityInput.type = 'number';
-    quantityInput.placeholder = 'Quantity';
-    quantityInput.value = quantity;
-    quantityInput.addEventListener('input', updateRules);
-
-    const removeButton = document.createElement('button');
-    removeButton.textContent = 'Remove';
-    removeButton.addEventListener('click', () => {
-        ruleContainer.remove();
-        updateRules();
-    });
-
-    ruleContainer.appendChild(salesTypeSelect);
-    ruleContainer.appendChild(quantityInput);
-    ruleContainer.appendChild(removeButton);
-
-    document.getElementById('rules-container').appendChild(ruleContainer);
-}
-
-function updateRules() {
-    const rulesContainer = document.getElementById('rules-container');
-    const ruleFields = rulesContainer.getElementsByClassName('rule-field');
-    const rules = [];
-
-    for (let i = 0; i < ruleFields.length; i++) {
-        const salesType = ruleFields[i].querySelector('select').value;
-        const quantity = ruleFields[i].querySelector('input').value;
-        rules.push({ salesType, quantity });
-    }
-
-    set(ref(database, 'gameRules'), rules).then(() => {
-        console.log('Rules updated successfully.');
-    }).catch((error) => {
-        console.error('Error updating rules:', error);
-    });
-}
-
-function savePreset() {
-    const presetName = document.getElementById('preset-name').value;
-    if (!presetName) {
-        alert('Please enter a preset name.');
-        return;
-    }
-
-    const preset = { nodes: currentNodes };
-
-    const presetsRef = ref(database, `spinTheWheelPresets/${presetName}`);
-    set(presetsRef, preset).then(() => {
-        alert('Preset saved successfully.');
-        loadPresets(); // Refresh the presets list after saving
-    }).catch((error) => {
-        console.error('Error saving preset:', error);
-    });
+    shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
 
 function loadCurrentConfiguration() {
@@ -181,77 +95,56 @@ function drawCurrentConfiguration() {
     });
 }
 
-function loadCurrentRules() {
-    const rulesRef = ref(database, 'gameRules');
-    onValue(rulesRef, (snapshot) => {
-        const rules = snapshot.val();
-        document.getElementById('rules-list').innerHTML = ''; // Clear existing rules
-        document.getElementById('rules-container').innerHTML = ''; // Clear existing rule fields
-        if (rules) {
-            rules.forEach(rule => addRuleField(rule.salesType, rule.quantity));
-        }
-    });
-}
-
 function listenForChanges() {
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    const rulesRef = ref(database, 'gameRules');
+    const configRef = ref(database, 'wheel/nodes');
 
     onValue(configRef, () => {
         loadCurrentConfiguration();
     });
-
-    onValue(rulesRef, () => {
-        loadCurrentRules();
-    });
 }
 
 function shuffleCurrentNodes() {
-    currentNodes = shuffleNodes(currentNodes);
-    drawWheel(currentNodes, currentRotation);
-    saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
+    const shuffledNodes = shuffleNodes(currentNodes);
+    drawWheel(shuffledNodes, currentRotation);
+
+    // Save the shuffled nodes as a separate subnode
+    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
+    set(shuffledNodesRef, shuffledNodes);
+
+    drawRandomConfiguration(shuffledNodes); // Update the random configuration display
 }
 
-function loadPresets() {
-    const presetsRef = ref(database, 'spinTheWheelPresets');
-    onValue(presetsRef, (snapshot) => {
-        const data = snapshot.val();
-        const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
-        displayPresets(presets);
+function loadCurrentRandomConfiguration() {
+    const randomConfigRef = ref(database, 'wheel/shuffledNodes');
+    onValue(randomConfigRef, (snapshot) => {
+        const randomNodes = snapshot.val();
+        if (randomNodes) {
+            drawRandomConfiguration(randomNodes);
+        } else {
+            console.error('No shuffled nodes found in configuration.');
+        }
     });
 }
 
-function displayPresets(presets) {
-    const presetsContainer = document.getElementById('presets-container');
-    presetsContainer.innerHTML = '';
+function drawRandomConfiguration(randomNodes) {
+    const randomNodesContainer = document.getElementById('random-nodes-container');
+    randomNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    const presetsPerPage = 5;
-    const currentPage = 0;
-
-    const start = currentPage * presetsPerPage;
-    const end = Math.min(start + presetsPerPage, presets.length);
-
-    for (let i = start; i < end; i++) {
-        const preset = presets[i];
-        const presetButton = document.createElement('button');
-        presetButton.textContent = preset.name;
-        presetButton.addEventListener('click', () => displayPresetSummary(preset));
-        presetsContainer.appendChild(presetButton);
-    }
-
-    document.getElementById('prev-button').disabled = currentPage === 0;
-    document.getElementById('next-button').disabled = end >= presets.length;
+    randomNodes.forEach(value => {
+        const nodeElement = document.createElement('div');
+        nodeElement.textContent = `Value: ${value}`;
+        randomNodesContainer.appendChild(nodeElement);
+    });
 }
 
-function displayPresetSummary(preset) {
-    const summaryText = document.getElementById('summary-text');
-    summaryText.textContent = `Preset: ${preset.name}`;
-
-    const nodes = preset.nodes;
-    console.log('Preset nodes:', nodes); // Debugging
-    currentNodes = nodes;
-    currentRotation = 0; // Reset rotation to zero when loading a new preset
-    drawWheel(currentNodes, currentRotation);
-    drawCurrentConfiguration();
-    saveNodesConfiguration(currentNodes); // Save the nodes configuration to Firebase
+function loadShuffledNodesAndSpin() {
+    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
+    get(shuffledNodesRef).then(snapshot => {
+        const shuffledNodes = snapshot.val();
+        if (shuffledNodes) {
+            spinWheel(shuffledNodes, currentRotation);
+        } else {
+            alert('No shuffled nodes found. Please shuffle the nodes first.');
+        }
+    });
 }
