@@ -109,7 +109,7 @@ export function drawWheel(nodes, rotation = 0) {
         currentAngle += angleStep;
     });
 
-    drawNeedle(); // Ensure the needle is drawn on top
+    drawNeedle(); // Draw the needle after the wheel to keep it on top
 }
 
 function drawNeedle() {
@@ -122,8 +122,8 @@ function drawNeedle() {
     needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
     needleImg.onload = () => {
-        const needleWidth = needleImg.width * 0.735; // Adjust the size to 73.5% of the original
-        const needleHeight = needleImg.height * 0.735; // Adjust the size to 73.5% of the original
+        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
+        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
         const needleXPosition = canvas.width / 2 - needleWidth / 2; // Center horizontally
         const needleYPosition = 10; // Adjust as needed for vertical positioning
 
