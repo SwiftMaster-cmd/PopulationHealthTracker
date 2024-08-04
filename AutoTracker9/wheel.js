@@ -59,13 +59,14 @@ export function spinWheel(nodes) {
             currentAngle = finalRotationAngle % (2 * Math.PI);
             isSpinning = false;
             drawWheel(nodes, currentAngle, winningIndex);
-            displayResult(nodes, currentAngle, angleStep);
             saveCurrentRotation(currentAngle); // Save current rotation
+            displayResult(nodes, currentAngle, angleStep); // Ensure result is displayed without altering the wheel
         }
     }
 
     animationFrameId = requestAnimationFrame(animate);
 }
+
 
 function easeInQuad(t) {
     return t * t;
@@ -194,11 +195,14 @@ function displayResult(nodes, rotation, angleStep) {
         }
 
         drawWheel(nodes, rotation, winningIndex, highlightOpacity);
-        requestAnimationFrame(animateHighlight);
+        if (isSpinning === false) {
+            requestAnimationFrame(animateHighlight);
+        }
     }
 
     animateHighlight();
 }
+
 
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
