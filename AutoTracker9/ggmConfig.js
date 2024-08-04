@@ -1,5 +1,5 @@
 import { database } from './firebase-init.js';
-import { ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];

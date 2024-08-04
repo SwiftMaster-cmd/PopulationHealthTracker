@@ -43,7 +43,6 @@ export function spinWheel(nodes, currentAngle) {
         }
 
         drawWheel(nodes, currentAngle);
-        saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
             animationFrameId = requestAnimationFrame(animate);
@@ -136,12 +135,6 @@ function displayResult(nodes, rotation, angleStep) {
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
-}
-
-function saveCurrentRotation(rotation) {
-    const db = getDatabase();
-    const rotationRef = ref(db, 'wheel/rotation');
-    set(rotationRef, rotation);
 }
 
 export function saveNodesConfiguration(nodes) {
