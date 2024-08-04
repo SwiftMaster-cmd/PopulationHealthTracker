@@ -92,8 +92,8 @@ export function drawWheel(nodes, rotation = 0) {
 
         ctx.fillStyle = colors[index % colors.length];
         ctx.fill();
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'none'; // No border
+        ctx.lineWidth = 0;
         ctx.stroke();
 
         ctx.save();
@@ -122,9 +122,9 @@ function drawNeedle(centerX, centerY, radius) {
     needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
     needleImg.onload = () => {
-        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
-        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
+        const needleWidth = needleImg.width * 0.515; // Adjust the size to 51.5% of the original
+        const needleHeight = needleImg.height * 0.515; // Adjust the size to 51.5% of the original
+        const needleXPosition = centerX + radius - needleWidth / 2 + 80; // Move needle 80px to the right
         const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
@@ -134,10 +134,6 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     };
 }
-
-
-
-
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
@@ -158,7 +154,9 @@ function saveCurrentRotation(rotation) {
 export function saveNodesConfiguration(nodes) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
-    set(nodesRef, nodes);
+    set(nodesRef, nodes).then(() => {
+        shuffleNodes(nodes);
+    });
 }
 
 export function loadNodesConfiguration(callback) {
@@ -176,10 +174,21 @@ export function loadNodesConfiguration(callback) {
 }
 
 export function shuffleNodes(nodes) {
+    const db = getDatabase();
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [values[i], values[j]] = [values[j], values[i]];
     }
-    return values;
+
+    const shuffledNodesRef = ref(db, 'wheel/shuffledNodes');
+    set(shuffledNodesRef, values).then(() => {
+        const shuffledNodesContainer = document.getElementById('current-nodes-container');
+        shuffledNodesContainer.innerHTML = ''; // Clear existing nodes
+        values.forEach(value => {
+            const nodeElement = document.createElement('div');
+            nodeElement.textContent = `Value: ${value}`;
+            shuffledNodesContainer.appendChild(nodeElement);
+        });
+    });
 }
