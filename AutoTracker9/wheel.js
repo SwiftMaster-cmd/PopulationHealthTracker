@@ -28,19 +28,19 @@ export function spinWheel(nodes) {
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
+            currentAngle += currentSpeed / 60;
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
             currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
+            currentAngle += currentSpeed / 60;
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
             currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
+            currentAngle += currentSpeed / 60;
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
+            currentAngle += currentSpeed / 60;
         }
 
         if (progress < spinDuration) {
@@ -170,13 +170,13 @@ function calculateWinningNode(nodes, rotation) {
     const needleAngle = Math.PI / 2; // 90 degrees in radians
 
     // Adjust the final rotation angle to a 360-degree format
-    const finalAngle = (rotation % (2 * Math.PI)) * (180 / Math.PI); // Convert radians to degrees
+    const finalAngle = (rotation % (2 * Math.PI)); // Keep in radians
 
     // Calculate the winning angle, adjusted to start from the top middle (0 degrees)
-    const adjustedWinningAngle = (finalAngle + 90) % 360; // Adjust for the 90 degrees (right)
+    const adjustedWinningAngle = (finalAngle + needleAngle) % (2 * Math.PI);
 
     // Determine the winning node index
-    const winningNodeIndex = Math.floor((adjustedWinningAngle / 360) * totalNodes);
+    const winningNodeIndex = Math.floor(adjustedWinningAngle / angleStep);
 
     return nodes[winningNodeIndex];
 }
