@@ -163,13 +163,14 @@ function drawNeedle(centerX, centerY, radius) {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const adjustedRotation = (rotation - Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI); // Adjusting to capture from the right
+    const adjustedRotation = (rotation + Math.PI / 2) % (2 * Math.PI); // Adjusting to capture from the right
     const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
     const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
 }
+
 
 
 function saveCurrentRotation(rotation) {
