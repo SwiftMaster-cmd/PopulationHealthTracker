@@ -19,7 +19,11 @@ export function spinWheel(nodes, currentAngle) {
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
     let start = null;
-    let finalRotation = null;
+
+    // Randomly select a winning index for the spin
+    const winningIndex = Math.floor(Math.random() * totalNodes);
+    const winningAngle = winningIndex * angleStep;
+    const finalAngle = (2 * Math.PI - winningAngle + Math.PI / 2) % (2 * Math.PI);
 
     function animate(timestamp) {
         if (!start) start = timestamp;
@@ -44,12 +48,9 @@ export function spinWheel(nodes, currentAngle) {
             currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
-        // Calculate the final rotation to stop at the winning segment
-        if (progress >= spinDuration - 16) { // Check near the end of the animation
-            const winningIndex = Math.floor(((currentAngle + Math.PI / 2) % (2 * Math.PI)) / angleStep) % totalNodes;
-            const winningAngle = winningIndex * angleStep;
-            finalRotation = (winningAngle - Math.PI / 2) % (2 * Math.PI);
-            currentAngle = finalRotation;
+        // Ensure the final angle aligns with the winning segment
+        if (progress >= spinDuration) {
+            currentAngle = finalAngle;
         }
 
         drawWheel(nodes, currentAngle);
@@ -65,6 +66,7 @@ export function spinWheel(nodes, currentAngle) {
 
     animationFrameId = requestAnimationFrame(animate);
 }
+
 
 
 
@@ -189,10 +191,10 @@ function displayResult(nodes, rotation, angleStep) {
     function animateHighlight() {
         if (increasing) {
             highlightOpacity += 0.01;
-            if (highlightOpacity >= 0.6) increasing = false;
+            if (highlightOpacity >= 0.6) increasing is false;
         } else {
             highlightOpacity -= 0.01;
-            if (highlightOpacity <= 0.1) increasing = true;
+            if (highlightOpacity <= 0.1) increasing is true;
         }
 
         drawWheel(nodes, rotation, winningIndex, highlightOpacity);
@@ -201,6 +203,7 @@ function displayResult(nodes, rotation, angleStep) {
 
     animateHighlight();
 }
+
 
 
 
