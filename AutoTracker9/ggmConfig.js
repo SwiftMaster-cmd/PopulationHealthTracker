@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadCurrentConfiguration();
     listenForChanges();
+    loadCurrentRandomConfiguration(); // Load current random configuration on page load
 });
 
 function addNodeField(value = 0, count = 1) {
@@ -106,4 +107,20 @@ function shuffleCurrentNodes() {
     currentNodes = shuffleNodes(currentNodes);
     drawWheel(currentNodes, currentRotation);
     saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
+
+    // Save the shuffled nodes as a separate subnode
+    const shuffledNodesRef = ref(database, 'gameConfiguration/shuffledNodes');
+    set(shuffledNodesRef, currentNodes);
+}
+
+function loadCurrentRandomConfiguration() {
+    const randomConfigRef = ref(database, 'gameConfiguration/shuffledNodes');
+    onValue(randomConfigRef, (snapshot) => {
+        const randomNodes = snapshot.val();
+        if (randomNodes) {
+            drawWheel(randomNodes, currentRotation, 'random-wheel-canvas');
+        } else {
+            console.error('No shuffled nodes found in configuration.');
+        }
+    });
 }

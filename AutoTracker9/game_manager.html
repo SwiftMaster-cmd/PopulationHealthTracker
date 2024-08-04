@@ -31,8 +31,8 @@
         <div class="profile-button">P</div>
     </div>
 
-     <!-- Color Picker and Name Change Container -->
-     <div class="color-picker-container" id="colorPickerContainer">
+    <!-- Color Picker and Name Change Container -->
+    <div class="color-picker-container" id="colorPickerContainer">
         <input type="color" id="colorPicker" />
         <button id="applyColor" class="button">Apply Color Palette</button>
         <input type="text" id="nameInput" placeholder="Enter new name" />
@@ -70,29 +70,24 @@
             </ul>
         </section>
 
+        <section id="save-preset" class="container">
+            <h3>Save Preset</h3>
+            <input type="text" id="preset-name" placeholder="Preset Name">
+            <button id="save-preset-button" class="button">Save Preset</button>
+        </section>
+
         <section id="summary" class="container">
             <h3>Summary</h3>
             <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
             <canvas id="wheel-canvas" width="500" height="500"></canvas>
             <button id="spin-button" class="button">Spin</button>
             <button id="shuffle-button" class="button">Shuffle Nodes</button>
-            <p id="result">Result: </p> <!-- Result element -->
+            <p id="result">Result: </p>
         </section>
 
-        <section id="presets" class="container">
-            <h3>Game Presets</h3>
-            <div class="navigation">
-                <button id="prev-button">&larr; Prev</button>
-                <div id="presets-container">
-                    <!-- Preset buttons will be added here dynamically -->
-                </div>
-                <button id="next-button">Next &rarr;</button>
-            </div>
-        </section>
-
-        <section id="selected-preset-wheel" class="container">
-            <h3>Selected Preset Wheel</h3>
-            <canvas id="selected-preset-wheel-canvas" width="500" height="500"></canvas>
+        <section id="random-configuration" class="container">
+            <h3>Current Random Configuration</h3>
+            <canvas id="random-wheel-canvas" width="500" height="500"></canvas>
         </section>
     </div>
 </body>
