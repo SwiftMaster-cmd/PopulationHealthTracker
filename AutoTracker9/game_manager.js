@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { drawWheel, spinWheel, shuffleNodes } from './wheel.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -17,9 +18,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
+let currentNodes = [];
+let currentRotation = 0;
+
 document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
 document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
 document.getElementById('save-preset-button').addEventListener('click', savePreset);
+document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
+document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -67,30 +74,21 @@ function addNodeField(value = 0, count = 1) {
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
 
-document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
-document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
     let nodes = [];
 
-    // Collect node values and counts
     for (let i = 0; i < nodeFields.length; i++) {
         const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
         const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
-        for (let j = 0; j < nodeCount; j++) {
-            nodes.push(nodeValue);
-        }
+        nodes.push({ value: nodeValue, count: nodeCount });
     }
 
-    // Shuffle the nodes array to randomize the order
-    nodes = shuffle(nodes);
-
-    // Save each node individually to Firebase
     const nodesRef = ref(database, 'gameConfiguration/nodes');
     set(nodesRef, nodes).then(() => {
         console.log('Configuration updated successfully.');
+        loadCurrentConfiguration(); // Reload the configuration to reflect changes
     }).catch((error) => {
         console.error('Error updating configuration:', error);
     });
@@ -175,13 +173,6 @@ function savePreset() {
     });
 }
 
-// Shuffle button event listener
-document.getElementById('shuffle-button').addEventListener('click', () => {
-    shuffledNodes = shuffleNodes(shuffledNodes);
-    drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
-});
-
-
 function loadCurrentConfiguration() {
     const configRef = ref(database, 'gameConfiguration/nodes');
     onValue(configRef, (snapshot) => {
@@ -193,6 +184,8 @@ function loadCurrentConfiguration() {
                 return acc;
             }, {});
             Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
+            currentNodes = nodes;
+            drawWheel(currentNodes, currentRotation);
         }
     });
 }
@@ -222,44 +215,27 @@ function listenForChanges() {
     });
 }
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+function shuffleCurrentNodes() {
+    currentNodes = shuffleNodes(currentNodes);
+    drawWheel(currentNodes, currentRotation);
+    saveConfiguration();
 }
 
-// Event listener for the shuffle button
-document.getElementById('shuffle-button').addEventListener('click', shuffleNodes);
-
-function shuffleNodes() {
-    const configRef = ref(database, 'gameConfiguration/nodes');
-    get(configRef).then((snapshot) => {
-        let nodes = snapshot.val();
-        if (nodes) {
-            nodes = shuffle(nodes);
-            set(configRef, nodes).then(() => {
-                console.log('Nodes shuffled successfully.');
-                loadCurrentConfiguration(); // Reload the configuration to reflect changes
-            }).catch((error) => {
-                console.error('Error shuffling nodes:', error);
-            });
-        }
-    });
-}
 function loadPresets() {
     const presetsRef = ref(database, 'spinTheWheelPresets');
     onValue(presetsRef, (snapshot) => {
         const data = snapshot.val();
-        presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
-        displayPresets();
+        const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
+        displayPresets(presets);
     });
 }
 
-function displayPresets() {
+function displayPresets(presets) {
     const presetsContainer = document.getElementById('presets-container');
     presetsContainer.innerHTML = '';
+
+    const presetsPerPage = 5;
+    const currentPage = 0;
 
     const start = currentPage * presetsPerPage;
     const end = Math.min(start + presetsPerPage, presets.length);
@@ -282,7 +258,6 @@ function displayPresetSummary(preset) {
 
     const nodes = preset.nodes;
     console.log('Preset nodes:', nodes); // Debugging
-    shuffledNodes = shuffleNodes(nodes);
-    drawWheel(shuffledNodes); // Use drawWheel from wheel.js
+    currentNodes = nodes;
+    drawWheel(currentNodes, currentRotation);
 }
-
