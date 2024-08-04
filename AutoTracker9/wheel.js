@@ -1,3 +1,4 @@
+
 import { colorPalette } from './color-palette.js';
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
@@ -86,15 +87,8 @@ function logWinningNode(nodes, currentAngle, angleStep) {
 
 export function drawWheel(nodes, rotation) {
     const canvas = document.getElementById('wheel-canvas');
-    if (!canvas) {
-        console.error('Canvas element not found');
-        return;
-    }
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
-        console.error('Canvas context not found');
-        return;
-    }
+    if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -172,24 +166,20 @@ function drawNeedle(centerX, centerY, radius) {
 function saveConfiguration() {
     const db = getDatabase();
     const configRef = ref(db, 'wheel');
-    set(configRef, { nodes: currentNodes, rotation: currentAngle })
-        .then(() => console.log('Configuration saved'))
-        .catch((error) => console.error('Error saving configuration:', error));
+    set(configRef, { nodes: currentNodes, rotation: currentAngle });
 }
 
 function loadConfiguration() {
     const db = getDatabase();
     const configRef = ref(db, 'wheel');
-    get(configRef)
-        .then((snapshot) => {
-            const config = snapshot.val();
-            if (config) {
-                currentNodes = config.nodes || [];
-                currentAngle = config.rotation || 0;
-                drawWheel(currentNodes, currentAngle);
-            }
-        })
-        .catch((error) => console.error('Error loading configuration:', error));
+    get(configRef).then((snapshot) => {
+        const config = snapshot.val();
+        if (config) {
+            currentNodes = config.nodes || [];
+            currentAngle = config.rotation || 0;
+            drawWheel(currentNodes, currentAngle);
+        }
+    });
 }
 
 export function shuffleNodes(nodes) {
@@ -202,10 +192,9 @@ export function shuffleNodes(nodes) {
 }
 
 export function shuffleAndUpdateWheel() {
-    const savedAngle = currentAngle; // Save the current angle
-    currentNodes = shuffleNodes(currentNodes); // Shuffle the nodes
-    drawWheel(currentNodes, savedAngle); // Redraw the wheel with the saved angle
-    saveConfiguration(); // Save the new configuration
+    currentNodes = shuffleNodes(currentNodes);
+    drawWheel(currentNodes, currentAngle);
+    saveConfiguration();
 }
 
 export function updateNodes(newNodes) {
@@ -213,3 +202,4 @@ export function updateNodes(newNodes) {
     drawWheel(currentNodes, currentAngle);
     saveConfiguration();
 }
+
