@@ -50,15 +50,15 @@ export function spinWheel(nodes) {
         }
 
         totalRotation += (currentSpeed * deltaTime / 1000);
-        currentAngle = (initialAngle + totalRotation) % (2 * Math.PI);
+        let newAngle = (initialAngle + totalRotation) % (2 * Math.PI);
+
+        drawWheel(nodes, newAngle);
 
         if (progress < spinDuration) {
-            drawWheel(nodes, currentAngle);
             animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
-            currentAngle = currentAngle % (2 * Math.PI);
-            drawWheel(nodes, currentAngle);
+            currentAngle = newAngle;
             saveCurrentRotation(currentAngle);
             logWinningNode(nodes, currentAngle, angleStep);
         }
@@ -85,7 +85,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node:", winningNode);
 }
 
-export function drawWheel(nodes, rotation = 0) {
+export function drawWheel(nodes, rotation) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
