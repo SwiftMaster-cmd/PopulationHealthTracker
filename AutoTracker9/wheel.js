@@ -197,7 +197,6 @@ export function loadNodesConfiguration(callback) {
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
-
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
@@ -212,5 +211,6 @@ export function shuffleAndUpdateWheel(nodes) {
     const shuffledNodes = shuffleNodes(nodes); // Shuffle the nodes
     drawWheel(shuffledNodes, savedAngle); // Draw the wheel with the saved angle
     saveNodesConfiguration(shuffledNodes); // Save the new node configuration
+    saveCurrentRotation(savedAngle); // Save the current rotation angle
     return shuffledNodes;
 }
