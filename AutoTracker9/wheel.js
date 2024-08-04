@@ -19,20 +19,13 @@ export function spinWheel(nodes) {
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
     let start = null;
-    let previousTimestamp = null;
     let initialAngle = currentAngle; // Preserve the initial angle before the spin starts
 
     function animate(timestamp) {
-        if (!start) {
-            start = timestamp;
-            previousTimestamp = timestamp;
-        }
+        if (!start) start = timestamp;
         const progress = timestamp - start;
-        const deltaTime = timestamp - previousTimestamp;
-        previousTimestamp = timestamp;
-        let currentSpeed = 0;
-        let rotationDelta = 0;
 
+        let currentSpeed = 0;
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
@@ -47,12 +40,12 @@ export function spinWheel(nodes) {
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
         }
 
-        rotationDelta = (currentSpeed * deltaTime / 1000) % (2 * Math.PI);
+        const rotationDelta = (currentSpeed * (timestamp - start) / 1000) % (2 * Math.PI);
         currentAngle = (initialAngle + rotationDelta) % (2 * Math.PI);
 
         if (progress < spinDuration) {
             drawWheel(nodes, currentAngle);
-            animationFrameId = requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
         } else {
             isSpinning = false;
             currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
@@ -62,8 +55,9 @@ export function spinWheel(nodes) {
         }
     }
 
-    animationFrameId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 }
+
 
 
 function easeInQuad(t) {
@@ -86,6 +80,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
 }
 
 
+
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -96,7 +91,7 @@ export function drawWheel(nodes, rotation = 0) {
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-    const radius = Math.min(canvas.height, canvas.height) / 2;
+    const radius = Math.min(canvas.width, canvas.height) / 2;
     const centerX = radius;
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
@@ -139,6 +134,7 @@ export function drawWheel(nodes, rotation = 0) {
 
     drawNeedle(centerX, centerY, radius);
 }
+
 
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
