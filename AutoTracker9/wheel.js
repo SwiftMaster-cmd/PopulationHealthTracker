@@ -171,37 +171,6 @@ function drawNeedle(centerX, centerY, radius) {
     }
 }
 
-function displayResult(nodes, rotation, angleStep) {
-    const totalNodes = nodes.length;
-    const offset = Math.PI / 2; // Fixed 90 degrees
-    const adjustedRotation = (rotation + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
-    const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
-    const result = nodes[winningIndex];
-
-    const resultElement = document.getElementById('result');
-    resultElement.textContent = `Result: ${result}`;
-
-    // Start the highlight animation
-    let highlightOpacity = 0.1;
-    let increasing = true;
-
-    function animateHighlight() {
-        if (increasing) {
-            highlightOpacity += 0.01;
-            if (highlightOpacity >= 0.6) increasing = false;
-        } else {
-            highlightOpacity -= 0.01;
-            if (highlightOpacity <= 0.1) increasing = true;
-        }
-
-        drawWheel(nodes, rotation, winningIndex, highlightOpacity);
-        if (isSpinning === false) {
-            requestAnimationFrame(animateHighlight);
-        }
-    }
-
-    animateHighlight();
-}
 
 
 function saveCurrentRotation(rotation) {
