@@ -70,14 +70,14 @@ export function drawWheel(nodes, rotation = 0) {
 
     if (!ctx) return;
 
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-    const radius = Math.min(canvas.width, canvas.height) / 2;
-    const centerX = canvas.width / 2;
+    const radius = Math.min(canvas.height, canvas.height) / 2;
+    const centerX = radius; // Align wheel to the left
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const colors = ['#007BFF', '#5A9EF9']; // Two shades of blue
 
@@ -112,7 +112,6 @@ export function drawWheel(nodes, rotation = 0) {
     drawNeedle(centerX, centerY, radius); // Pass centerX, centerY, and radius to drawNeedle
 }
 
-
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -125,8 +124,8 @@ function drawNeedle(centerX, centerY, radius) {
     needleImg.onload = () => {
         const needleWidth = needleImg.width / 2; // Adjust the size as needed
         const needleHeight = needleImg.height / 2; // Adjust the size as needed
-        const needleXPosition = centerX + radius - needleWidth / 2; // Adjust the needle position to the right edge
-        const needleYPosition = centerY - (needleHeight / 2) + 10; // Center the needle vertically
+        const needleXPosition = centerX + radius + 30; // Position needle 30px to the right of the wheel
+        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
         ctx.translate(needleXPosition, needleYPosition);
