@@ -18,9 +18,6 @@ export function spinWheel(nodes) {
     const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
-    const totalRotations = 5; // Number of full rotations before stopping
-    const finalRotationAngle = currentAngle + totalRotations * 2 * Math.PI;
-
     let start = null;
 
     function animate(timestamp) {
@@ -50,7 +47,6 @@ export function spinWheel(nodes) {
             drawWheel(nodes, currentAngle);
             animationFrameId = requestAnimationFrame(animate);
         } else {
-            currentAngle = finalRotationAngle % (2 * Math.PI);
             isSpinning = false;
             drawWheel(nodes, currentAngle);
             saveCurrentRotation(currentAngle); // Save current rotation
