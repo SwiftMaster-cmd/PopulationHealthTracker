@@ -190,29 +190,23 @@ export function loadNodesConfiguration(callback) {
     });
 }
 
-export function shuffleNodes(nodes) {
-    const values = nodes.flatMap(node => Array(node.count).fill(node.value));
-    for (let i = values.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [values[i], values[j]] = [values[j], values[i]];
-    }
-    return values;
-}
+
 
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
     const angleStep = (2 * Math.PI) / shuffledNodes.length;
+    const nodeIndexAtCurrentAngle = Math.floor(currentAngle / angleStep);
     const preservedAngle = currentAngle; // Preserve the current angle
 
-    // Calculate the new angle to align with the preserved angle
-    const nodeIndexAtPreservedAngle = Math.floor(preservedAngle / angleStep);
-    const newAngleOffset = nodeIndexAtPreservedAngle * angleStep;
+    // Adjust the angle based on the new node configuration
+    currentAngle = nodeIndexAtCurrentAngle * angleStep;
 
-    // Redraw the wheel with the preserved angle
-    drawWheel(shuffledNodes, preservedAngle - newAngleOffset);
-    
+    // Redraw the wheel with the new nodes and the preserved angle
+    drawWheel(shuffledNodes, preservedAngle);
+
     return shuffledNodes;
 }
+
 
 
 function logWinningNode(nodes, currentAngle, angleStep) {
