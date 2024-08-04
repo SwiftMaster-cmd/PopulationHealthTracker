@@ -79,7 +79,7 @@ export function drawWheel(nodes, rotation = 0) {
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
-    const colors = ['#FFCC00', '#FF9900', '#0099FF', '#33CC33', '#FF6699', '#9933FF', '#FF3300', '#00CCFF'];
+    const colors = ['#007BFF', '#5A9EF9']; // Two shades of blue
 
     nodes.forEach((value, index) => {
         const startAngle = currentAngle;
@@ -92,7 +92,7 @@ export function drawWheel(nodes, rotation = 0) {
 
         ctx.fillStyle = colors[index % colors.length];
         ctx.fill();
-        ctx.strokeStyle = '#000';
+        ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -101,7 +101,7 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.rotate((startAngle + endAngle) / 2);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = '#FFFFFF';
         ctx.font = '20px Arial';
         ctx.fillText(value, radius * 0.8, 0);
         ctx.restore();
@@ -120,22 +120,21 @@ function drawNeedle() {
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const needleLength = centerY * 0.8;
-    const needleWidth = 10;
+    const needleImg = new Image();
+    needleImg.src = './path/to/your/image.png'; // Replace with the path to the uploaded needle image
 
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+    needleImg.onload = () => {
+        const needleWidth = needleImg.width;
+        const needleHeight = needleImg.height;
 
-    ctx.beginPath();
-    ctx.moveTo(0, -needleLength);
-    ctx.lineTo(needleWidth / 2, -needleLength + 20);
-    ctx.lineTo(-needleWidth / 2, -needleLength + 20);
-    ctx.closePath();
-    ctx.fillStyle = 'red';
-    ctx.fill();
-    ctx.restore();
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+        ctx.drawImage(needleImg, -needleWidth / 2, -needleHeight - centerY + 10, needleWidth, needleHeight);
+        ctx.restore();
+    };
 }
+
 
 
 
