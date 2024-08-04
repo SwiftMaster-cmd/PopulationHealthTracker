@@ -109,10 +109,10 @@ export function drawWheel(nodes, rotation = 0) {
         currentAngle += angleStep;
     });
 
-    drawNeedle(centerX, centerY, radius); // Pass centerX, centerY, and radius to drawNeedle
+    drawNeedle(); // Ensure the needle is drawn on top
 }
 
-function drawNeedle(centerX, centerY, radius) {
+function drawNeedle() {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -124,12 +124,11 @@ function drawNeedle(centerX, centerY, radius) {
     needleImg.onload = () => {
         const needleWidth = needleImg.width * 0.735; // Adjust the size to 73.5% of the original
         const needleHeight = needleImg.height * 0.735; // Adjust the size to 73.5% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
-        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+        const needleXPosition = canvas.width / 2 - needleWidth / 2; // Center horizontally
+        const needleYPosition = 10; // Adjust as needed for vertical positioning
 
         ctx.save();
         ctx.translate(needleXPosition, needleYPosition);
-        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
         ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
         ctx.restore();
     };
