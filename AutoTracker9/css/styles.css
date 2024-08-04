@@ -460,5 +460,33 @@ input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus,
 
 
 #wheel-canvas {
-    border: 2px solid #FFFFFF;
+    border: none;
+
+}
+
+
+/* styles.css */
+#wheel-configuration,
+#current-configuration,
+#spin-rules,
+#save-preset,
+#summary,
+#random-configuration,
+#nodes-container,
+#current-nodes-container,
+#rules-container,
+#rules-list,
+#random-nodes-container,
+#summary-text,
+#wheel-canvas,
+#result {
+    border: none;
+}
+
+.button {
+    border: none;
+}
+
+.flex-container {
+    border: none;
 }
