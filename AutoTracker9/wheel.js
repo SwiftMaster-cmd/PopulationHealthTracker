@@ -71,9 +71,6 @@ export function spinWheel(nodes, currentAngle) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
-
-
-
 function easeInQuad(t) {
     return t * t;
 }
@@ -206,13 +203,6 @@ function displayResult(nodes, rotation, angleStep) {
 
     animateHighlight();
 }
-
-
-
-
-
-
-
 
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
