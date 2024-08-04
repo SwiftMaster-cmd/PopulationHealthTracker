@@ -152,7 +152,11 @@ function displayResult(nodes, rotation, angleStep) {
     });
 
     const resultElement = document.getElementById('result');
-    resultElement.textContent = `Result: ${result}`;
+    if (resultElement) {
+        resultElement.textContent = `Result: ${result}`;
+    } else {
+        console.error('Result element not found');
+    }
 }
 
 function saveCurrentRotation(rotation) {
