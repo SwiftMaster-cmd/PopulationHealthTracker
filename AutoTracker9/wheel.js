@@ -65,7 +65,7 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-export function drawWheel(nodes, rotation = 0) {
+function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
