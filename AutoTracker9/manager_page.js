@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel } from './wheel.js';
+import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const firebaseConfig = {
@@ -22,8 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const presetsPerPage = 5;
     let currentPage = 0;
     let shuffledNodes = [];
-    let currentAngle = 0;
-    let isSpinning = false;
 
     function loadPresets() {
         const presetsRef = ref(database, 'spinTheWheelPresets');
@@ -92,92 +90,47 @@ document.addEventListener('DOMContentLoaded', () => {
             value: node.value,
             count: node.count
         }));
-        shuffledNodes = flattenNodes(nodes); 
-        drawWheel(shuffledNodes, currentAngle);
+        shuffledNodes = flattenAndShuffleNodes(nodes);
+        drawWheel(shuffledNodes);
+        saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
     }
 
-    function flattenNodes(nodes) {
+    function flattenAndShuffleNodes(nodes) {
         let flatNodes = [];
         nodes.forEach(node => {
             for (let i = 0; i < node.count; i++) {
-                flatNodes.push(node);
+                flatNodes.push(node.value);
             }
         });
-        return flatNodes;
-    }
 
-    function shuffleNodes(nodes) {
-        for (let i = nodes.length - 1; i > 0; i--) {
+        for (let i = flatNodes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [nodes[i], nodes[j]] = [nodes[j], nodes[i]];
+            [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
         }
-        return nodes;
+
+        return flatNodes.map(value => ({ value, count: 1 }));
     }
 
     document.getElementById('shuffle-button').addEventListener('click', () => {
-        if (isSpinning) return;
-        shuffledNodes = shuffleNodes(flattenNodes(shuffledNodes));
-        saveShuffleOrientation();
-        drawWheel(shuffledNodes, currentAngle);
-    });
-
-    document.getElementById('spin-button').addEventListener('click', () => {
-        if (isSpinning) return;
-        isSpinning = true;
-        saveSpinState();
-        spinWheel(shuffledNodes);
+        shuffledNodes = flattenAndShuffleNodes(shuffledNodes);
+        drawWheel(shuffledNodes);
+        saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
     });
 
     function fetchAndDrawWheel() {
-        const nodesRef = ref(database, 'shuffledGameConfiguration/nodes');
-        onValue(nodesRef, (snapshot) => {
-            const nodes = snapshot.val();
-            if (nodes) {
-                shuffledNodes = nodes;
-                drawWheel(shuffledNodes, currentAngle);
-            }
+        loadNodesConfiguration((nodes, rotation) => {
+            shuffledNodes = nodes;
+            drawWheel(nodes, rotation);
         });
     }
 
-    function saveShuffleOrientation() {
-        set(ref(database, 'shuffledGameConfiguration'), {
-            nodes: shuffledNodes,
-            angle: currentAngle
+    document.getElementById('spin-button').addEventListener('click', () => {
+        loadNodesConfiguration((nodes, rotation) => {
+            shuffledNodes = nodes;
+            currentAngle = rotation;
+            spinWheel(nodes);
         });
-    }
+    });
 
-    function saveSpinState() {
-        set(ref(database, 'spinState'), {
-            angle: currentAngle
-        });
-    }
-
-    function loadShuffleOrientation() {
-        get(ref(database, 'shuffledGameConfiguration')).then(snapshot => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                shuffledNodes = data.nodes;
-                currentAngle = data.angle;
-                drawWheel(shuffledNodes, currentAngle);
-            }
-        }).catch(error => {
-            console.error(error);
-        });
-    }
-
-    function loadSpinState() {
-        get(ref(database, 'spinState')).then(snapshot => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                currentAngle = data.angle;
-                drawWheel(shuffledNodes, currentAngle);
-            }
-        }).catch(error => {
-            console.error(error);
-        });
-    }
-
-    loadShuffleOrientation();
-    loadSpinState();
     fetchAndDrawWheel();
 });

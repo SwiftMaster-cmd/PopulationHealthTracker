@@ -1,48 +1,8 @@
 let isSpinning = false;
 let currentAngle = 0;
 let animationFrameId;
-let shuffleOrientation = [];
-let currentNodes = []; // Assuming you have a variable to store the current nodes
 
-document.getElementById('shuffle-button').addEventListener('click', function() {
-    if (isSpinning) return;
-    shuffleOrientation = [...currentNodes]; // Save the current node positions
-    shuffleNodes();
-});
-
-document.getElementById('spin-button').addEventListener('click', function() {
-    if (isSpinning) return;
-    spinWheel(currentNodes);
-});
-
-function shuffleNodes() {
-    // Your shuffle logic here
-    // For example, shuffle the nodes array
-    for (let i = currentNodes.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [currentNodes[i], currentNodes[j]] = [currentNodes[j], currentNodes[i]];
-    }
-    // Update the display or canvas to reflect the shuffled nodes
-    updateWheelDisplay();
-}
-
-function updateWheelDisplay() {
-    drawWheel(currentNodes, currentAngle);
-}
-
-function getInitialNodes() {
-    // Fetch or define your initial nodes
-    return ["Node1", "Node2", "Node3", "Node4"];
-}
-
-function initWheel() {
-    // Fetch the initial nodes configuration from your backend or use a default
-    currentNodes = getInitialNodes();
-    shuffleOrientation = [...currentNodes]; // Save the initial orientation
-    updateWheelDisplay();
-}
-
-document.addEventListener('DOMContentLoaded', initWheel);
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
@@ -83,9 +43,7 @@ export function spinWheel(nodes) {
         }
 
         drawWheel(nodes, currentAngle);
-
-        // Log current speed in revolutions per minute (RPM)
-        console.log(`Current Speed: ${(currentSpeed * 60 / (2 * Math.PI)).toFixed(2)} RPM`);
+        saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
             animationFrameId = requestAnimationFrame(animate);
@@ -191,4 +149,30 @@ function displayResult(nodes, rotation, angleStep) {
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
+}
+
+function saveCurrentRotation(rotation) {
+    const db = getDatabase();
+    const rotationRef = ref(db, 'wheel/rotation');
+    set(rotationRef, rotation);
+}
+
+export function saveNodesConfiguration(nodes) {
+    const db = getDatabase();
+    const nodesRef = ref(db, 'wheel/nodes');
+    set(nodesRef, nodes);
+}
+
+export function loadNodesConfiguration(callback) {
+    const db = getDatabase();
+    const nodesRef = ref(db, 'wheel/nodes');
+    const rotationRef = ref(db, 'wheel/rotation');
+
+    get(nodesRef).then((snapshot) => {
+        const nodes = snapshot.val();
+        get(rotationRef).then((rotationSnapshot) => {
+            const rotation = rotationSnapshot.val();
+            callback(nodes, rotation);
+        });
+    });
 }
