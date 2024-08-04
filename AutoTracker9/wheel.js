@@ -1,10 +1,10 @@
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
 let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
 
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-
-export function spinWheel(nodes, currentAngle) {
+export function spinWheel(nodes, initialAngle) {
     if (isSpinning) return;
     isSpinning = true;
 
@@ -27,21 +27,18 @@ export function spinWheel(nodes, currentAngle) {
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
             currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
             currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
+        currentAngle = (initialAngle + (currentSpeed * progress / 1000)) % (2 * Math.PI);
         drawWheel(nodes, currentAngle);
         saveCurrentRotation(currentAngle); // Save current rotation
 
@@ -154,13 +151,21 @@ function displayResult(nodes, rotation, angleStep) {
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
     const rotationRef = ref(db, 'wheel/rotation');
-    set(rotationRef, rotation);
+    set(rotationRef, rotation).then(() => {
+        console.log('Rotation saved successfully.');
+    }).catch((error) => {
+        console.error('Error saving rotation:', error);
+    });
 }
 
 export function saveNodesConfiguration(nodes) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
-    set(nodesRef, nodes);
+    set(nodesRef, nodes).then(() => {
+        console.log('Nodes configuration saved successfully.');
+    }).catch((error) => {
+        console.error('Error saving nodes configuration:', error);
+    });
 }
 
 export function loadNodesConfiguration(callback) {
@@ -174,6 +179,8 @@ export function loadNodesConfiguration(callback) {
             const rotation = rotationSnapshot.val();
             callback(nodes, rotation);
         });
+    }).catch((error) => {
+        console.error('Error loading nodes configuration:', error);
     });
 }
 
