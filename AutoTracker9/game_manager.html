@@ -62,6 +62,13 @@
             <button id="save-configuration" class="button">Save Configuration</button>
         </section>
 
+        <section id="current-configuration" class="container">
+            <h3>Current Configuration</h3>
+            <div id="current-nodes-container" class="flex-container">
+                <!-- Current nodes will be displayed here -->
+            </div>
+        </section>
+
         <section id="spin-rules" class="container">
             <h3>Spin Rules</h3>
             <div id="rules-container" class="flex-container">
@@ -79,16 +86,14 @@
             <button id="save-preset-button" class="button">Save Preset</button>
         </section>
 
-        <section id="preset-summary">
-            <h3>Preset Summary</h3>
-            <p id="summary-text">Select a preset to see its summary.</p>
+        <section id="summary" class="container">
+            <h3>Summary</h3>
+            <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
             <canvas id="wheel-canvas" width="500" height="500"></canvas>
-            <button id="spin-button">Spin</button>
-            <button id="shuffle-button">Shuffle</button> <!-- Add this line for the shuffle button -->
+            <button id="spin-button" class="button">Spin</button>
+            <button id="shuffle-button" class="button">Shuffle Nodes</button>
             <p id="result">Result: </p> <!-- Result element -->
-
         </section>
-
     </div>
 </body>
 </html>
