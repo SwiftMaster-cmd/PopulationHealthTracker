@@ -1,9 +1,9 @@
+import { colorPalette } from './color-palette.js';
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
 let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
-import { colorPalette } from './color-palette.js';
-
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
@@ -20,12 +20,10 @@ export function spinWheel(nodes) {
 
     const initialRotation = Math.PI / 2; // Start at 90 degrees
 
-    // Randomly select a winning index for the spin
     const winningIndex = Math.floor(Math.random() * totalNodes);
     const winningAngle = winningIndex * angleStep;
     const finalAngle = (2 * Math.PI - winningAngle + initialRotation) % (2 * Math.PI);
     
-    // Calculate the total rotations needed
     const totalRotations = 5; // Number of full rotations before stopping
     const finalRotationAngle = finalAngle + totalRotations * 2 * Math.PI;
 
