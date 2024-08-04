@@ -12,9 +12,8 @@ export function spinWheel(nodes, currentAngle) {
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
 
-    // Randomly select a winning node
-    const winningIndex = Math.floor(Math.random() * totalNodes);
-    const finalAngle = (winningIndex * angleStep) - Math.PI / 2;
+    // The final angle should position the first node at the 90-degree position
+    const finalAngle = angleStep * 0 - Math.PI / 2;
 
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
@@ -61,7 +60,7 @@ export function spinWheel(nodes, currentAngle) {
             animationFrameId = requestAnimationFrame(animate);
         } else {
             isSpinning = false;
-            displayResult(nodes, currentAngle, angleStep);
+            displayResult(nodes, finalAngle, angleStep); // Use finalAngle for displayResult
         }
     }
 
@@ -177,7 +176,6 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     }
 }
-
 
 
 
