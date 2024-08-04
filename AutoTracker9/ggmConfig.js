@@ -64,7 +64,6 @@ function saveConfiguration() {
 
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
-    drawCurrentConfiguration();
     drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
 }
@@ -104,13 +103,14 @@ function listenForChanges() {
 }
 
 function shuffleCurrentNodes() {
-    currentNodes = shuffleNodes(currentNodes);
-    drawWheel(currentNodes, currentRotation);
-    saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
+    const shuffledNodes = shuffleNodes(currentNodes);
+    drawWheel(shuffledNodes, currentRotation);
 
     // Save the shuffled nodes as a separate subnode
     const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    set(shuffledNodesRef, currentNodes);
+    set(shuffledNodesRef, shuffledNodes);
+
+    drawRandomConfiguration(shuffledNodes); // Update the random configuration display
 }
 
 function loadCurrentRandomConfiguration() {
