@@ -95,7 +95,6 @@ export function drawWheel(nodes, rotation = 0) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear the canvas before drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const totalNodes = nodes.length;
@@ -164,7 +163,6 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     };
 
-    // If the image is already loaded, trigger the onload function
     if (needleImg.complete) {
         needleImg.onload();
     }
@@ -173,13 +171,17 @@ function drawNeedle(centerX, centerY, radius) {
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
     const rotationRef = ref(db, 'wheel/rotation');
-    set(rotationRef, rotation);
+    set(rotationRef, rotation)
+        .then(() => console.log('Rotation saved'))
+        .catch((error) => console.error('Error saving rotation:', error));
 }
 
 export function saveNodesConfiguration(nodes) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
-    set(nodesRef, nodes);
+    set(nodesRef, nodes)
+        .then(() => console.log('Nodes configuration saved'))
+        .catch((error) => console.error('Error saving nodes configuration:', error));
 }
 
 export function loadNodesConfiguration(callback) {
@@ -193,7 +195,7 @@ export function loadNodesConfiguration(callback) {
             currentAngle = rotation || 0;
             callback(nodes, currentAngle);
         });
-    });
+    }).catch((error) => console.error('Error loading configuration:', error));
 }
 
 export function shuffleNodes(nodes) {
