@@ -92,29 +92,31 @@ document.addEventListener('DOMContentLoaded', () => {
             value: node.value,
             count: node.count
         }));
-        shuffledNodes = flattenAndShuffleNodes(nodes); 
+        shuffledNodes = flattenNodes(nodes); 
         drawWheel(shuffledNodes, currentAngle);
     }
 
-    function flattenAndShuffleNodes(nodes) {
+    function flattenNodes(nodes) {
         let flatNodes = [];
         nodes.forEach(node => {
             for (let i = 0; i < node.count; i++) {
-                flatNodes.push(node.value);
+                flatNodes.push(node);
             }
         });
+        return flatNodes;
+    }
 
-        for (let i = flatNodes.length - 1; i > 0; i--) {
+    function shuffleNodes(nodes) {
+        for (let i = nodes.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [flatNodes[i], flatNodes[j]] = [flatNodes[j], flatNodes[i]];
+            [nodes[i], nodes[j]] = [nodes[j], nodes[i]];
         }
-
-        return flatNodes.map(value => ({ value, count: 1 }));
+        return nodes;
     }
 
     document.getElementById('shuffle-button').addEventListener('click', () => {
         if (isSpinning) return;
-        shuffledNodes = flattenAndShuffleNodes(shuffledNodes);
+        shuffledNodes = shuffleNodes(flattenNodes(shuffledNodes));
         saveShuffleOrientation();
         drawWheel(shuffledNodes, currentAngle);
     });
@@ -131,34 +133,27 @@ document.addEventListener('DOMContentLoaded', () => {
         onValue(nodesRef, (snapshot) => {
             const nodes = snapshot.val();
             if (nodes) {
-                const formattedNodes = flattenAndShuffleNodes(Object.values(nodes).map(node => ({
-                    value: node.value,
-                    count: node.count
-                })));
-                shuffledNodes = formattedNodes;
-                drawWheel(formattedNodes, currentAngle);
+                shuffledNodes = nodes;
+                drawWheel(shuffledNodes, currentAngle);
             }
         });
     }
 
     function saveShuffleOrientation() {
-        const db = getDatabase();
-        set(ref(db, 'shuffledGameConfiguration'), {
+        set(ref(database, 'shuffledGameConfiguration'), {
             nodes: shuffledNodes,
             angle: currentAngle
         });
     }
 
     function saveSpinState() {
-        const db = getDatabase();
-        set(ref(db, 'spinState'), {
+        set(ref(database, 'spinState'), {
             angle: currentAngle
         });
     }
 
     function loadShuffleOrientation() {
-        const db = getDatabase();
-        get(ref(db, 'shuffledGameConfiguration')).then(snapshot => {
+        get(ref(database, 'shuffledGameConfiguration')).then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 shuffledNodes = data.nodes;
@@ -171,8 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadSpinState() {
-        const db = getDatabase();
-        get(ref(db, 'spinState')).then(snapshot => {
+        get(ref(database, 'spinState')).then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 currentAngle = data.angle;
