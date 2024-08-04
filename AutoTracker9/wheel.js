@@ -14,7 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
-
+// Hide the shuffle button
+const shuffleButton = document.getElementById('shuffle-button');
+if (shuffleButton) {
+    shuffleButton.style.display = 'none';
+}
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const spinDuration = 9000;
@@ -178,7 +182,6 @@ function saveCurrentRotation(rotation) {
         .catch((error) => console.error('Error saving rotation:', error));
 }
 
-
 export function saveNodesConfiguration(nodes) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
@@ -186,8 +189,6 @@ export function saveNodesConfiguration(nodes) {
         .then(() => console.log('Nodes configuration saved'))
         .catch((error) => console.error('Error saving nodes configuration:', error));
 }
-
-
 
 export function loadNodesConfiguration(callback) {
     const db = getDatabase();
@@ -198,18 +199,10 @@ export function loadNodesConfiguration(callback) {
         get(rotationRef).then((rotationSnapshot) => {
             const rotation = rotationSnapshot.val();
             currentAngle = rotation || 0;
-            if (nodes) {
-                const shuffledNodes = shuffleNodes(nodes);
-                callback(shuffledNodes, currentAngle);
-                saveNodesConfiguration(shuffledNodes); // Save the shuffled configuration
-                saveCurrentRotation(currentAngle); // Save the current rotation angle
-            } else {
-                callback([], currentAngle);
-            }
+            callback(nodes, currentAngle);
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
-
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
