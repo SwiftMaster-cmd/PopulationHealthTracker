@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration, currentAngle } from './wheel.js';
+import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const firebaseConfig = {
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const presetsPerPage = 5;
     let currentPage = 0;
     let shuffledNodes = [];
+    let currentRotation = 0;
 
     function loadPresets() {
         const presetsRef = ref(database, 'spinTheWheelPresets');
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             count: node.count
         }));
         shuffledNodes = flattenAndShuffleNodes(nodes);
-        drawWheel(shuffledNodes);
+        drawWheel(shuffledNodes, currentRotation);
         saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
     }
 
@@ -113,13 +114,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('shuffle-button').addEventListener('click', () => {
         shuffledNodes = flattenAndShuffleNodes(shuffledNodes);
-        drawWheel(shuffledNodes);
+        drawWheel(shuffledNodes, currentRotation);
         saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
     });
 
     function fetchAndDrawWheel() {
         loadNodesConfiguration((nodes, rotation) => {
             shuffledNodes = nodes;
+            currentRotation = rotation;
             drawWheel(nodes, rotation);
         });
     }
@@ -127,8 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('spin-button').addEventListener('click', () => {
         loadNodesConfiguration((nodes, rotation) => {
             shuffledNodes = nodes;
-            currentAngle = rotation; // Correctly set currentAngle
-            spinWheel(nodes);
+            currentRotation = rotation; // Correctly set currentRotation
+            spinWheel(nodes, currentRotation);
         });
     });
 
