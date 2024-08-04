@@ -490,3 +490,17 @@ input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus,
 .flex-container {
     border: none;
 }
+
+/* styles.css */
+#wheel-arrow {
+    position: absolute;
+    top: 50%; /* Adjust according to your wheel's position */
+    left: 50%; /* Adjust according to your wheel's position */
+    transform: translate(-50%, -50%); /* Center the arrow */
+    z-index: 10; /* Ensure it's on top of the wheel */
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid red; /* Color of the arrow */
+}
