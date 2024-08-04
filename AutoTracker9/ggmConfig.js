@@ -1,7 +1,6 @@
-import { database, auth } from './firebase-init.js';
-import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration, shuffleNodes } from './wheel.js';
+import { database } from './firebase-init.js';
+import { ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
@@ -12,23 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
     document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const userAuthorityRef = ref(database, 'users/' + user.uid + '/authority');
-            get(userAuthorityRef).then((snapshot) => {
-                const authorityLevel = snapshot.val();
-                if (authorityLevel >= 9) {
-                    loadCurrentConfiguration();
-                    listenForChanges();
-                } else {
-                    alert("You do not have permission to view this page.");
-                    window.location.href = 'index.html';
-                }
-            });
-        } else {
-            window.location.href = 'index.html';
-        }
-    });
+    loadCurrentConfiguration();
+    listenForChanges();
 });
 
 function addNodeField(value = 0, count = 1) {
@@ -49,6 +33,7 @@ function addNodeField(value = 0, count = 1) {
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
         nodeContainer.remove();
+        saveConfiguration();
     });
 
     nodeContainer.appendChild(nodeValueInput);
@@ -79,6 +64,7 @@ function saveConfiguration() {
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
     drawCurrentConfiguration();
+    drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
 }
 
@@ -110,6 +96,7 @@ function drawCurrentConfiguration() {
 
 function listenForChanges() {
     const configRef = ref(database, 'gameConfiguration/nodes');
+
     onValue(configRef, () => {
         loadCurrentConfiguration();
     });
