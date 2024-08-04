@@ -20,8 +20,9 @@ export function spinWheel(nodes) {
 
     let start = null;
     let previousTimestamp = null;
-    let initialAngle = currentAngle; // Preserve the initial angle before the spin starts
+    let initialAngle = currentAngle; // Preserve the current angle before the spin starts
     let totalRotation = 0;
+
     function animate(timestamp) {
         if (!start) {
             start = timestamp;
@@ -31,7 +32,6 @@ export function spinWheel(nodes) {
         const deltaTime = timestamp - previousTimestamp;
         previousTimestamp = timestamp;
         let currentSpeed = 0;
-    
 
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
@@ -50,21 +50,21 @@ export function spinWheel(nodes) {
         totalRotation += (currentSpeed * deltaTime / 1000);
         currentAngle = (initialAngle + totalRotation) % (2 * Math.PI);
 
-       
-    if (progress < spinDuration) {
-        drawWheel(nodes, currentAngle);
-        animationFrameId = requestAnimationFrame(animate);
-    } else {
-        isSpinning = false;
-        currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
-        drawWheel(nodes, currentAngle);
-        saveCurrentRotation(currentAngle); // Save current rotation
-        logWinningNode(nodes, currentAngle, angleStep); // Log the winning node
+        if (progress < spinDuration) {
+            drawWheel(nodes, currentAngle);
+            animationFrameId = requestAnimationFrame(animate);
+        } else {
+            isSpinning = false;
+            currentAngle = currentAngle % (2 * Math.PI); // Ensure current angle is within bounds
+            drawWheel(nodes, currentAngle);
+            saveCurrentRotation(currentAngle); // Save current rotation
+            logWinningNode(nodes, currentAngle, angleStep); // Log the winning node
+        }
     }
-}
 
     animationFrameId = requestAnimationFrame(animate);
 }
+
 
 function easeInQuad(t) {
     return t * t;
