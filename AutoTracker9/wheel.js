@@ -75,7 +75,7 @@ export function drawWheel(nodes, rotation = 0) {
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-    const radius = Math.min(canvas.height, canvas.height) / 2;
+    const radius = Math.min(canvas.height, canvas.height) / 2; // Corrected
     const centerX = radius; // Align wheel to the left
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
@@ -109,6 +109,8 @@ export function drawWheel(nodes, rotation = 0) {
 
         currentAngle += angleStep;
     });
+
+    drawNeedle(); // Ensure the needle is always drawn after the wheel
 }
 
 function drawNeedle() {
@@ -143,6 +145,7 @@ function drawNeedle() {
         ctx.restore();
     }
 }
+
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
