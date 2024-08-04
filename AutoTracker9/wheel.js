@@ -158,16 +158,31 @@ function drawNeedle(centerX, centerY, radius) {
 
 
 
-
-
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const adjustedRotation = (rotation + Math.PI / 2) % (2 * Math.PI); // Adjusting to capture from the right
+    const offset = 30 * (Math.PI / 180); // Convert 30 degrees to radians
+    const adjustedRotation = (rotation + Math.PI / 2 + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
     const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
     const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
+
+    // Draw the red dot
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+    const radius = Math.min(canvas.height, canvas.height) / 2;
+    const centerX = radius;
+    const centerY = canvas.height / 2;
+    const redDotAngle = winningIndex * angleStep - (Math.PI / 2); // Calculate the angle for the red dot
+
+    const redDotX = centerX + (radius * 0.9) * Math.cos(redDotAngle); // Slightly inside the edge of the wheel
+    const redDotY = centerY + (radius * 0.9) * Math.sin(redDotAngle);
+
+    ctx.beginPath();
+    ctx.arc(redDotX, redDotY, 5, 0, 2 * Math.PI); // Draw a small red dot
+    ctx.fillStyle = 'red';
+    ctx.fill();
 }
 
 
