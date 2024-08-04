@@ -126,8 +126,8 @@ function drawNeedle() {
     needleImg.onload = () => {
         const needleWidth = needleImg.width / 2; // Adjust the size as needed
         const needleHeight = needleImg.height / 2; // Adjust the size as needed
-        const needleXPosition = centerX * 1.25 - needleWidth / 2; // Adjust the needle position to the right
-        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+        const needleXPosition = canvas.width - (needleWidth / 2); // Adjust the needle position to the right edge
+        const needleYPosition = centerY - (needleHeight / 2); // Center the needle vertically
 
         ctx.save();
         ctx.translate(needleXPosition, needleYPosition);
@@ -136,6 +136,7 @@ function drawNeedle() {
         ctx.restore();
     };
 }
+
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
