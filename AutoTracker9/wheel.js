@@ -119,23 +119,23 @@ function drawNeedle() {
     if (!ctx) return;
 
     const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
     const needleImg = new Image();
     needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
     needleImg.onload = () => {
-        const needleWidth = needleImg.width; // Adjust the size as needed
-        const needleHeight = needleImg.height; // Adjust the size as needed
-        const needleXPosition = centerX - needleWidth / 2;
-        const needleYPosition = -needleHeight / 2; // Position needle to go into wheel by 50%
+        const needleWidth = needleImg.width / 2; // Adjust the size as needed
+        const needleHeight = needleImg.height / 2; // Adjust the size as needed
+        const needleXPosition = centerX * 1.25 - needleWidth / 2; // Adjust the needle position to the right
+        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
-        ctx.translate(centerX * 1.5, centerY); // Move the needle to the right side
+        ctx.translate(needleXPosition, needleYPosition);
         ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
-        ctx.drawImage(needleImg, -needleWidth / 2, -needleHeight / 2, needleWidth / 2, needleHeight / 2);
+        ctx.drawImage(needleImg, -needleWidth / 2, -needleHeight / 2, needleWidth, needleHeight);
         ctx.restore();
     };
 }
-
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
