@@ -36,27 +36,18 @@ function loadPresets() {
         displayPresets(presets);
     });
 }
-
 function displayPresets(presets) {
     const presetsContainer = document.getElementById('presets-container');
-    presetsContainer.innerHTML = '';
-
-    const presetsPerPage = 5;
-    const currentPage = 0;
-
-    const start = currentPage * presetsPerPage;
-    const end = Math.min(start + presetsPerPage, presets.length);
-
-    for (let i = start; i < end; i++) {
-        const preset = presets[i];
-        const presetButton = document.createElement('button');
-        presetButton.textContent = preset.name;
-        presetButton.addEventListener('click', () => displayPresetSummary(preset));
-        presetsContainer.appendChild(presetButton);
+    if (presetsContainer) {
+        presetsContainer.innerHTML = ''; // Clear existing content
+        presets.forEach(preset => {
+            const presetElement = document.createElement('div');
+            presetElement.textContent = preset.name;
+            presetsContainer.appendChild(presetElement);
+        });
+    } else {
+        console.error('Element with ID "presets-container" not found.');
     }
-
-    document.getElementById('prev-button').disabled = currentPage === 0;
-    document.getElementById('next-button').disabled = end >= presets.length;
 }
 
 function displayPresetSummary(preset) {

@@ -95,6 +95,7 @@ export function drawWheel(nodes, rotation = 0) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Clear the canvas before drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const totalNodes = nodes.length;
@@ -163,6 +164,7 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     };
 
+    // If the image is already loaded, trigger the onload function
     if (needleImg.complete) {
         needleImg.onload();
     }
