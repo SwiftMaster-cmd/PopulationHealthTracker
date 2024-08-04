@@ -22,6 +22,10 @@ export function spinWheel(nodes, currentAngle) {
     const winningIndex = Math.floor(Math.random() * totalNodes);
     const winningAngle = winningIndex * angleStep;
     const finalAngle = (2 * Math.PI - winningAngle + Math.PI / 2) % (2 * Math.PI);
+    
+    // Calculate the total number of rotations needed
+    const totalRotations = 5; // Number of full rotations before stopping
+    const finalRotationAngle = finalAngle + totalRotations * 2 * Math.PI;
 
     let start = null;
 
@@ -48,9 +52,12 @@ export function spinWheel(nodes, currentAngle) {
             currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
-        // Ensure the final angle aligns with the winning segment
-        if (progress >= spinDuration - 16) { // Check near the end of the animation
-            currentAngle = finalAngle;
+        // Calculate the remaining angle to the final position
+        const remainingAngle = finalRotationAngle - currentAngle;
+        if (progress >= spinDuration) {
+            currentAngle = finalRotationAngle % (2 * Math.PI);
+        } else {
+            currentAngle += remainingAngle / ((spinDuration - progress) / 16);
         }
 
         drawWheel(nodes, currentAngle);
@@ -173,7 +180,6 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     }
 }
-
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
     const offset = Math.PI / 2; // Fixed 90 degrees
