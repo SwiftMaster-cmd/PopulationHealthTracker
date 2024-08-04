@@ -57,6 +57,7 @@ export function spinWheel(nodes, currentAngle) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
+
 function easeInQuad(t) {
     return t * t;
 }
@@ -162,13 +163,20 @@ function drawNeedle(centerX, centerY, radius) {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const offset = (30 + 60) * (Math.PI / 180); // Convert 90 degrees to radians (30 degrees + 60 degrees)
-    const adjustedRotation = (rotation + Math.PI / 2 + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
+    const offset = Math.PI / 2; // Fixed 90 degrees
+    const adjustedRotation = (rotation + offset) % (2 * Math.PI); // Adjusting to capture from the right and adding offset
     const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
     const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
+
+    // Calculate the angle to rotate the wheel so that the winning index is aligned with the needle
+    const winningAngle = winningIndex * angleStep;
+    const finalRotation = (Math.PI / 2 - winningAngle) % (2 * Math.PI);
+
+    // Redraw the wheel with the final rotation to align the winning index with the needle
+    drawWheel(nodes, finalRotation, winningIndex);
 
     // Start the highlight animation
     let highlightOpacity = 0.1;
@@ -183,12 +191,13 @@ function displayResult(nodes, rotation, angleStep) {
             if (highlightOpacity <= 0.1) increasing = true;
         }
 
-        drawWheel(nodes, rotation, winningIndex, highlightOpacity);
+        drawWheel(nodes, finalRotation, winningIndex, highlightOpacity);
         requestAnimationFrame(animateHighlight);
     }
 
     animateHighlight();
 }
+
 
 
 
