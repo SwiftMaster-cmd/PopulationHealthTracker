@@ -171,6 +171,13 @@ function displayResult(nodes, rotation, angleStep) {
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
 
+    // Calculate the angle to rotate the wheel so that the winning index is aligned with the needle
+    const winningAngle = winningIndex * angleStep;
+    const finalRotation = (Math.PI / 2 - winningAngle + offset) % (2 * Math.PI);
+
+    // Redraw the wheel with the final rotation to align the winning index with the needle
+    drawWheel(nodes, finalRotation, winningIndex);
+
     // Start the highlight animation
     let highlightOpacity = 0.1;
     let increasing = true;
@@ -184,12 +191,13 @@ function displayResult(nodes, rotation, angleStep) {
             if (highlightOpacity <= 0.1) increasing = true;
         }
 
-        drawWheel(nodes, rotation, winningIndex, highlightOpacity);
+        drawWheel(nodes, finalRotation, winningIndex, highlightOpacity);
         requestAnimationFrame(animateHighlight);
     }
 
     animateHighlight();
 }
+
 
 
 
