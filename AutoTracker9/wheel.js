@@ -1,8 +1,8 @@
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-
 let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
+
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 export function spinWheel(nodes, currentAngle) {
     if (isSpinning) return;
@@ -43,6 +43,7 @@ export function spinWheel(nodes, currentAngle) {
         }
 
         drawWheel(nodes, currentAngle);
+        saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
             animationFrameId = requestAnimationFrame(animate);
@@ -130,11 +131,17 @@ function drawNeedle() {
 
 function displayResult(nodes, rotation, angleStep) {
     const totalNodes = nodes.length;
-    const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
+    const winningIndex = Math.floor((2 * Math.PI - rotation + angleStep / 2) / angleStep) % totalNodes;
     const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
+}
+
+function saveCurrentRotation(rotation) {
+    const db = getDatabase();
+    const rotationRef = ref(db, 'wheel/rotation');
+    set(rotationRef, rotation);
 }
 
 export function saveNodesConfiguration(nodes) {
@@ -158,25 +165,10 @@ export function loadNodesConfiguration(callback) {
 }
 
 export function shuffleNodes(nodes) {
-    let flattenedNodes = [];
-
-    // Flatten the nodes based on their counts
-    nodes.forEach(node => {
-        for (let i = 0; i < node.count; i++) {
-            flattenedNodes.push(node.value);
-        }
-    });
-
-    // Shuffle the flattened array
-    for (let i = flattenedNodes.length - 1; i > 0; i--) {
+    const values = nodes.flatMap(node => Array(node.count).fill(node.value));
+    for (let i = values.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [flattenedNodes[i], flattenedNodes[j]] = [flattenedNodes[j], flattenedNodes[i]];
+        [values[i], values[j]] = [values[j], values[i]];
     }
-
-    // Save the shuffled nodes as a simple list
-    const db = getDatabase();
-    const shuffledNodesRef = ref(db, 'wheel/shuffledNodes');
-    set(shuffledNodesRef, flattenedNodes);
-
-    return flattenedNodes;
+    return values;
 }
