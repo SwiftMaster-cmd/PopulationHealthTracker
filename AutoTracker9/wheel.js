@@ -4,7 +4,7 @@ let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
 
-export function spinWheel(nodes, initialAngle) {
+export function spinWheel(nodes, currentAngle) {
     if (isSpinning) return;
     isSpinning = true;
 
@@ -27,18 +27,21 @@ export function spinWheel(nodes, initialAngle) {
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
             currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
             currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
-        currentAngle = (initialAngle + (currentSpeed * progress / 1000)) % (2 * Math.PI);
         drawWheel(nodes, currentAngle);
         saveCurrentRotation(currentAngle); // Save current rotation
 
