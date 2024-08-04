@@ -12,6 +12,10 @@ export function spinWheel(nodes, currentAngle) {
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
 
+    // Randomly select a winning node
+    const winningIndex = Math.floor(Math.random() * totalNodes);
+    const finalAngle = (winningIndex * angleStep) - Math.PI / 2;
+
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
     const maxSpinSpeed = (218 / 60) * 2 * Math.PI; // 7 RPM converted to radians per second
@@ -43,7 +47,14 @@ export function spinWheel(nodes, currentAngle) {
             currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
+        // Slow down the spin as it approaches the final angle
+        if (progress > spinDuration - 1000) {
+            const remainingAngle = (finalAngle - currentAngle + 2 * Math.PI) % (2 * Math.PI);
+            currentAngle += remainingAngle * 0.1;
+        }
+
         drawWheel(nodes, currentAngle);
+        drawNeedle(centerX, centerY, radius); // Ensure the needle is always drawn after the wheel
         saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
@@ -64,6 +75,17 @@ function easeInQuad(t) {
 function easeOutQuad(t) {
     return t * (2 - t);
 }
+
+function displayResult(nodes, rotation, angleStep) {
+    const totalNodes = nodes.length;
+    const adjustedRotation = (rotation + Math.PI / 2) % (2 * Math.PI); // Adjusting to capture from the right
+    const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
+    const result = nodes[winningIndex];
+
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `Result: ${result}`;
+}
+
 
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
@@ -161,15 +183,6 @@ function drawNeedle(centerX, centerY, radius) {
 
 
 
-function displayResult(nodes, rotation, angleStep) {
-    const totalNodes = nodes.length;
-    const adjustedRotation = (rotation + Math.PI / 2) % (2 * Math.PI); // Adjusting to capture from the right
-    const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
-    const result = nodes[winningIndex];
-
-    const resultElement = document.getElementById('result');
-    resultElement.textContent = `Result: ${result}`;
-}
 
 
 
