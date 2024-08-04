@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
-import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration, shuffleNodes } from './wheel.js';
+import { drawWheel, spinWheel, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -22,24 +22,12 @@ let currentNodes = [];
 let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const addNodeFieldButton = document.getElementById('add-node-field');
-    const addRuleFieldButton = document.getElementById('add-rule-field');
-    const savePresetButton = document.getElementById('save-preset-button');
-    const saveConfigurationButton = document.getElementById('save-configuration');
-    const spinButton = document.getElementById('spin-button');
-    const shuffleButton = document.getElementById('shuffle-button');
-
-    if (!addNodeFieldButton || !addRuleFieldButton || !savePresetButton || !saveConfigurationButton || !spinButton || !shuffleButton) {
-        console.error('One or more elements not found. Ensure all elements are correctly referenced.');
-        return;
-    }
-
-    addNodeFieldButton.addEventListener('click', () => addNodeField());
-    addRuleFieldButton.addEventListener('click', () => addRuleField());
-    savePresetButton.addEventListener('click', savePreset);
-    saveConfigurationButton.addEventListener('click', saveConfiguration);
-    spinButton.addEventListener('click', () => spinWheel(currentNodes, currentRotation));
-    shuffleButton.addEventListener('click', shuffleCurrentNodes);
+    document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
+    document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
+    document.getElementById('save-preset-button').addEventListener('click', savePreset);
+    document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
+    document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -106,7 +94,7 @@ function saveConfiguration() {
         nodes.push({ value: nodeValue, count: nodeCount });
     }
 
-    saveNodesConfiguration(nodes, currentRotation);
+    saveNodesConfiguration(nodes);
     currentNodes = nodes;
     drawCurrentConfiguration();
     console.log('Configuration updated successfully.');
@@ -185,8 +173,8 @@ function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
-            const counts = nodes.reduce((acc, node) => {
-                acc[node.value] = (acc[node.value] || 0) + node.count;
+            const counts = nodes.reduce((acc, value) => {
+                acc[value] = (acc[value] || 0) + 1;
                 return acc;
             }, {});
             Object.entries(counts).forEach(([value, count]) => addNodeField(parseInt(value), count));
@@ -256,7 +244,7 @@ function displayPresets(presets) {
     presetsContainer.innerHTML = '';
 
     const presetsPerPage = 5;
-    let currentPage = 0;
+    const currentPage = 0;
 
     const start = currentPage * presetsPerPage;
     const end = Math.min(start + presetsPerPage, presets.length);
@@ -271,20 +259,6 @@ function displayPresets(presets) {
 
     document.getElementById('prev-button').disabled = currentPage === 0;
     document.getElementById('next-button').disabled = end >= presets.length;
-
-    document.getElementById('prev-button').addEventListener('click', () => {
-        if (currentPage > 0) {
-            currentPage--;
-            displayPresets(presets);
-        }
-    });
-
-    document.getElementById('next-button').addEventListener('click', () => {
-        if ((currentPage + 1) * presetsPerPage < presets.length) {
-            currentPage++;
-            displayPresets(presets);
-        }
-    });
 }
 
 function displayPresetSummary(preset) {
