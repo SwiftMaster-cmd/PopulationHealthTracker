@@ -190,7 +190,14 @@ export function loadNodesConfiguration(callback) {
     });
 }
 
-
+export function shuffleNodes(nodes) {
+    const values = nodes.flatMap(node => Array(node.count).fill(node.value));
+    for (let i = values.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [values[i], values[j]] = [values[j], values[i]];
+    }
+    return values;
+}
 
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
