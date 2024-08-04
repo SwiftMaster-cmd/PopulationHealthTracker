@@ -1,3 +1,4 @@
+
 import { colorPalette } from './color-palette.js';
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
@@ -5,13 +6,9 @@ let isSpinning = false;
 let animationFrameId;
 let currentAngle = 0;
 
-
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
-
-    // Reset the current angle to 0 before starting the spin
-    currentAngle = 0;
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
@@ -69,8 +66,6 @@ export function spinWheel(nodes) {
 
     animationFrameId = requestAnimationFrame(animate);
 }
-
-
 
 function easeInQuad(t) {
     return t * t;
@@ -206,5 +201,7 @@ export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
     currentAngle = Math.random() * 2 * Math.PI;
     drawWheel(shuffledNodes, currentAngle);
+    saveCurrentRotation(currentAngle); // Save the new rotation angle
     return shuffledNodes;
 }
+
