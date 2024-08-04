@@ -6,27 +6,18 @@
     <title>Game Manager</title>
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
+    <link rel="stylesheet" href="css/styles.css">
 
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
-    <script type="module" src="game_manager.js"></script>
-    <script type="module" src="wheel.js"></script>
+    <script type="module" src="game_manager.js" defer></script>
+    <script type="module" src="wheel.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="profilePopup.js" defer></script>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-RVBYB0RR06');
-    </script>
 </head>
 <body>
     <div class="header-container">
@@ -38,21 +29,7 @@
         <div class="profile-button">P</div>
     </div>
 
-    <div class="color-picker-container" id="colorPickerContainer">
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-        <input type="text" id="nameInput" placeholder="Enter new name" />
-        <button id="changeName" class="button">Change Name</button>
-        <button id="signOut" class="button">Sign Out</button>
-        <button id="googleSignInButton">Link with Google</button>
-        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-    </div>
-
     <div class="main-container">
-        <header>
-            <h1>Game Manager</h1>
-        </header>
-
         <section id="wheel-configuration" class="container">
             <h3>Wheel Configuration</h3>
             <div id="nodes-container" class="flex-container">
