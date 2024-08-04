@@ -96,7 +96,7 @@ function drawCurrentConfiguration() {
 }
 
 function listenForChanges() {
-    const configRef = ref(database, 'gameConfiguration/nodes');
+    const configRef = ref(database, 'wheel/nodes');
 
     onValue(configRef, () => {
         loadCurrentConfiguration();
@@ -109,18 +109,29 @@ function shuffleCurrentNodes() {
     saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
 
     // Save the shuffled nodes as a separate subnode
-    const shuffledNodesRef = ref(database, 'gameConfiguration/shuffledNodes');
+    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
     set(shuffledNodesRef, currentNodes);
 }
 
 function loadCurrentRandomConfiguration() {
-    const randomConfigRef = ref(database, 'gameConfiguration/shuffledNodes');
+    const randomConfigRef = ref(database, 'wheel/shuffledNodes');
     onValue(randomConfigRef, (snapshot) => {
         const randomNodes = snapshot.val();
         if (randomNodes) {
-            drawWheel(randomNodes, currentRotation, 'random-wheel-canvas');
+            drawRandomConfiguration(randomNodes);
         } else {
             console.error('No shuffled nodes found in configuration.');
         }
+    });
+}
+
+function drawRandomConfiguration(randomNodes) {
+    const randomNodesContainer = document.getElementById('random-nodes-container');
+    randomNodesContainer.innerHTML = ''; // Clear existing nodes
+
+    randomNodes.forEach(value => {
+        const nodeElement = document.createElement('div');
+        nodeElement.textContent = `Value: ${value}`;
+        randomNodesContainer.appendChild(nodeElement);
     });
 }
