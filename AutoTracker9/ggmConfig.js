@@ -66,6 +66,7 @@ function saveConfiguration() {
     currentNodes = nodes;
     drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
+    shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
 
 function loadCurrentConfiguration() {
