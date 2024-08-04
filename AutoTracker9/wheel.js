@@ -65,6 +65,7 @@ export function spinWheel(nodes) {
     animationFrameId = requestAnimationFrame(animate);
 }
 
+
 function easeInQuad(t) {
     return t * t;
 }
@@ -72,6 +73,18 @@ function easeInQuad(t) {
 function easeOutQuad(t) {
     return t * (2 - t);
 }
+
+function logWinningNode(nodes, currentAngle, angleStep) {
+    const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
+    const winningNodeIndex = Math.floor(winningAngle / angleStep);
+    const winningNode = nodes[winningNodeIndex];
+
+    console.log("Current Angle (radians):", currentAngle);
+    console.log("Winning Angle (radians):", winningAngle);
+    console.log("Winning Node Index:", winningNodeIndex);
+    console.log("Winning Node:", winningNode);
+}
+
 
 export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
@@ -215,14 +228,3 @@ export function shuffleAndUpdateAngle(nodes) {
 }
 
 
-
-function logWinningNode(nodes, currentAngle, angleStep) {
-    const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
-    const winningNodeIndex = Math.floor(winningAngle / angleStep);
-    const winningNode = nodes[winningNodeIndex];
-
-    console.log("Current Angle (radians):", currentAngle);
-    console.log("Winning Angle (radians):", winningAngle);
-    console.log("Winning Node Index:", winningNodeIndex);
-    console.log("Winning Node:", winningNode);
-}
