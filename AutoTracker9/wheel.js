@@ -11,7 +11,6 @@ export function spinWheel(nodes) {
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
-    let start = null; // Initialize start here
 
     const spinDuration = 9000; // Total spin duration of 9 seconds
     const accelerationDuration = 2000; // 2 seconds to reach max speed
@@ -19,13 +18,13 @@ export function spinWheel(nodes) {
     const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
-    let initialAngle = currentAngle; // Preserve the initial angle
+    let start = null;
 
     function animate(timestamp) {
         if (!start) start = timestamp;
         const progress = timestamp - start;
         let currentSpeed = 0;
-    
+
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
@@ -43,7 +42,7 @@ export function spinWheel(nodes) {
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
             currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
-    
+
         if (progress < spinDuration) {
             drawWheel(nodes, currentAngle);
             animationFrameId = requestAnimationFrame(animate);
@@ -51,12 +50,10 @@ export function spinWheel(nodes) {
             isSpinning = false;
             drawWheel(nodes, currentAngle);
             saveCurrentRotation(currentAngle); // Save current rotation
-    
-            const winningNode = calculateWinningNode(nodes, initialAngle, currentAngle, angleStep);
-            displayWinningNode(winningNode);
+            logWinningNode(nodes, currentAngle, angleStep); // Log the winning node
         }
     }
-    
+
     animationFrameId = requestAnimationFrame(animate);
 }
 
@@ -68,7 +65,7 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-export function drawWheel(nodes, rotation) {
+export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -165,26 +162,6 @@ function saveCurrentRotation(rotation) {
     set(rotationRef, rotation);
 }
 
-function calculateWinningNode(nodes, initialAngle, finalAngle, angleStep) {
-    const totalNodes = nodes.length;
-    const needleAngle = Math.PI / 2; // 90 degrees in radians
-
-    // Calculate the final rotation angle adjusted to start from the top middle (0 degrees)
-    const adjustedWinningAngle = (finalAngle + needleAngle) % (2 * Math.PI);
-
-    // Determine the winning node index
-    const winningNodeIndex = Math.floor(adjustedWinningAngle / angleStep);
-
-    return nodes[winningNodeIndex];
-}
-
-function displayWinningNode(winningNode) {
-    const resultElement = document.getElementById('result');
-    if (resultElement) {
-        resultElement.textContent = `Result: ${winningNode}`;
-    }
-}
-
 export function saveNodesConfiguration(nodes) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
@@ -212,4 +189,15 @@ export function shuffleNodes(nodes) {
         [values[i], values[j]] = [values[j], values[i]];
     }
     return values;
+}
+
+function logWinningNode(nodes, currentAngle, angleStep) {
+    const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
+    const winningNodeIndex = Math.floor(winningAngle / angleStep);
+    const winningNode = nodes[winningNodeIndex];
+
+    console.log("Current Angle (radians):", currentAngle);
+    console.log("Winning Angle (radians):", winningAngle);
+    console.log("Winning Node Index:", winningNodeIndex);
+    console.log("Winning Node:", winningNode);
 }
