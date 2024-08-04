@@ -99,7 +99,7 @@ export function drawWheel(nodes, rotation = 0) {
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const radius = Math.min(canvas.width, canvas.height) / 2;
-    const centerX = radius;
+    const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
@@ -111,7 +111,7 @@ export function drawWheel(nodes, rotation = 0) {
         colorPalette.quinary,
     ];
 
-    nodes.forEach((value, index) => {
+    nodes.forEach((node, index) => {
         const startAngle = currentAngle;
         const endAngle = startAngle + angleStep;
 
@@ -132,8 +132,12 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = colorPalette.textWhite;
-        ctx.font = '20px Arial';
-        ctx.fillText(value, radius * 0.8, 0);
+        ctx.font = 'bold 20px Arial';
+        
+        // Adjust text position based on text length
+        const textRadius = radius * (node.value.length > 10 ? 0.7 : 0.8);
+        ctx.fillText(node.value, textRadius, 0);
+        
         ctx.restore();
 
         currentAngle += angleStep;
@@ -145,37 +149,25 @@ export function drawWheel(nodes, rotation = 0) {
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
-
     if (!ctx) return;
 
     const needleImg = new Image();
-    needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
-
+    needleImg.src = './nav.png';
     needleImg.onload = () => {
-        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
-        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
-        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+        const needleWidth = needleImg.width * 0.735;
+        const needleHeight = needleImg.height * 0.735;
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160;
+        const needleYPosition = centerY - needleHeight / 2;
 
         ctx.save();
         ctx.translate(needleXPosition, needleYPosition);
-        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+        ctx.rotate(Math.PI / 2);
         ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
         ctx.restore();
     };
 
-    // Draw the needle immediately if the image is already loaded
     if (needleImg.complete) {
-        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
-        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
-        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
-
-        ctx.save();
-        ctx.translate(needleXPosition, needleYPosition);
-        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
-        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
-        ctx.restore();
+        needleImg.onload();
     }
 }
 
@@ -213,10 +205,15 @@ export function shuffleNodes(nodes) {
     }
     return values;
 }
-
+document.getElementById('shuffleButton').addEventListener('click', () => {
+    const updatedNodes = shuffleAndUpdateAngle(nodes);
+    nodes = updatedNodes; // Update the global nodes array
+    saveNodesConfiguration(nodes); // Save the new configuration to the database
+});
 export function shuffleAndUpdateAngle(nodes) {
     const shuffledNodes = shuffleNodes(nodes);
     currentAngle = Math.random() * 2 * Math.PI; // Set the angle to a random value between 0 and 2π
     drawWheel(shuffledNodes, currentAngle);
+    saveCurrentRotation(currentAngle); // Save the new rotation to the database
     return shuffledNodes;
 }
