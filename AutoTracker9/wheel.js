@@ -1,6 +1,48 @@
 let isSpinning = false;
 let currentAngle = 0;
 let animationFrameId;
+let shuffleOrientation = [];
+let currentNodes = []; // Assuming you have a variable to store the current nodes
+
+document.getElementById('shuffle-button').addEventListener('click', function() {
+    if (isSpinning) return;
+    shuffleOrientation = [...currentNodes]; // Save the current node positions
+    shuffleNodes();
+});
+
+document.getElementById('spin-button').addEventListener('click', function() {
+    if (isSpinning) return;
+    spinWheel(currentNodes);
+});
+
+function shuffleNodes() {
+    // Your shuffle logic here
+    // For example, shuffle the nodes array
+    for (let i = currentNodes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [currentNodes[i], currentNodes[j]] = [currentNodes[j], currentNodes[i]];
+    }
+    // Update the display or canvas to reflect the shuffled nodes
+    updateWheelDisplay();
+}
+
+function updateWheelDisplay() {
+    drawWheel(currentNodes, currentAngle);
+}
+
+function getInitialNodes() {
+    // Fetch or define your initial nodes
+    return ["Node1", "Node2", "Node3", "Node4"];
+}
+
+function initWheel() {
+    // Fetch the initial nodes configuration from your backend or use a default
+    currentNodes = getInitialNodes();
+    shuffleOrientation = [...currentNodes]; // Save the initial orientation
+    updateWheelDisplay();
+}
+
+document.addEventListener('DOMContentLoaded', initWheel);
 
 export function spinWheel(nodes) {
     if (isSpinning) return;

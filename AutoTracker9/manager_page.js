@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { drawWheel, spinWheel } from './wheel.js';
 
@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const presetsPerPage = 5;
     let currentPage = 0;
     let shuffledNodes = [];
+    let currentAngle = 0;
+    let isSpinning = false;
 
     function loadPresets() {
         const presetsRef = ref(database, 'spinTheWheelPresets');
@@ -90,9 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
             value: node.value,
             count: node.count
         }));
-        console.log('Preset nodes:', nodes); // Debugging
-        shuffledNodes = flattenAndShuffleNodes(nodes); // Define shuffledNodes here
-        drawWheel(shuffledNodes); // Use drawWheel from wheel.js
+        shuffledNodes = flattenAndShuffleNodes(nodes); 
+        drawWheel(shuffledNodes, currentAngle);
     }
 
     function flattenAndShuffleNodes(nodes) {
@@ -112,8 +113,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('shuffle-button').addEventListener('click', () => {
+        if (isSpinning) return;
         shuffledNodes = flattenAndShuffleNodes(shuffledNodes);
-        drawWheel(shuffledNodes); // Redraw the wheel with shuffled nodes
+        saveShuffleOrientation();
+        drawWheel(shuffledNodes, currentAngle);
+    });
+
+    document.getElementById('spin-button').addEventListener('click', () => {
+        if (isSpinning) return;
+        isSpinning = true;
+        saveSpinState();
+        spinWheel(shuffledNodes);
     });
 
     function fetchAndDrawWheel() {
@@ -126,27 +136,54 @@ document.addEventListener('DOMContentLoaded', () => {
                     count: node.count
                 })));
                 shuffledNodes = formattedNodes;
-                drawWheel(formattedNodes);
+                drawWheel(formattedNodes, currentAngle);
             }
         });
     }
 
-    document.getElementById('spin-button').addEventListener('click', () => {
-        const nodesRef = ref(database, 'shuffledGameConfiguration/nodes');
-        get(nodesRef).then((snapshot) => {
-            const nodes = snapshot.val();
-            if (nodes) {
-                const formattedNodes = flattenAndShuffleNodes(Object.values(nodes).map(node => ({
-                    value: node.value,
-                    count: node.count
-                })));
-                shuffledNodes = formattedNodes;
-                spinWheel(formattedNodes);
-            } else {
-                alert('No nodes configured.');
-            }
+    function saveShuffleOrientation() {
+        const db = getDatabase();
+        set(ref(db, 'shuffledGameConfiguration'), {
+            nodes: shuffledNodes,
+            angle: currentAngle
         });
-    });
+    }
 
+    function saveSpinState() {
+        const db = getDatabase();
+        set(ref(db, 'spinState'), {
+            angle: currentAngle
+        });
+    }
+
+    function loadShuffleOrientation() {
+        const db = getDatabase();
+        get(ref(db, 'shuffledGameConfiguration')).then(snapshot => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                shuffledNodes = data.nodes;
+                currentAngle = data.angle;
+                drawWheel(shuffledNodes, currentAngle);
+            }
+        }).catch(error => {
+            console.error(error);
+        });
+    }
+
+    function loadSpinState() {
+        const db = getDatabase();
+        get(ref(db, 'spinState')).then(snapshot => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                currentAngle = data.angle;
+                drawWheel(shuffledNodes, currentAngle);
+            }
+        }).catch(error => {
+            console.error(error);
+        });
+    }
+
+    loadShuffleOrientation();
+    loadSpinState();
     fetchAndDrawWheel();
 });
