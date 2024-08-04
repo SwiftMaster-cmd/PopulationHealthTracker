@@ -111,7 +111,6 @@ export function drawWheel(nodes, rotation = 0) {
 
     drawNeedle(centerX, centerY, radius); // Pass centerX, centerY, and radius to drawNeedle
 }
-
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -122,9 +121,9 @@ function drawNeedle(centerX, centerY, radius) {
     needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
     needleImg.onload = () => {
-        const needleWidth = needleImg.width * 1.05; // Adjust the size as needed
-        const needleHeight = needleImg.height * 1.05; // Adjust the size as needed
-        const needleXPosition = centerX + radius - needleWidth / 2 + 80; // Move needle 80px to the right
+        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
+        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
         const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
@@ -133,7 +132,22 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
         ctx.restore();
     };
+
+    // Draw the needle immediately if the image is already loaded
+    if (needleImg.complete) {
+        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
+        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
+        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+
+        ctx.save();
+        ctx.translate(needleXPosition, needleYPosition);
+        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
+        ctx.restore();
+    }
 }
+
 
 
 
