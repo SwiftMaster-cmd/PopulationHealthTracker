@@ -95,15 +95,19 @@ function loadPreset(preset) {
     currentNodes = preset.nodes;
     currentRotation = 0; // Reset rotation when loading a new preset
     
+    // Shuffle the nodes
+    const shuffledNodes = shuffleNodes(currentNodes);
+    
     // Update the wheel configuration display
     document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
-    currentNodes.forEach(node => addNodeField(node.value, node.count));
+    shuffledNodes.forEach(node => addNodeField(node.value, node.count));
     
-    drawWheel(currentNodes, currentRotation);
-    drawCurrentConfiguration();
-    saveNodesConfiguration(currentNodes);
+    drawWheel(shuffledNodes, currentRotation);
+    drawCurrentConfiguration(shuffledNodes);
+    saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
     console.log(`Loaded preset: ${preset.name}`);
 }
+
 
 
 function loadCurrentConfiguration() {
