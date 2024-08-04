@@ -37,35 +37,29 @@ export function spinWheel(nodes, currentAngle) {
         if (progress <= accelerationDuration) {
             const easedProgress = easeInQuad(progress / accelerationDuration);
             currentSpeed = maxSpinSpeed * easedProgress;
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 4000) {
             const easedProgress = easeOutQuad((progress - accelerationDuration) / (4000 - accelerationDuration));
             currentSpeed = maxSpinSpeed - ((maxSpinSpeed - speedAt4Seconds) * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= 6000) {
             const easedProgress = easeOutQuad((progress - 4000) / (6000 - 4000));
             currentSpeed = speedAt4Seconds - ((speedAt4Seconds - speedAt6Seconds) * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         } else if (progress <= spinDuration) {
             const easedProgress = easeOutQuad((progress - 6000) / (spinDuration - 6000));
             currentSpeed = speedAt6Seconds - (speedAt6Seconds * easedProgress);
-            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
         }
 
-        // Ensure the final angle aligns with the winning segment
-        if (progress >= spinDuration - 16) { // Check near the end of the animation
+        if (progress < spinDuration) {
+            currentAngle += (currentSpeed / 60) % (2 * Math.PI);
+            animationFrameId = requestAnimationFrame(animate);
+        } else {
             currentAngle = finalRotationAngle % (2 * Math.PI);
+            isSpinning = false;
+            drawWheel(nodes, currentAngle);
+            displayResult(nodes, currentAngle, angleStep);
+            saveCurrentRotation(currentAngle); // Save current rotation
         }
 
         drawWheel(nodes, currentAngle);
-        saveCurrentRotation(currentAngle); // Save current rotation
-
-        if (progress < spinDuration) {
-            animationFrameId = requestAnimationFrame(animate);
-        } else {
-            isSpinning = false;
-            displayResult(nodes, currentAngle, angleStep);
-        }
     }
 
     animationFrameId = requestAnimationFrame(animate);
