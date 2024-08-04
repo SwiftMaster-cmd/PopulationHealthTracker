@@ -20,6 +20,7 @@ export function spinWheel(nodes) {
 
     let start = null;
     let previousTimestamp = null;
+    let initialAngle = currentAngle; // Preserve the initial angle before the spin starts
 
     function animate(timestamp) {
         if (!start) {
@@ -47,7 +48,7 @@ export function spinWheel(nodes) {
         }
 
         rotationDelta = (currentSpeed * deltaTime / 1000) % (2 * Math.PI);
-        currentAngle = (currentAngle + rotationDelta) % (2 * Math.PI);
+        currentAngle = (initialAngle + rotationDelta) % (2 * Math.PI);
 
         if (progress < spinDuration) {
             drawWheel(nodes, currentAngle);
