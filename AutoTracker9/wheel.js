@@ -44,6 +44,7 @@ export function spinWheel(nodes, currentAngle) {
         }
 
         drawWheel(nodes, currentAngle);
+        drawNeedle(centerX, centerY, radius); // Ensure the needle is always drawn after the wheel
         saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
@@ -56,6 +57,7 @@ export function spinWheel(nodes, currentAngle) {
 
     animationFrameId = requestAnimationFrame(animate);
 }
+
 
 function easeInQuad(t) {
     return t * t;
@@ -119,6 +121,7 @@ export function drawWheel(nodes, rotation = 0) {
     drawNeedle(centerX, centerY, radius);
 }
 
+
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -128,7 +131,7 @@ function drawNeedle(centerX, centerY, radius) {
     const needleImg = new Image();
     needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
-    needleImg.onload = () => {
+    const drawImage = () => {
         const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
         const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
         const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
@@ -140,18 +143,14 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.restore();
     };
 
-    if (needleImg.complete) {
-        const needleWidth = needleImg.width * 0.735;
-        const needleHeight = needleImg.height * 0.735;
-        const needleXPosition = centerX + radius - needleWidth / 2 + 160;
-        const needleYPosition = centerY - needleHeight / 2;
+    needleImg.onload = drawImage;
 
-        ctx.save();
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.drawImage(needleImg, needleXPosition, needleYPosition, needleWidth, needleHeight);
-        ctx.restore();
+    // Draw the needle immediately if the image is already loaded
+    if (needleImg.complete) {
+        drawImage();
     }
 }
+
 
 
 
