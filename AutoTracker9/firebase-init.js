@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -14,14 +14,25 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const database = getDatabase(app);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
-// Shuffle nodes on initial load
-import { shuffleNodes, loadNodesConfiguration } from './wheel.js';
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadNodesConfiguration((nodes, rotation) => {
-        shuffleNodes(nodes);
+document.addEventListener('firebaseInitialized', () => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const userRef = ref(database, 'users/' + user.uid);
+            get(userRef).then((snapshot) => {
+                const userData = snapshot.val();
+                if (userData && userData.googleLinked) {
+                    console.log('Google account is already linked.');
+                } else {
+                    console.log('Google account is not linked.');
+                }
+            });
+        } else {
+            console.error('No user is signed in.');
+        }
     });
 });
+
+export { auth, database };
