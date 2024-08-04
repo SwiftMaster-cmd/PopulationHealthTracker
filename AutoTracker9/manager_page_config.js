@@ -1,9 +1,16 @@
 import { database, auth } from './firebase-init.js';
 import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+import { drawWheel, saveNodesConfiguration, loadNodesConfiguration, shuffleNodes } from './wheel.js';
+
+let currentNodes = [];
+let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('add-rule-field').addEventListener('click', () => addRuleField());
+    document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
+    document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
+    document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -11,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             get(userAuthorityRef).then((snapshot) => {
                 const authorityLevel = snapshot.val();
                 if (authorityLevel >= 9) {
-                    loadCurrentRules();
+                    loadCurrentConfiguration();
                     listenForChanges();
                 } else {
                     alert("You do not have permission to view this page.");
@@ -24,72 +31,98 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function addRuleField(salesType = 'billableHRA', quantity = 0) {
-    const ruleContainer = document.createElement('div');
-    ruleContainer.className = 'rule-field';
+function addNodeField(value = 0, count = 1) {
+    const nodeContainer = document.createElement('div');
+    nodeContainer.className = 'node-field';
 
-    const salesTypeSelect = document.createElement('select');
-    salesTypeSelect.innerHTML = `
-        <option value="billableHRA" ${salesType === 'billableHRA' ? 'selected' : ''}>Billable HRA</option>
-        <option value="selectPatientManagement" ${salesType === 'selectPatientManagement' ? 'selected' : ''}>Select Patient Management</option>
-        <option value="selectRX" ${salesType === 'selectRX' ? 'selected' : ''}>Select RX</option>
-        <option value="transfer" ${salesType === 'transfer' ? 'selected' : ''}>Transfer</option>
-    `;
-    salesTypeSelect.addEventListener('change', updateRules);
+    const nodeValueInput = document.createElement('input');
+    nodeValueInput.type = 'number';
+    nodeValueInput.placeholder = 'Dollar Amount';
+    nodeValueInput.value = value;
 
-    const quantityInput = document.createElement('input');
-    quantityInput.type = 'number';
-    quantityInput.placeholder = 'Quantity';
-    quantityInput.value = quantity;
-    quantityInput.addEventListener('input', updateRules);
+    const nodeCountInput = document.createElement('input');
+    nodeCountInput.type = 'number';
+    nodeCountInput.placeholder = 'Count';
+    nodeCountInput.value = count;
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => {
-        ruleContainer.remove();
-        updateRules();
+        nodeContainer.remove();
     });
 
-    ruleContainer.appendChild(salesTypeSelect);
-    ruleContainer.appendChild(quantityInput);
-    ruleContainer.appendChild(removeButton);
+    nodeContainer.appendChild(nodeValueInput);
+    nodeContainer.appendChild(nodeCountInput);
+    nodeContainer.appendChild(removeButton);
 
-    document.getElementById('rules-container').appendChild(ruleContainer);
+    document.getElementById('nodes-container').appendChild(nodeContainer);
 }
 
-function updateRules() {
-    const rulesContainer = document.getElementById('rules-container');
-    const ruleFields = rulesContainer.getElementsByClassName('rule-field');
-    const rules = [];
+function saveConfiguration() {
+    const nodesContainer = document.getElementById('nodes-container');
+    const nodeFields = nodesContainer.getElementsByClassName('node-field');
+    let nodes = [];
 
-    for (let i = 0; i < ruleFields.length; i++) {
-        const salesType = ruleFields[i].querySelector('select').value;
-        const quantity = ruleFields[i].querySelector('input').value;
-        rules.push({ salesType, quantity });
+    for (let i = 0; i < nodeFields.length; i++) {
+        const nodeValue = parseInt(nodeFields[i].querySelector('input[placeholder="Dollar Amount"]').value);
+        const nodeCount = parseInt(nodeFields[i].querySelector('input[placeholder="Count"]').value);
+
+        // Validation
+        if (isNaN(nodeValue) || isNaN(nodeCount) || nodeValue <= 0 || nodeCount <= 0) {
+            alert("Please enter valid numbers for all node fields.");
+            return;
+        }
+
+        nodes.push({ value: nodeValue, count: nodeCount });
     }
 
-    set(ref(database, 'gameRules'), rules).then(() => {
-        console.log('Rules updated successfully.');
-    }).catch((error) => {
-        console.error('Error updating rules:', error);
-    });
+    saveNodesConfiguration(nodes);
+    currentNodes = nodes;
+    drawCurrentConfiguration();
+    console.log('Configuration updated successfully.');
 }
 
-function loadCurrentRules() {
-    const rulesRef = ref(database, 'gameRules');
-    onValue(rulesRef, (snapshot) => {
-        const rules = snapshot.val();
-        document.getElementById('rules-list').innerHTML = ''; // Clear existing rules
-        document.getElementById('rules-container').innerHTML = ''; // Clear existing rule fields
-        if (rules) {
-            rules.forEach(rule => addRuleField(rule.salesType, rule.quantity));
+function loadCurrentConfiguration() {
+    loadNodesConfiguration((nodes, rotation) => {
+        document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
+        if (nodes) {
+            nodes.forEach(node => addNodeField(node.value, node.count));
+            currentNodes = nodes;
+            currentRotation = rotation;
+            drawWheel(currentNodes, currentRotation);
+            drawCurrentConfiguration();
+        } else {
+            console.error('No nodes found in configuration.');
         }
     });
 }
 
+function drawCurrentConfiguration() {
+    const currentNodesContainer = document.getElementById('current-nodes-container');
+    currentNodesContainer.innerHTML = ''; // Clear existing nodes
+
+    currentNodes.forEach(node => {
+        const nodeElement = document.createElement('div');
+        nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
+        currentNodesContainer.appendChild(nodeElement);
+    });
+}
+
+function shuffleCurrentNodes() {
+    currentNodes = shuffleNodes(currentNodes);
+    drawWheel(currentNodes, currentRotation);
+    saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
+}
+
 function listenForChanges() {
-    const rulesRef = ref(database, 'gameRules');
-    onValue(rulesRef, () => {
-        loadCurrentRules();
+    const configRef = ref(database, 'gameConfiguration/nodes');
+
+    onValue(configRef, (snapshot) => {
+        const nodes = snapshot.val();
+        if (nodes) {
+            currentNodes = nodes;
+            drawWheel(currentNodes, currentRotation);
+            drawCurrentConfiguration();
+        }
     });
 }

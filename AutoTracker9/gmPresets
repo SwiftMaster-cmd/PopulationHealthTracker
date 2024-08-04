@@ -1,6 +1,9 @@
 import { database } from './firebase-init.js';
 import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { drawWheel } from './wheel.js';
+import { drawWheel, saveNodesConfiguration } from './wheel.js';
+
+let currentNodes = [];
+let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('save-preset-button').addEventListener('click', savePreset);
