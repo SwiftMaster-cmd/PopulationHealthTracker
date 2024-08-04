@@ -6,6 +6,12 @@ let currentAngle = 0;
 let isSpinning = false;
 let animationFrameId;
 
+document.addEventListener('DOMContentLoaded', () => {
+    loadNodesConfiguration((nodes, rotation) => {
+        drawWheel(nodes, rotation);
+    });
+});
+
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
@@ -85,7 +91,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node:", winningNode);
 }
 
-export function drawWheel(nodes, rotation) {
+export function drawWheel(nodes, rotation = 0) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -204,4 +210,3 @@ export function shuffleAndUpdateWheel(nodes) {
     saveNodesConfiguration(shuffledNodes); // Save the new node configuration
     return shuffledNodes;
 }
-
