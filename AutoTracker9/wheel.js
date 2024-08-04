@@ -44,7 +44,6 @@ export function spinWheel(nodes, currentAngle) {
         }
 
         drawWheel(nodes, currentAngle);
-        drawNeedle(centerX, centerY, radius); // Ensure the needle is always drawn after the wheel
         saveCurrentRotation(currentAngle); // Save current rotation
 
         if (progress < spinDuration) {
@@ -57,7 +56,6 @@ export function spinWheel(nodes, currentAngle) {
 
     animationFrameId = requestAnimationFrame(animate);
 }
-
 
 function easeInQuad(t) {
     return t * t;
@@ -121,7 +119,6 @@ export function drawWheel(nodes, rotation = 0) {
     drawNeedle(centerX, centerY, radius);
 }
 
-
 function drawNeedle(centerX, centerY, radius) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -131,26 +128,33 @@ function drawNeedle(centerX, centerY, radius) {
     const needleImg = new Image();
     needleImg.src = './nav.png'; // Replace with the path to the uploaded needle image
 
-    const drawImage = () => {
+    needleImg.onload = () => {
         const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
         const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
         const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
         const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
 
         ctx.save();
-        ctx.globalCompositeOperation = 'source-over'; // Ensure the needle is drawn over the wheel
-        ctx.drawImage(needleImg, needleXPosition, needleYPosition, needleWidth, needleHeight);
+        ctx.translate(needleXPosition, needleYPosition);
+        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
         ctx.restore();
     };
 
-    needleImg.onload = drawImage;
-
     // Draw the needle immediately if the image is already loaded
     if (needleImg.complete) {
-        drawImage();
+        const needleWidth = needleImg.width * 0.735; // Adjust the size to 70% of the original
+        const needleHeight = needleImg.height * 0.735; // Adjust the size to 70% of the original
+        const needleXPosition = centerX + radius - needleWidth / 2 + 160; // Move needle 160px to the right
+        const needleYPosition = centerY - needleHeight / 2; // Center the needle vertically
+
+        ctx.save();
+        ctx.translate(needleXPosition, needleYPosition);
+        ctx.rotate(Math.PI / 2); // Rotate needle to 90 degrees
+        ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
+        ctx.restore();
     }
 }
-
 
 
 
