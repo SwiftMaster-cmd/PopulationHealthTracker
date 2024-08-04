@@ -18,8 +18,6 @@ export function spinWheel(nodes) {
     const speedAt4Seconds = (96 / 60) * 2 * Math.PI; // 4 RPM converted to radians per second
     const speedAt6Seconds = (3 / 60) * 2 * Math.PI; // 2 RPM converted to radians per second
 
-    const initialRotation = 0; // No initial rotation adjustment
-
     const totalRotations = 5; // Number of full rotations before stopping
     const finalRotationAngle = currentAngle + totalRotations * 2 * Math.PI;
 
@@ -49,14 +47,13 @@ export function spinWheel(nodes) {
         }
 
         if (progress < spinDuration) {
-            drawWheel(nodes, currentAngle + initialRotation);
+            drawWheel(nodes, currentAngle);
             animationFrameId = requestAnimationFrame(animate);
         } else {
             currentAngle = finalRotationAngle % (2 * Math.PI);
             isSpinning = false;
-            drawWheel(nodes, currentAngle + initialRotation);
+            drawWheel(nodes, currentAngle);
             saveCurrentRotation(currentAngle); // Save current rotation
-            displayResult(nodes, currentAngle, angleStep); // Ensure result is displayed without altering the wheel
         }
     }
 
@@ -160,37 +157,6 @@ function drawNeedle(centerX, centerY, radius) {
         ctx.drawImage(needleImg, 0, 0, needleWidth, needleHeight);
         ctx.restore();
     }
-}
-
-function displayResult(nodes, rotation, angleStep) {
-    const totalNodes = nodes.length;
-    const adjustedRotation = rotation % (2 * Math.PI); // No offset adjustment
-    const winningIndex = Math.floor(adjustedRotation / angleStep) % totalNodes;
-    const result = nodes[winningIndex];
-
-    const resultElement = document.getElementById('result');
-    resultElement.textContent = `Result: ${result}`;
-
-    // Start the highlight animation
-    let highlightOpacity = 0.1;
-    let increasing = true;
-
-    function animateHighlight() {
-        if (increasing) {
-            highlightOpacity += 0.01;
-            if (highlightOpacity >= 0.6) increasing = false;
-        } else {
-            highlightOpacity -= 0.01;
-            if (highlightOpacity <= 0.1) increasing = true;
-        }
-
-        drawWheel(nodes, rotation, highlightOpacity);
-        if (!isSpinning) {
-            requestAnimationFrame(animateHighlight);
-        }
-    }
-
-    animateHighlight();
 }
 
 function saveCurrentRotation(rotation) {
