@@ -8,7 +8,7 @@ export function spinWheel(nodes, currentAngle) {
     if (isSpinning) return;
     isSpinning = true;
 
-    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
+    const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
 
     const spinDuration = 9000; // Total spin duration of 9 seconds
@@ -64,54 +64,52 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-export function drawWheel(nodes, rotation = 0, canvasId = 'wheel-canvas') {
-    const canvas = document.getElementById(canvasId);
+export function drawWheel(nodes, rotation = 0) {
+    const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
+    const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const radius = Math.min(canvas.width, canvas.height) / 2;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let currentAngle = rotation;
 
-    nodes.forEach((node, index) => {
-        for (let i = 0; i < node.count; i++) {
-            const startAngle = currentAngle;
-            const endAngle = startAngle + angleStep;
+    nodes.forEach((value, index) => {
+        const startAngle = currentAngle;
+        const endAngle = startAngle + angleStep;
 
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.closePath();
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
 
-            ctx.fillStyle = index % 2 === 0 ? '#FFCC00' : '#FF9900';
-            ctx.fill();
-            ctx.stroke();
+        ctx.fillStyle = index % 2 === 0 ? '#FFCC00' : '#FF9900';
+        ctx.fill();
+        ctx.stroke();
 
-            ctx.save();
-            ctx.translate(centerX, centerY);
-            ctx.rotate((startAngle + endAngle) / 2);
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#000';
-            ctx.font = '20px Arial';
-            ctx.fillText(node.value, radius * 0.8, 0);
-            ctx.restore();
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate((startAngle + endAngle) / 2);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#000';
+        ctx.font = '20px Arial';
+        ctx.fillText(value, radius * 0.8, 0);
+        ctx.restore();
 
-            currentAngle += angleStep;
-        }
+        currentAngle += angleStep;
     });
 
-    drawNeedle(canvasId);
+    drawNeedle();
 }
 
-function drawNeedle(canvasId) {
-    const canvas = document.getElementById(canvasId);
+function drawNeedle() {
+    const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
 
     if (!ctx) return;
@@ -132,20 +130,9 @@ function drawNeedle(canvasId) {
 }
 
 function displayResult(nodes, rotation, angleStep) {
-    const totalNodes = nodes.reduce((acc, node) => acc + node.count, 0);
+    const totalNodes = nodes.length;
     const winningIndex = Math.floor((2 * Math.PI - rotation) / angleStep) % totalNodes;
-    let currentNodeIndex = 0;
-    let result;
-
-    nodes.forEach((node) => {
-        for (let i = 0; i < node.count; i++) {
-            if (currentNodeIndex === winningIndex) {
-                result = node.value;
-                break;
-            }
-            currentNodeIndex++;
-        }
-    });
+    const result = nodes[winningIndex];
 
     const resultElement = document.getElementById('result');
     resultElement.textContent = `Result: ${result}`;
