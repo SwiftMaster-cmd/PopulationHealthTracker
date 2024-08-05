@@ -140,13 +140,14 @@ function loadMonthlyTotals() {
 }
 
 function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues) {
-    // ... existing code ...
-
     // Calculate current total commission
     const currentCommissionTotal = (salesTotals.selectRX * commission.srxPayout) +
                                    (salesTotals.transfer * commission.transferPayout) +
                                    (salesTotals.billableHRA * commission.hraPayout) +
                                    (salesTotals.selectPatientManagement * commission.spmPayout);
+
+    // Calculate the total count of all sales types
+    const totalCount = salesTotals.selectRX + salesTotals.transfer + salesTotals.billableHRA + salesTotals.selectPatientManagement;
 
     // Display current totals
     document.getElementById('srx-value').textContent = `Current: $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)} (${salesTotals.selectRX})`;
@@ -166,8 +167,8 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
     document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * getWorkingDaysLeft()) * commission.hraPayout).toFixed(2)}`;
     document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * getWorkingDaysLeft()) * commission.spmPayout).toFixed(2)}`;
 
-    // Display current total
-    document.getElementById('total-value').textContent = `$${currentCommissionTotal.toFixed(2)}`;
+    // Display current total commission
+    document.getElementById('total-value').textContent = `Total Commission: $${currentCommissionTotal.toFixed(2)} (Total Count: ${totalCount})`;
 
     // Display last month's total
     const lastMonthElement = document.getElementById('last-month-value');
@@ -183,6 +184,7 @@ function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendVa
     averageElement.textContent = `$${average.toFixed(2)}`;
     averageElement.style.color = average > currentCommissionTotal ? 'red' : 'green';
 }
+
 
 
 function calculateCommission(salesTotals, level) {
