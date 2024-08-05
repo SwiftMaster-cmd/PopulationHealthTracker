@@ -13,10 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadCurrentConfiguration();
     listenForChanges();
-    loadCurrentRandomConfiguration();
-    loadPresets(); // Add this line to load presets
+    loadCurrentRandomConfiguration(); // Load current random configuration on page load
 });
-
 
 function addNodeField(value = 0, count = 1) {
     const nodeContainer = document.createElement('div');
@@ -70,35 +68,6 @@ function saveConfiguration() {
     console.log('Configuration updated successfully.');
     shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
-function loadPresets() {
-    const presetsRef = ref(database, 'spinTheWheelPresets');
-    onValue(presetsRef, (snapshot) => {
-        const data = snapshot.val();
-        const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
-        displayPresets(presets);
-    });
-}
-function displayPresets(presets) {
-    const presetsContainer = document.getElementById('presets-container');
-    presetsContainer.innerHTML = '';
-
-    presets.forEach(preset => {
-        const presetButton = document.createElement('button');
-        presetButton.textContent = preset.name;
-        presetButton.addEventListener('click', () => loadPreset(preset));
-        presetsContainer.appendChild(presetButton);
-    });
-}
-function loadPreset(preset) {
-    currentNodes = preset.nodes;
-    currentRotation = 0; // Reset rotation when loading a new preset
-    drawWheel(currentNodes, currentRotation);
-    drawCurrentConfiguration();
-    saveNodesConfiguration(currentNodes);
-    console.log(`Loaded preset: ${preset.name}`);
-}
-
-
 
 function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {

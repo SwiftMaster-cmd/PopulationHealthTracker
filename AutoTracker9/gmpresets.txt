@@ -69,15 +69,15 @@ function displayPresetSummary(preset) {
     currentRotation = 0; // Reset rotation to zero when loading a new preset
     const shuffledNodes = shuffleNodes(currentNodes); // Automatically shuffle nodes
     drawWheel(shuffledNodes, currentRotation);
-    drawCurrentConfiguration(shuffledNodes);
+    drawCurrentConfiguration();
     saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
 }
 
-function drawCurrentConfiguration(nodes) {
+function drawCurrentConfiguration() {
     const currentNodesContainer = document.getElementById('current-nodes-container');
     currentNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    nodes.forEach(node => {
+    currentNodes.forEach(node => {
         const nodeElement = document.createElement('div');
         nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
         currentNodesContainer.appendChild(nodeElement);
