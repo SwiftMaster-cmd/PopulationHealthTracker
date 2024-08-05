@@ -139,38 +139,51 @@ function loadMonthlyTotals() {
     });
 }
 
-function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues, currentCommissionTotal, trendCommissionTotal) {
+function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues) {
+    // ... existing code ...
+
+    // Calculate current total commission
+    const currentCommissionTotal = (salesTotals.selectRX * commission.srxPayout) +
+                                   (salesTotals.transfer * commission.transferPayout) +
+                                   (salesTotals.billableHRA * commission.hraPayout) +
+                                   (salesTotals.selectPatientManagement * commission.spmPayout);
+
+    // Display current totals
     document.getElementById('srx-value').textContent = `Current: $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)} (${salesTotals.selectRX})`;
     document.getElementById('transfer-value').textContent = `Current: $${(salesTotals.transfer * commission.transferPayout).toFixed(2)} (${salesTotals.transfer})`;
     document.getElementById('hra-value').textContent = `Current: $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)} (${salesTotals.billableHRA})`;
     document.getElementById('spm-value').textContent = `Current: $${(salesTotals.selectPatientManagement * commission.spmPayout).toFixed(2)} (${salesTotals.selectPatientManagement})`;
 
-    const workingDaysLeft = getWorkingDaysLeft();
-
+    // Display trend values
     document.getElementById('srx-trend').textContent = `Trend: $${((salesTotals.selectRX + trendValues.selectRX) * commission.srxPayout).toFixed(2)}`;
     document.getElementById('transfer-trend').textContent = `Trend: $${((salesTotals.transfer + trendValues.transfer) * commission.transferPayout).toFixed(2)}`;
     document.getElementById('hra-trend').textContent = `Trend: $${((salesTotals.billableHRA + trendValues.billableHRA) * commission.hraPayout).toFixed(2)}`;
     document.getElementById('spm-trend').textContent = `Trend: $${((salesTotals.selectPatientManagement + trendValues.selectPatientManagement) * commission.spmPayout).toFixed(2)}`;
 
-    document.getElementById('srx-push').textContent = `Push: $${((dailyAverages.selectRX * workingDaysLeft) * commission.srxPayout).toFixed(2)}`;
-    document.getElementById('transfer-push').textContent = `Push: $${((dailyAverages.transfer * workingDaysLeft) * commission.transferPayout).toFixed(2)}`;
-    document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * workingDaysLeft) * commission.hraPayout).toFixed(2)}`;
-    document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * workingDaysLeft) * commission.spmPayout).toFixed(2)}`;
+    // Display push values
+    document.getElementById('srx-push').textContent = `Push: $${((dailyAverages.selectRX * getWorkingDaysLeft()) * commission.srxPayout).toFixed(2)}`;
+    document.getElementById('transfer-push').textContent = `Push: $${((dailyAverages.transfer * getWorkingDaysLeft()) * commission.transferPayout).toFixed(2)}`;
+    document.getElementById('hra-push').textContent = `Push: $${((dailyAverages.billableHRA * getWorkingDaysLeft()) * commission.hraPayout).toFixed(2)}`;
+    document.getElementById('spm-push').textContent = `Push: $${((dailyAverages.selectPatientManagement * getWorkingDaysLeft()) * commission.spmPayout).toFixed(2)}`;
 
+    // Display current total
     document.getElementById('total-value').textContent = `$${currentCommissionTotal.toFixed(2)}`;
 
+    // Display last month's total
     const lastMonthElement = document.getElementById('last-month-value');
     if (prevTotal === 'N/A') {
         lastMonthElement.textContent = 'N/A';
     } else {
         lastMonthElement.textContent = `$${prevTotal.toFixed(2)}`;
-        lastMonthElement.style.color = prevTotal > currentCommissionTotal ? 'green' : 'red';
+        lastMonthElement.style.color = prevTotal > currentCommissionTotal ? 'red' : 'green';
     }
 
+    // Display average
     const averageElement = document.getElementById('average-value');
     averageElement.textContent = `$${average.toFixed(2)}`;
     averageElement.style.color = average > currentCommissionTotal ? 'red' : 'green';
 }
+
 
 function calculateCommission(salesTotals, level) {
     let srxPayout;
