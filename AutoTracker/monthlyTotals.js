@@ -59,7 +59,7 @@ function loadMonthlyTotals() {
         if (user) {
             const currentUserId = user.uid;
             const currentMonthKey = getCurrentMonthKey();
-            const monthlyTotalsRef = salesCountsRef.child(currentUserId).child('month');
+            const monthlyTotalsRef = salesCountsRef.child(currentUserId).child('month').child(currentMonthKey);
 
             monthlyTotalsRef.on('value', salesSnapshot => {
                 try {
@@ -138,6 +138,7 @@ function loadMonthlyTotals() {
         }
     });
 }
+
 
 function updateSalesDisplay(salesTotals, commission, prevTotal, average, trendValues, dailyAverages, pushValues) {
     // Calculate current total commission
