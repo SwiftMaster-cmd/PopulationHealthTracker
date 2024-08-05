@@ -8,7 +8,7 @@ let currentRotation = 0;
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
     document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-    document.getElementById('spin-button').addEventListener('click', () => loadShuffledNodesAndSpin());
+    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
     document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
     loadCurrentConfiguration();
@@ -133,17 +133,5 @@ function drawRandomConfiguration(randomNodes) {
         const nodeElement = document.createElement('div');
         nodeElement.textContent = `Value: ${value}`;
         randomNodesContainer.appendChild(nodeElement);
-    });
-}
-
-function loadShuffledNodesAndSpin() {
-    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    get(shuffledNodesRef).then(snapshot => {
-        const shuffledNodes = snapshot.val();
-        if (shuffledNodes) {
-            spinWheel(shuffledNodes, currentRotation);
-        } else {
-            alert('No shuffled nodes found. Please shuffle the nodes first.');
-        }
     });
 }
