@@ -1,5 +1,5 @@
 import { database } from './firebase-init.js';
-import { ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
@@ -8,13 +8,15 @@ let currentRotation = 0;
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
     document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
+    document.getElementById('spin-button').addEventListener('click', () => loadShuffledNodesAndSpin());
     document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
     loadCurrentConfiguration();
     listenForChanges();
-    loadCurrentRandomConfiguration(); // Load current random configuration on page load
+    loadCurrentRandomConfiguration();
+    loadPresets(); // Add this line to load presets
 });
+
 
 function addNodeField(value = 0, count = 1) {
     const nodeContainer = document.createElement('div');
@@ -64,10 +66,39 @@ function saveConfiguration() {
 
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
-    drawCurrentConfiguration();
     drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
+    shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
+function loadPresets() {
+    const presetsRef = ref(database, 'spinTheWheelPresets');
+    onValue(presetsRef, (snapshot) => {
+        const data = snapshot.val();
+        const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
+        displayPresets(presets);
+    });
+}
+function displayPresets(presets) {
+    const presetsContainer = document.getElementById('presets-container');
+    presetsContainer.innerHTML = '';
+
+    presets.forEach(preset => {
+        const presetButton = document.createElement('button');
+        presetButton.textContent = preset.name;
+        presetButton.addEventListener('click', () => loadPreset(preset));
+        presetsContainer.appendChild(presetButton);
+    });
+}
+function loadPreset(preset) {
+    currentNodes = preset.nodes;
+    currentRotation = 0; // Reset rotation when loading a new preset
+    drawWheel(currentNodes, currentRotation);
+    drawCurrentConfiguration();
+    saveNodesConfiguration(currentNodes);
+    console.log(`Loaded preset: ${preset.name}`);
+}
+
+
 
 function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
@@ -104,13 +135,14 @@ function listenForChanges() {
 }
 
 function shuffleCurrentNodes() {
-    currentNodes = shuffleNodes(currentNodes);
-    drawWheel(currentNodes, currentRotation);
-    saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
+    const shuffledNodes = shuffleNodes(currentNodes);
+    drawWheel(shuffledNodes, currentRotation);
 
     // Save the shuffled nodes as a separate subnode
     const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    set(shuffledNodesRef, currentNodes);
+    set(shuffledNodesRef, shuffledNodes);
+
+    drawRandomConfiguration(shuffledNodes); // Update the random configuration display
 }
 
 function loadCurrentRandomConfiguration() {
@@ -133,5 +165,17 @@ function drawRandomConfiguration(randomNodes) {
         const nodeElement = document.createElement('div');
         nodeElement.textContent = `Value: ${value}`;
         randomNodesContainer.appendChild(nodeElement);
+    });
+}
+
+function loadShuffledNodesAndSpin() {
+    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
+    get(shuffledNodesRef).then(snapshot => {
+        const shuffledNodes = snapshot.val();
+        if (shuffledNodes) {
+            spinWheel(shuffledNodes, currentRotation);
+        } else {
+            alert('No shuffled nodes found. Please shuffle the nodes first.');
+        }
     });
 }
