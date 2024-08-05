@@ -1,5 +1,5 @@
 import { database } from './firebase-init.js';
-import { ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
@@ -8,7 +8,7 @@ let currentRotation = 0;
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
     document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-    document.getElementById('spin-button').addEventListener('click', () => loadShuffledNodesAndSpin());
+    document.getElementById('spin-button').addEventListener('click', () => spinWheel(currentNodes, currentRotation));
     document.getElementById('shuffle-button').addEventListener('click', shuffleCurrentNodes);
 
     loadCurrentConfiguration();
@@ -37,16 +37,12 @@ function addNodeField(value = 0, count = 1) {
         saveConfiguration();
     });
 
-    nodeValueInput.addEventListener('change', saveConfiguration);
-    nodeCountInput.addEventListener('change', saveConfiguration);
-
     nodeContainer.appendChild(nodeValueInput);
     nodeContainer.appendChild(nodeCountInput);
     nodeContainer.appendChild(removeButton);
 
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
-
 
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
@@ -68,11 +64,10 @@ function saveConfiguration() {
 
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
+    drawCurrentConfiguration();
     drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
-    shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
-
 
 function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
@@ -109,14 +104,13 @@ function listenForChanges() {
 }
 
 function shuffleCurrentNodes() {
-    const shuffledNodes = shuffleNodes(currentNodes);
-    drawWheel(shuffledNodes, currentRotation);
+    currentNodes = shuffleNodes(currentNodes);
+    drawWheel(currentNodes, currentRotation);
+    saveNodesConfiguration(currentNodes); // Save the shuffled nodes configuration to Firebase
 
     // Save the shuffled nodes as a separate subnode
     const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    set(shuffledNodesRef, shuffledNodes);
-
-    drawRandomConfiguration(shuffledNodes); // Update the random configuration display
+    set(shuffledNodesRef, currentNodes);
 }
 
 function loadCurrentRandomConfiguration() {
@@ -139,17 +133,5 @@ function drawRandomConfiguration(randomNodes) {
         const nodeElement = document.createElement('div');
         nodeElement.textContent = `Value: ${value}`;
         randomNodesContainer.appendChild(nodeElement);
-    });
-}
-
-function loadShuffledNodesAndSpin() {
-    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    get(shuffledNodesRef).then(snapshot => {
-        const shuffledNodes = snapshot.val();
-        if (shuffledNodes) {
-            spinWheel(shuffledNodes, currentRotation);
-        } else {
-            alert('No shuffled nodes found. Please shuffle the nodes first.');
-        }
     });
 }
