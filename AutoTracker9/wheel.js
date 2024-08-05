@@ -1,19 +1,24 @@
-
 import { colorPalette } from './color-palette.js';
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 let currentAngle = 0;
 let isSpinning = false;
 let animationFrameId;
+let currentWheelConfig = [];
+
+export function setWheelConfiguration(config) {
+    currentWheelConfig = config;
+    // Update the wheel viewer here if needed
+}
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
-// Hide the shuffle button
-const shuffleButton = document.getElementById('shuffle-button');
-if (shuffleButton) {
-    shuffleButton.style.display = 'none';
-}
+    // Hide the shuffle button
+    const shuffleButton = document.getElementById('shuffle-button');
+    if (shuffleButton) {
+        shuffleButton.style.display = 'none';
+    }
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const spinDuration = 9000;
@@ -193,13 +198,10 @@ export function loadNodesConfiguration(callback) {
     });
 }
 
-export function shuffleNodes(nodes) {
-    const values = nodes.flatMap(node => Array(node.count).fill(node.value));
-    for (let i = values.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [values[i], values[j]] = [values[j], values[i]];
-    }
-    return values;
+function shuffleNodes() {
+    // Shuffle the current wheel configuration
+    currentWheelConfig = currentWheelConfig.sort(() => Math.random() - 0.5);
+    // Update the wheel viewer with shuffled nodes if needed
 }
 
 export function shuffleAndUpdateWheel(nodes) {
@@ -208,4 +210,3 @@ export function shuffleAndUpdateWheel(nodes) {
     saveNodesConfiguration(shuffledNodes); // Save the new node configuration
     return shuffledNodes;
 }
-
