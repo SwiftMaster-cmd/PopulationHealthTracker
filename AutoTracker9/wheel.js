@@ -1,20 +1,87 @@
 import { colorPalette } from './color-palette.js';
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 let currentAngle = 0;
 let isSpinning = false;
 let animationFrameId;
+let currentWheelConfig = [];
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadNodesConfiguration((nodes, rotation) => {
-        drawWheel(nodes, rotation);
+// Initialize Firebase (assuming firebase-init.js initializes Firebase app)
+import firebaseConfig from './firebase-init';
+
+// Initialize Firebase app and get a database instance
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+// Reference to the wheel configuration in the database
+const wheelConfigRef = ref(database, 'wheelConfiguration');
+
+// Function to set the wheel configuration
+export function setWheelConfiguration(config) {
+    currentWheelConfig = config;
+    // Update the wheel viewer here if needed
+}
+
+// Function to load and display the current wheel configuration
+function loadWheelConfiguration() {
+    onValue(wheelConfigRef, (snapshot) => {
+        const config = snapshot.val();
+        if (config) {
+            currentWheelConfig = config;
+            displayWheelConfiguration(config);
+        }
     });
+}
+
+// Function to display the wheel configuration
+function displayWheelConfiguration(config) {
+    const nodesContainer = document.getElementById('nodes-container');
+    nodesContainer.innerHTML = ''; // Clear existing nodes
+
+    config.forEach((node, index) => {
+        const nodeElement = document.createElement('div');
+        nodeElement.className = 'node';
+        nodeElement.innerText = `$${node}`;
+        nodesContainer.appendChild(nodeElement);
+    });
+}
+
+// Function to save the current configuration
+function saveConfiguration() {
+    set(wheelConfigRef, currentWheelConfig);
+}
+
+// Function to handle adding a new node to the configuration
+function addNodeToConfiguration(amount) {
+    currentWheelConfig.push(amount);
+    saveConfiguration();
+    displayWheelConfiguration(currentWheelConfig);
+}
+
+// Event listeners for buttons
+const addNodeButton = document.getElementById('add-node-field');
+const saveConfigButton = document.getElementById('save-configuration');
+
+addNodeButton.addEventListener('click', () => {
+    const nodeAmount = prompt('Enter dollar amount:');
+    if (nodeAmount) {
+        addNodeToConfiguration(parseInt(nodeAmount, 10));
+    }
 });
+
+saveConfigButton.addEventListener('click', saveConfiguration);
+
+// Function to load and display the wheel configuration on page load
+document.addEventListener('DOMContentLoaded', loadWheelConfiguration);
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
-
+    // Hide the shuffle button
+    const shuffleButton = document.getElementById('shuffle-button');
+    if (shuffleButton) {
+        shuffleButton.style.display = 'none';
+    }
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const spinDuration = 9000;
@@ -81,17 +148,16 @@ function easeOutQuad(t) {
 }
 
 function logWinningNode(nodes, currentAngle, angleStep) {
-    // Calculate the angle for the right side of the wheel
-    const rightSideAngle = (currentAngle + Math.PI) % (2 * Math.PI);
-    const winningNodeIndex = Math.floor(rightSideAngle / angleStep);
+    const winningAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
+    const winningNodeIndex = Math.floor(winningAngle / angleStep);
     const winningNode = nodes[winningNodeIndex];
     console.log("Current Angle (radians):", currentAngle);
-    console.log("Right Side Angle (radians):", rightSideAngle);
+    console.log("Winning Angle (radians):", winningAngle);
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
 
-export function drawWheel(nodes, rotation = 0) {
+export function drawWheel(nodes, rotation) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -170,25 +236,18 @@ function drawNeedle(centerX, centerY, radius) {
 }
 
 function saveCurrentRotation(rotation) {
-    const db = getDatabase();
-    const rotationRef = ref(db, 'wheel/rotation');
-    set(rotationRef, rotation)
-        .then(() => console.log('Rotation saved'))
-        .catch((error) => console.error('Error saving rotation:', error));
+    const rotationRef = ref(database, 'wheel/rotation');
+    set(rotationRef, rotation);
 }
 
 export function saveNodesConfiguration(nodes) {
-    const db = getDatabase();
-    const nodesRef = ref(db, 'wheel/nodes');
-    set(nodesRef, nodes)
-        .then(() => console.log('Nodes configuration saved'))
-        .catch((error) => console.error('Error saving nodes configuration:', error));
+    const nodesRef = ref(database, 'wheel/nodes');
+    set(nodesRef, nodes);
 }
 
 export function loadNodesConfiguration(callback) {
-    const db = getDatabase();
-    const nodesRef = ref(db, 'wheel/nodes');
-    const rotationRef = ref(db, 'wheel/rotation');
+    const nodesRef = ref(database, 'wheel/nodes');
+    const rotationRef = ref(database, 'wheel/rotation');
     get(nodesRef).then((snapshot) => {
         const nodes = snapshot.val();
         get(rotationRef).then((rotationSnapshot) => {
@@ -196,22 +255,22 @@ export function loadNodesConfiguration(callback) {
             currentAngle = rotation || 0;
             callback(nodes, currentAngle);
         });
-    }).catch((error) => console.error('Error loading configuration:', error));
+    });
 }
-export function shuffleNodes(nodes) {
-    const values = nodes.flatMap(node => Array(node.count).fill(node.value));
-    for (let i = values.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [values[i], values[j]] = [values[j], values[i]];
-    }
-    return values;
+
+export async function shuffleNodes(nodes) {
+    let shuffledNodes = shuffleArray(nodes); // Assuming shuffleArray is an imported utility function
+    await saveNodesConfiguration(shuffledNodes);
+    document.getElementById('shuffle-button').disabled = false; // Re-enable shuffle post-operation or spin
+    return shuffledNodes;
 }
 
 export function shuffleAndUpdateWheel(nodes) {
-    const savedAngle = currentAngle; // Save the current angle
-    const shuffledNodes = shuffleNodes(nodes); // Shuffle the nodes
-    drawWheel(shuffledNodes, savedAngle); // Draw the wheel with the saved angle
-    saveNodesConfiguration(shuffledNodes); // Save the new node configuration
-    saveCurrentRotation(savedAngle); // Save the current rotation angle
-    return shuffledNodes;
+    shuffleNodes(nodes).then(shuffledNodes => {
+        drawWheel(shuffledNodes, currentAngle);
+        // Optionally update other UI elements or Firebase nodes if needed
+    });
 }
+
+// Initial loading of the configuration
+loadWheelConfiguration();
