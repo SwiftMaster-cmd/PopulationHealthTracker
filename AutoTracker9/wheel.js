@@ -1,78 +1,15 @@
 import { colorPalette } from './color-palette.js';
-import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 let currentAngle = 0;
 let isSpinning = false;
 let animationFrameId;
 let currentWheelConfig = [];
 
-// Initialize Firebase (assuming firebase-init.js initializes Firebase app)
-import firebaseConfig from './firebase-init';
-
-// Initialize Firebase app and get a database instance
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-
-// Reference to the wheel configuration in the database
-const wheelConfigRef = ref(database, 'wheelConfiguration');
-
-// Function to set the wheel configuration
 export function setWheelConfiguration(config) {
     currentWheelConfig = config;
     // Update the wheel viewer here if needed
 }
-
-// Function to load and display the current wheel configuration
-function loadWheelConfiguration() {
-    onValue(wheelConfigRef, (snapshot) => {
-        const config = snapshot.val();
-        if (config) {
-            currentWheelConfig = config;
-            displayWheelConfiguration(config);
-        }
-    });
-}
-
-// Function to display the wheel configuration
-function displayWheelConfiguration(config) {
-    const nodesContainer = document.getElementById('nodes-container');
-    nodesContainer.innerHTML = ''; // Clear existing nodes
-
-    config.forEach((node, index) => {
-        const nodeElement = document.createElement('div');
-        nodeElement.className = 'node';
-        nodeElement.innerText = `$${node}`;
-        nodesContainer.appendChild(nodeElement);
-    });
-}
-
-// Function to save the current configuration
-function saveConfiguration() {
-    set(wheelConfigRef, currentWheelConfig);
-}
-
-// Function to handle adding a new node to the configuration
-function addNodeToConfiguration(amount) {
-    currentWheelConfig.push(amount);
-    saveConfiguration();
-    displayWheelConfiguration(currentWheelConfig);
-}
-
-// Event listeners for buttons
-const addNodeButton = document.getElementById('add-node-field');
-const saveConfigButton = document.getElementById('save-configuration');
-
-addNodeButton.addEventListener('click', () => {
-    const nodeAmount = prompt('Enter dollar amount:');
-    if (nodeAmount) {
-        addNodeToConfiguration(parseInt(nodeAmount, 10));
-    }
-});
-
-saveConfigButton.addEventListener('click', saveConfiguration);
-
-// Function to load and display the wheel configuration on page load
-document.addEventListener('DOMContentLoaded', loadWheelConfiguration);
 
 export function spinWheel(nodes) {
     if (isSpinning) return;
@@ -236,18 +173,21 @@ function drawNeedle(centerX, centerY, radius) {
 }
 
 function saveCurrentRotation(rotation) {
-    const rotationRef = ref(database, 'wheel/rotation');
+    const db = getDatabase();
+    const rotationRef = ref(db, 'wheel/rotation');
     set(rotationRef, rotation);
 }
 
 export function saveNodesConfiguration(nodes) {
-    const nodesRef = ref(database, 'wheel/nodes');
+    const db = getDatabase();
+    const nodesRef = ref(db, 'wheel/nodes');
     set(nodesRef, nodes);
 }
 
 export function loadNodesConfiguration(callback) {
-    const nodesRef = ref(database, 'wheel/nodes');
-    const rotationRef = ref(database, 'wheel/rotation');
+    const db = getDatabase();
+    const nodesRef = ref(db, 'wheel/nodes');
+    const rotationRef = ref(db, 'wheel/rotation');
     get(nodesRef).then((snapshot) => {
         const nodes = snapshot.val();
         get(rotationRef).then((rotationSnapshot) => {
@@ -257,6 +197,7 @@ export function loadNodesConfiguration(callback) {
         });
     });
 }
+
 
 export async function shuffleNodes(nodes) {
     let shuffledNodes = shuffleArray(nodes); // Assuming shuffleArray is an imported utility function
@@ -272,5 +213,3 @@ export function shuffleAndUpdateWheel(nodes) {
     });
 }
 
-// Initial loading of the configuration
-loadWheelConfiguration();
