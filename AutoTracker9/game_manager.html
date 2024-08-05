@@ -85,6 +85,13 @@
             <button id="shuffle-button" class="button">Shuffle Nodes</button>
             <p id="result">Result: </p>
         </section>
+        <script type="module">
+            import { shuffleAndUpdateWheel } from './wheel.js';
+    
+            document.getElementById('shuffle-button').addEventListener('click', () => {
+                shuffleAndUpdateWheel(currentNodes);
+            });
+        </script>
 
         <section id="random-configuration" class="container">
             <h3>Current Random Configuration</h3>
