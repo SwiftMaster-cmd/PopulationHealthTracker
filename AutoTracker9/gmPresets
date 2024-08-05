@@ -28,51 +28,12 @@ function savePreset() {
     });
 }
 
-
 function loadPresets() {
     const presetsRef = ref(database, 'spinTheWheelPresets');
     onValue(presetsRef, (snapshot) => {
         const data = snapshot.val();
         const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
         displayPresets(presets);
-    });
-}
-// Function to load a preset configuration
-function loadPreset(preset) {
-    const container = document.getElementById('nodes-container');
-    container.innerHTML = ''; // Clear current nodes
-
-    preset.nodes.forEach(nodeValue => {
-        const nodeElement = document.createElement('input');
-        nodeElement.type = 'text';
-        nodeElement.value = nodeValue;
-        container.appendChild(nodeElement);
-    });
-
-    // Update the current configuration to match the preset
-    selectedConfiguration = preset;
-}
-
-// Event listener for selecting a preset
-document.getElementById('preset-select').addEventListener('change', (event) => {
-    const presetName = event.target.value;
-    const preset = getPresetByName(presetName);
-    loadPreset(preset);
-});
-
-// Function to get preset by name
-function getPresetByName(name) {
-    // Assuming presets is an array of preset objects
-    return presets.find(preset => preset.name === name);
-}
-
-
-export function loadPresetConfiguration(presetName, callback) {
-    const db = getDatabase();
-    const presetRef = ref(db, `presets/${presetName}`);
-    get(presetRef).then((snapshot) => {
-        const preset = snapshot.val();
-        callback(preset.nodes);
     });
 }
 
