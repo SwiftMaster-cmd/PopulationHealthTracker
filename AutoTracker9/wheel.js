@@ -198,18 +198,15 @@ export function loadNodesConfiguration(callback) {
     });
 }
 
-
-export async function shuffleNodes(nodes) {
-    let shuffledNodes = shuffleArray(nodes); // Assuming shuffleArray is an imported utility function
-    await saveNodesConfiguration(shuffledNodes);
-    document.getElementById('shuffle-button').disabled = false; // Re-enable shuffle post-operation or spin
-    return shuffledNodes;
+function shuffleNodes() {
+    // Shuffle the current wheel configuration
+    currentWheelConfig = currentWheelConfig.sort(() => Math.random() - 0.5);
+    // Update the wheel viewer with shuffled nodes if needed
 }
 
 export function shuffleAndUpdateWheel(nodes) {
-    shuffleNodes(nodes).then(shuffledNodes => {
-        drawWheel(shuffledNodes, currentAngle);
-        // Optionally update other UI elements or Firebase nodes if needed
-    });
+    const shuffledNodes = shuffleNodes(nodes);
+    drawWheel(shuffledNodes, currentAngle); // Draw the wheel with the current rotation
+    saveNodesConfiguration(shuffledNodes); // Save the new node configuration
+    return shuffledNodes;
 }
-
