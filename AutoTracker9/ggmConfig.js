@@ -37,12 +37,16 @@ function addNodeField(value = 0, count = 1) {
         saveConfiguration();
     });
 
+    nodeValueInput.addEventListener('change', saveConfiguration);
+    nodeCountInput.addEventListener('change', saveConfiguration);
+
     nodeContainer.appendChild(nodeValueInput);
     nodeContainer.appendChild(nodeCountInput);
     nodeContainer.appendChild(removeButton);
 
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
+
 
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
@@ -68,6 +72,7 @@ function saveConfiguration() {
     console.log('Configuration updated successfully.');
     shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
 }
+
 
 function loadCurrentConfiguration() {
     loadNodesConfiguration((nodes, rotation) => {
