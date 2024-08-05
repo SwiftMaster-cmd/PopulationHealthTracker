@@ -7,9 +7,7 @@ let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadNodesConfiguration((nodes, rotation) => {
-        const shuffledNodes = shuffleNodes(nodes); // Automatically shuffle nodes
-        drawWheel(shuffledNodes, rotation);
-        saveNodesConfiguration(shuffledNodes); // Save the shuffled configuration
+        drawWheel(nodes, rotation);
     });
 });
 
@@ -83,8 +81,8 @@ function easeOutQuad(t) {
 }
 
 function logWinningNode(nodes, currentAngle, angleStep) {
-    // Calculate the angle for the right side of the wheel (90 degrees from the top)
-    const rightSideAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
+    // Calculate the angle for the right side of the wheel
+    const rightSideAngle = (currentAngle + Math.PI) % (2 * Math.PI);
     const winningNodeIndex = Math.floor(rightSideAngle / angleStep);
     const winningNode = nodes[winningNodeIndex];
     console.log("Current Angle (radians):", currentAngle);
@@ -196,18 +194,10 @@ export function loadNodesConfiguration(callback) {
         get(rotationRef).then((rotationSnapshot) => {
             const rotation = rotationSnapshot.val();
             currentAngle = rotation || 0;
-            if (nodes) {
-                const shuffledNodes = shuffleNodes(nodes);
-                callback(shuffledNodes, currentAngle);
-                saveNodesConfiguration(shuffledNodes); // Save the shuffled configuration
-                saveCurrentRotation(currentAngle); // Save the current rotation angle
-            } else {
-                callback([], currentAngle);
-            }
+            callback(nodes, currentAngle);
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
-
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {

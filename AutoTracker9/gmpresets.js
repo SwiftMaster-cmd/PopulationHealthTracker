@@ -1,6 +1,6 @@
 import { database } from './firebase-init.js';
 import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { drawWheel, saveNodesConfiguration, shuffleNodes } from './wheel.js';
+import { drawWheel, saveNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
@@ -36,27 +36,18 @@ function loadPresets() {
         displayPresets(presets);
     });
 }
-
 function displayPresets(presets) {
     const presetsContainer = document.getElementById('presets-container');
-    presetsContainer.innerHTML = '';
-
-    const presetsPerPage = 5;
-    const currentPage = 0;
-
-    const start = currentPage * presetsPerPage;
-    const end = Math.min(start + presetsPerPage, presets.length);
-
-    for (let i = start; i < end; i++) {
-        const preset = presets[i];
-        const presetButton = document.createElement('button');
-        presetButton.textContent = preset.name;
-        presetButton.addEventListener('click', () => displayPresetSummary(preset));
-        presetsContainer.appendChild(presetButton);
+    if (presetsContainer) {
+        presetsContainer.innerHTML = ''; // Clear existing content
+        presets.forEach(preset => {
+            const presetElement = document.createElement('div');
+            presetElement.textContent = preset.name;
+            presetsContainer.appendChild(presetElement);
+        });
+    } else {
+        console.error('Element with ID "presets-container" not found.');
     }
-
-    document.getElementById('prev-button').disabled = currentPage === 0;
-    document.getElementById('next-button').disabled = end >= presets.length;
 }
 
 function displayPresetSummary(preset) {
@@ -67,10 +58,9 @@ function displayPresetSummary(preset) {
     console.log('Preset nodes:', nodes); // Debugging
     currentNodes = nodes;
     currentRotation = 0; // Reset rotation to zero when loading a new preset
-    const shuffledNodes = shuffleNodes(currentNodes); // Automatically shuffle nodes
-    drawWheel(shuffledNodes, currentRotation);
+    drawWheel(currentNodes, currentRotation);
     drawCurrentConfiguration();
-    saveNodesConfiguration(shuffledNodes); // Save the shuffled nodes configuration to Firebase
+    saveNodesConfiguration(currentNodes); // Save the nodes configuration to Firebase
 }
 
 function drawCurrentConfiguration() {
