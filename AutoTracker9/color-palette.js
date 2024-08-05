@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
- const colorPalette = {
+export const colorPalette = {
     primary: 'rgba(75, 0, 130, 0.9)', // Indigo
     secondary: 'rgba(138, 43, 226, 0.9)', // BlueViolet
     tertiary: 'rgba(0, 191, 255, 0.9)', // DeepSkyBlue
