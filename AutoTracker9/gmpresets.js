@@ -62,7 +62,14 @@ function displayPresetSummary(preset) {
     currentRotation = 0; // Reset rotation to zero when loading a new preset
 
     // Shuffle nodes after loading the preset
-    shuffleCurrentNodes();
+    currentNodes = shuffleNodes(currentNodes);
+
+    // Draw wheel with shuffled nodes
+    drawWheel(currentNodes, currentRotation);
+
+    // Save the shuffled nodes configuration to Firebase
+    saveNodesConfiguration(currentNodes);
+    drawCurrentConfiguration();
 }
 
 function drawCurrentConfiguration() {
@@ -74,15 +81,4 @@ function drawCurrentConfiguration() {
         nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
         currentNodesContainer.appendChild(nodeElement);
     });
-}
-
-function shuffleCurrentNodes() {
-    const shuffledNodes = shuffleNodes(currentNodes);
-    drawWheel(shuffledNodes, currentRotation);
-
-    // Save the shuffled nodes as a separate subnode
-    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    set(shuffledNodesRef, shuffledNodes);
-
-    drawCurrentConfiguration(shuffledNodes); // Update the random configuration display
 }
