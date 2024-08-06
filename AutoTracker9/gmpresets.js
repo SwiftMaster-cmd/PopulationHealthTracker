@@ -1,6 +1,6 @@
 import { database } from './firebase-init.js';
-import { ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { drawWheel, saveNodesConfiguration } from './wheel.js';
+import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { drawWheel, saveNodesConfiguration, shuffleNodes } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
@@ -36,6 +36,7 @@ function loadPresets() {
         displayPresets(presets);
     });
 }
+
 function displayPresets(presets) {
     const presetsContainer = document.getElementById('presets-container');
     if (presetsContainer) {
@@ -44,6 +45,7 @@ function displayPresets(presets) {
             const presetElement = document.createElement('div');
             presetElement.textContent = preset.name;
             presetsContainer.appendChild(presetElement);
+            presetElement.addEventListener('click', () => displayPresetSummary(preset));
         });
     } else {
         console.error('Element with ID "presets-container" not found.');
@@ -58,9 +60,16 @@ function displayPresetSummary(preset) {
     console.log('Preset nodes:', nodes); // Debugging
     currentNodes = nodes;
     currentRotation = 0; // Reset rotation to zero when loading a new preset
+
+    // Shuffle nodes after loading the preset
+    currentNodes = shuffleNodes(currentNodes);
+
+    // Draw wheel with shuffled nodes
     drawWheel(currentNodes, currentRotation);
+
+    // Save the shuffled nodes configuration to Firebase
+    saveNodesConfiguration(currentNodes);
     drawCurrentConfiguration();
-    saveNodesConfiguration(currentNodes); // Save the nodes configuration to Firebase
 }
 
 function drawCurrentConfiguration() {
