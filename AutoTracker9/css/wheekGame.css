@@ -427,28 +427,8 @@ input::placeholder {
     transform: translateY(0);
 }
 
-/* Ensure input and select fields are styled properly */
-input[type="text"], input[type="color"], input[type="number"], select {
-    padding: var(--margin-s);
-    border-radius: var(--margin-s);
-    border: 1px solid var(--color-quaternary);
-    background-color: var(--color-secondary);
-    color: var (--text-white);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;
-    width: 100%;
-    max-width: 300px;
-}
 
-input::placeholder {
-    color: var(--text-white);
-    opacity: 0.7;
-}
 
-input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus, select:focus {
-    outline: none;
-    border-color: var(--color-tertiary);
-}
 
 #wheel-canvas {
     border: none;
@@ -503,14 +483,6 @@ input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus,
 }
 
 
-/* Adjust the input fields within the wheel configuration section */
-#wheel-configuration .flex-container input[type="text"],
-#wheel-configuration .flex-container input[type="number"] {
-    padding: calc(var(--margin-s) * 2); /* 2x padding */
-    font-size: calc(var(--font-size) * 4); /* 4x font size */
-    max-width: 100px;
-    position: relative; /* To position the arrows inside the input */
-}
 
 /* Style and position the arrows inside the input fields */
 #wheel-configuration .flex-container input[type="number"]::-webkit-inner-spin-button,
@@ -529,15 +501,6 @@ input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus,
     cursor: pointer;
 }
 
-#wheel-configuration .flex-container input[type="number"]::-webkit-inner-spin-button:hover,
-#wheel-configuration .flex-container input[type="number"]::-webkit-outer-spin-button:hover {
-    background: var(--color-tertiary); /* Change color on hover */
-}
-
-#wheel-configuration .flex-container input[type="number"]::-webkit-inner-spin-button:active,
-#wheel-configuration .flex-container input[type="number"]::-webkit-outer-spin-button:active {
-    background: var(--color-primary); /* Change color on active */
-}
 
 /* Adjust the arrows for other browsers */
 #wheel-configuration .flex-container input[type="number"]::-moz-inner-spin-button,
@@ -566,15 +529,6 @@ input[type="text"]:focus, input[type="color"]:focus, input[type="number"]:focus,
     background: var(--color-primary); /* Change color on active */
 }
 
-/* Hide default spinner controls for all browsers */
-input[type="number"] {
-    -moz-appearance: textfield; /* Hide default for Firefox */
-}
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none; /* Hide default for Chrome, Safari, and Opera */
-    margin: 0;
-}
 
 
 /* Adjust the input fields within the wheel configuration section */
@@ -586,15 +540,7 @@ input[type="number"]::-webkit-inner-spin-button {
     position: relative; /* To position the arrows inside the input */
 }
 
-/* Hide spinner controls for input[type="number"] */
-input[type="number"] {
-    -moz-appearance: textfield; /* Hide default for Firefox */
-}
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none; /* Hide default for Chrome, Safari, and Opera */
-    margin: 0;
-}
+
 /* Hide spinner controls for input[type="number"] */
 input[type="number"] {
     -moz-appearance: textfield; /* Hide default for Firefox */
