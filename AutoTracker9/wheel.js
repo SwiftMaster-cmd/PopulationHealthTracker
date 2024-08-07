@@ -15,6 +15,10 @@ export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
 
+    const shuffleButton = document.getElementById('shuffle-button');
+    shuffleButton.style.display = 'none';
+
+
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
     const spinDuration = 9000;
