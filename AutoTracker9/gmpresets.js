@@ -69,14 +69,16 @@ function displayPresetSummary(preset) {
 
     // Save the shuffled nodes configuration to Firebase
     saveNodesConfiguration(shuffledNodes);
-    drawCurrentConfiguration();
+
+    // Update the UI with the current shuffled configuration
+    drawCurrentConfiguration(shuffledNodes);
 }
 
-function drawCurrentConfiguration() {
+function drawCurrentConfiguration(shuffledNodes) {
     const currentNodesContainer = document.getElementById('current-nodes-container');
     currentNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    currentNodes.forEach(node => {
+    shuffledNodes.forEach(node => {
         const nodeElement = document.createElement('div');
         nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
         currentNodesContainer.appendChild(nodeElement);
