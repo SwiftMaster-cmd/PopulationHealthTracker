@@ -151,3 +151,60 @@ input[type="number"] {
     border-right: 20px solid transparent;
     border-bottom: 40px solid red; /* Color of the arrow */
 }
+
+
+/* Scroll button styles */
+.scroll-button {
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--margin-xs);
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.scroll-button:hover {
+    background-color: var(--color-quaternary);
+}
+
+.scroll-button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+/* Preset container styles */
+#preset-container-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--margin-s);
+}
+
+#preset-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    max-width: 300px; /* Adjust based on your layout */
+}
+
+.preset-item {
+    flex: 0 0 auto;
+    width: 100px; /* Adjust width based on your preference */
+    margin: var(--margin-xs);
+    padding: var(--margin-xs);
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+    text-align: center;
+    border-radius: var(--margin-xs);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.preset-item:hover {
+    background-color: var(--color-tertiary);
+}
