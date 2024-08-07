@@ -67,6 +67,10 @@ function saveConfiguration() {
     drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
     shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
+
+    // Enable the summary section
+    const summarySection = document.getElementById('summary');
+    summarySection.style.display = 'block';
 }
 
 function loadCurrentConfiguration() {
