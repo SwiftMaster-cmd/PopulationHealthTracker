@@ -6,7 +6,7 @@ let isSpinning = false;
 let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadShuffledNodesConfiguration((nodes, rotation) => {
+    loadNodesConfiguration((nodes, rotation) => {
         drawWheel(nodes, rotation);
     });
 });
@@ -208,7 +208,7 @@ export function shuffleNodes(nodes) {
         const j = Math.floor(Math.random() * (i + 1));
         [values[i], values[j]] = [values[j], values[i]];
     }
-    return values.map(value => ({ value: value, count: 1 }));
+    return values;
 }
 
 export function shuffleAndUpdateWheel(nodes) {
@@ -218,22 +218,4 @@ export function shuffleAndUpdateWheel(nodes) {
     saveNodesConfiguration(shuffledNodes); // Save the new node configuration
     saveCurrentRotation(savedAngle); // Save the current rotation angle
     return shuffledNodes;
-}
-
-export function loadShuffledNodesConfiguration(callback) {
-    const db = getDatabase();
-    const shuffledNodesRef = ref(db, 'wheel/shuffledNodes');
-    get(shuffledNodesRef).then((snapshot) => {
-        const shuffledNodes = snapshot.val();
-        if (shuffledNodes) {
-            callback(shuffledNodes, currentAngle);
-        } else {
-            loadNodesConfiguration((nodes) => {
-                const shuffledNodes = shuffleNodes(nodes);
-                set(shuffledNodesRef, shuffledNodes).then(() => {
-                    callback(shuffledNodes, currentAngle);
-                });
-            });
-        }
-    }).catch((error) => console.error('Error loading shuffled configuration:', error));
 }
