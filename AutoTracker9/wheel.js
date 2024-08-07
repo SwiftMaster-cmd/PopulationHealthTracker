@@ -6,8 +6,7 @@ let isSpinning = false;
 let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadNodesConfiguration((nodes, rotation) => {
-        ensureShuffledConfiguration(nodes); // Ensure there's a shuffled configuration
+    loadShuffledNodesConfiguration((nodes, rotation) => {
         drawWheel(nodes, rotation);
     });
 });
@@ -117,7 +116,7 @@ export function drawWheel(nodes, rotation = 0) {
         colorPalette.quinary,
     ];
 
-    nodes.forEach((node, index) => {
+    nodes.forEach((value, index) => {
         const startAngle = currentAngle;
         const endAngle = startAngle + angleStep;
 
@@ -139,7 +138,7 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.textBaseline = 'middle';
         ctx.fillStyle = colorPalette.textWhite;
         ctx.font = '20px Arial';
-        ctx.fillText(node.value, radius * 0.8, 0); // Ensure to display node.value
+        ctx.fillText(value, radius * 0.8, 0);
         ctx.restore();
 
         currentAngle += angleStep;
@@ -209,7 +208,7 @@ export function shuffleNodes(nodes) {
         const j = Math.floor(Math.random() * (i + 1));
         [values[i], values[j]] = [values[j], values[i]];
     }
-    return values.map(value => ({ value })); // Convert back to object form
+    return values;
 }
 
 export function shuffleAndUpdateWheel(nodes) {
@@ -221,16 +220,31 @@ export function shuffleAndUpdateWheel(nodes) {
     return shuffledNodes;
 }
 
-function ensureShuffledConfiguration(nodes) {
+export function loadShuffledNodesConfiguration(callback) {
     const db = getDatabase();
     const shuffledNodesRef = ref(db, 'wheel/shuffledNodes');
+    const rotationRef = ref(db, 'wheel/rotation');
+
     get(shuffledNodesRef).then((snapshot) => {
-        if (!snapshot.exists()) {
-            const shuffledNodes = shuffleNodes(nodes);
-            set(shuffledNodesRef, shuffledNodes).then(() => {
-                console.log('Shuffled configuration created.');
-                drawWheel(shuffledNodes, currentAngle);
+        let nodes = snapshot.val();
+        if (!nodes) {
+            // If no shuffled nodes, load current nodes and shuffle
+            loadNodesConfiguration((currentNodes) => {
+                nodes = shuffleNodes(currentNodes);
+                saveNodesConfiguration(nodes); // Save shuffled configuration
+                set(shuffledNodesRef, nodes); // Save to shuffled nodes
+                get(rotationRef).then((rotationSnapshot) => {
+                    const rotation = rotationSnapshot.val();
+                    currentAngle = rotation || 0;
+                    callback(nodes, currentAngle);
+                });
+            });
+        } else {
+            get(rotationRef).then((rotationSnapshot) => {
+                const rotation = rotationSnapshot.val();
+                currentAngle = rotation || 0;
+                callback(nodes, currentAngle);
             });
         }
-    }).catch((error) => console.error('Error ensuring shuffled configuration:', error));
+    }).catch((error) => console.error('Error loading shuffled configuration:', error));
 }
