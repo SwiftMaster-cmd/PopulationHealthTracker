@@ -1,6 +1,6 @@
 import { database } from './firebase-init.js';
 import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { drawWheel, saveNodesConfiguration } from './wheel.js';
+import { drawWheel, saveNodesConfiguration, shuffleAndUpdateWheel } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
@@ -39,24 +39,17 @@ function loadPresets() {
 
 function displayPresets(presets) {
     const presetsContainer = document.getElementById('presets-container');
-    presetsContainer.innerHTML = '';
-
-    const presetsPerPage = 5;
-    const currentPage = 0;
-
-    const start = currentPage * presetsPerPage;
-    const end = Math.min(start + presetsPerPage, presets.length);
-
-    for (let i = start; i < end; i++) {
-        const preset = presets[i];
-        const presetButton = document.createElement('button');
-        presetButton.textContent = preset.name;
-        presetButton.addEventListener('click', () => displayPresetSummary(preset));
-        presetsContainer.appendChild(presetButton);
+    if (presetsContainer) {
+        presetsContainer.innerHTML = ''; // Clear existing content
+        presets.forEach(preset => {
+            const presetElement = document.createElement('div');
+            presetElement.textContent = preset.name;
+            presetsContainer.appendChild(presetElement);
+            presetElement.addEventListener('click', () => displayPresetSummary(preset));
+        });
+    } else {
+        console.error('Element with ID "presets-container" not found.');
     }
-
-    document.getElementById('prev-button').disabled = currentPage === 0;
-    document.getElementById('next-button').disabled = end >= presets.length;
 }
 
 function displayPresetSummary(preset) {
@@ -67,18 +60,25 @@ function displayPresetSummary(preset) {
     console.log('Preset nodes:', nodes); // Debugging
     currentNodes = nodes;
     currentRotation = 0; // Reset rotation to zero when loading a new preset
-    drawWheel(currentNodes, currentRotation, 'selected-preset-wheel-canvas');
-    drawCurrentConfiguration();
-    saveNodesConfiguration(currentNodes); // Save the nodes configuration to Firebase
+
+    // Shuffle and update wheel after loading the preset
+    const shuffledNodes = shuffleAndUpdateWheel(currentNodes);
+
+    // Update the UI with the current shuffled configuration
+    drawCurrentConfiguration(shuffledNodes);
+
+    // Disable the summary section
+    const summarySection = document.getElementById('summary');
+    summarySection.style.display = 'none';
 }
 
-function drawCurrentConfiguration() {
+function drawCurrentConfiguration(shuffledNodes) {
     const currentNodesContainer = document.getElementById('current-nodes-container');
     currentNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    currentNodes.forEach(node => {
+    shuffledNodes.forEach(value => {
         const nodeElement = document.createElement('div');
-        nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
+        nodeElement.textContent = `Value: ${value}`;
         currentNodesContainer.appendChild(nodeElement);
     });
 }

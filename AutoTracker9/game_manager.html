@@ -1,99 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Manager</title>
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/styles.css">
+import { database } from './firebase-init.js';
+import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { drawWheel, saveNodesConfiguration, shuffleAndUpdateWheel } from './wheel.js';
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
-    <script src="firebase-init.js" defer></script>
-    <script src="auth.js" defer></script>
-    <script type="module" src="gmPresets.js" defer></script>
-    <script type="module" src="gmRules.js" defer></script>
-    <script type="module" src="ggmConfig.js" defer></script>
-    <script type="module" src="wheel.js" defer></script>
-    <script src="color-palette.js" defer></script>
-    <script src="profilePopup.js" defer></script>
-</head>
-<body>
-    <div class="header-container">
-        <h1>Dashboard</h1>
-        <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-        <button onclick="window.location.href='Dash2.html'" class="button">Manager</button>
-        <button onclick="window.location.href='game_manager.html'" class="button">Game Manager</button>
-        <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
-        <div class="profile-button">P</div>
-    </div>
+let currentNodes = [];
+let currentRotation = 0;
 
-    <!-- Color Picker and Name Change Container -->
-    <div class="color-picker-container" id="colorPickerContainer">
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-        <input type="text" id="nameInput" placeholder="Enter new name" />
-        <button id="changeName" class="button">Change Name</button>
-        <button id="signOut" class="button">Sign Out</button>
-        <button id="googleSignInButton">Link with Google</button>
-        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-    </div>
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('save-preset-button').addEventListener('click', savePreset);
+    loadPresets();
+});
 
-    <div class="main-container">
-        <section id="wheel-configuration" class="container">
-            <h3>Wheel Configuration</h3>
-            <div id="nodes-container" class="flex-container">
-                <!-- Node fields will be added here dynamically -->
-            </div>
-            <button id="add-node-field" class="button">Add Dollar Amount</button>
-            <button id="save-configuration" class="button">Save Configuration</button>
-        </section>
+function savePreset() {
+    const presetName = document.getElementById('preset-name').value;
+    if (!presetName) {
+        alert('Please enter a preset name.');
+        return;
+    }
 
-        <section id="current-configuration" class="container">
-            <h3>Current Configuration</h3>
-            <div id="current-nodes-container" class="flex-container">
-                <!-- Current nodes will be displayed here -->
-            </div>
-        </section>
+    const preset = { nodes: currentNodes };
 
-        <section id="spin-rules" class="container">
-            <h3>Spin Rules</h3>
-            <div id="rules-container" class="flex-container">
-                <!-- Rules will be added here dynamically -->
-            </div>
-            <button id="add-rule-field" class="button">Add Rule Field</button>
-            <ul id="rules-list">
-                <!-- List of rules will be dynamically added here -->
-            </ul>
-        </section>
+    const presetsRef = ref(database, `spinTheWheelPresets/${presetName}`);
+    set(presetsRef, preset).then(() => {
+        alert('Preset saved successfully.');
+        loadPresets(); // Refresh the presets list after saving
+    }).catch((error) => {
+        console.error('Error saving preset:', error);
+    });
+}
 
-        <section id="save-preset" class="container">
-            <h3>Save Preset</h3>
-            <div id="presets-container"></div>
-            <input type="text" id="preset-name" placeholder="Preset Name">
-            <button id="save-preset-button" class="button">Save Preset</button>
-        </section>
+function loadPresets() {
+    const presetsRef = ref(database, 'spinTheWheelPresets');
+    onValue(presetsRef, (snapshot) => {
+        const data = snapshot.val();
+        const presets = data ? Object.entries(data).map(([key, value]) => ({ name: key, nodes: value.nodes })) : [];
+        displayPresets(presets);
+    });
+}
 
-        <section id="summary" class="container" style="display: none;">
-            <h3>Summary</h3>
-            <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
-            <canvas id="wheel-canvas" width="600" height="500"></canvas>
-            <button id="spin-button" class="button">Spin</button>
-            <button id="shuffle-button" class="button">Shuffle Nodes</button>
-            <p id="result">Result: </p>
-        </section>
-        
+function displayPresets(presets) {
+    const presetsContainer = document.getElementById('presets-container');
+    if (presetsContainer) {
+        presetsContainer.innerHTML = ''; // Clear existing content
+        presets.forEach(preset => {
+            const presetElement = document.createElement('div');
+            presetElement.textContent = preset.name;
+            presetsContainer.appendChild(presetElement);
+            presetElement.addEventListener('click', () => displayPresetSummary(preset));
+        });
+    } else {
+        console.error('Element with ID "presets-container" not found.');
+    }
+}
 
-        <section id="random-configuration" class="container">
-            <h3>Current Random Configuration</h3>
-            <div id="random-nodes-container" class="flex-container">
-                <!-- Random nodes will be displayed here -->
-            </div>
-        </section>
-    </div>
+function displayPresetSummary(preset) {
+    const summaryText = document.getElementById('summary-text');
+    summaryText.textContent = `Preset: ${preset.name}`;
 
-</body>
-</html>
+    const nodes = preset.nodes;
+    console.log('Preset nodes:', nodes); // Debugging
+    currentNodes = nodes;
+    currentRotation = 0; // Reset rotation to zero when loading a new preset
+
+    // Shuffle and update wheel after loading the preset
+    const shuffledNodes = shuffleAndUpdateWheel(currentNodes);
+
+    // Update the UI with the current shuffled configuration
+    drawCurrentConfiguration(shuffledNodes);
+
+    // Disable the summary section
+    const summarySection = document.getElementById('summary');
+    summarySection.style.display = 'none';
+}
+
+function drawCurrentConfiguration(shuffledNodes) {
+    const currentNodesContainer = document.getElementById('current-nodes-container');
+    currentNodesContainer.innerHTML = ''; // Clear existing nodes
+
+    shuffledNodes.forEach(value => {
+        const nodeElement = document.createElement('div');
+        nodeElement.textContent = `Value: ${value}`;
+        currentNodesContainer.appendChild(nodeElement);
+    });
+}
