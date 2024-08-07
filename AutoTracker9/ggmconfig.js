@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCurrentRandomConfiguration(); // Load current random configuration on page load
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
+    document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
+    loadCurrentConfiguration();
+});
+
 function addNodeField(value = 0, count = 1) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
@@ -24,25 +30,61 @@ function addNodeField(value = 0, count = 1) {
     nodeValueInput.type = 'number';
     nodeValueInput.placeholder = 'Dollar Amount';
     nodeValueInput.value = value;
+    nodeValueInput.className = 'node-input';
+
+    const incrementButton = document.createElement('button');
+    incrementButton.textContent = '+';
+    incrementButton.className = 'increment-button';
+    incrementButton.addEventListener('click', () => {
+        nodeValueInput.value = parseInt(nodeValueInput.value) + 1;
+    });
+
+    const decrementButton = document.createElement('button');
+    decrementButton.textContent = '-';
+    decrementButton.className = 'decrement-button';
+    decrementButton.addEventListener('click', () => {
+        nodeValueInput.value = parseInt(nodeValueInput.value) - 1;
+    });
 
     const nodeCountInput = document.createElement('input');
     nodeCountInput.type = 'number';
     nodeCountInput.placeholder = 'Count';
     nodeCountInput.value = count;
+    nodeCountInput.className = 'node-input';
+
+    const incrementCountButton = document.createElement('button');
+    incrementCountButton.textContent = '+';
+    incrementCountButton.className = 'increment-button';
+    incrementCountButton.addEventListener('click', () => {
+        nodeCountInput.value = parseInt(nodeCountInput.value) + 1;
+    });
+
+    const decrementCountButton = document.createElement('button');
+    decrementCountButton.textContent = '-';
+    decrementCountButton.className = 'decrement-button';
+    decrementCountButton.addEventListener('click', () => {
+        nodeCountInput.value = parseInt(nodeCountInput.value) - 1;
+    });
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
+    removeButton.className = 'remove-button';
     removeButton.addEventListener('click', () => {
         nodeContainer.remove();
         saveConfiguration();
     });
 
+    nodeContainer.appendChild(decrementButton);
     nodeContainer.appendChild(nodeValueInput);
+    nodeContainer.appendChild(incrementButton);
+    nodeContainer.appendChild(decrementCountButton);
     nodeContainer.appendChild(nodeCountInput);
+    nodeContainer.appendChild(incrementCountButton);
     nodeContainer.appendChild(removeButton);
 
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
+
 
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
