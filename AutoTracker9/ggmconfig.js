@@ -100,11 +100,18 @@ function saveConfiguration() {
     // Save nodes configuration
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
-    drawWheel(currentNodes, currentRotation);
-    console.log('Configuration updated successfully.');
 
     // Shuffle nodes after saving the configuration
-    shuffleCurrentNodes();
+    const shuffledNodes = shuffleNodes(currentNodes);
+    drawWheel(shuffledNodes, currentRotation);
+    console.log('Configuration updated and shuffled successfully.');
+
+    // Save the shuffled nodes configuration
+    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
+    set(shuffledNodesRef, shuffledNodes);
+
+    // Update the random configuration display
+    drawRandomConfiguration(shuffledNodes);
 
     // Enable the summary section
     const summarySection = document.getElementById('summary');
