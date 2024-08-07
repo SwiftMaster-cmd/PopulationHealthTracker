@@ -208,7 +208,7 @@ export function shuffleNodes(nodes) {
         const j = Math.floor(Math.random() * (i + 1));
         [values[i], values[j]] = [values[j], values[i]];
     }
-    return values;
+    return values.map(value => ({ value: value, count: 1 }));
 }
 
 export function shuffleAndUpdateWheel(nodes) {
@@ -223,27 +223,16 @@ export function shuffleAndUpdateWheel(nodes) {
 export function loadShuffledNodesConfiguration(callback) {
     const db = getDatabase();
     const shuffledNodesRef = ref(db, 'wheel/shuffledNodes');
-    const rotationRef = ref(db, 'wheel/rotation');
-
     get(shuffledNodesRef).then((snapshot) => {
-        let nodes = snapshot.val();
-        if (!nodes) {
-            // If no shuffled nodes, load current nodes and shuffle
-            loadNodesConfiguration((currentNodes) => {
-                nodes = shuffleNodes(currentNodes);
-                saveNodesConfiguration(nodes); // Save shuffled configuration
-                set(shuffledNodesRef, nodes); // Save to shuffled nodes
-                get(rotationRef).then((rotationSnapshot) => {
-                    const rotation = rotationSnapshot.val();
-                    currentAngle = rotation || 0;
-                    callback(nodes, currentAngle);
-                });
-            });
+        const shuffledNodes = snapshot.val();
+        if (shuffledNodes) {
+            callback(shuffledNodes, currentAngle);
         } else {
-            get(rotationRef).then((rotationSnapshot) => {
-                const rotation = rotationSnapshot.val();
-                currentAngle = rotation || 0;
-                callback(nodes, currentAngle);
+            loadNodesConfiguration((nodes) => {
+                const shuffledNodes = shuffleNodes(nodes);
+                set(shuffledNodesRef, shuffledNodes).then(() => {
+                    callback(shuffledNodes, currentAngle);
+                });
             });
         }
     }).catch((error) => console.error('Error loading shuffled configuration:', error));
