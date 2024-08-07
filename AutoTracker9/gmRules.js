@@ -70,7 +70,12 @@ function displayPresetSummary(preset) {
     drawWheel(currentNodes, currentRotation, 'selected-preset-wheel-canvas');
     drawCurrentConfiguration();
     saveNodesConfiguration(currentNodes); // Save the nodes configuration to Firebase
+
+    // Disable the summary section
+    const summarySection = document.getElementById('summary');
+    summarySection.style.display = 'none';
 }
+
 
 function drawCurrentConfiguration() {
     const currentNodesContainer = document.getElementById('current-nodes-container');
