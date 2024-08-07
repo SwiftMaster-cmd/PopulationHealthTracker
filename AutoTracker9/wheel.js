@@ -8,6 +8,7 @@ let animationFrameId;
 document.addEventListener('DOMContentLoaded', () => {
     loadNodesConfiguration((nodes, rotation) => {
         drawWheel(nodes, rotation);
+        ensureShuffledConfiguration(nodes); // Ensure there's a shuffled configuration
     });
 });
 
@@ -218,4 +219,18 @@ export function shuffleAndUpdateWheel(nodes) {
     saveNodesConfiguration(shuffledNodes); // Save the new node configuration
     saveCurrentRotation(savedAngle); // Save the current rotation angle
     return shuffledNodes;
+}
+
+function ensureShuffledConfiguration(nodes) {
+    const db = getDatabase();
+    const shuffledNodesRef = ref(db, 'wheel/shuffledNodes');
+    get(shuffledNodesRef).then((snapshot) => {
+        if (!snapshot.exists()) {
+            const shuffledNodes = shuffleNodes(nodes);
+            set(shuffledNodesRef, shuffledNodes).then(() => {
+                console.log('Shuffled configuration created.');
+                drawWheel(shuffledNodes, currentAngle);
+            });
+        }
+    }).catch((error) => console.error('Error ensuring shuffled configuration:', error));
 }
