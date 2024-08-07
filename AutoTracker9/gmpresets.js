@@ -62,13 +62,13 @@ function displayPresetSummary(preset) {
     currentRotation = 0; // Reset rotation to zero when loading a new preset
 
     // Shuffle nodes after loading the preset
-    currentNodes = shuffleNodes(currentNodes);
+    const shuffledNodes = shuffleNodes(currentNodes);
 
     // Draw wheel with shuffled nodes
-    drawWheel(currentNodes, currentRotation);
+    drawWheel(shuffledNodes, currentRotation);
 
     // Save the shuffled nodes configuration to Firebase
-    saveNodesConfiguration(currentNodes);
+    saveNodesConfiguration(shuffledNodes);
     drawCurrentConfiguration();
 }
 
