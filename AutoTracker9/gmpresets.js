@@ -1,6 +1,6 @@
 import { database } from './firebase-init.js';
 import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { drawWheel, saveNodesConfiguration, shuffleNodes } from './wheel.js';
+import { drawWheel, saveNodesConfiguration, shuffleAndUpdateWheel } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
@@ -61,14 +61,8 @@ function displayPresetSummary(preset) {
     currentNodes = nodes;
     currentRotation = 0; // Reset rotation to zero when loading a new preset
 
-    // Shuffle nodes after loading the preset
-    const shuffledNodes = shuffleNodes(currentNodes);
-
-    // Draw wheel with shuffled nodes
-    drawWheel(shuffledNodes, currentRotation);
-
-    // Save the shuffled nodes configuration to Firebase
-    saveNodesConfiguration(shuffledNodes);
+    // Shuffle and update wheel after loading the preset
+    const shuffledNodes = shuffleAndUpdateWheel(currentNodes);
 
     // Update the UI with the current shuffled configuration
     drawCurrentConfiguration(shuffledNodes);
@@ -78,9 +72,9 @@ function drawCurrentConfiguration(shuffledNodes) {
     const currentNodesContainer = document.getElementById('current-nodes-container');
     currentNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    shuffledNodes.forEach(node => {
+    shuffledNodes.forEach(value => {
         const nodeElement = document.createElement('div');
-        nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
+        nodeElement.textContent = `Value: ${value}`;
         currentNodesContainer.appendChild(nodeElement);
     });
 }
