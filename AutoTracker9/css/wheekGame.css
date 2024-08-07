@@ -131,3 +131,8 @@ input[type="number"] {
     border-right: 20px solid transparent;
     border-bottom: 40px solid red; /* Color of the arrow */
 }
+
+
+#summary {
+    display: none;
+}
