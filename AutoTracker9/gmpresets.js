@@ -7,6 +7,8 @@ let currentRotation = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('save-preset-button').addEventListener('click', savePreset);
+    document.getElementById('scroll-left').addEventListener('click', () => scrollPresets('left'));
+    document.getElementById('scroll-right').addEventListener('click', () => scrollPresets('right'));
     loadPresets();
 });
 
@@ -38,17 +40,32 @@ function loadPresets() {
 }
 
 function displayPresets(presets) {
-    const presetsContainer = document.getElementById('presets-container');
-    if (presetsContainer) {
-        presetsContainer.innerHTML = ''; // Clear existing content
-        presets.forEach(preset => {
-            const presetElement = document.createElement('div');
-            presetElement.textContent = preset.name;
-            presetsContainer.appendChild(presetElement);
-            presetElement.addEventListener('click', () => displayPresetSummary(preset));
+    const presetContainer = document.getElementById('preset-container');
+    presetContainer.innerHTML = '';
+
+    presets.forEach(preset => {
+        const presetItem = document.createElement('div');
+        presetItem.className = 'preset-item';
+        presetItem.textContent = preset.name;
+        presetItem.addEventListener('click', () => displayPresetSummary(preset));
+        presetContainer.appendChild(presetItem);
+    });
+}
+
+function scrollPresets(direction) {
+    const presetContainer = document.getElementById('preset-container');
+    const scrollAmount = 100; // Adjust scroll amount as needed
+
+    if (direction === 'left') {
+        presetContainer.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
         });
-    } else {
-        console.error('Element with ID "presets-container" not found.');
+    } else if (direction === 'right') {
+        presetContainer.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
     }
 }
 
@@ -71,7 +88,6 @@ function displayPresetSummary(preset) {
     const summarySection = document.getElementById('summary');
     summarySection.style.display = 'none';
 }
-
 
 function drawCurrentConfiguration(shuffledNodes) {
     const currentNodesContainer = document.getElementById('current-nodes-container');
