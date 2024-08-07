@@ -69,11 +69,6 @@ function displayPresetSummary(preset) {
 
     // Save the shuffled nodes configuration to Firebase
     saveNodesConfiguration(shuffledNodes);
-
-    // Update the current nodes to the shuffled ones
-    currentNodes = shuffledNodes;
-
-    // Draw the current configuration
     drawCurrentConfiguration();
 }
 
