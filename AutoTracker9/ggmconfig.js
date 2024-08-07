@@ -1,6 +1,6 @@
 import { database } from './firebase-init.js';
 import { ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadShuffledNodesConfiguration } from './wheel.js';
+import { drawWheel, spinWheel, shuffleNodes, saveNodesConfiguration, loadNodesConfiguration } from './wheel.js';
 
 let currentNodes = [];
 let currentRotation = 0;
@@ -118,7 +118,7 @@ function saveConfiguration() {
 }
 
 function loadCurrentConfiguration() {
-    loadShuffledNodesConfiguration((nodes, rotation) => {
+    loadNodesConfiguration((nodes, rotation) => {
         document.getElementById('nodes-container').innerHTML = ''; // Clear existing nodes
         if (nodes) {
             nodes.forEach(node => addNodeField(node.value, node.count));
