@@ -6,7 +6,9 @@
     <title>Game Manager</title>
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/monthlyTotals.css">
+    <link rel="stylesheet" href="css/wheekGame.css">
     <link rel="stylesheet" href="css/styles.css">
+
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"></script>
@@ -30,33 +32,41 @@
         <div class="profile-button">P</div>
     </div>
 
+    <!-- Color Picker and Name Change Container -->
+    <div class="color-picker-container" id="colorPickerContainer">
+        <input type="color" id="colorPicker" />
+        <button id="applyColor" class="button">Apply Color Palette</button>
+        <input type="text" id="nameInput" placeholder="Enter new name" />
+        <button id="changeName" class="button">Change Name</button>
+        <button id="signOut" class="button">Sign Out</button>
+        <button id="googleSignInButton">Link with Google</button>
+        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
+    </div>
+
     <div class="main-container">
-        <!-- Wheel Configuration Section -->
-        <section id="wheel-configuration" class="container">
+        <div id="wheel-configuration" class="container">
             <h3>Wheel Configuration</h3>
             <div id="nodes-container" class="flex-container">
-                <!-- Node fields will be added here dynamically -->
+                <!-- Node fields will be added here dynamically by JavaScript -->
             </div>
-        </section>
-
-        <!-- Presets and Control Buttons Section -->
-        <section id="control-section" class="container">
+          
             <div id="preset-container-wrapper">
                 <button id="scroll-left" class="scroll-button">&lt;</button>
-                <div id="preset-container">
-                    <!-- Presets will be added here dynamically -->
+                <div id="presets-container"></div>
+                <!-- Presets will be added here dynamically -->
                 </div>
                 <button id="scroll-right" class="scroll-button">&gt;</button>
             </div>
-            <div class="button-container">
-                <button id="add-node-field" class="button">Add Dollar Amount</button>
-                <input type="text" id="presets-name" placeholder="Preset Name">
-                <button id="save-preset-button" class="button">Save Preset</button>
-                <button id="save-configuration" class="button">Save Configuration</button>
-            </div>
-        </section>
+                        <button id="save-preset-button" class="button">Save Preset</button>
 
-        <!-- Current Configuration Section -->
+            <button id="add-node-field" class="button">Add Dollar Amount</button>
+            <button id="save-configuration" class="button">Save Configuration</button>
+            
+           
+            
+        </div>
+        
+
         <section id="current-configuration" class="container">
             <h3>Current Configuration</h3>
             <div id="current-nodes-container" class="flex-container">
@@ -64,15 +74,6 @@
             </div>
         </section>
 
-        <!-- Current Random Configuration Section -->
-        <section id="random-configuration" class="container">
-            <h3>Current Random Configuration</h3>
-            <div id="random-nodes-container" class="flex-container">
-                <!-- Random nodes will be displayed here -->
-            </div>
-        </section>
-
-        <!-- Spin Rules Section -->
         <section id="spin-rules" class="container">
             <h3>Spin Rules</h3>
             <div id="rules-container" class="flex-container">
@@ -84,7 +85,7 @@
             </ul>
         </section>
 
-        <!-- Summary Section -->
+
         <section id="summary" class="container">
             <h3>Summary</h3>
             <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
@@ -92,6 +93,13 @@
             <button id="spin-button" class="button">Spin</button>
             <button id="shuffle-button" class="button">Shuffle Nodes</button>
             <p id="result">Result: </p>
+        </section>
+
+        <section id="random-configuration" class="container">
+            <h3>Current Random Configuration</h3>
+            <div id="random-nodes-container" class="flex-container">
+                <!-- Random nodes will be displayed here -->
+            </div>
         </section>
     </div>
 
