@@ -180,7 +180,7 @@ function drawRandomConfiguration(randomNodes) {
 
     randomNodes.forEach(node => {
         const nodeElement = document.createElement('div');
-        nodeElement.textContent = `Value: ${node.value}`;
+        nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
         randomNodesContainer.appendChild(nodeElement);
     });
 }
