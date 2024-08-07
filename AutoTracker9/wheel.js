@@ -1,12 +1,14 @@
 import { colorPalette } from './color-palette.js';
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 let currentAngle = 0;
 let isSpinning = false;
 let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadNodesConfiguration();
+    loadNodesConfiguration((nodes, rotation) => {
+        drawWheel(nodes, rotation);
+    });
 });
 
 export function spinWheel(nodes) {
@@ -183,36 +185,19 @@ export function saveNodesConfiguration(nodes) {
         .catch((error) => console.error('Error saving nodes configuration:', error));
 }
 
-export function loadNodesConfiguration() {
+export function loadNodesConfiguration(callback) {
     const db = getDatabase();
     const nodesRef = ref(db, 'wheel/nodes');
     const rotationRef = ref(db, 'wheel/rotation');
-
-    // Listen for changes in nodes configuration
-    onValue(nodesRef, (snapshot) => {
+    get(nodesRef).then((snapshot) => {
         const nodes = snapshot.val();
-        onValue(rotationRef, (rotationSnapshot) => {
+        get(rotationRef).then((rotationSnapshot) => {
             const rotation = rotationSnapshot.val();
             currentAngle = rotation || 0;
-            drawWheel(nodes, currentAngle);
-            updateCurrentNodesDisplay(nodes);
+            callback(nodes, currentAngle);
         });
-    }, (error) => {
-        console.error('Error loading configuration:', error);
-    });
+    }).catch((error) => console.error('Error loading configuration:', error));
 }
-
-function updateCurrentNodesDisplay(nodes) {
-    const currentNodesContainer = document.getElementById('current-nodes-container');
-    currentNodesContainer.innerHTML = ''; // Clear existing nodes
-
-    nodes.forEach(node => {
-        const nodeElement = document.createElement('div');
-        nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
-        currentNodesContainer.appendChild(nodeElement);
-    });
-}
-
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
