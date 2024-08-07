@@ -100,17 +100,11 @@ function saveConfiguration() {
     // Save nodes configuration
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
+    drawWheel(currentNodes, currentRotation);
+    console.log('Configuration updated successfully.');
 
     // Shuffle nodes after saving the configuration
-    const shuffledNodes = shuffleNodes(currentNodes);
-
-    // Save the shuffled nodes configuration
-    const shuffledNodesRef = ref(database, 'wheel/shuffledNodes');
-    set(shuffledNodesRef, shuffledNodes).then(() => {
-        console.log('Shuffled configuration saved successfully.');
-        drawWheel(shuffledNodes, currentRotation);
-        drawRandomConfiguration(shuffledNodes);
-    });
+    shuffleCurrentNodes();
 
     // Enable the summary section
     const summarySection = document.getElementById('summary');
@@ -178,9 +172,9 @@ function drawRandomConfiguration(randomNodes) {
     const randomNodesContainer = document.getElementById('random-nodes-container');
     randomNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    randomNodes.forEach(node => {
+    randomNodes.forEach(value => {
         const nodeElement = document.createElement('div');
-        nodeElement.textContent = `Value: ${node.value}, Count: ${node.count}`;
+        nodeElement.textContent = `Value: ${value}`;
         randomNodesContainer.appendChild(nodeElement);
     });
 }
