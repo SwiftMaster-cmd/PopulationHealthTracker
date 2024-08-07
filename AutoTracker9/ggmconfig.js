@@ -16,12 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCurrentRandomConfiguration(); // Load current random configuration on page load
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('add-node-field').addEventListener('click', () => addNodeField());
-    document.getElementById('save-configuration').addEventListener('click', saveConfiguration);
-    loadCurrentConfiguration();
-});
-
 function addNodeField(value = 0, count = 1) {
     const nodeContainer = document.createElement('div');
     nodeContainer.className = 'node-field';
@@ -85,7 +79,6 @@ function addNodeField(value = 0, count = 1) {
     document.getElementById('nodes-container').appendChild(nodeContainer);
 }
 
-
 function saveConfiguration() {
     const nodesContainer = document.getElementById('nodes-container');
     const nodeFields = nodesContainer.getElementsByClassName('node-field');
@@ -104,11 +97,14 @@ function saveConfiguration() {
         nodes.push({ value: nodeValue, count: nodeCount });
     }
 
+    // Save nodes configuration
     saveNodesConfiguration(nodes);
     currentNodes = nodes;
     drawWheel(currentNodes, currentRotation);
     console.log('Configuration updated successfully.');
-    shuffleCurrentNodes(); // Automatically shuffle after saving the configuration
+
+    // Shuffle nodes after saving the configuration
+    shuffleCurrentNodes();
 
     // Enable the summary section
     const summarySection = document.getElementById('summary');
