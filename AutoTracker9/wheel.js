@@ -15,8 +15,9 @@ export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
 
-    const shuffleButton = document.getElementById('shuffle-button');
+        const shuffleButton = document.getElementById('shuffle-button');
     shuffleButton.style.display = 'none';
+
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
@@ -201,7 +202,6 @@ export function loadNodesConfiguration(callback) {
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
-
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
