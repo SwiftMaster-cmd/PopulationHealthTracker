@@ -22,6 +22,62 @@
     border: none;
 }
 
+/* Scroll button styles */
+.scroll-button {
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--margin-xs);
+    width: 80px; /* 2x bigger */
+    height: 80px; /* 2x bigger */
+    font-size: 48px; /* 2x bigger */
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.scroll-button:hover {
+    background-color: var(--color-quaternary);
+}
+
+.scroll-button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+/* Preset container styles */
+#preset-container-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--margin-s);
+}
+
+#preset-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    max-width: 300px; /* Adjust based on your layout */
+}
+
+.preset-item {
+    flex: 0 0 auto;
+    width: 100px; /* Adjust width based on your preference */
+    margin: var(--margin-xs);
+    padding: var(--margin-xs);
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+    text-align: center;
+    border-radius: var(--margin-xs);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.preset-item:hover {
+    background-color: var(--color-tertiary);
+}
+
 /* Custom button styles */
 .increment-button,
 .decrement-button {
@@ -69,7 +125,8 @@
     color: var(--text-white);
     border: none;
     border-radius: var(--margin-xs);
-    padding: var(--margin-xs) var(--margin-s);
+    padding: calc(var(--margin-s) * 2); /* 2x padding */
+    font-size: calc(var(--font-size) * 2); /* 2x font size */
     cursor: pointer;
 }
 
@@ -82,7 +139,7 @@
 #wheel-configuration .flex-container input[type="number"] {
     padding: calc(var(--margin-s) * 2); /* 2x padding */
     font-size: calc(var(--font-size) * 2); /* 2x font size */
-    max-width: 100px;
+    max-width: 200px;
     position: relative; /* To position the arrows inside the input */
 }
 
@@ -94,25 +151,26 @@ input[type="number"] {
     margin: 0;
 }
 
-#wheel-configuration,
-#current-configuration,
-#spin-rules,
-#save-preset,
-#summary,
-#random-configuration,
-#nodes-container,
-#current-nodes-container,
-#rules-container,
-#rules-list,
-#random-nodes-container,
-#summary-text,
-#wheel-canvas,
-#result {
+/* General button styles for Add Dollar Amount and Save Configuration */
+.button {
+    padding: calc(var(--margin-s) * 2); /* 2x padding */
+    font-size: calc(var(--font-size) * 2); /* 2x font size */
     border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-tertiary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.button {
-    border: none;
+.button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+.button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
 }
 
 .flex-container {
@@ -131,58 +189,11 @@ input[type="number"] {
     border-right: 20px solid transparent;
     border-bottom: 40px solid red; /* Color of the arrow */
 }
-/* Scroll button styles */
-.scroll-button {
-    background-color: var(--color-primary);
-    color: var(--text-white);
-    border: none;
-    border-radius: var(--margin-xs);
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    cursor: pointer;
-    display: inline-flex;
+
+.button-container {
+    display: flex;
+    gap: var(--margin-s);
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.scroll-button:hover {
-    background-color: var(--color-quaternary);
-}
-
-.scroll-button:active {
-    background-color: var(--color-primary);
-    transform: translateY(0);
-}
-
-/* Preset container styles */
-#preset-container-wrapper {
-    display: flex;
-    align-items: center;
-    gap: var(--margin-s);
-}
-
-#preset-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    max-width: 300px; /* Adjust based on your layout */
-}
-
-.preset-item {
-    flex: 0 0 auto;
-    width: 100px; /* Adjust width based on your preference */
-    margin: var(--margin-xs);
-    padding: var(--margin-xs);
-    background-color: var(--color-secondary);
-    color: var(--text-white);
-    text-align: center;
-    border-radius: var(--margin-xs);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.preset-item:hover {
-    background-color: var(--color-tertiary);
+    margin-top: var(--margin-m);
 }
