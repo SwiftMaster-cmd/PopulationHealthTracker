@@ -178,9 +178,9 @@ function drawRandomConfiguration(randomNodes) {
     const randomNodesContainer = document.getElementById('random-nodes-container');
     randomNodesContainer.innerHTML = ''; // Clear existing nodes
 
-    randomNodes.forEach(value => {
+    randomNodes.forEach(node => {
         const nodeElement = document.createElement('div');
-        nodeElement.textContent = `Value: ${value}`;
+        nodeElement.textContent = `Value: ${node.value}`;
         randomNodesContainer.appendChild(nodeElement);
     });
 }
