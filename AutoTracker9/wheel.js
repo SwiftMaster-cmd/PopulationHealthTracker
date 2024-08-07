@@ -198,6 +198,7 @@ export function loadNodesConfiguration(callback) {
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
+
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
