@@ -66,7 +66,12 @@ function displayPresetSummary(preset) {
 
     // Update the UI with the current shuffled configuration
     drawCurrentConfiguration(shuffledNodes);
+
+    // Disable the summary section
+    const summarySection = document.getElementById('summary');
+    summarySection.style.display = 'none';
 }
+
 
 function drawCurrentConfiguration(shuffledNodes) {
     const currentNodesContainer = document.getElementById('current-nodes-container');
