@@ -71,6 +71,8 @@
     border-radius: var(--margin-xs);
     padding: var(--margin-xs) var(--margin-s);
     cursor: pointer;
+    font-size: calc(var(--font-size) * 2); /* 2x font size */
+    padding: calc(var(--margin-s) * 2); /* 2x padding */
 }
 
 .remove-button:hover {
@@ -82,7 +84,7 @@
 #wheel-configuration .flex-container input[type="number"] {
     padding: calc(var(--margin-s) * 2); /* 2x padding */
     font-size: calc(var(--font-size) * 2); /* 2x font size */
-    max-width: 100px;
+    max-width: 200px;
     position: relative; /* To position the arrows inside the input */
 }
 
@@ -92,6 +94,28 @@ input[type="number"] {
     -webkit-appearance: none; /* Hide default for Chrome, Safari, and Opera */
     appearance: none; /* Hide default for other browsers */
     margin: 0;
+}
+
+/* General button styles for Add Dollar Amount and Save Configuration */
+.button {
+    padding: calc(var(--margin-s) * 2); /* 2x padding */
+    font-size: calc(var(--font-size) * 2); /* 2x font size */
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-tertiary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+.button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
 }
 
 #wheel-configuration,
@@ -108,10 +132,6 @@ input[type="number"] {
 #summary-text,
 #wheel-canvas,
 #result {
-    border: none;
-}
-
-.button {
     border: none;
 }
 
