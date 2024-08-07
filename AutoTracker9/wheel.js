@@ -7,8 +7,8 @@ let animationFrameId;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadNodesConfiguration((nodes, rotation) => {
-        drawWheel(nodes, rotation);
         ensureShuffledConfiguration(nodes); // Ensure there's a shuffled configuration
+        drawWheel(nodes, rotation);
     });
 });
 
@@ -117,7 +117,7 @@ export function drawWheel(nodes, rotation = 0) {
         colorPalette.quinary,
     ];
 
-    nodes.forEach((value, index) => {
+    nodes.forEach((node, index) => {
         const startAngle = currentAngle;
         const endAngle = startAngle + angleStep;
 
@@ -139,7 +139,7 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.textBaseline = 'middle';
         ctx.fillStyle = colorPalette.textWhite;
         ctx.font = '20px Arial';
-        ctx.fillText(value, radius * 0.8, 0);
+        ctx.fillText(node.value, radius * 0.8, 0); // Ensure to display node.value
         ctx.restore();
 
         currentAngle += angleStep;
@@ -209,7 +209,7 @@ export function shuffleNodes(nodes) {
         const j = Math.floor(Math.random() * (i + 1));
         [values[i], values[j]] = [values[j], values[i]];
     }
-    return values;
+    return values.map(value => ({ value })); // Convert back to object form
 }
 
 export function shuffleAndUpdateWheel(nodes) {
