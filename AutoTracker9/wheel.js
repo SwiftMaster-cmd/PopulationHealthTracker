@@ -87,7 +87,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     const adjustedAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
 
     // Calculate the winning node index
-    const winningNodeIndex = Math.floor((2 * Math.PI - adjustedAngle) / angleStep) % nodes.length;
+    const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
     const winningNode = nodes[winningNodeIndex];
 
     // Highlight the winning node visually on the wheel
@@ -98,6 +98,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 
 
