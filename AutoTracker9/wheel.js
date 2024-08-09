@@ -130,6 +130,7 @@ export function drawWheel(nodes, rotation = 0) {
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // Draw the node value on the wheel
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate((startAngle + endAngle) / 2);
@@ -143,7 +144,31 @@ export function drawWheel(nodes, rotation = 0) {
         currentAngle += angleStep;
     });
 
+    // Draw the 1-360 degree numbers around the wheel
+    drawDegreeNumbers(ctx, centerX, centerY, radius);
+
     drawNeedle(centerX, centerY, radius);
+}
+
+function drawDegreeNumbers(ctx, centerX, centerY, radius) {
+    const fullCircle = 2 * Math.PI;
+    const step = fullCircle / 360;
+    ctx.font = '10px Arial';
+    ctx.fillStyle = colorPalette.textWhite;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let degree = 0; degree < 360; degree++) {
+        const angle = degree * step;
+        const x = centerX + (radius - 20) * Math.cos(angle);
+        const y = centerY + (radius - 20) * Math.sin(angle);
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle + Math.PI / 2); // Rotate the numbers to align with the wheel
+        ctx.fillText(degree + 1, 0, 0);
+        ctx.restore();
+    }
 }
 
 function drawNeedle(centerX, centerY, radius) {
