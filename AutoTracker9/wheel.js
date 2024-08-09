@@ -83,7 +83,7 @@ function easeOutQuad(t) {
 }
 
 function logWinningNode(nodes, currentAngle, angleStep) {
-    // Adjust the angle to make sure 0 degrees starts at the right middle (360 at top middle)
+    // Adjust the angle to make sure 0 degrees starts at the right middle
     const adjustedAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
 
     // Calculate the winning node index
@@ -98,6 +98,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 
 
@@ -249,6 +250,7 @@ function highlightWinningNode(winningNodeIndex, totalNodes) {
     ctx.fill();
     ctx.restore();
 }
+
 
 function saveCurrentRotation(rotation) {
     const db = getDatabase();
