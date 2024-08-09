@@ -83,11 +83,11 @@ function easeOutQuad(t) {
 }
 
 function logWinningNode(nodes, currentAngle, angleStep) {
-    // Adjust the angle to correspond to 360 degrees being at the top
+    // Adjust the angle to make sure 0 degrees starts at the right middle (360 at top middle)
     const adjustedAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
 
-    // Calculate the index of the node at the 360th degree (top center of the wheel)
-    const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
+    // Calculate the winning node index
+    const winningNodeIndex = Math.floor((2 * Math.PI - adjustedAngle) / angleStep) % nodes.length;
     const winningNode = nodes[winningNodeIndex];
 
     // Highlight the winning node visually on the wheel
@@ -98,6 +98,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 
 
