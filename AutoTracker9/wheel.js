@@ -89,12 +89,16 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     // Calculate the index of the node at the 360th degree (top center of the wheel)
     const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
     const winningNode = nodes[winningNodeIndex];
-    
+
+    // Highlight the winning node visually on the wheel
+    highlightWinningNode(winningNodeIndex, nodes.length);
+
     console.log("Current Angle (radians):", currentAngle);
     console.log("Adjusted Angle (radians):", adjustedAngle);
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 
 export function drawWheel(nodes, rotation = 0) {
@@ -154,7 +158,20 @@ export function drawWheel(nodes, rotation = 0) {
     // Draw every fifth degree number around the wheel's edges
     drawDegreeNumbers(ctx, centerX, centerY, radius);
 
+
+
+    // Draw a line at the 360-degree position (right middle)
+    drawWinningLine(ctx, centerX, centerY, radius);
+
     drawNeedle(centerX, centerY, radius);
+}
+function drawWinningLine(ctx, centerX, centerY, radius) {
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(centerX + radius, centerY); // Draw a line to the right middle (360 degrees)
+    ctx.stroke();
 }
 
 
@@ -204,6 +221,31 @@ function drawNeedle(centerX, centerY, radius) {
     if (needleImg.complete) {
         needleImg.onload();
     }
+}
+
+
+function highlightWinningNode(winningNodeIndex, totalNodes) {
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const radius = Math.min(canvas.width, canvas.height) / 2;
+    const centerX = radius;
+    const centerY = canvas.height / 2;
+    const angleStep = (2 * Math.PI) / totalNodes;
+
+    const startAngle = winningNodeIndex * angleStep - Math.PI / 2;
+    const endAngle = startAngle + angleStep;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.closePath();
+
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red to highlight the winning node
+    ctx.fill();
+    ctx.restore();
 }
 
 function saveCurrentRotation(rotation) {
