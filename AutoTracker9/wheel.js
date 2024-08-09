@@ -15,8 +15,7 @@ export function spinWheel(nodes) {
     if (isSpinning) return;
     isSpinning = true;
 
-    const shuffleButton = document.getElementById('shuffle-button');
-    shuffleButton.style.display = 'none';
+    
 
     const totalNodes = nodes.length;
     const angleStep = (2 * Math.PI) / totalNodes;
@@ -84,6 +83,7 @@ function easeOutQuad(t) {
 }
 
 function logWinningNode(nodes, currentAngle, angleStep) {
+    // Calculate the angle for the right side of the wheel
     const rightSideAngle = (currentAngle + Math.PI) % (2 * Math.PI);
     const winningNodeIndex = Math.floor(rightSideAngle / angleStep);
     const winningNode = nodes[winningNodeIndex];
@@ -200,7 +200,6 @@ export function loadNodesConfiguration(callback) {
         });
     }).catch((error) => console.error('Error loading configuration:', error));
 }
-
 export function shuffleNodes(nodes) {
     const values = nodes.flatMap(node => Array(node.count).fill(node.value));
     for (let i = values.length - 1; i > 0; i--) {
