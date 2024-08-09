@@ -159,7 +159,7 @@ function drawDegreeNumbers(ctx, centerX, centerY, radius) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    for (let degree = 1; degree <= 360; degree += 2) {
+    for (let degree = 5; degree <= 360; degree += 5) {
         const angle = degree * step;
         const x = centerX + outerRadius * Math.cos(angle);
         const y = centerY + outerRadius * Math.sin(angle);
