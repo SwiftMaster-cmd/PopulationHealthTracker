@@ -21,8 +21,6 @@
     <script type="module" src="wheel.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="profilePopup.js" defer></script>
-    <script type="module" src="wheelConfig.js" defer></script>
-    <script type="module" src="presets.js" defer></script>
 </head>
 <body>
     <div class="header-container">
@@ -56,15 +54,18 @@
                 <button id="scroll-left" class="scroll-button">&lt;</button>
                 <div id="presets-container"></div>
                 <!-- Presets will be added here dynamically -->
+                </div>
+                <button id="scroll-right" class="scroll-button">&gt;</button>
             </div>
-            <button id="scroll-right" class="scroll-button">&gt;</button>
-            <button id="save-preset-button" class="button">Save Preset</button>
+                        <button id="save-preset-button" class="button">Save Preset</button>
+
             <button id="add-node-field" class="button">Add Dollar Amount</button>
             <button id="save-configuration" class="button">Save Configuration</button>
-            <button id="load-preset-button" class="button">Load Preset</button>
-            <button id="delete-preset-button" class="button">Delete Preset</button>
-            <button id="show-presets-button" class="button">Show Available Presets</button>
+            
+           
+            
         </div>
+        
 
         <section id="current-configuration" class="container">
             <h3>Current Configuration</h3>
@@ -84,6 +85,7 @@
             </ul>
         </section>
 
+
         <section id="summary" class="container">
             <h3>Summary</h3>
             <p id="summary-text">Current Configuration and Rules will be summarized here.</p>
@@ -100,11 +102,6 @@
             </div>
         </section>
     </div>
-
-    <script type="module">
-        import { drawWheel } from './wheel.js';
-        drawWheel();  // Initial draw of the wheel based on the current configuration
-    </script>
 
 </body>
 </html>
