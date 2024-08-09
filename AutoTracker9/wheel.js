@@ -105,7 +105,10 @@ export function drawWheel(nodes, rotation = 0) {
     const radius = Math.min(canvas.width, canvas.height) / 2;
     const centerX = radius;
     const centerY = canvas.height / 2;
-    let currentAngle = rotation;
+
+    // Adjust rotation to ensure 0 degrees is exactly at the right middle
+    const initialRotationAdjustment = -Math.PI / 2;  // Rotate by 90 degrees to align 0 with the right middle
+    let currentAngle = rotation + initialRotationAdjustment;
 
     const colors = [
         colorPalette.primary,
@@ -144,11 +147,12 @@ export function drawWheel(nodes, rotation = 0) {
         currentAngle += angleStep;
     });
 
-    // Draw every other degree number around the wheel's edges
+    // Draw every fifth degree number around the wheel's edges
     drawDegreeNumbers(ctx, centerX, centerY, radius);
 
     drawNeedle(centerX, centerY, radius);
 }
+
 
 function drawDegreeNumbers(ctx, centerX, centerY, radius) {
     const fullCircle = 2 * Math.PI;
