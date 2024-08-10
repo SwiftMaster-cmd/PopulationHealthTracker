@@ -1,59 +1,85 @@
-
-#leaderboard-section {
-    flex: 1;
-    min-width: 300px;
-}
-
-#live-activities-section {
-    flex: 1;
-    min-width: 300px;
-    margin-left: 20px;
-}
-
-
-.picker-leaderboard-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-.leaderboard-container,
-#live-activities-section {
-    flex: 1;
-    
-    margin: 10px;
-    min-width: 300px; /* Ensures the sections don't get too narrow on smaller screens */
-}
-
-.picker-header {
-    display: flex;
-    gap: 10px; /* Adjust as needed */
-    margin-bottom: 10px; /* Adjust as needed */
-}
-
-#leaderboard-title {
-    margin-bottom: 10px; /* Adjust as needed */
-}
-
+/* Remove glow from the entire leaderboard item */
 .leaderboard-item {
-    text-align: center;
-    align-items: center;
-    margin: 10px 0;
-    color: var(--text-white);
-    font-size: 2em; /* Adjust based on your base font size */
+    box-shadow: none; /* Remove any box shadow */
 }
 
-.leaderboard-item::after {
-    content: attr(data-points);
-    font-weight: bold;
-    color: var(--color-tertiary);
-    margin-left: 10px;
+/* First place text with gold shadow */
+.leaderboard-item.first-place .leaderboard-name,
+.leaderboard-item.first-place .leaderboard-position {
+    color: #FFD700; /* Base gold color */
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255, 215, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
+    animation: glow-animation-gold 3s infinite linear;
 }
 
-@media (max-width: 768px) {
-    .content-wrapper {
-        flex-direction: column;
+/* Second place text with silver shadow */
+.leaderboard-item.second-place .leaderboard-name,
+.leaderboard-item.second-place .leaderboard-position {
+    color: #C0C0C0; /* Base silver color */
+    text-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 0 0 8px rgba(192, 192, 192, 0.3), 0 0 12px rgba(192, 192, 192, 0.2);
+    animation: glow-animation-silver 3s infinite linear;
+}
+
+/* Third place text with bronze shadow */
+.leaderboard-item.third-place .leaderboard-name,
+.leaderboard-item.third-place .leaderboard-position {
+    color: #CD7F32; /* Base bronze color */
+    text-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 0 0 6px rgba(205, 127, 50, 0.3), 0 0 9px rgba(205, 127, 50, 0.2);
+    animation: glow-animation-bronze 3s infinite linear;
+}
+
+/* Keyframes for gold glow */
+@keyframes glow-animation-gold {
+    0% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
+    }
+    25% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
+    }
+    75% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
+    }
+    100% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
     }
 }
 
+/* Keyframes for silver glow */
+@keyframes glow-animation-silver {
+    0% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
+    }
+    25% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
+    }
+    50% {
+        text-shadow: 0 0 8px rgba(192, 192, 192, 0.6), 0 0 16px rgba(192, 192, 192, 0.5), 0 0 24px rgba(192, 192, 192, 0.4);
+    }
+    75% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
+    }
+    100% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
+    }
+}
 
+/* Keyframes for bronze glow */
+@keyframes glow-animation-bronze {
+    0% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
+    }
+    25% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
+    }
+    50% {
+        text-shadow: 0 0 6px rgba(205, 127, 50, 0.4), 0 0 12px rgba(205, 127, 50, 0.3), 0 0 18px rgba(205, 127, 50, 0.2);
+    }
+    75% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
+    }
+    100% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
+    }
+}
