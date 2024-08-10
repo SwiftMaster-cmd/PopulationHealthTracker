@@ -1,21 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     const leaderboardSection = document.getElementById('leaderboard-section');
     const currentUserElement = leaderboardSection.querySelector('.leaderboard-item[style*="color: var(--color-quinary)"]');
+    const scrollUpButton = document.getElementById('scroll-up-button');
+    const scrollDownButton = document.getElementById('scroll-down-button');
 
     let scrollTimeout;
 
     // Scroll up
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowUp') {
-            scrollLeaderboard(-1);
-        }
+    scrollUpButton.addEventListener('click', () => {
+        scrollLeaderboard(-1);
     });
 
     // Scroll down
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowDown') {
-            scrollLeaderboard(1);
-        }
+    scrollDownButton.addEventListener('click', () => {
+        scrollLeaderboard(1);
     });
 
     // Scroll leaderboard by a certain number of items
