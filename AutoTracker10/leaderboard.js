@@ -189,14 +189,12 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
@@ -205,21 +203,50 @@ async function loadLiveActivities() {
                 return;
             }
 
-            currentSales = await processSalesData(salesData);
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-        });
+            const sales = await processSalesData(salesData);
+            const latestSales = sales.slice(0, 5); // Get the latest 5 sales
 
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-            }
-        });
+            await addUserNames(latestSales, usersRef);
 
+            liveActivitiesSection.innerHTML = ''; // Clear the section before adding new items
+
+            latestSales.forEach((sale, index) => {
+                // Create the live activity item container
+                const liveActivityItem = document.createElement('div');
+                liveActivityItem.classList.add('live-activity-item');
+
+                // Add the appropriate class based on rank
+                if (index === 0) {
+                    liveActivityItem.classList.add('first-place');
+                } else if (index === 1) {
+                    liveActivityItem.classList.add('second-place');
+                } else if (index === 2) {
+                    liveActivityItem.classList.add('third-place');
+                }
+
+                // Create the name container
+                const nameContainer = document.createElement('div');
+                nameContainer.classList.add('live-activity-name');
+                nameContainer.innerHTML = wrapTextInSpan(sale.userName);
+
+                // Create the sale info container
+                const saleInfoContainer = document.createElement('div');
+                saleInfoContainer.classList.add('live-activity-info');
+                saleInfoContainer.textContent = `${sale.saleType} at ${sale.formattedTime}`;
+
+                // Append the containers to the live activity item
+                liveActivityItem.appendChild(nameContainer);
+                liveActivityItem.appendChild(saleInfoContainer);
+
+                // Append the live activity item to the section
+                liveActivitiesSection.appendChild(liveActivityItem);
+            });
+        });
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
 }
+
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
