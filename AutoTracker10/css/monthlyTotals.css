@@ -206,3 +206,76 @@
     font-size: 2rem; /* Adjust for size */
     margin-left: var(--margin-s);
 }
+/* Style for leaderboard section */
+#leaderboard-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Leaderboard item container */
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 600px; /* Adjust based on your design */
+    margin-bottom: var(--margin-s);
+    padding: var(--margin-s);
+}
+
+/* Position container */
+.leaderboard-position {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* Square size */
+    height: 60px; /* Square size */
+    background-color: var(--color-primary);
+    border-radius: 12px; /* Rounded square */
+    color: var(--text-white);
+    font-size: 2rem; /* Adjust for size */
+    margin-right: var(--margin-s);
+}
+
+/* Name container */
+.leaderboard-name {
+    flex-grow: 1; /* Takes up remaining space */
+    font-size: 2rem; /* Adjust for size */
+    color: var(--text-white); /* No background */
+    text-align: left; /* Align text to the left */
+}
+
+/* Score container */
+.leaderboard-score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* Square size */
+    height: 60px; /* Square size */
+    background-color: var(--color-quaternary);
+    border-radius: 12px; /* Rounded square */
+    color: var(--text-white);
+    font-size: 2rem; /* Adjust for size */
+    margin-left: var(--margin-s);
+}
+
+/* First place styling with gold glow */
+.leaderboard-item.first-place {
+    position: relative;
+    background: linear-gradient(to right, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.5)); /* Light gold background */
+    animation: gold-glow 1.5s infinite;
+}
+
+@keyframes gold-glow {
+    0% {
+        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
+    }
+}
