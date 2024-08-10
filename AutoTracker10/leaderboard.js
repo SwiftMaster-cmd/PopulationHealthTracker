@@ -108,12 +108,12 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         // Create the position container
                         const positionContainer = document.createElement('div');
                         positionContainer.classList.add('leaderboard-position');
-                        positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
+                        positionContainer.innerHTML = wrapTextInSpan((index + 1).toString());
 
                         // Create the name container
                         const nameContainer = document.createElement('div');
                         nameContainer.classList.add('leaderboard-name');
-                        nameContainer.textContent = user.name;
+                        nameContainer.innerHTML = wrapTextInSpan(user.name);
 
                         // Create the score container
                         const scoreContainer = document.createElement('div');
@@ -137,6 +137,12 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
+// Utility function to wrap each character in a span
+function wrapTextInSpan(text) {
+    return text.split('').map(char => `<span>${char}</span>`).join('');
+}
+
 
 
 
