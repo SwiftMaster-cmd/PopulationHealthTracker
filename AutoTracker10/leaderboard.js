@@ -96,9 +96,13 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         const leaderboardItem = document.createElement('div');
                         leaderboardItem.classList.add('leaderboard-item');
 
-                        // Add the first-place class to the top performer
+                        // Add the appropriate class based on rank
                         if (index === 0) {
                             leaderboardItem.classList.add('first-place');
+                        } else if (index === 1) {
+                            leaderboardItem.classList.add('second-place');
+                        } else if (index === 2) {
+                            leaderboardItem.classList.add('third-place');
                         }
 
                         // Create the position container
@@ -133,6 +137,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 
