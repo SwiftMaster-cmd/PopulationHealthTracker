@@ -414,3 +414,27 @@ button:active {
         max-width: 100%;
     }
 }
+
+
+/* Basic styles for the toggle button */
+.toggle-button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-button.clicked {
+    background-color: var(--color-quaternary); /* Different color when clicked */
+}
+
+.toggle-button:hover {
+    transform: translateY(-3px);
+}
+
+.toggle-button:active {
+    transform: translateY(0);
+}
