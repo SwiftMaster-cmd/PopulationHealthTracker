@@ -43,7 +43,7 @@
     justify-content: center; /* Center the pickers */
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
-    font-size: 2rem; /* 2x bigger for the pickers */
+    font-size: 1.8rem; /* Slightly smaller for the pickers */
 }
 
 .picker-header select {
@@ -66,12 +66,13 @@
     max-height: 400px; /* Adjust this value based on your design needs */
     overflow-y: auto;
     width: 100%; /* Ensure the live activities section takes up full width */
-    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+    padding-right: 0; /* Remove padding to ensure it reaches the edge */
     box-sizing: border-box; /* Make sure padding doesn't reduce content width */
 }
 
 #live-activities-section .activity-item {
     width: 100%; /* Ensure items take full width of container */
+    max-width: 100%; /* Ensure the content stretches to the edge */
     text-align: left; /* Align text to the left */
     padding: 0; /* Remove padding to allow text to flow to the edges */
     margin: 0; /* Remove margin for full-width text */
@@ -83,12 +84,12 @@
     justify-content: center;
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
-    font-size: 2rem; /* 2x bigger for the live activities buttons */
+    font-size: 1.8rem; /* 10% smaller for the live activities buttons */
 }
 
 .toggle-button {
     padding: var(--margin-s) var(--margin-m);
-    font-size: inherit; /* Inherit the 2x bigger font size */
+    font-size: inherit; /* Inherit the slightly smaller font size */
     border: none;
     border-radius: var(--margin-s);
     background-color: var(--color-primary);
