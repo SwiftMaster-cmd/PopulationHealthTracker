@@ -47,7 +47,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
-    const positionsRef = database.ref('positions'); // New reference to save positions
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -93,13 +92,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     leaderboardSection.innerHTML = ''; // Clear the section before adding new items
 
                     users.forEach((user, index) => {
-                        // Save the top 3 positions in Firebase
-                        if (index < 3) {
-                            positionsRef.child(user.userId).set({ position: index + 1 });
-                        } else {
-                            positionsRef.child(user.userId).remove(); // Clear previous top 3 positions if any
-                        }
-
                         // Create the leaderboard item container
                         const leaderboardItem = document.createElement('div');
                         leaderboardItem.classList.add('leaderboard-item');
@@ -196,7 +188,6 @@ async function loadLiveActivities() {
         const database = firebase.database();
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
-        const likesRef = database.ref('likes');
         const positionsRef = database.ref('positions'); // Reference to the saved positions
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
@@ -213,48 +204,16 @@ async function loadLiveActivities() {
             }
 
             const sales = await processSalesData(salesData);
-            const latestSales = sales.slice(0, 5); // Get the latest 5 sales
-
-            await addUserNames(latestSales, usersRef);
+            await addUserNames(sales, usersRef);
 
             liveActivitiesSection.innerHTML = ''; // Clear the section before adding new items
 
-            latestSales.forEach((sale) => {
-                // Create the live activity item container
-                const liveActivityItem = document.createElement('div');
-                liveActivityItem.classList.add('live-activity-item');
+            // Reverse the sales array to show the newest first
+            sales.reverse();
 
-                // Check if the user is in the top 3
-                positionsRef.child(sale.userId).once('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        const positionData = snapshot.val();
-                        if (positionData.position === 1) {
-                            liveActivityItem.classList.add('first-place');
-                        } else if (positionData.position === 2) {
-                            liveActivityItem.classList.add('second-place');
-                        } else if (positionData.position === 3) {
-                            liveActivityItem.classList.add('third-place');
-                        }
-                    }
-
-                    // Create the name container
-                    const nameContainer = document.createElement('div');
-                    nameContainer.classList.add('live-activity-name');
-                    nameContainer.innerHTML = wrapTextInSpan(sale.userName);
-
-                    // Create the sale info container
-                    const saleInfoContainer = document.createElement('div');
-                    saleInfoContainer.classList.add('live-activity-info');
-                    saleInfoContainer.textContent = `${sale.saleType} at ${sale.formattedTime}`;
-
-                    // Append the containers to the live activity item
-                    liveActivityItem.appendChild(nameContainer);
-                    liveActivityItem.appendChild(saleInfoContainer);
-
-                    // Append the live activity item to the section
-                    liveActivitiesSection.appendChild(liveActivityItem);
-                });
-            });
+            currentSales = sales; // Save current sales for rendering more later
+            lastRenderedIndex = 0; // Reset the index for infinite scrolling
+            renderMoreSales(liveActivitiesSection, database.ref('likes'), usersRef); // Start rendering sales
         });
     } catch (error) {
         console.error('Error loading live activities:', error);
@@ -262,9 +221,9 @@ async function loadLiveActivities() {
 }
 
 
-function renderMoreSales(container, likesRef, usersRef) {
-    const currentUser = firebase.auth().currentUser; // Get the current user ID
-    
+async function renderMoreSales(container, likesRef, usersRef) {
+    const currentUser = firebase.auth().currentUser;
+
     if (lastRenderedIndex >= currentSales.length) {
         console.log("All sales have been loaded");
         return; // Exit if all sales have been rendered
@@ -276,7 +235,7 @@ function renderMoreSales(container, likesRef, usersRef) {
 
     lastRenderedIndex += salesToRender.length;
 
-    salesToRender.forEach((sale) => {
+    for (const sale of salesToRender) {
         const saleDate = new Date(sale.saleTime);
         const today = new Date();
         const isToday = saleDate.getDate() === today.getDate() &&
@@ -291,6 +250,20 @@ function renderMoreSales(container, likesRef, usersRef) {
         saleElement.classList.add('activity-item');
 
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+
+        // Check if the user is in the top 3 positions
+        await firebase.database().ref(`positions/${sale.userId}`).once('value', snapshot => {
+            if (snapshot.exists()) {
+                const positionData = snapshot.val();
+                if (positionData.position === 1) {
+                    saleElement.classList.add('first-place');
+                } else if (positionData.position === 2) {
+                    saleElement.classList.add('second-place');
+                } else if (positionData.position === 3) {
+                    saleElement.classList.add('third-place');
+                }
+            }
+        });
 
         saleElement.innerHTML = `
             <button class="like-button" data-like-path="${likePath}">
@@ -313,7 +286,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         likesRef.child(likePath).on('value', snapshot => {
             updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
-    });
+    }
 
     // Automatically load more sales if the last rendered sale is visible and there are more to load
     const lastSaleElement = container.lastElementChild;
@@ -321,6 +294,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
