@@ -45,7 +45,6 @@ function checkAndSetUserName(userId) {
 
 
 async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
-
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
@@ -75,7 +74,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     for (const userId in salesData) {
                         const userData = salesData[userId];
-                        let count = 0; 
+                        let count = 0;
 
                         if (period === 'day') {
                             count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
@@ -86,25 +85,40 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         }
 
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        if (name.length > 10) {
-                            name = name.substring(0, 8); // Truncate name to 8 characters
-                        }
                         users.push({ userId, name, count });
                     }
 
                     users.sort((a, b) => b.count - a.count);
 
-                    leaderboardSection.innerHTML = '';
+                    leaderboardSection.innerHTML = ''; // Clear the section before adding new items
 
-                    // Loop through all users and display them
                     users.forEach((user, index) => {
-                        const userElement = document.createElement('div');
-                        userElement.classList.add('leaderboard-item');
-                        if (user.userId === currentUserId) {
-                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
-                        }
-                        userElement.innerHTML = `<strong>${index + 1}. ${user.name}: ${user.count}</strong>`;
-                        leaderboardSection.appendChild(userElement);
+                        // Create the leaderboard item container
+                        const leaderboardItem = document.createElement('div');
+                        leaderboardItem.classList.add('leaderboard-item');
+
+                        // Create the position container
+                        const positionContainer = document.createElement('div');
+                        positionContainer.classList.add('leaderboard-position');
+                        positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
+
+                        // Create the name container
+                        const nameContainer = document.createElement('div');
+                        nameContainer.classList.add('leaderboard-name');
+                        nameContainer.textContent = user.name;
+
+                        // Create the score container
+                        const scoreContainer = document.createElement('div');
+                        scoreContainer.classList.add('leaderboard-score');
+                        scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
+
+                        // Append the containers to the leaderboard item
+                        leaderboardItem.appendChild(positionContainer);
+                        leaderboardItem.appendChild(nameContainer);
+                        leaderboardItem.appendChild(scoreContainer);
+
+                        // Append the leaderboard item to the section
+                        leaderboardSection.appendChild(leaderboardItem);
                     });
                 });
             } else {
@@ -115,6 +129,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 let currentSales = [];
 let batchSize = 10; // Number of sales to load at a time
