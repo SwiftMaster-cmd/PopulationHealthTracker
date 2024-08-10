@@ -8,38 +8,17 @@
     overflow-x: hidden; /* Prevent sideways scrolling */
 }
 
+/* Leaderboard takes up 50% of the screen width, live activities takes full width */
 .leaderboard-container {
     flex: 1;
     max-width: 50%; /* Ensure leaderboard takes up only 50% */
     box-sizing: border-box;
+
+    overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
     background: none !important;
     padding: var(--margin-m);
     border-radius: var(--margin-s);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Hide overflowing content */
-    max-height: 400px; /* Set maximum height for the entire container */
-    display: flex;
-    flex-direction: column;
-}
-.leaderboard-header {
-    flex-shrink: 0; /* Prevent shrinking of header */
-}
-
-#leaderboard-section {
-    overflow-y: auto; /* Allow vertical scrolling for leaderboard items */
-    flex-grow: 1; /* Take up the remaining space */
-    margin-top: var(--margin-s);
-}
-
-/* Hide scrollbar for WebKit browsers */
-#leaderboard-section::-webkit-scrollbar {
-    display: none;
-}
-
-/* Hide scrollbar for IE, Edge, and Firefox */
-#leaderboard-section {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
 }
 
 .live-activities-container {
@@ -69,6 +48,8 @@
     font-size: 2.5rem; /* Same size for both titles */
     margin-bottom: var(--margin-s);
     white-space: pre-line; /* Forces the type to a new line */
+    max-height: 600px; /* Full width when stacked */
+
 }
 
 /* Header and Picker styles (30% smaller) */
@@ -95,11 +76,6 @@
 }
 
 
-.leaderboard-item{
-    max-height: 400px; /* Adjust this value based on your design needs */
-
-
-}
 
 
 /* Style for live activities section */
