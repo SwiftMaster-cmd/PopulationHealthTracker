@@ -150,3 +150,47 @@ function isSameMonth(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() &&
            date1.getMonth() === date2.getMonth();
 }
+
+
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+
+admin.initializeApp();
+
+exports.checkAndSetDailySales = functions.pubsub.schedule('every day 00:00').timeZone('America/New_York').onRun(async (context) => {
+    const database = admin.database();
+    const salesCountsRef = database.ref('salesCounts');
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    try {
+        const salesCountsSnapshot = await salesCountsRef.once('value');
+        const salesCountsData = salesCountsSnapshot.val();
+
+        if (!salesCountsData) {
+            console.log('No sales data found.');
+            return null;
+        }
+
+        for (const userId in salesCountsData) {
+            const userSalesData = salesCountsData[userId];
+
+            // Check if each sale type has an entry for today
+            const saleTypes = ['billableHRA', 'selectPatientManagement', 'selectRX', 'transfer'];
+
+            saleTypes.forEach(saleType => {
+                if (!userSalesData.day || userSalesData.day[saleType] === undefined) {
+                    // Set the sales count to 0 if there's no entry for today
+                    salesCountsRef.child(`${userId}/day/${saleType}`).set(0);
+                    console.log(`Set ${saleType} sales for ${userId} to 0 for today.`);
+                }
+            });
+        }
+
+        console.log('Daily sales check completed.');
+        return null;
+    } catch (error) {
+        console.error('Error checking and setting daily sales:', error);
+        return null;
+    }
+});
