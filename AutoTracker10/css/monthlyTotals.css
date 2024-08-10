@@ -13,12 +13,17 @@
     flex: 1;
     max-width: 50%; /* Ensure leaderboard takes up only 50% */
     box-sizing: border-box;
-max-height: 400px;
+
     overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
     background: none !important;
     padding: var(--margin-m);
     border-radius: var(--margin-s);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-section{
+
+    max-height: 400px;
 }
 
 .live-activities-container {
