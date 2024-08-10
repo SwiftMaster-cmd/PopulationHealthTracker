@@ -126,26 +126,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Optional: Customize the scrollbar */
-#leaderboard-section::-webkit-scrollbar,
-#live-activities-section::-webkit-scrollbar {
-    width: 8px;
-}
 
-#leaderboard-section::-webkit-scrollbar-track,
-#live-activities-section::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-#leaderboard-section::-webkit-scrollbar-thumb,
-#live-activities-section::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-#leaderboard-section::-webkit-scrollbar-thumb:hover,
-#live-activities-section::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
 
 /* Hide scrollbar for WebKit browsers */
 #leaderboard-section::-webkit-scrollbar,
@@ -165,8 +146,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 100%;
-    max-width: 100%; /* Make sure it doesn't exceed the container width */
+    width: 90%;
+    max-width: 90%; /* Make sure it doesn't exceed the container width */
     margin-bottom: var(--margin-s);
     padding: var(--margin-s);
     overflow-x: hidden; /* Ensure no horizontal scrolling for items */
