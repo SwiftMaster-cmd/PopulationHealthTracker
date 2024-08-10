@@ -286,13 +286,83 @@
     }
 }
 
-/* Second place text with silver and glow */
+/* First place text with gold glow */
+.leaderboard-item.first-place .leaderboard-name,
+.leaderboard-item.first-place .leaderboard-position {
+    color: #FFD700; /* Gold color */
+    animation: text-gold-glow 1.5s infinite;
+}
+
+@keyframes text-gold-glow {
+    0% {
+        text-shadow: 0 0 2px #FFD700, 0 0 4px #FFD700, 0 0 6px #FFD700; /* 40% of original glow */
+    }
+    50% {
+        text-shadow: 0 0 8px #FFD700, 0 0 12px #FFD700, 0 0 16px #FFD700; /* 40% of original glow */
+    }
+    100% {
+        text-shadow: 0 0 2px #FFD700, 0 0 4px #FFD700, 0 0 6px #FFD700; /* 40% of original glow */
+    }
+}
+
+/* Second place text with silver glow */
 .leaderboard-item.second-place .leaderboard-name,
 .leaderboard-item.second-place .leaderboard-position {
     color: #C0C0C0; /* Silver color */
-    text-shadow: none; /* No glow for the text */
+    animation: text-silver-glow 1.5s infinite;
 }
 
+@keyframes text-silver-glow {
+    0% {
+        text-shadow: 0 0 2px #C0C0C0, 0 0 4px #C0C0C0, 0 0 6px #C0C0C0; /* 40% of original glow */
+    }
+    50% {
+        text-shadow: 0 0 8px #C0C0C0, 0 0 12px #C0C0C0, 0 0 16px #C0C0C0; /* 40% of original glow */
+    }
+    100% {
+        text-shadow: 0 0 2px #C0C0C0, 0 0 4px #C0C0C0, 0 0 6px #C0C0C0; /* 40% of original glow */
+    }
+}
+
+/* Third place text with bronze glow */
+.leaderboard-item.third-place .leaderboard-name,
+.leaderboard-item.third-place .leaderboard-position {
+    color: #CD7F32; /* Bronze color */
+    animation: text-bronze-glow 1.5s infinite;
+}
+
+@keyframes text-bronze-glow {
+    0% {
+        text-shadow: 0 0 2px #CD7F32, 0 0 4px #CD7F32, 0 0 6px #CD7F32; /* 40% of original glow */
+    }
+    50% {
+        text-shadow: 0 0 8px #CD7F32, 0 0 12px #CD7F32, 0 0 16px #CD7F32; /* 40% of original glow */
+    }
+    100% {
+        text-shadow: 0 0 2px #CD7F32, 0 0 4px #CD7F32, 0 0 6px #CD7F32; /* 40% of original glow */
+    }
+}
+
+/* First place background glow with gold */
+.leaderboard-item.first-place .leaderboard-score {
+    background-color: #FFD700; /* Gold background */
+    animation: background-gold-glow 1.5s infinite;
+    color: var(--text-white); /* White text color */
+}
+
+@keyframes background-gold-glow {
+    0% {
+        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
+    }
+}
+
+/* Second place background glow with silver */
 .leaderboard-item.second-place .leaderboard-score {
     background-color: #C0C0C0; /* Silver background */
     animation: background-silver-glow 1.5s infinite;
@@ -311,13 +381,7 @@
     }
 }
 
-/* Third place text with bronze and glow */
-.leaderboard-item.third-place .leaderboard-name,
-.leaderboard-item.third-place .leaderboard-position {
-    color: #CD7F32; /* Bronze color */
-    text-shadow: none; /* No glow for the text */
-}
-
+/* Third place background glow with bronze */
 .leaderboard-item.third-place .leaderboard-score {
     background-color: #CD7F32; /* Bronze background */
     animation: background-bronze-glow 1.5s infinite;
