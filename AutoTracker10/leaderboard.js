@@ -294,6 +294,7 @@ async function renderMoreSales(container, likesRef, usersRef, positionsRef) {
     }
 }
 
+
 function isToday(dateString) {
     const date = new Date(dateString);
     const today = new Date();
