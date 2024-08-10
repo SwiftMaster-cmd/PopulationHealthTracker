@@ -94,38 +94,18 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
                     users.sort((a, b) => b.count - a.count);
 
-                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
-                    let start = 0, end = 5;
-
-                    if (currentUserIndex === 0) {
-                        // If current user is in the first place
-                        start = 0;
-                        end = Math.min(5, users.length);
-                    } else if (currentUserIndex === users.length - 1) {
-                        // If current user is in the last place
-                        start = Math.max(users.length - 5, 0);
-                        end = users.length;
-                    } else {
-                        // If current user is in the middle
-                        start = Math.max(0, currentUserIndex - 2);
-                        end = Math.min(users.length, currentUserIndex + 3);
-                        if (end - start < 5) {
-                            start = Math.max(0, end - 5);
-                        }
-                    }
-
                     leaderboardSection.innerHTML = '';
 
-                    for (let i = start; i < end; i++) {
-                        const user = users[i];
+                    // Loop through all users and display them
+                    users.forEach((user, index) => {
                         const userElement = document.createElement('div');
                         userElement.classList.add('leaderboard-item');
                         if (user.userId === currentUserId) {
                             userElement.style.color = 'var(--color-quinary)'; // Highlight current user
                         }
-                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
+                        userElement.innerHTML = `<strong>${index + 1}. ${user.name}: ${user.count}</strong>`;
                         leaderboardSection.appendChild(userElement);
-                    }
+                    });
                 });
             } else {
                 console.error('No user is signed in.');
@@ -135,6 +115,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 
