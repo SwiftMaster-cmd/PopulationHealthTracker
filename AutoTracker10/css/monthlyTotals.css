@@ -5,13 +5,19 @@
     align-items: flex-start;
     gap: var(--margin-m); /* Optional: add space between the sections */
     width: 100%; /* Ensure the container takes up the full width */
+    overflow-x: hidden; /* Prevent sideways scrolling */
 }
 
-/* Leaderboard and live activities take up 50% of the screen width */
-.leaderboard-container,
+/* Leaderboard takes up 50% of the screen width, live activities takes full width */
+.leaderboard-container {
+    flex: 1;
+    max-width: 50%; /* Ensure leaderboard takes up only 50% */
+    box-sizing: border-box;
+}
+
 .live-activities-container {
     flex: 1;
-    max-width: 50%; /* Ensure they take up equal space */
+    width: 100%; /* Ensure live activities take up full available width */
     box-sizing: border-box;
 }
 
@@ -152,14 +158,6 @@
     scrollbar-width: none;  /* Firefox */
 }
 
-/* Style for leaderboard section */
-#leaderboard-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
 /* Leaderboard item container */
 .leaderboard-item {
     display: flex;
@@ -206,58 +204,3 @@
     font-size: 2rem; /* Adjust for size */
     margin-left: var(--margin-s);
 }
-/* Style for leaderboard section */
-#leaderboard-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
-/* Leaderboard item container */
-.leaderboard-item {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    max-width: 600px; /* Adjust based on your design */
-    margin-bottom: var(--margin-s);
-    padding: var(--margin-s);
-}
-
-/* Position container */
-.leaderboard-position {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 60px; /* Square size */
-    height: 60px; /* Square size */
-    background-color: var(--color-primary);
-    border-radius: 12px; /* Rounded square */
-    color: var(--text-white);
-    font-size: 2rem; /* Adjust for size */
-    margin-right: var(--margin-s);
-}
-
-/* Name container */
-.leaderboard-name {
-    flex-grow: 1; /* Takes up remaining space */
-    font-size: 2rem; /* Adjust for size */
-    color: var(--text-white); /* No background */
-    text-align: left; /* Align text to the left */
-}
-
-/* Score container */
-.leaderboard-score {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 60px; /* Square size */
-    height: 60px; /* Square size */
-    background-color: var(--color-quaternary);
-    border-radius: 12px; /* Rounded square */
-    color: var(--text-white);
-    font-size: 2rem; /* Adjust for size */
-    margin-left: var(--margin-s);
-}
-
