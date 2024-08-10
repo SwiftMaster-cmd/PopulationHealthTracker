@@ -261,226 +261,91 @@
     margin-left: var(--margin-s);
 }
 
-/* First place text with gold glow moving across each letter */
-.leaderboard-item.first-place .leaderboard-name,
-.leaderboard-item.first-place .leaderboard-position {
-    color: #FFD700; /* Base gold color */
-    position: relative;
-    display: inline-block;
-}
 
-.leaderboard-item.first-place .leaderboard-name span,
-.leaderboard-item.first-place .leaderboard-position span {
-    position: relative;
-    animation: text-glow-gold 1.5s infinite linear;
-    display: inline-block;
-}
-
-@keyframes text-glow-gold {
-    0% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
-    }
-    25% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
-    }
-    50% {
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
-    }
-    75% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
-    }
-    100% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
-    }
-}
-
-/* Second place text with silver glow moving across each letter */
-.leaderboard-item.second-place .leaderboard-name,
-.leaderboard-item.second-place .leaderboard-position {
-    color: #C0C0C0; /* Base silver color */
-    position: relative;
-    display: inline-block;
-}
-
-.leaderboard-item.second-place .leaderboard-name span,
-.leaderboard-item.second-place .leaderboard-position span {
-    position: relative;
-    animation: text-glow-silver 1.5s infinite linear;
-    display: inline-block;
-}
-
-@keyframes text-glow-silver {
-    0% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
-    }
-    25% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
-    }
-    50% {
-        text-shadow: 0 0 8px rgba(192, 192, 192, 0.6), 0 0 16px rgba(192, 192, 192, 0.5), 0 0 24px rgba(192, 192, 192, 0.4);
-    }
-    75% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
-    }
-    100% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
-    }
-}
-
-/* Third place text with bronze glow moving across each letter */
-.leaderboard-item.third-place .leaderboard-name,
-.leaderboard-item.third-place .leaderboard-position {
-    color: #CD7F32; /* Base bronze color */
-    position: relative;
-    display: inline-block;
-}
-
-.leaderboard-item.third-place .leaderboard-name span,
-.leaderboard-item.third-place .leaderboard-position span {
-    position: relative;
-    animation: text-glow-bronze 1.5s infinite linear;
-    display: inline-block;
-}
-
-@keyframes text-glow-bronze {
-    0% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
-    }
-    25% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
-    }
-    50% {
-        text-shadow: 0 0 6px rgba(205, 127, 50, 0.4), 0 0 12px rgba(205, 127, 50, 0.3), 0 0 18px rgba(205, 127, 50, 0.2);
-    }
-    75% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
-    }
-    100% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
-    }
-}
-
-/* First place background glow with gold for total count */
-.leaderboard-item.first-place .leaderboard-score {
-    background-color: #FFD700; /* Gold background */
-    animation: background-gold-glow 1.5s infinite;
-    color: var(--text-white); /* White text color */
-    border-radius: 12px; /* Rounded corners */
-}
-
-@keyframes background-gold-glow {
-    0% {
-        box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.6);
-    }
-    50% {
-        box-shadow: 0 0 30px 10px rgba(255, 215, 0, 1);
-    }
-    100% {
-        box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.6);
-    }
-}
-
-/* Second place background glow with silver for total count */
-.leaderboard-item.second-place .leaderboard-score {
-    background-color: #C0C0C0; /* Silver background */
-    animation: background-silver-glow 1.5s infinite;
-    color: var(--text-white); /* White text color */
-    border-radius: 12px; /* Rounded corners */
-}
-
-@keyframes background-silver-glow {
-    0% {
-        box-shadow: 0 0 12px 4px rgba(192, 192, 192, 0.45); /* 25% weaker than gold */
-    }
-    50% {
-        box-shadow: 0 0 24px 8px rgba(192, 192, 192, 0.75); /* 25% weaker than gold */
-    }
-    100% {
-        box-shadow: 0 0 12px 4px rgba(192, 192, 192, 0.45); /* 25% weaker than gold */
-    }
-}
-
-/* Third place background glow with bronze for total count */
-.leaderboard-item.third-place .leaderboard-score {
-    background-color: #CD7F32; /* Bronze background */
-    animation: background-bronze-glow 1.5s infinite;
-    color: var(--text-white); /* White text color */
-    border-radius: 12px; /* Rounded corners */
-}
-
-@keyframes background-bronze-glow {
-    0% {
-        box-shadow: 0 0 9px 3px rgba(205, 127, 50, 0.3); /* 50% weaker than gold */
-    }
-    50% {
-        box-shadow: 0 0 18px 6px rgba(205, 127, 50, 0.5); /* 50% weaker than gold */
-    }
-    100% {
-        box-shadow: 0 0 9px 3px rgba(205, 127, 50, 0.3); /* 50% weaker than gold */
-    }
-}
-
-/* Apply different delays to each letter to create the left-to-right effect */
-.leaderboard-item .leaderboard-name span:nth-child(1),
-.leaderboard-item .leaderboard-position span:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.leaderboard-item .leaderboard-name span:nth-child(2),
-.leaderboard-item .leaderboard-position span:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-.leaderboard-item .leaderboard-name span:nth-child(3),
-.leaderboard-item .leaderboard-position span:nth-child(3) {
-    animation-delay: 0.2s;
-}
-
-.leaderboard-item .leaderboard-name span:nth-child(4),
-.leaderboard-item .leaderboard-position span:nth-child(4) {
-    animation-delay: 0.3s;
-}
-
-/* Continue this pattern for as many letters as needed */
 
 /* First place text with gold shadow */
 .leaderboard-item.first-place .leaderboard-name,
 .leaderboard-item.first-place .leaderboard-position {
     color: #FFD700; /* Base gold color */
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255, 215, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
-    animation: glow-animation 1.5s infinite linear;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 
+                 0 0 10px rgba(255, 215, 0, 0.4), 
+                 0 0 15px rgba(255, 215, 0, 0.2);
+    animation: glow-animation-gold 1.5s infinite linear;
 }
 
-/* Second place text with silver shadow */
+/* Second place text with silver shadow (glow less than gold) */
 .leaderboard-item.second-place .leaderboard-name,
 .leaderboard-item.second-place .leaderboard-position {
     color: #C0C0C0; /* Base silver color */
-    text-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 0 0 8px rgba(192, 192, 192, 0.3), 0 0 12px rgba(192, 192, 192, 0.2);
-    animation: glow-animation 1.5s infinite linear;
+    text-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 
+                 0 0 8px rgba(192, 192, 192, 0.3), 
+                 0 0 12px rgba(192, 192, 192, 0.2);
+    animation: glow-animation-silver 1.5s infinite linear;
 }
 
-/* Third place text with bronze shadow */
+/* Third place text with bronze shadow (glow less than silver) */
 .leaderboard-item.third-place .leaderboard-name,
 .leaderboard-item.third-place .leaderboard-position {
     color: #CD7F32; /* Base bronze color */
-    text-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 0 0 6px rgba(205, 127, 50, 0.3), 0 0 9px rgba(205, 127, 50, 0.2);
-    animation: glow-animation 1.5s infinite linear;
+    text-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 
+                 0 0 6px rgba(205, 127, 50, 0.3), 
+                 0 0 9px rgba(205, 127, 50, 0.2);
+    animation: glow-animation-bronze 1.5s infinite linear;
 }
 
-@keyframes glow-animation {
+/* Keyframes for gold glow */
+@keyframes glow-animation-gold {
     0% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
-    }
-    25% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 
+                     0 0 10px rgba(255, 215, 0, 0), 
+                     0 0 15px rgba(255, 215, 0, 0);
     }
     50% {
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
-    }
-    75% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 
+                     0 0 20px rgba(255, 215, 0, 0.6), 
+                     0 0 30px rgba(255, 215, 0, 0.4);
     }
     100% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 
+                     0 0 10px rgba(255, 215, 0, 0), 
+                     0 0 15px rgba(255, 215, 0, 0);
+    }
+}
+
+/* Keyframes for silver glow (less intense than gold) */
+@keyframes glow-animation-silver {
+    0% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 
+                     0 0 8px rgba(192, 192, 192, 0), 
+                     0 0 12px rgba(192, 192, 192, 0);
+    }
+    50% {
+        text-shadow: 0 0 8px rgba(192, 192, 192, 0.6), 
+                     0 0 16px rgba(192, 192, 192, 0.5), 
+                     0 0 24px rgba(192, 192, 192, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 
+                     0 0 8px rgba(192, 192, 192, 0), 
+                     0 0 12px rgba(192, 192, 192, 0);
+    }
+}
+
+/* Keyframes for bronze glow (less intense than silver) */
+@keyframes glow-animation-bronze {
+    0% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 
+                     0 0 6px rgba(205, 127, 50, 0), 
+                     0 0 9px rgba(205, 127, 50, 0);
+    }
+    50% {
+        text-shadow: 0 0 6px rgba(205, 127, 50, 0.4), 
+                     0 0 12px rgba(205, 127, 50, 0.3), 
+                     0 0 18px rgba(205, 127, 50, 0.2);
+    }
+    100% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 
+                     0 0 6px rgba(205, 127, 50, 0), 
+                     0 0 9px rgba(205, 127, 50, 0);
     }
 }
