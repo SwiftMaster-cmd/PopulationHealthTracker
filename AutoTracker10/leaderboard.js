@@ -144,6 +144,28 @@ function wrapTextInSpan(text) {
 }
 
 
+async function loadTop3Positions() {
+    const database = firebase.database();
+    const positionsRef = database.ref('positions');
+
+    try {
+        const snapshot = await positionsRef.once('value');
+        const positionsData = snapshot.val();
+
+        const top3Positions = {};
+        for (const userId in positionsData) {
+            if (positionsData[userId].position) {
+                top3Positions[userId] = positionsData[userId].position;
+            }
+        }
+
+        return top3Positions;
+    } catch (error) {
+        console.error('Error loading top 3 positions:', error);
+        return {};
+    }
+}
+
 
 
 let currentSales = [];
@@ -188,24 +210,13 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const positionsRef = database.ref('positions'); // Reference to the saved positions
-
         const liveActivitiesSection = document.getElementById('live-activities-section');
+
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
 
-        // Fetch all positions to determine the top 3 users
-        const top3Positions = {};
-        await positionsRef.once('value', (snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-                const { position } = childSnapshot.val();
-                const userId = childSnapshot.key;
-                if (position === 1 || position === 2 || position === 3) {
-                    top3Positions[userId] = position;
-                }
-            });
-        });
+        const top3Positions = await loadTop3Positions(); // Load top 3 positions
 
         salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
@@ -218,12 +229,12 @@ async function loadLiveActivities() {
 
             currentSales = await processSalesData(salesData);
             await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions); // Pass top 3 positions
         });
 
         liveActivitiesSection.addEventListener('scroll', () => {
             if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions);
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions); // Pass top 3 positions
             }
         });
 
@@ -231,6 +242,7 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
+
 function wrapTextInSpan(text) {
     return text.split('').map((char, index) => `<span style="animation-delay: ${index * 0.1}s;">${char}</span>`).join('');
 }
@@ -306,7 +318,6 @@ async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
         renderMoreSales(container, likesRef, usersRef, top3Positions);
     }
 }
-
 
 
 
