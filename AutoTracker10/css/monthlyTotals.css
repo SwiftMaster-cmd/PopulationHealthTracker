@@ -294,29 +294,6 @@
     }
 }
 
-/* Apply different delays to each letter to create the left-to-right effect */
-.leaderboard-item.first-place .leaderboard-name span:nth-child(1),
-.leaderboard-item.first-place .leaderboard-position span:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.leaderboard-item.first-place .leaderboard-name span:nth-child(2),
-.leaderboard-item.first-place .leaderboard-position span:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-.leaderboard-item.first-place .leaderboard-name span:nth-child(3),
-.leaderboard-item.first-place .leaderboard-position span:nth-child(3) {
-    animation-delay: 0.2s;
-}
-
-.leaderboard-item.first-place .leaderboard-name span:nth-child(4),
-.leaderboard-item.first-place .leaderboard-position span:nth-child(4) {
-    animation-delay: 0.3s;
-}
-
-/* Continue this pattern for as many letters as needed */
-
 /* Second place text with silver glow moving across each letter */
 .leaderboard-item.second-place .leaderboard-name,
 .leaderboard-item.second-place .leaderboard-position {
@@ -334,44 +311,21 @@
 
 @keyframes text-glow-silver {
     0% {
-        text-shadow: 0 0 5px rgba(192, 192, 192, 0), 0 0 10px rgba(192, 192, 192, 0), 0 0 15px rgba(192, 192, 192, 0);
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
     }
     25% {
-        text-shadow: 0 0 5px rgba(192, 192, 192, 0.4), 0 0 10px rgba(192, 192, 192, 0.3), 0 0 15px rgba(192, 192, 192, 0.2);
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
     }
     50% {
-        text-shadow: 0 0 10px rgba(192, 192, 192, 0.8), 0 0 20px rgba(192, 192, 192, 0.6), 0 0 30px rgba(192, 192, 192, 0.4);
+        text-shadow: 0 0 8px rgba(192, 192, 192, 0.6), 0 0 16px rgba(192, 192, 192, 0.5), 0 0 24px rgba(192, 192, 192, 0.4);
     }
     75% {
-        text-shadow: 0 0 5px rgba(192, 192, 192, 0.4), 0 0 10px rgba(192, 192, 192, 0.3), 0 0 15px rgba(192, 192, 192, 0.2);
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
     }
     100% {
-        text-shadow: 0 0 5px rgba(192, 192, 192, 0), 0 0 10px rgba(192, 192, 192, 0), 0 0 15px rgba(192, 192, 192, 0);
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
     }
 }
-
-/* Apply different delays to each letter to create the left-to-right effect */
-.leaderboard-item.second-place .leaderboard-name span:nth-child(1),
-.leaderboard-item.second-place .leaderboard-position span:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.leaderboard-item.second-place .leaderboard-name span:nth-child(2),
-.leaderboard-item.second-place .leaderboard-position span:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-.leaderboard-item.second-place .leaderboard-name span:nth-child(3),
-.leaderboard-item.second-place .leaderboard-position span:nth-child(3) {
-    animation-delay: 0.2s;
-}
-
-.leaderboard-item.second-place .leaderboard-name span:nth-child(4),
-.leaderboard-item.second-place .leaderboard-position span:nth-child(4) {
-    animation-delay: 0.3s;
-}
-
-/* Continue this pattern for as many letters as needed */
 
 /* Third place text with bronze glow moving across each letter */
 .leaderboard-item.third-place .leaderboard-name,
@@ -390,40 +344,40 @@
 
 @keyframes text-glow-bronze {
     0% {
-        text-shadow: 0 0 5px rgba(205, 127, 50, 0), 0 0 10px rgba(205, 127, 50, 0), 0 0 15px rgba(205, 127, 50, 0);
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
     }
     25% {
-        text-shadow: 0 0 5px rgba(205, 127, 50, 0.4), 0 0 10px rgba(205, 127, 50, 0.3), 0 0 15px rgba(205, 127, 50, 0.2);
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
     }
     50% {
-        text-shadow: 0 0 10px rgba(205, 127, 50, 0.8), 0 0 20px rgba(205, 127, 50, 0.6), 0 0 30px rgba(205, 127, 50, 0.4);
+        text-shadow: 0 0 6px rgba(205, 127, 50, 0.4), 0 0 12px rgba(205, 127, 50, 0.3), 0 0 18px rgba(205, 127, 50, 0.2);
     }
     75% {
-        text-shadow: 0 0 5px rgba(205, 127, 50, 0.4), 0 0 10px rgba(205, 127, 50, 0.3), 0 0 15px rgba(205, 127, 50, 0.2);
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
     }
     100% {
-        text-shadow: 0 0 5px rgba(205, 127, 50, 0), 0 0 10px rgba(205, 127, 50, 0), 0 0 15px rgba(205, 127, 50, 0);
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
     }
 }
 
 /* Apply different delays to each letter to create the left-to-right effect */
-.leaderboard-item.third-place .leaderboard-name span:nth-child(1),
-.leaderboard-item.third-place .leaderboard-position span:nth-child(1) {
+.leaderboard-item .leaderboard-name span:nth-child(1),
+.leaderboard-item .leaderboard-position span:nth-child(1) {
     animation-delay: 0s;
 }
 
-.leaderboard-item.third-place .leaderboard-name span:nth-child(2),
-.leaderboard-item.third-place .leaderboard-position span:nth-child(2) {
+.leaderboard-item .leaderboard-name span:nth-child(2),
+.leaderboard-item .leaderboard-position span:nth-child(2) {
     animation-delay: 0.1s;
 }
 
-.leaderboard-item.third-place .leaderboard-name span:nth-child(3),
-.leaderboard-item.third-place .leaderboard-position span:nth-child(3) {
+.leaderboard-item .leaderboard-name span:nth-child(3),
+.leaderboard-item .leaderboard-position span:nth-child(3) {
     animation-delay: 0.2s;
 }
 
-.leaderboard-item.third-place .leaderboard-name span:nth-child(4),
-.leaderboard-item.third-place .leaderboard-position span:nth-child(4) {
+.leaderboard-item .leaderboard-name span:nth-child(4),
+.leaderboard-item .leaderboard-position span:nth-child(4) {
     animation-delay: 0.3s;
 }
 
