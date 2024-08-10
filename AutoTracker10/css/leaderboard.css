@@ -3,7 +3,7 @@
 .leaderboard-item.first-place .leaderboard-position {
     color: #FFD700; /* Base gold color */
     text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255, 215, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
-    animation: glow-animation-gold 1.5s infinite linear;
+    animation: glow-animation-gold 3s infinite linear;
 }
 
 /* First place total count container with glowing background */
@@ -11,7 +11,7 @@
     background-color: #FFD700; /* Base gold color for background */
     color: #FFF; /* Keep text color white */
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255, 215, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
-    animation: glow-animation-gold 1.5s infinite linear;
+    animation: glow-animation-gold 3s infinite linear;
 }
 
 /* Second place text with silver shadow */
@@ -19,7 +19,7 @@
 .leaderboard-item.second-place .leaderboard-position {
     color: #C0C0C0; /* Base silver color */
     text-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 0 0 8px rgba(192, 192, 192, 0.3), 0 0 12px rgba(192, 192, 192, 0.2);
-    animation: glow-animation-silver 1.5s infinite linear;
+    animation: glow-animation-silver 3s infinite linear;
 }
 
 /* Second place total count container with glowing background */
@@ -27,7 +27,7 @@
     background-color: #C0C0C0; /* Base silver color for background */
     color: #FFF; /* Keep text color white */
     box-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 0 0 8px rgba(192, 192, 192, 0.3), 0 0 12px rgba(192, 192, 192, 0.2);
-    animation: glow-animation-silver 1.5s infinite linear;
+    animation: glow-animation-silver 3s infinite linear;
 }
 
 /* Third place text with bronze shadow */
@@ -35,7 +35,7 @@
 .leaderboard-item.third-place .leaderboard-position {
     color: #CD7F32; /* Base bronze color */
     text-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 0 0 6px rgba(205, 127, 50, 0.3), 0 0 9px rgba(205, 127, 50, 0.2);
-    animation: glow-animation-bronze 1.5s infinite linear;
+    animation: glow-animation-bronze 3s infinite linear;
 }
 
 /* Third place total count container with glowing background */
@@ -43,7 +43,7 @@
     background-color: #CD7F32; /* Base bronze color for background */
     color: #FFF; /* Keep text color white */
     box-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 0 0 6px rgba(205, 127, 50, 0.3), 0 0 9px rgba(205, 127, 50, 0.2);
-    animation: glow-animation-bronze 1.5s infinite linear;
+    animation: glow-animation-bronze 3s infinite linear;
 }
 
 /* Keyframes for gold glow */
