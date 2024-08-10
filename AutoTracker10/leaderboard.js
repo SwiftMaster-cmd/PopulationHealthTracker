@@ -120,6 +120,21 @@ let currentSales = [];
 let batchSize = 10; // Number of sales to load at a time
 let lastRenderedIndex = 0;
 
+const sellableTypes = ['selectRX', 'transfer', 'selectPatientManagement', 'billableHRA'];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const radioButtons = document.querySelectorAll('input[name="sellableFilter"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', () => {
+            lastRenderedIndex = 0; // Reset the index to start rendering from the top
+            document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
+            renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
+        });
+    });
+
+    loadLiveActivities();
+});
+
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
@@ -142,8 +157,6 @@ async function loadLiveActivities() {
             }
 
             currentSales = await processSalesData(salesData);
-
-            console.log('Processed sales data:', currentSales);
             await addUserNames(currentSales, usersRef);
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
@@ -159,20 +172,21 @@ async function loadLiveActivities() {
     }
 }
 
-
 function renderMoreSales(container, likesRef, usersRef) {
     if (lastRenderedIndex >= currentSales.length) {
         console.log("All sales have been loaded");
         return; // Exit if all sales have been rendered
     }
 
-    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize);
-    lastRenderedIndex += batchSize;
+    const selectedFilter = document.querySelector('input[name="sellableFilter"]:checked').value;
+    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
+        .filter(sale => selectedFilter === 'show' || sellableTypes.includes(sale.saleType));
 
-    const today = new Date();
+    lastRenderedIndex += salesToRender.length;
 
     salesToRender.forEach((sale) => {
         const saleDate = new Date(sale.saleTime);
+        const today = new Date();
         const isToday = saleDate.getDate() === today.getDate() &&
                         saleDate.getMonth() === today.getMonth() &&
                         saleDate.getFullYear() === today.getFullYear();
@@ -215,6 +229,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
