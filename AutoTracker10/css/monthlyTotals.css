@@ -73,6 +73,14 @@
     overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
 
+
+#leaderboard-section{
+    max-height: 400px; /* Adjust this value based on your design needs */
+
+
+}
+
+
 /* Style for live activities section */
 #live-activities-section {
     display: flex;
@@ -144,7 +152,6 @@
     align-items: center;
     justify-content: flex-start;
     width: 90%;
-    max-height: 400px; /* Adjust this value based on your design needs */
 
     max-width: 90%; /* Make sure it doesn't exceed the container width */
     margin-bottom: var(--margin-s);
