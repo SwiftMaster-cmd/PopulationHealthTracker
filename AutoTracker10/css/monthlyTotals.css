@@ -260,65 +260,78 @@
     font-size: 2rem; /* Adjust for size */
     margin-left: var(--margin-s);
 }
+
 /* First place text glow with gold */
 .leaderboard-item.first-place .leaderboard-name,
-.leaderboard-item.first-place .leaderboard-score,
 .leaderboard-item.first-place .leaderboard-position {
-    position: relative;
     color: #FFD700; /* Gold color */
-    animation: text-gold-glow 1.5s infinite;
+    text-shadow: none; /* No glow for the text */
 }
 
-@keyframes text-gold-glow {
+.leaderboard-item.first-place .leaderboard-score {
+    background-color: #FFD700; /* Gold background */
+    animation: background-gold-glow 1.5s infinite;
+    color: var(--text-white); /* White text color */
+}
+
+@keyframes background-gold-glow {
     0% {
-        text-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700, 0 0 15px #FFD700;
+        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
     }
     50% {
-        text-shadow: 0 0 20px #FFD700, 0 0 30px #FFD700, 0 0 40px #FFD700;
+        box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8);
     }
     100% {
-        text-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700, 0 0 15px #FFD700;
+        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
     }
 }
 
-/* Second place text glow with silver */
+/* Second place text with silver and glow */
 .leaderboard-item.second-place .leaderboard-name,
-.leaderboard-item.second-place .leaderboard-score,
 .leaderboard-item.second-place .leaderboard-position {
-    position: relative;
     color: #C0C0C0; /* Silver color */
-    animation: text-silver-glow 1.5s infinite;
+    text-shadow: none; /* No glow for the text */
 }
 
-@keyframes text-silver-glow {
+.leaderboard-item.second-place .leaderboard-score {
+    background-color: #C0C0C0; /* Silver background */
+    animation: background-silver-glow 1.5s infinite;
+    color: var(--text-white); /* White text color */
+}
+
+@keyframes background-silver-glow {
     0% {
-        text-shadow: 0 0 5px #C0C0C0, 0 0 10px #C0C0C0, 0 0 15px #C0C0C0;
+        box-shadow: 0 0 7.5px 1.5px rgba(192, 192, 192, 0.3); /* 25% weaker than gold */
     }
     50% {
-        text-shadow: 0 0 20px #C0C0C0, 0 0 30px #C0C0C0, 0 0 40px #C0C0C0;
+        box-shadow: 0 0 15px 3.75px rgba(192, 192, 192, 0.6); /* 25% weaker than gold */
     }
     100% {
-        text-shadow: 0 0 5px #C0C0C0, 0 0 10px #C0C0C0, 0 0 15px #C0C0C0;
+        box-shadow: 0 0 7.5px 1.5px rgba(192, 192, 192, 0.3); /* 25% weaker than gold */
     }
 }
 
-/* Third place text glow with bronze */
+/* Third place text with bronze and glow */
 .leaderboard-item.third-place .leaderboard-name,
-.leaderboard-item.third-place .leaderboard-score,
 .leaderboard-item.third-place .leaderboard-position {
-    position: relative;
     color: #CD7F32; /* Bronze color */
-    animation: text-bronze-glow 1.5s infinite;
+    text-shadow: none; /* No glow for the text */
 }
 
-@keyframes text-bronze-glow {
+.leaderboard-item.third-place .leaderboard-score {
+    background-color: #CD7F32; /* Bronze background */
+    animation: background-bronze-glow 1.5s infinite;
+    color: var(--text-white); /* White text color */
+}
+
+@keyframes background-bronze-glow {
     0% {
-        text-shadow: 0 0 5px #CD7F32, 0 0 10px #CD7F32, 0 0 15px #CD7F32;
+        box-shadow: 0 0 5px 1px rgba(205, 127, 50, 0.2); /* 50% weaker than gold */
     }
     50% {
-        text-shadow: 0 0 20px #CD7F32, 0 0 30px #CD7F32, 0 0 40px #CD7F32;
+        box-shadow: 0 0 10px 2.5px rgba(205, 127, 50, 0.4); /* 50% weaker than gold */
     }
     100% {
-        text-shadow: 0 0 5px #CD7F32, 0 0 10px #CD7F32, 0 0 15px #CD7F32;
+        box-shadow: 0 0 5px 1px rgba(205, 127, 50, 0.2); /* 50% weaker than gold */
     }
 }
