@@ -13,6 +13,7 @@
     flex: 1;
     max-width: 50%; /* Ensure leaderboard takes up only 50% */
     box-sizing: border-box;
+    overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
 }
 
 .live-activities-container {
@@ -62,6 +63,7 @@
     font-size: 3rem; /* 2x bigger for leaderboard items */
     text-align: center; /* Center the text within each item */
     padding: var(--margin-s) var(--margin-m);
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
 
 /* Style for live activities section */
@@ -164,9 +166,10 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    max-width: 600px; /* Adjust based on your design */
+    max-width: 100%; /* Make sure it doesn't exceed the container width */
     margin-bottom: var(--margin-s);
     padding: var(--margin-s);
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
 
 /* Position container */
@@ -189,6 +192,9 @@
     font-size: 2rem; /* Adjust for size */
     color: var(--text-white); /* No background */
     text-align: left; /* Align text to the left */
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
+    white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
 }
 
 /* Score container */
@@ -203,4 +209,5 @@
     color: var(--text-white);
     font-size: 2rem; /* Adjust for size */
     margin-left: var(--margin-s);
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
