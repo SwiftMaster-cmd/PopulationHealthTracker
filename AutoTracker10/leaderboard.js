@@ -108,12 +108,12 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         // Create the position container
                         const positionContainer = document.createElement('div');
                         positionContainer.classList.add('leaderboard-position');
-                        positionContainer.innerHTML = wrapTextInSpan((index + 1).toString());
+                        positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
 
                         // Create the name container
                         const nameContainer = document.createElement('div');
                         nameContainer.classList.add('leaderboard-name');
-                        nameContainer.innerHTML = wrapTextInSpan(user.name);
+                        nameContainer.textContent = user.name;
 
                         // Create the score container
                         const scoreContainer = document.createElement('div');
@@ -138,33 +138,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-// Utility function to wrap each character in a span
-function wrapTextInSpan(text) {
-    return text.split('').map(char => `<span>${char}</span>`).join('');
-}
-
-
-async function loadTop3Positions() {
-    const database = firebase.database();
-    const positionsRef = database.ref('positions');
-
-    try {
-        const snapshot = await positionsRef.once('value');
-        const positionsData = snapshot.val();
-
-        const top3Positions = {};
-        for (const userId in positionsData) {
-            if (positionsData[userId].position) {
-                top3Positions[userId] = positionsData[userId].position;
-            }
-        }
-
-        return top3Positions;
-    } catch (error) {
-        console.error('Error loading top 3 positions:', error);
-        return {};
-    }
-}
 
 
 
@@ -210,13 +183,12 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const liveActivitiesSection = document.getElementById('live-activities-section');
+        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
+        const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
-
-        const top3Positions = await loadTop3Positions(); // Load top 3 positions
 
         salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
@@ -229,12 +201,12 @@ async function loadLiveActivities() {
 
             currentSales = await processSalesData(salesData);
             await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions); // Pass top 3 positions
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
 
         liveActivitiesSection.addEventListener('scroll', () => {
             if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions); // Pass top 3 positions
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
             }
         });
 
@@ -243,25 +215,21 @@ async function loadLiveActivities() {
     }
 }
 
-function wrapTextInSpan(text) {
-    return text.split('').map((char, index) => `<span style="animation-delay: ${index * 0.1}s;">${char}</span>`).join('');
-}
-
-async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
-    const currentUser = firebase.auth().currentUser;
-
+function renderMoreSales(container, likesRef, usersRef) {
+    const currentUser = firebase.auth().currentUser; // Get the current user ID
+    
     if (lastRenderedIndex >= currentSales.length) {
         console.log("All sales have been loaded");
-        return;
+        return; // Exit if all sales have been rendered
     }
 
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
         .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
-                        (!hideSelfSales || sale.userId !== currentUser.uid));
+                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
 
     lastRenderedIndex += salesToRender.length;
 
-    for (const sale of salesToRender) {
+    salesToRender.forEach((sale) => {
         const saleDate = new Date(sale.saleTime);
         const today = new Date();
         const isToday = saleDate.getDate() === today.getDate() &&
@@ -277,25 +245,13 @@ async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
 
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-        // Apply the appropriate class based on the user's position in the top 3
-        let glowClass = '';
-        if (top3Positions[sale.userId]) {
-            if (top3Positions[sale.userId] === 1) {
-                glowClass = 'first-place';
-            } else if (top3Positions[sale.userId] === 2) {
-                glowClass = 'second-place';
-            } else if (top3Positions[sale.userId] === 3) {
-                glowClass = 'third-place';
-            }
-        }
-
         saleElement.innerHTML = `
             <button class="like-button" data-like-path="${likePath}">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
             </button>
-            <strong class="live-activity-name ${glowClass}">${sale.userName}</strong> sold <strong class="sale-type ${glowClass}">${sale.saleType}</strong> at <strong class="sale-time ${glowClass}">${displayTime}</strong>
+            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${displayTime}
             <div class="like-info" id="like-info-${likePath}"></div>
         `;
         container.appendChild(saleElement);
@@ -310,14 +266,18 @@ async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
         likesRef.child(likePath).on('value', snapshot => {
             updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
-    }
+    });
 
     // Automatically load more sales if the last rendered sale is visible and there are more to load
     const lastSaleElement = container.lastElementChild;
     if (lastSaleElement && lastRenderedIndex < currentSales.length) {
-        renderMoreSales(container, likesRef, usersRef, top3Positions);
+        renderMoreSales(container, likesRef, usersRef);
     }
 }
+
+
+
+
 
 
 
