@@ -12,7 +12,7 @@
     flex: 1;
     max-width: 50%; /* Ensure they take up equal space */
     box-sizing: border-box;
-    text-align: center; /* Center content within the containers */
+    text-align: center; /* Center the container content */
 }
 
 /* Stack the sections vertically on screens narrower than 400px */
@@ -29,10 +29,11 @@
     }
 }
 
-/* Styles for the leaderboard title */
-#leaderboard-title {
+/* Styles for the leaderboard and live activities titles */
+#leaderboard-title,
+.live-activities-title {
     text-align: center;
-    font-size: 2.5rem; /* Slightly smaller than before */
+    font-size: 2.5rem; /* Same size for both titles */
     margin-bottom: var(--margin-s);
     white-space: pre-line; /* Forces the type to a new line */
 }
@@ -43,16 +44,38 @@
     justify-content: center; /* Center the pickers */
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
-    font-size: 1.25rem; /* Make the filters a little bigger */
+    font-size: 1.25rem; /* Make the filters and buttons a little bigger */
 }
 
-/* 2x bigger text size for leaderboard and live activities details */
-#leaderboard-section,
-#live-activities-section {
+/* 2x bigger text size for leaderboard items */
+#leaderboard-section {
     font-size: 2rem; /* 2x bigger for leaderboard info */
     display: flex;
     flex-direction: column;
     align-items: center; /* Center items within the section */
+}
+
+#leaderboard-section .leaderboard-item {
+    width: 100%; /* Ensure items take full width of container */
+    text-align: left; /* Align text to the left */
+    padding: var(--margin-s) var(--margin-m);
+}
+
+/* Style for live activities section */
+#live-activities-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items within the section */
+    font-size: 1.5rem; /* 1.5x bigger for live activities info */
+    max-height: 400px; /* Adjust this value based on your design needs */
+    overflow-y: auto;
+    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+}
+
+#live-activities-section .activity-item {
+    width: 100%; /* Ensure items take full width of container */
+    text-align: left; /* Align text to the left */
+    padding: var(--margin-s) var(--margin-m);
 }
 
 /* Additional styles for the live activities */
@@ -61,11 +84,12 @@
     justify-content: center;
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
+    font-size: 1.25rem; /* Same size as the pickers */
 }
 
 /* Basic styles for the toggle button */
 .toggle-button {
-    padding: var(--margin-m) var(--margin-l); /* Make the buttons a little bigger */
+    padding: var(--margin-s) var(--margin-m);
     border: none;
     border-radius: var(--margin-s);
     background-color: var(--color-primary);
@@ -92,14 +116,6 @@
     padding: var(--margin-m);
     border-radius: var(--margin-s);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Make the leaderboard and live activities sections scrollable */
-#leaderboard-section,
-#live-activities-section {
-    max-height: 400px; /* Adjust this value based on your design needs */
-    overflow-y: auto;
-    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
 }
 
 /* Optional: Customize the scrollbar */
