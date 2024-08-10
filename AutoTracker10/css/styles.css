@@ -313,3 +313,9 @@ button:active {
 .bottom-right-buttons .button:hover {
     background-color: #0056b3;
 }
+
+
+
+#leaderboard-section .leaderboard-item {
+    display: none;
+}
