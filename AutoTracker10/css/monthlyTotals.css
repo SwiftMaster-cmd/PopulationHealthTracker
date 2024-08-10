@@ -74,7 +74,7 @@
     max-height: 400px; /* Adjust this value based on your design needs */
     overflow-y: auto;
     width: 100%; /* Ensure the live activities section takes up full width */
-    padding-right: 0; /* Remove padding to ensure it reaches the edge */
+    padding: 0; /* Remove padding to ensure it reaches the edge */
     box-sizing: border-box; /* Make sure padding doesn't reduce content width */
 }
 
@@ -85,6 +85,7 @@
     padding: 0; /* Remove padding to allow text to flow to the edges */
     margin: 0; /* Remove margin for full-width text */
 }
+
 
 /* Additional styles for the live activities (30% smaller) */
 .toggle-buttons {
