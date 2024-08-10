@@ -75,6 +75,9 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         const userData = salesData[userId];
                         let count = 0;
 
+                        // Debugging: Log user data for inspection
+                        console.log(`Processing user ${userId}:`, userData);
+
                         if (period === 'day') {
                             count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
                         } else if (period === 'week') {
@@ -137,6 +140,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 
