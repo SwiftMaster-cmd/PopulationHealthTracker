@@ -4,6 +4,7 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: var(--margin-m); /* Optional: add space between the sections */
+    width: 100%; /* Ensure the container takes up the full width */
 }
 
 /* Leaderboard and live activities take up 50% of the screen width */
@@ -12,7 +13,6 @@
     flex: 1;
     max-width: 50%; /* Ensure they take up equal space */
     box-sizing: border-box;
-    text-align: center; /* Center the container content */
 }
 
 /* Stack the sections vertically on screens narrower than 400px */
@@ -25,7 +25,6 @@
     .leaderboard-container,
     .live-activities-container {
         max-width: 100%; /* Full width when stacked */
-        text-align: center; /* Center content within the containers */
     }
 }
 
@@ -58,17 +57,14 @@
 #live-activities-section {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center items within the section */
     font-size: 1.5rem; /* 1.5x bigger for live activities info */
     max-height: 400px; /* Adjust this value based on your design needs */
     overflow-y: auto;
-    width: 100%; /* Take full width of the container */
-    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+    width: 100%; /* Ensure the live activities section takes up full width */
 }
 
 #live-activities-section .activity-item {
     width: 100%; /* Ensure items take full width of container */
-    max-width: 100%; /* Make sure the items stretch to the edge */
     text-align: left; /* Align text to the left */
     padding: var(--margin-s) var(--margin-m);
 }
