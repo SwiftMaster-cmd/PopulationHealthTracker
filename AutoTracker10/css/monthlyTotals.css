@@ -61,12 +61,15 @@
     max-height: 400px; /* Adjust this value based on your design needs */
     overflow-y: auto;
     width: 100%; /* Ensure the live activities section takes up full width */
+    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+    box-sizing: border-box; /* Make sure padding doesn't reduce content width */
 }
 
 #live-activities-section .activity-item {
     width: 100%; /* Ensure items take full width of container */
     text-align: left; /* Align text to the left */
-    padding: var(--margin-s) var(--margin-m);
+    padding: 0; /* Remove padding to allow text to flow to the edges */
+    margin: 0; /* Remove margin for full-width text */
 }
 
 /* Additional styles for the live activities */
