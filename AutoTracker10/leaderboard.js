@@ -121,15 +121,19 @@ let batchSize = 10; // Number of sales to load at a time
 let lastRenderedIndex = 0;
 
 const sellableTypes = ['Select RX', 'SPM Scheduled Call', 'Transfer', 'Billable HRA']; // Use readable titles
+let hideNonSellable = false; // Track the toggle state
 
 document.addEventListener('DOMContentLoaded', () => {
-    const radioButtons = document.querySelectorAll('input[name="sellableFilter"]');
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', () => {
-            lastRenderedIndex = 0; // Reset the index to start rendering from the top
-            document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
-            renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
-        });
+    const toggleButton = document.getElementById('toggleSellableButton');
+    
+    toggleButton.addEventListener('click', () => {
+        hideNonSellable = !hideNonSellable; // Toggle the state
+        toggleButton.classList.toggle('clicked', hideNonSellable);
+        toggleButton.textContent = hideNonSellable ? 'Show Non-sellable' : 'Hide Non-sellable';
+        
+        lastRenderedIndex = 0; // Reset the index to start rendering from the top
+        document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
+        renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
     });
 
     loadLiveActivities();
@@ -178,9 +182,8 @@ function renderMoreSales(container, likesRef, usersRef) {
         return; // Exit if all sales have been rendered
     }
 
-    const selectedFilter = document.querySelector('input[name="sellableFilter"]:checked').value;
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
-        .filter(sale => selectedFilter === 'show' || sellableTypes.includes(sale.saleType));
+        .filter(sale => !hideNonSellable || sellableTypes.includes(sale.saleType)); // Filter based on toggle state
 
     lastRenderedIndex += salesToRender.length;
 
@@ -229,6 +232,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
