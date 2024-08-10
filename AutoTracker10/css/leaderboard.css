@@ -1,0 +1,140 @@
+/* First place text and total count background with gold shadow */
+.leaderboard-item.first-place .leaderboard-name,
+.leaderboard-item.first-place .leaderboard-position,
+.leaderboard-item.first-place .leaderboard-score {
+    color: #FFD700; /* Base gold color for text */
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 
+                 0 0 10px rgba(255, 215, 0, 0.4), 
+                 0 0 15px rgba(255, 215, 0, 0.2);
+    animation: glow-animation-gold 1.5s infinite linear;
+}
+
+/* First place total count container background */
+.leaderboard-item.first-place .leaderboard-score {
+    background-color: #FFD700; /* Base gold color for background */
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 
+                0 0 10px rgba(255, 215, 0, 0.4), 
+                0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+/* Second place text and total count background with silver shadow */
+.leaderboard-item.second-place .leaderboard-name,
+.leaderboard-item.second-place .leaderboard-position,
+.leaderboard-item.second-place .leaderboard-score {
+    color: #C0C0C0; /* Base silver color for text */
+    text-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 
+                 0 0 8px rgba(192, 192, 192, 0.3), 
+                 0 0 12px rgba(192, 192, 192, 0.2);
+    animation: glow-animation-silver 1.5s infinite linear;
+}
+
+/* Second place total count container background */
+.leaderboard-item.second-place .leaderboard-score {
+    background-color: #C0C0C0; /* Base silver color for background */
+    box-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 
+                0 0 8px rgba(192, 192, 192, 0.3), 
+                0 0 12px rgba(192, 192, 192, 0.2);
+}
+
+/* Third place text and total count background with bronze shadow */
+.leaderboard-item.third-place .leaderboard-name,
+.leaderboard-item.third-place .leaderboard-position,
+.leaderboard-item.third-place .leaderboard-score {
+    color: #CD7F32; /* Base bronze color for text */
+    text-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 
+                 0 0 6px rgba(205, 127, 50, 0.3), 
+                 0 0 9px rgba(205, 127, 50, 0.2);
+    animation: glow-animation-bronze 1.5s infinite linear;
+}
+
+/* Third place total count container background */
+.leaderboard-item.third-place .leaderboard-score {
+    background-color: #CD7F32; /* Base bronze color for background */
+    box-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 
+                0 0 6px rgba(205, 127, 50, 0.3), 
+                0 0 9px rgba(205, 127, 50, 0.2);
+}
+
+/* Keyframes for gold glow */
+@keyframes glow-animation-gold {
+    0% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 
+                     0 0 10px rgba(255, 215, 0, 0), 
+                     0 0 15px rgba(255, 215, 0, 0);
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0), 
+                    0 0 10px rgba(255, 215, 0, 0), 
+                    0 0 15px rgba(255, 215, 0, 0);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 
+                     0 0 20px rgba(255, 215, 0, 0.6), 
+                     0 0 30px rgba(255, 215, 0, 0.4);
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 
+                    0 0 20px rgba(255, 215, 0, 0.6), 
+                    0 0 30px rgba(255, 215, 0, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 
+                     0 0 10px rgba(255, 215, 0, 0), 
+                     0 0 15px rgba(255, 215, 0, 0);
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0), 
+                    0 0 10px rgba(255, 215, 0, 0), 
+                    0 0 15px rgba(255, 215, 0, 0);
+    }
+}
+
+/* Keyframes for silver glow (less intense than gold) */
+@keyframes glow-animation-silver {
+    0% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 
+                     0 0 8px rgba(192, 192, 192, 0), 
+                     0 0 12px rgba(192, 192, 192, 0);
+        box-shadow: 0 0 4px rgba(192, 192, 192, 0), 
+                    0 0 8px rgba(192, 192, 192, 0), 
+                    0 0 12px rgba(192, 192, 192, 0);
+    }
+    50% {
+        text-shadow: 0 0 8px rgba(192, 192, 192, 0.6), 
+                     0 0 16px rgba(192, 192, 192, 0.5), 
+                     0 0 24px rgba(192, 192, 192, 0.4);
+        box-shadow: 0 0 8px rgba(192, 192, 192, 0.6), 
+                    0 0 16px rgba(192, 192, 192, 0.5), 
+                    0 0 24px rgba(192, 192, 192, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 
+                     0 0 8px rgba(192, 192, 192, 0), 
+                     0 0 12px rgba(192, 192, 192, 0);
+        box-shadow: 0 0 4px rgba(192, 192, 192, 0), 
+                    0 0 8px rgba(192, 192, 192, 0), 
+                    0 0 12px rgba(192, 192, 192, 0);
+    }
+}
+
+/* Keyframes for bronze glow (less intense than silver) */
+@keyframes glow-animation-bronze {
+    0% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 
+                     0 0 6px rgba(205, 127, 50, 0), 
+                     0 0 9px rgba(205, 127, 50, 0);
+        box-shadow: 0 0 3px rgba(205, 127, 50, 0), 
+                    0 0 6px rgba(205, 127, 50, 0), 
+                    0 0 9px rgba(205, 127, 50, 0);
+    }
+    50% {
+        text-shadow: 0 0 6px rgba(205, 127, 50, 0.4), 
+                     0 0 12px rgba(205, 127, 50, 0.3), 
+                     0 0 18px rgba(205, 127, 50, 0.2);
+        box-shadow: 0 0 6px rgba(205, 127, 50, 0.4), 
+                    0 0 12px rgba(205, 127, 50, 0.3), 
+                    0 0 18px rgba(205, 127, 50, 0.2);
+    }
+    100% {
+        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 
+                     0 0 6px rgba(205, 127, 50, 0), 
+                     0 0 9px rgba(205, 127, 50, 0);
+        box-shadow: 0 0 3px rgba(205, 127, 50, 0), 
+                    0 0 6px rgba(205, 127, 50, 0), 
+                    0 0 9px rgba(205, 127, 50, 0);
+    }
+}
