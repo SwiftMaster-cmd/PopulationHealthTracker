@@ -146,7 +146,6 @@ function wrapTextInSpan(text) {
 
 
 
-
 let currentSales = [];
 let batchSize = 10; // Number of sales to load at a time
 let lastRenderedIndex = 0;
@@ -188,6 +187,7 @@ async function loadLiveActivities() {
         const database = firebase.database();
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
+        const likesRef = database.ref('likes');
         const positionsRef = database.ref('positions'); // Reference to the saved positions
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
@@ -195,6 +195,7 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
+        salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
@@ -203,27 +204,25 @@ async function loadLiveActivities() {
                 return;
             }
 
-            const sales = await processSalesData(salesData);
-            await addUserNames(sales, usersRef);
-
-            liveActivitiesSection.innerHTML = ''; // Clear the section before adding new items
-
-            // Reverse the sales array to show the newest first
-            sales.reverse();
-
-            currentSales = sales; // Save current sales for rendering more later
-            lastRenderedIndex = 0; // Reset the index for infinite scrolling
-            renderMoreSales(liveActivitiesSection, database.ref('likes'), usersRef); // Start rendering sales
+            currentSales = await processSalesData(salesData);
+            await addUserNames(currentSales, usersRef);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef, positionsRef);
         });
+
+        liveActivitiesSection.addEventListener('scroll', () => {
+            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef, positionsRef);
+            }
+        });
+
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
 }
 
-
-async function renderMoreSales(container, likesRef, usersRef) {
-    const currentUser = firebase.auth().currentUser;
-
+async function renderMoreSales(container, likesRef, usersRef, positionsRef) {
+    const currentUser = firebase.auth().currentUser; // Get the current user ID
+    
     if (lastRenderedIndex >= currentSales.length) {
         console.log("All sales have been loaded");
         return; // Exit if all sales have been rendered
@@ -252,7 +251,7 @@ async function renderMoreSales(container, likesRef, usersRef) {
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
         // Check if the user is in the top 3 positions
-        await firebase.database().ref(`positions/${sale.userId}`).once('value', snapshot => {
+        await positionsRef.child(sale.userId).once('value', snapshot => {
             if (snapshot.exists()) {
                 const positionData = snapshot.val();
                 if (positionData.position === 1) {
@@ -291,17 +290,9 @@ async function renderMoreSales(container, likesRef, usersRef) {
     // Automatically load more sales if the last rendered sale is visible and there are more to load
     const lastSaleElement = container.lastElementChild;
     if (lastSaleElement && lastRenderedIndex < currentSales.length) {
-        renderMoreSales(container, likesRef, usersRef);
+        renderMoreSales(container, likesRef, usersRef, positionsRef);
     }
 }
-
-
-
-
-
-
-
-
 
 function isToday(dateString) {
     const date = new Date(dateString);
