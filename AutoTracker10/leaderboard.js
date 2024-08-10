@@ -141,16 +141,16 @@ async function loadLiveActivities() {
 
             console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
-            const latestSales = sales.slice(0, 5); // Get the latest 5 sales
 
-            console.log('Processed sales data:', latestSales);
-            await addUserNames(latestSales, usersRef);
-            renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
+            console.log('Processed sales data:', sales);
+            await addUserNames(sales, usersRef);
+            renderSales(sales, liveActivitiesSection, likesRef, usersRef);
         });
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
 }
+
 
 async function processSalesData(salesData) {
     const sales = [];
