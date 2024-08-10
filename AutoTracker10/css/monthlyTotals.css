@@ -21,10 +21,6 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.leaderboard-section{
-
-    max-height: 400px;
-}
 
 .live-activities-container {
     flex: 1;
@@ -75,7 +71,7 @@
 #leaderboard-section .leaderboard-item {
     font-size: 3rem; /* 2x bigger for leaderboard items */
     text-align: center; /* Center the text within each item */
-
+    max-height: 400px;
     padding: var(--margin-s) var(--margin-m);
     overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
