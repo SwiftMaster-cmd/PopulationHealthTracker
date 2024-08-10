@@ -13,7 +13,6 @@
     flex: 1;
     max-width: 50%; /* Ensure leaderboard takes up only 50% */
     box-sizing: border-box;
-
     overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
     background: none !important;
     padding: var(--margin-m);
@@ -25,7 +24,7 @@
     flex: 1;
     width: 100%; /* Ensure live activities take up full available width */
     box-sizing: border-box;
-    overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
+    overflow-x: hidden; /* Prevent sideways scrolling */
 }
 
 /* Stack the sections vertically on screens narrower than 400px */
@@ -68,31 +67,28 @@
 #leaderboard-section .leaderboard-item {
     font-size: 3rem; /* 2x bigger for leaderboard items */
     text-align: center; /* Center the text within each item */
-
     padding: var(--margin-s) var(--margin-m);
     overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
 
-
-.leaderboard-item{
-    max-height: 400px; /* Adjust this value based on your design needs */
-
-
-}
-
-
 /* Style for live activities section */
-#live-activities-section {
+.scrollable-section {
     display: flex;
     flex-direction: column;
     font-size: 1.5rem; /* 1.5x bigger for live activities info */
-    max-height: 400px; /* Adjust this value based on your design needs */
-    overflow-y: auto;
-    padding: 0; /* Remove padding to ensure it reaches the edge */
+    max-height: 400px; /* Set fixed height */
+    overflow-y: auto; /* Enable vertical scrolling */
     box-sizing: border-box; /* Make sure padding doesn't reduce content width */
-    width: 100%; /* Ensure full width */
-    max-width: 100%; /* Ensure it doesn't go beyond container width */
-    flex: 1; /* Ensure it takes up available space */
+}
+
+/* Ensure no scrollbar is visible */
+.scrollable-section::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for WebKit browsers */
+}
+
+.scrollable-section {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 #live-activities-section .activity-item {
@@ -131,70 +127,4 @@
 
 .toggle-button:active {
     transform: translateY(0);
-}
-
-/* Hide scrollbar for WebKit browsers */
-#leaderboard-section::-webkit-scrollbar,
-#live-activities-section::-webkit-scrollbar {
-    display: none;
-}
-
-/* Hide scrollbar for IE, Edge, and Firefox */
-#leaderboard-section,
-#live-activities-section {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
-/* Leaderboard item container */
-.leaderboard-item {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 90%;
-
-    max-width: 90%; /* Make sure it doesn't exceed the container width */
-    margin-bottom: var(--margin-s);
-    padding: var(--margin-s);
-    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
-}
-
-/* Position container */
-.leaderboard-position {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 60px; /* Square size */
-    height: 60px; /* Square size */
-    background-color: var(--color-primary);
-    border-radius: 12px; /* Rounded square */
-    color: var(--text-white);
-    font-size: 2rem; /* Adjust for size */
-    margin-right: var(--margin-s);
-}
-
-/* Name container */
-.leaderboard-name {
-    flex-grow: 1; /* Takes up remaining space */
-    font-size: 2rem; /* Adjust for size */
-    color: var(--text-white); /* No background */
-    text-align: left; /* Align text to the left */
-    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
-    white-space: nowrap; /* Prevent text from wrapping */
-    text-overflow: ellipsis; /* Add ellipsis for overflow text */
-}
-
-/* Score container */
-.leaderboard-score {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 60px; /* Square size */
-    height: 60px; /* Square size */
-    background-color: var(--color-primary);
-    border-radius: 12px; /* Rounded square */
-    color: var(--text-white);
-    font-size: 2rem; /* Adjust for size */
-    margin-left: var(--margin-s);
-    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
