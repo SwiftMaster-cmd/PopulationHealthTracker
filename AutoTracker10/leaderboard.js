@@ -118,8 +118,9 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
+let lastVisibleSaleIndex = 0; // Keep track of the last loaded sale
 
-async function loadLiveActivities() {
+async function loadLiveActivities(increment = 10) {
     try {
         const database = firebase.database();
         const salesTimeFramesRef = database.ref('salesTimeFrames');
@@ -141,15 +142,28 @@ async function loadLiveActivities() {
 
             console.log('Sales data:', salesData);
             const sales = await processSalesData(salesData);
+            lastVisibleSaleIndex += increment;
 
             console.log('Processed sales data:', sales);
-            await addUserNames(sales, usersRef);
-            renderSales(sales, liveActivitiesSection, likesRef, usersRef);
+            await addUserNames(sales.slice(0, lastVisibleSaleIndex), usersRef);
+            renderSales(sales.slice(0, lastVisibleSaleIndex), liveActivitiesSection, likesRef, usersRef);
         });
+
+        liveActivitiesSection.addEventListener('scroll', () => {
+            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+                loadMoreSales(); // Load more sales when near the bottom
+            }
+        });
+
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
 }
+
+function loadMoreSales() {
+    loadLiveActivities(); // Load the next batch of sales
+}
+
 
 
 async function processSalesData(salesData) {

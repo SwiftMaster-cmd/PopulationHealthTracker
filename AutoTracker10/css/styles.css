@@ -351,11 +351,22 @@ button:active {
 }
 
 
-/* Add this to make the live activities section scrollable */
+
+
+/* Title for live activities */
+.live-activities-title {
+    margin-bottom: var(--margin-s);
+    color: var(--text-white);
+}
+
+/* Scrollable area for live activities */
 #live-activities-section {
     max-height: 400px; /* Adjust this value based on your design needs */
     overflow-y: auto;
     padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--margin-s);
+    padding: var(--margin-m);
 }
 
 /* Optional: Customize the scrollbar */
