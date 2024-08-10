@@ -37,17 +37,17 @@
     white-space: pre-line; /* Forces the type to a new line */
 }
 
-/* Header and Picker styles */
+/* Header and Picker styles (30% smaller) */
 .picker-header {
     display: flex;
     justify-content: center; /* Center the pickers */
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
-    font-size: 1.8rem; /* Slightly smaller for the pickers */
+    font-size: 1.26rem; /* Reduced by 30% from 1.8rem */
 }
 
 .picker-header select {
-    padding: var(--margin-s) var(--margin-m);
+    padding: calc(var(--margin-s) * 0.7) calc(var(--margin-m) * 0.7); /* 30% smaller padding */
     font-size: inherit;
 }
 
@@ -78,17 +78,17 @@
     margin: 0; /* Remove margin for full-width text */
 }
 
-/* Additional styles for the live activities */
+/* Additional styles for the live activities (30% smaller) */
 .toggle-buttons {
     display: flex;
     justify-content: center;
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
-    font-size: 1.8rem; /* 10% smaller for the live activities buttons */
+    font-size: 1.26rem; /* Reduced by 30% from 1.8rem */
 }
 
 .toggle-button {
-    padding: var(--margin-s) var(--margin-m);
+    padding: calc(var(--margin-s) * 0.7) calc(var(--margin-m) * 0.7); /* 30% smaller padding */
     font-size: inherit; /* Inherit the slightly smaller font size */
     border: none;
     border-radius: var(--margin-s);
