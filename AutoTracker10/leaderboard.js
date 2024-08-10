@@ -43,7 +43,6 @@ function checkAndSetUserName(userId) {
 }
 
 
-
 async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
@@ -97,6 +96,11 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         const leaderboardItem = document.createElement('div');
                         leaderboardItem.classList.add('leaderboard-item');
 
+                        // Add the first-place class to the top performer
+                        if (index === 0) {
+                            leaderboardItem.classList.add('first-place');
+                        }
+
                         // Create the position container
                         const positionContainer = document.createElement('div');
                         positionContainer.classList.add('leaderboard-position');
@@ -129,9 +133,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
-if (index === 0) {
-    leaderboardItem.classList.add('first-place');
-}
+
 
 
 let currentSales = [];
