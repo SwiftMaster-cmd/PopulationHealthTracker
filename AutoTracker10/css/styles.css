@@ -383,11 +383,3 @@ input::placeholder {
     fill: var(--color-quaternary);
 }
 
-/* General container styles */
-.container {
-    background-color: var(--background-color);
-    border-radius: var(--margin-s);
-    padding: var(--margin-m);
-    margin-bottom: var(--margin-l);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
