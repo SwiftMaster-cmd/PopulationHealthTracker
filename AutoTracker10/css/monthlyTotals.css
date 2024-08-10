@@ -261,85 +261,63 @@
     margin-left: var(--margin-s);
 }
 
-/* First place text glow with gold */
+/* First place text with gold glow moving from left to right */
 .leaderboard-item.first-place .leaderboard-name,
 .leaderboard-item.first-place .leaderboard-position {
     color: #FFD700; /* Gold color */
-    text-shadow: none; /* No glow for the text */
+    background-image: linear-gradient(90deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 1) 50%, rgba(255, 215, 0, 0.2) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: text-glow-gold 1.5s infinite linear;
 }
 
-.leaderboard-item.first-place .leaderboard-score {
-    background-color: #FFD700; /* Gold background */
-    animation: background-gold-glow 1.5s infinite;
-    color: var(--text-white); /* White text color */
-}
-
-@keyframes background-gold-glow {
+@keyframes text-glow-gold {
     0% {
-        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
-    }
-    50% {
-        box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8);
+        background-position: -200%;
     }
     100% {
-        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
+        background-position: 200%;
     }
 }
 
-/* First place text with gold glow */
-.leaderboard-item.first-place .leaderboard-name,
-.leaderboard-item.first-place .leaderboard-position {
-    color: #FFD700; /* Gold color */
-    animation: text-gold-glow 1.5s infinite;
-}
-
-@keyframes text-gold-glow {
-    0% {
-        text-shadow: 0 0 2px #FFD700, 0 0 4px #FFD700, 0 0 6px #FFD700; /* 40% of original glow */
-    }
-    50% {
-        text-shadow: 0 0 8px #FFD700, 0 0 12px #FFD700, 0 0 16px #FFD700; /* 40% of original glow */
-    }
-    100% {
-        text-shadow: 0 0 2px #FFD700, 0 0 4px #FFD700, 0 0 6px #FFD700; /* 40% of original glow */
-    }
-}
-
-/* Second place text with silver glow */
+/* Second place text with silver glow moving from left to right */
 .leaderboard-item.second-place .leaderboard-name,
 .leaderboard-item.second-place .leaderboard-position {
     color: #C0C0C0; /* Silver color */
-    animation: text-silver-glow 1.5s infinite;
+    background-image: linear-gradient(90deg, rgba(192, 192, 192, 0.2) 0%, rgba(192, 192, 192, 1) 50%, rgba(192, 192, 192, 0.2) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: text-glow-silver 1.5s infinite linear;
 }
 
-@keyframes text-silver-glow {
+@keyframes text-glow-silver {
     0% {
-        text-shadow: 0 0 2px #C0C0C0, 0 0 4px #C0C0C0, 0 0 6px #C0C0C0; /* 40% of original glow */
-    }
-    50% {
-        text-shadow: 0 0 8px #C0C0C0, 0 0 12px #C0C0C0, 0 0 16px #C0C0C0; /* 40% of original glow */
+        background-position: -200%;
     }
     100% {
-        text-shadow: 0 0 2px #C0C0C0, 0 0 4px #C0C0C0, 0 0 6px #C0C0C0; /* 40% of original glow */
+        background-position: 200%;
     }
 }
 
-/* Third place text with bronze glow */
+/* Third place text with bronze glow moving from left to right */
 .leaderboard-item.third-place .leaderboard-name,
 .leaderboard-item.third-place .leaderboard-position {
     color: #CD7F32; /* Bronze color */
-    animation: text-bronze-glow 1.5s infinite;
+    background-image: linear-gradient(90deg, rgba(205, 127, 50, 0.2) 0%, rgba(205, 127, 50, 1) 50%, rgba(205, 127, 50, 0.2) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: text-glow-bronze 1.5s infinite linear;
 }
 
-@keyframes text-bronze-glow {
+@keyframes text-glow-bronze {
     0% {
-        text-shadow: 0 0 2px #CD7F32, 0 0 4px #CD7F32, 0 0 6px #CD7F32; /* 40% of original glow */
-    }
-    50% {
-        text-shadow: 0 0 8px #CD7F32, 0 0 12px #CD7F32, 0 0 16px #CD7F32; /* 40% of original glow */
+        background-position: -200%;
     }
     100% {
-        text-shadow: 0 0 2px #CD7F32, 0 0 4px #CD7F32, 0 0 6px #CD7F32; /* 40% of original glow */
+        background-position: 200%;
     }
 }
 
