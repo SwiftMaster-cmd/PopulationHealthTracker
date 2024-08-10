@@ -193,3 +193,11 @@
     margin-left: var(--margin-s);
     overflow-x: hidden; /* Ensure no horizontal scrolling for items */
 }
+
+
+#live-activities-section {
+    width: 100%; /* Ensure full width */
+    max-width: 100%; /* Ensure it doesn't go beyond container width */
+    flex: 1; /* Ensure it takes up available space */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
