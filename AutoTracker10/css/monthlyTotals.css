@@ -13,7 +13,7 @@
     flex: 1;
     max-width: 50%; /* Ensure leaderboard takes up only 50% */
     box-sizing: border-box;
-
+max-height: 600px;
     overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
     background: none !important;
     padding: var(--margin-m);
