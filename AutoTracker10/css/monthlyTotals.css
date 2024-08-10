@@ -1,0 +1,205 @@
+
+
+/* Add this to your leaderboard.css file or at the end of the existing CSS */
+
+/* Make the leaderboard section scrollable */
+#leaderboard-section {
+    max-height: 400px; /* Adjust this value based on your design needs */
+    overflow-y: auto;
+    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+}
+
+/* Optional: Customize the scrollbar */
+#leaderboard-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+#leaderboard-section::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+#leaderboard-section::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+#leaderboard-section::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+/* Ensure the leaderboard container doesn't interfere with the scrollable area */
+.leaderboard-container {
+    background: none !important;
+    padding: var(--margin-m);
+    border-radius: var(--margin-s);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Add this to make the live activities section scrollable */
+#live-activities-section {
+    max-height: 400px; /* Adjust this value based on your design needs */
+    overflow-y: auto;
+}
+
+/* Optional: Customize the scrollbar */
+#live-activities-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+#live-activities-section::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+#live-activities-section::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+#live-activities-section::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+
+/* Hide scrollbar for WebKit browsers */
+#leaderboard-section::-webkit-scrollbar,
+#live-activities-section::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+#leaderboard-section,
+#live-activities-section {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+/* Container for leaderboard and live activities */
+.picker-leaderboard-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--margin-m); /* Optional: add space between the sections */
+}
+
+/* Leaderboard and live activities take up 50% of the screen */
+.leaderboard-container,
+#live-activities-section {
+    flex: 1;
+    max-width: 50%;
+}
+
+/* Stack the sections vertically on smaller screens */
+@media (max-width: 500px) {
+    .picker-leaderboard-container {
+        flex-direction: column;
+    }
+
+    .leaderboard-container,
+    #live-activities-section {
+        max-width: 100%;
+    }
+}
+
+
+/* Basic styles for the toggle button */
+.toggle-button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-button.clicked {
+    background-color: var(--color-quaternary); /* Different color when clicked */
+}
+
+.toggle-button:hover {
+    transform: translateY(-3px);
+}
+
+.toggle-button:active {
+    transform: translateY(0);
+}
+
+
+
+/* Container for leaderboard and live activities */
+.picker-leaderboard-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--margin-m); /* Optional: add space between the sections */
+}
+
+/* Leaderboard and live activities take up 50% of the screen width */
+.leaderboard-container,
+.live-activities-container {
+    flex: 1;
+    max-width: 50%; /* Ensure they take up equal space */
+    box-sizing: border-box;
+}
+
+/* Stack the sections vertically on screens narrower than 400px */
+@media (max-width: 400px) {
+    .picker-leaderboard-container {
+        flex-direction: column;
+        align-items: center; /* Center the containers */
+    }
+
+    .leaderboard-container,
+    .live-activities-container {
+        max-width: 100%; /* Full width when stacked */
+        text-align: center; /* Center content within the containers */
+    }
+}
+
+/* Additional styles for the leaderboard */
+#leaderboard-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: var(--margin-s);
+}
+
+.picker-header {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--margin-m);
+}
+
+/* Additional styles for the live activities */
+.live-activities-title {
+    text-align: center;
+    font-size: 1.25rem;
+    margin-bottom: var(--margin-s);
+}
+
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--margin-s);
+    margin-bottom: var(--margin-m);
+}
+
+/* Basic styles for the toggle button */
+.toggle-button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-button.clicked {
+    background-color: var(--color-quaternary); /* Different color when clicked */
+}
+
+.toggle-button:hover {
+    transform: translateY(-3px);
+}
+
+.toggle-button:active {
+    transform: translateY(0);
+}
