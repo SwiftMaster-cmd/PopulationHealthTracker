@@ -117,10 +117,11 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 }
 
 
+let currentSales = [];
+let batchSize = 10; // Number of sales to load at a time
+let lastRenderedIndex = 0;
 
-let lastVisibleSaleIndex = 0; // Keep track of the last loaded sale
-
-async function loadLiveActivities(increment = 10) {
+async function loadLiveActivities() {
     try {
         const database = firebase.database();
         const salesTimeFramesRef = database.ref('salesTimeFrames');
@@ -132,6 +133,7 @@ async function loadLiveActivities(increment = 10) {
             throw new Error('Live activities section element not found');
         }
 
+        salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
@@ -140,18 +142,17 @@ async function loadLiveActivities(increment = 10) {
                 return;
             }
 
-            console.log('Sales data:', salesData);
-            const sales = await processSalesData(salesData);
-            lastVisibleSaleIndex += increment;
+            currentSales = await processSalesData(salesData);
+            currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter for today's sales
 
-            console.log('Processed sales data:', sales);
-            await addUserNames(sales.slice(0, lastVisibleSaleIndex), usersRef);
-            renderSales(sales.slice(0, lastVisibleSaleIndex), liveActivitiesSection, likesRef, usersRef);
+            console.log('Processed sales data:', currentSales);
+            await addUserNames(currentSales, usersRef);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
 
         liveActivitiesSection.addEventListener('scroll', () => {
             if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                loadMoreSales(); // Load more sales when near the bottom
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
             }
         });
 
@@ -160,8 +161,46 @@ async function loadLiveActivities(increment = 10) {
     }
 }
 
-function loadMoreSales() {
-    loadLiveActivities(); // Load the next batch of sales
+function renderMoreSales(container, likesRef, usersRef) {
+    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize);
+    lastRenderedIndex += batchSize;
+
+    salesToRender.forEach(sale => {
+        const saleElement = document.createElement('div');
+        saleElement.classList.add('activity-item');
+
+        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+
+        saleElement.innerHTML = `
+            <button class="like-button" data-like-path="${likePath}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
+            <div class="like-info" id="like-info-${likePath}"></div>
+        `;
+        container.appendChild(saleElement);
+
+        const likeButton = saleElement.querySelector('.like-button');
+        const likeInfoDiv = saleElement.querySelector('.like-info');
+
+        initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+
+        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+
+        likesRef.child(likePath).on('value', snapshot => {
+            updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
+        });
+    });
+}
+
+function isToday(dateString) {
+    const date = new Date(dateString);
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
 }
 
 
