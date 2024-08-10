@@ -120,7 +120,7 @@ let currentSales = [];
 let batchSize = 10; // Number of sales to load at a time
 let lastRenderedIndex = 0;
 
-const sellableTypes = ['selectRX', 'transfer', 'selectPatientManagement', 'billableHRA'];
+const sellableTypes = ['selectRX', 'spmScheduledCall', 'transfer', 'billableHRA']; // Updated to include SPM Scheduled Call
 
 document.addEventListener('DOMContentLoaded', () => {
     const radioButtons = document.querySelectorAll('input[name="sellableFilter"]');
@@ -229,6 +229,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
