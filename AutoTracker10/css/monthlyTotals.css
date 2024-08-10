@@ -48,15 +48,8 @@
 }
 
 /* 2x bigger text size for leaderboard items */
-#leaderboard-section {
-    font-size: 2rem; /* 2x bigger for leaderboard info */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center items within the section */
-}
-
 #leaderboard-section .leaderboard-item {
-    width: 100%; /* Ensure items take full width of container */
+    font-size: 3rem; /* 2x bigger for leaderboard items */
     text-align: center; /* Center the text within each item */
     padding: var(--margin-s) var(--margin-m);
 }
