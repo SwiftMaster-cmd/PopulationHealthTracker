@@ -47,6 +47,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
+    const positionsRef = database.ref('positions'); // New reference to save positions
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -92,6 +93,13 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     leaderboardSection.innerHTML = ''; // Clear the section before adding new items
 
                     users.forEach((user, index) => {
+                        // Save the top 3 positions in Firebase
+                        if (index < 3) {
+                            positionsRef.child(user.userId).set({ position: index + 1 });
+                        } else {
+                            positionsRef.child(user.userId).remove(); // Clear previous top 3 positions if any
+                        }
+
                         // Create the leaderboard item container
                         const leaderboardItem = document.createElement('div');
                         leaderboardItem.classList.add('leaderboard-item');
@@ -189,6 +197,7 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
+        const positionsRef = database.ref('positions'); // Reference to the saved positions
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
@@ -210,36 +219,41 @@ async function loadLiveActivities() {
 
             liveActivitiesSection.innerHTML = ''; // Clear the section before adding new items
 
-            latestSales.forEach((sale, index) => {
+            latestSales.forEach((sale) => {
                 // Create the live activity item container
                 const liveActivityItem = document.createElement('div');
                 liveActivityItem.classList.add('live-activity-item');
 
-                // Add the appropriate class based on rank
-                if (index === 0) {
-                    liveActivityItem.classList.add('first-place');
-                } else if (index === 1) {
-                    liveActivityItem.classList.add('second-place');
-                } else if (index === 2) {
-                    liveActivityItem.classList.add('third-place');
-                }
+                // Check if the user is in the top 3
+                positionsRef.child(sale.userId).once('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        const positionData = snapshot.val();
+                        if (positionData.position === 1) {
+                            liveActivityItem.classList.add('first-place');
+                        } else if (positionData.position === 2) {
+                            liveActivityItem.classList.add('second-place');
+                        } else if (positionData.position === 3) {
+                            liveActivityItem.classList.add('third-place');
+                        }
+                    }
 
-                // Create the name container
-                const nameContainer = document.createElement('div');
-                nameContainer.classList.add('live-activity-name');
-                nameContainer.innerHTML = wrapTextInSpan(sale.userName);
+                    // Create the name container
+                    const nameContainer = document.createElement('div');
+                    nameContainer.classList.add('live-activity-name');
+                    nameContainer.innerHTML = wrapTextInSpan(sale.userName);
 
-                // Create the sale info container
-                const saleInfoContainer = document.createElement('div');
-                saleInfoContainer.classList.add('live-activity-info');
-                saleInfoContainer.textContent = `${sale.saleType} at ${sale.formattedTime}`;
+                    // Create the sale info container
+                    const saleInfoContainer = document.createElement('div');
+                    saleInfoContainer.classList.add('live-activity-info');
+                    saleInfoContainer.textContent = `${sale.saleType} at ${sale.formattedTime}`;
 
-                // Append the containers to the live activity item
-                liveActivityItem.appendChild(nameContainer);
-                liveActivityItem.appendChild(saleInfoContainer);
+                    // Append the containers to the live activity item
+                    liveActivityItem.appendChild(nameContainer);
+                    liveActivityItem.appendChild(saleInfoContainer);
 
-                // Append the live activity item to the section
-                liveActivitiesSection.appendChild(liveActivityItem);
+                    // Append the live activity item to the section
+                    liveActivitiesSection.appendChild(liveActivityItem);
+                });
             });
         });
     } catch (error) {
