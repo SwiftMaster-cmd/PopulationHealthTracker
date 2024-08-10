@@ -374,3 +374,17 @@ button:active {
 #live-activities-section::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }
+
+
+/* Hide scrollbar for WebKit browsers */
+#leaderboard-section::-webkit-scrollbar,
+#live-activities-section::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+#leaderboard-section,
+#live-activities-section {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
