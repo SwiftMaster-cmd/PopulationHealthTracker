@@ -443,47 +443,31 @@
 
 /* Continue this pattern for as many letters as needed */
 
-
 /* First place text with gold glow moving across each letter in live activities */
-.live-activity-item.first-place .live-activity-name {
+.live-activity-item.first-place strong {
     color: #FFD700; /* Base gold color */
     position: relative;
     display: inline-block;
-}
-
-.live-activity-item.first-place .live-activity-name span {
-    position: relative;
     animation: text-glow-gold 1.5s infinite linear;
-    display: inline-block;
 }
 
 /* Second place text with silver glow moving across each letter in live activities */
-.live-activity-item.second-place .live-activity-name {
+.live-activity-item.second-place strong {
     color: #C0C0C0; /* Base silver color */
     position: relative;
     display: inline-block;
-}
-
-.live-activity-item.second-place .live-activity-name span {
-    position: relative;
     animation: text-glow-silver 1.5s infinite linear;
-    display: inline-block;
 }
 
 /* Third place text with bronze glow moving across each letter in live activities */
-.live-activity-item.third-place .live-activity-name {
+.live-activity-item.third-place strong {
     color: #CD7F32; /* Base bronze color */
     position: relative;
     display: inline-block;
-}
-
-.live-activity-item.third-place .live-activity-name span {
-    position: relative;
     animation: text-glow-bronze 1.5s infinite linear;
-    display: inline-block;
 }
 
-/* Keyframes for gold, silver, and bronze glow - same as leaderboard */
+/* Keyframes for gold, silver, and bronze glow */
 @keyframes text-glow-gold {
     0% {
         text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
@@ -536,9 +520,4 @@
     100% {
         text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
     }
-}
-
-/* Utility function to wrap each character in a span (used in JS) */
-function wrapTextInSpan(text) {
-    return text.split('').map(char => `<span>${char}</span>`).join('');
 }
