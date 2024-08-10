@@ -261,107 +261,170 @@
     margin-left: var(--margin-s);
 }
 
-/* First place text with gold glow moving from left to right */
+/* First place text with gold glow moving across each letter */
 .leaderboard-item.first-place .leaderboard-name,
 .leaderboard-item.first-place .leaderboard-position {
-    color: #FFD700; /* Gold color */
-    animation: text-glow-gold 3s infinite linear; /* Slow glow from left to right */
+    color: #FFD700; /* Base gold color */
+    position: relative;
+    display: inline-block;
+}
+
+.leaderboard-item.first-place .leaderboard-name span,
+.leaderboard-item.first-place .leaderboard-position span {
+    position: relative;
+    animation: text-glow-gold 1.5s infinite linear;
+    display: inline-block;
 }
 
 @keyframes text-glow-gold {
     0% {
-        text-shadow: -200px 0px 5px #FFD700, -100px 0px 10px #FFD700, 0px 0px 15px #FFD700;
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
+    }
+    25% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
+    }
+    75% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
     }
     100% {
-        text-shadow: 200px 0px 5px #FFD700, 100px 0px 10px #FFD700, 0px 0px 15px #FFD700;
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
     }
 }
 
-/* Second place text with silver glow moving from left to right */
+/* Apply different delays to each letter to create the left-to-right effect */
+.leaderboard-item.first-place .leaderboard-name span:nth-child(1),
+.leaderboard-item.first-place .leaderboard-position span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.leaderboard-item.first-place .leaderboard-name span:nth-child(2),
+.leaderboard-item.first-place .leaderboard-position span:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.leaderboard-item.first-place .leaderboard-name span:nth-child(3),
+.leaderboard-item.first-place .leaderboard-position span:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.leaderboard-item.first-place .leaderboard-name span:nth-child(4),
+.leaderboard-item.first-place .leaderboard-position span:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+/* Continue this pattern for as many letters as needed */
+
+/* Second place text with silver glow moving across each letter */
 .leaderboard-item.second-place .leaderboard-name,
 .leaderboard-item.second-place .leaderboard-position {
-    color: #C0C0C0; /* Silver color */
-    animation: text-glow-silver 3s infinite linear; /* Slow glow from left to right */
+    color: #C0C0C0; /* Base silver color */
+    position: relative;
+    display: inline-block;
+}
+
+.leaderboard-item.second-place .leaderboard-name span,
+.leaderboard-item.second-place .leaderboard-position span {
+    position: relative;
+    animation: text-glow-silver 1.5s infinite linear;
+    display: inline-block;
 }
 
 @keyframes text-glow-silver {
     0% {
-        text-shadow: -200px 0px 5px #C0C0C0, -100px 0px 10px #C0C0C0, 0px 0px 15px #C0C0C0;
+        text-shadow: 0 0 5px rgba(192, 192, 192, 0), 0 0 10px rgba(192, 192, 192, 0), 0 0 15px rgba(192, 192, 192, 0);
+    }
+    25% {
+        text-shadow: 0 0 5px rgba(192, 192, 192, 0.4), 0 0 10px rgba(192, 192, 192, 0.3), 0 0 15px rgba(192, 192, 192, 0.2);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(192, 192, 192, 0.8), 0 0 20px rgba(192, 192, 192, 0.6), 0 0 30px rgba(192, 192, 192, 0.4);
+    }
+    75% {
+        text-shadow: 0 0 5px rgba(192, 192, 192, 0.4), 0 0 10px rgba(192, 192, 192, 0.3), 0 0 15px rgba(192, 192, 192, 0.2);
     }
     100% {
-        text-shadow: 200px 0px 5px #C0C0C0, 100px 0px 10px #C0C0C0, 0px 0px 15px #C0C0C0;
+        text-shadow: 0 0 5px rgba(192, 192, 192, 0), 0 0 10px rgba(192, 192, 192, 0), 0 0 15px rgba(192, 192, 192, 0);
     }
 }
 
-/* Third place text with bronze glow moving from left to right */
+/* Apply different delays to each letter to create the left-to-right effect */
+.leaderboard-item.second-place .leaderboard-name span:nth-child(1),
+.leaderboard-item.second-place .leaderboard-position span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.leaderboard-item.second-place .leaderboard-name span:nth-child(2),
+.leaderboard-item.second-place .leaderboard-position span:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.leaderboard-item.second-place .leaderboard-name span:nth-child(3),
+.leaderboard-item.second-place .leaderboard-position span:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.leaderboard-item.second-place .leaderboard-name span:nth-child(4),
+.leaderboard-item.second-place .leaderboard-position span:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+/* Continue this pattern for as many letters as needed */
+
+/* Third place text with bronze glow moving across each letter */
 .leaderboard-item.third-place .leaderboard-name,
 .leaderboard-item.third-place .leaderboard-position {
-    color: #CD7F32; /* Bronze color */
-    animation: text-glow-bronze 3s infinite linear; /* Slow glow from left to right */
+    color: #CD7F32; /* Base bronze color */
+    position: relative;
+    display: inline-block;
+}
+
+.leaderboard-item.third-place .leaderboard-name span,
+.leaderboard-item.third-place .leaderboard-position span {
+    position: relative;
+    animation: text-glow-bronze 1.5s infinite linear;
+    display: inline-block;
 }
 
 @keyframes text-glow-bronze {
     0% {
-        text-shadow: -200px 0px 5px #CD7F32, -100px 0px 10px #CD7F32, 0px 0px 15px #CD7F32;
+        text-shadow: 0 0 5px rgba(205, 127, 50, 0), 0 0 10px rgba(205, 127, 50, 0), 0 0 15px rgba(205, 127, 50, 0);
     }
-    100% {
-        text-shadow: 200px 0px 5px #CD7F32, 100px 0px 10px #CD7F32, 0px 0px 15px #CD7F32;
-    }
-}
-
-/* First place background glow with gold */
-.leaderboard-item.first-place .leaderboard-score {
-    background-color: #FFD700; /* Gold background */
-    animation: background-gold-glow 1.5s infinite;
-    color: var(--text-white); /* White text color */
-}
-
-@keyframes background-gold-glow {
-    0% {
-        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
+    25% {
+        text-shadow: 0 0 5px rgba(205, 127, 50, 0.4), 0 0 10px rgba(205, 127, 50, 0.3), 0 0 15px rgba(205, 127, 50, 0.2);
     }
     50% {
-        box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8);
+        text-shadow: 0 0 10px rgba(205, 127, 50, 0.8), 0 0 20px rgba(205, 127, 50, 0.6), 0 0 30px rgba(205, 127, 50, 0.4);
+    }
+    75% {
+        text-shadow: 0 0 5px rgba(205, 127, 50, 0.4), 0 0 10px rgba(205, 127, 50, 0.3), 0 0 15px rgba(205, 127, 50, 0.2);
     }
     100% {
-        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.4);
+        text-shadow: 0 0 5px rgba(205, 127, 50, 0), 0 0 10px rgba(205, 127, 50, 0), 0 0 15px rgba(205, 127, 50, 0);
     }
 }
 
-/* Second place background glow with silver */
-.leaderboard-item.second-place .leaderboard-score {
-    background-color: #C0C0C0; /* Silver background */
-    animation: background-silver-glow 1.5s infinite;
-    color: var(--text-white); /* White text color */
+/* Apply different delays to each letter to create the left-to-right effect */
+.leaderboard-item.third-place .leaderboard-name span:nth-child(1),
+.leaderboard-item.third-place .leaderboard-position span:nth-child(1) {
+    animation-delay: 0s;
 }
 
-@keyframes background-silver-glow {
-    0% {
-        box-shadow: 0 0 7.5px 1.5px rgba(192, 192, 192, 0.3); /* 25% weaker than gold */
-    }
-    50% {
-        box-shadow: 0 0 15px 3.75px rgba(192, 192, 192, 0.6); /* 25% weaker than gold */
-    }
-    100% {
-        box-shadow: 0 0 7.5px 1.5px rgba(192, 192, 192, 0.3); /* 25% weaker than gold */
-    }
+.leaderboard-item.third-place .leaderboard-name span:nth-child(2),
+.leaderboard-item.third-place .leaderboard-position span:nth-child(2) {
+    animation-delay: 0.1s;
 }
 
-/* Third place background glow with bronze */
-.leaderboard-item.third-place .leaderboard-score {
-    background-color: #CD7F32; /* Bronze background */
-    animation: background-bronze-glow 1.5s infinite;
-    color: var(--text-white); /* White text color */
+.leaderboard-item.third-place .leaderboard-name span:nth-child(3),
+.leaderboard-item.third-place .leaderboard-position span:nth-child(3) {
+    animation-delay: 0.2s;
 }
 
-@keyframes background-bronze-glow {
-    0% {
-        box-shadow: 0 0 5px 1px rgba(205, 127, 50, 0.2); /* 50% weaker than gold */
-    }
-    50% {
-        box-shadow: 0 0 10px 2.5px rgba(205, 127, 50, 0.4); /* 50% weaker than gold */
-    }
-    100% {
-        box-shadow: 0 0 5px 1px rgba(205, 127, 50, 0.2); /* 50% weaker than gold */
-    }
+.leaderboard-item.third-place .leaderboard-name span:nth-child(4),
+.leaderboard-item.third-place .leaderboard-position span:nth-child(4) {
+    animation-delay: 0.3s;
 }
+
+/* Continue this pattern for as many letters as needed */
