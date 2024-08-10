@@ -71,16 +71,13 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                     const usersData = usersSnapshot.val();
                     const currentUserId = user.uid;
 
-                    const today = new Date();
-                    const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
                     for (const userId in salesData) {
                         const userData = salesData[userId];
                         let count = 0;
 
                         if (period === 'day') {
-                            if (userData.day && userData.day[saleType]) {
-                                count = userData.day[saleType][todayKey] || 0;
+                            if (userData.day && userData.day[saleType] !== undefined) {
+                                count = userData.day[saleType]; // Access the count directly
                             }
                         } else if (period === 'week') {
                             count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
@@ -142,6 +139,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 
