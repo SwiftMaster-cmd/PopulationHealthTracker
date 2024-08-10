@@ -142,7 +142,6 @@ async function loadLiveActivities() {
             }
 
             currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter for today's sales
 
             console.log('Processed sales data:', currentSales);
             await addUserNames(currentSales, usersRef);
@@ -159,6 +158,7 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
+
 
 function renderMoreSales(container, likesRef, usersRef) {
     if (lastRenderedIndex >= currentSales.length) {
@@ -204,6 +204,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 function isToday(dateString) {
     const date = new Date(dateString);
