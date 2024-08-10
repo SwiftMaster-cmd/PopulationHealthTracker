@@ -236,16 +236,16 @@ function wrapTextInSpan(text) {
 }
 
 async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
-    const currentUser = firebase.auth().currentUser; // Get the current user ID
-    
+    const currentUser = firebase.auth().currentUser;
+
     if (lastRenderedIndex >= currentSales.length) {
         console.log("All sales have been loaded");
-        return; // Exit if all sales have been rendered
+        return;
     }
 
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
         .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
-                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
+                        (!hideSelfSales || sale.userId !== currentUser.uid));
 
     lastRenderedIndex += salesToRender.length;
 
@@ -265,7 +265,7 @@ async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
 
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-        // Apply glow effect based on the user's position in the top 3
+        // Apply the appropriate class based on the user's position in the top 3
         let glowClass = '';
         if (top3Positions[sale.userId]) {
             if (top3Positions[sale.userId] === 1) {
@@ -283,7 +283,7 @@ async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
             </button>
-            <strong class="live-activity-name ${glowClass}">${wrapTextInSpan(sale.userName)}</strong> sold <strong class="${glowClass}">${sale.saleType}</strong> at <strong class="${glowClass}">${displayTime}</strong>
+            <strong class="live-activity-name ${glowClass}">${sale.userName}</strong> sold <strong class="sale-type ${glowClass}">${sale.saleType}</strong> at <strong class="sale-time ${glowClass}">${displayTime}</strong>
             <div class="like-info" id="like-info-${likePath}"></div>
         `;
         container.appendChild(saleElement);
@@ -306,6 +306,7 @@ async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
         renderMoreSales(container, likesRef, usersRef, top3Positions);
     }
 }
+
 
 
 
