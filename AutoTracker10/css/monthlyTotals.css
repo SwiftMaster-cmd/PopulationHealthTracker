@@ -360,6 +360,66 @@
     }
 }
 
+/* First place background glow with gold for total count */
+.leaderboard-item.first-place .leaderboard-score {
+    background-color: #FFD700; /* Gold background */
+    animation: background-gold-glow 1.5s infinite;
+    color: var(--text-white); /* White text color */
+    border-radius: 12px; /* Rounded corners */
+}
+
+@keyframes background-gold-glow {
+    0% {
+        box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 30px 10px rgba(255, 215, 0, 1);
+    }
+    100% {
+        box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.6);
+    }
+}
+
+/* Second place background glow with silver for total count */
+.leaderboard-item.second-place .leaderboard-score {
+    background-color: #C0C0C0; /* Silver background */
+    animation: background-silver-glow 1.5s infinite;
+    color: var(--text-white); /* White text color */
+    border-radius: 12px; /* Rounded corners */
+}
+
+@keyframes background-silver-glow {
+    0% {
+        box-shadow: 0 0 12px 4px rgba(192, 192, 192, 0.45); /* 25% weaker than gold */
+    }
+    50% {
+        box-shadow: 0 0 24px 8px rgba(192, 192, 192, 0.75); /* 25% weaker than gold */
+    }
+    100% {
+        box-shadow: 0 0 12px 4px rgba(192, 192, 192, 0.45); /* 25% weaker than gold */
+    }
+}
+
+/* Third place background glow with bronze for total count */
+.leaderboard-item.third-place .leaderboard-score {
+    background-color: #CD7F32; /* Bronze background */
+    animation: background-bronze-glow 1.5s infinite;
+    color: var(--text-white); /* White text color */
+    border-radius: 12px; /* Rounded corners */
+}
+
+@keyframes background-bronze-glow {
+    0% {
+        box-shadow: 0 0 9px 3px rgba(205, 127, 50, 0.3); /* 50% weaker than gold */
+    }
+    50% {
+        box-shadow: 0 0 18px 6px rgba(205, 127, 50, 0.5); /* 50% weaker than gold */
+    }
+    100% {
+        box-shadow: 0 0 9px 3px rgba(205, 127, 50, 0.3); /* 50% weaker than gold */
+    }
+}
+
 /* Apply different delays to each letter to create the left-to-right effect */
 .leaderboard-item .leaderboard-name span:nth-child(1),
 .leaderboard-item .leaderboard-position span:nth-child(1) {
