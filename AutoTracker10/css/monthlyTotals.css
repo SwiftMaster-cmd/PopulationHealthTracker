@@ -18,7 +18,7 @@
 
 .live-activities-container {
     flex: 1;
-    width: 50%; /* Ensure live activities take up full available width */
+    width: 90%; /* Ensure live activities take up full available width */
     box-sizing: border-box;
 }
 
