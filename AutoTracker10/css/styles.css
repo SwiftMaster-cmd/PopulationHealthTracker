@@ -349,3 +349,28 @@ button:active {
     border-radius: var(--margin-s);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+
+/* Add this to make the live activities section scrollable */
+#live-activities-section {
+    max-height: 400px; /* Adjust this value based on your design needs */
+    overflow-y: auto;
+    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+}
+
+/* Optional: Customize the scrollbar */
+#live-activities-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+#live-activities-section::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+#live-activities-section::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+#live-activities-section::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
