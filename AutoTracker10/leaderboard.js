@@ -121,16 +121,29 @@ let batchSize = 10; // Number of sales to load at a time
 let lastRenderedIndex = 0;
 
 const sellableTypes = ['Select RX', 'SPM Scheduled Call', 'Transfer', 'Billable HRA']; // Use readable titles
-let hideNonSellable = false; // Track the toggle state
+let hideNonSellable = false; // Track the toggle state for non-sellable
+let hideSelfSales = false; // Track the toggle state for self-sales
 
 document.addEventListener('DOMContentLoaded', () => {
-    const toggleButton = document.getElementById('toggleSellableButton');
-    
-    toggleButton.addEventListener('click', () => {
+    const toggleSellableButton = document.getElementById('toggleSellableButton');
+    const toggleSelfSalesButton = document.getElementById('toggleSelfSalesButton');
+    const currentUser = firebase.auth().currentUser; // Get the current user ID
+
+    toggleSellableButton.addEventListener('click', () => {
         hideNonSellable = !hideNonSellable; // Toggle the state
-        toggleButton.classList.toggle('clicked', hideNonSellable);
-        toggleButton.textContent = hideNonSellable ? 'Show Non-sellable' : 'Hide Non-sellable';
-        
+        toggleSellableButton.classList.toggle('clicked', hideNonSellable);
+        toggleSellableButton.textContent = hideNonSellable ? 'Show Non-sellable' : 'Hide Non-sellable';
+
+        lastRenderedIndex = 0; // Reset the index to start rendering from the top
+        document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
+        renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
+    });
+
+    toggleSelfSalesButton.addEventListener('click', () => {
+        hideSelfSales = !hideSelfSales; // Toggle the state
+        toggleSelfSalesButton.classList.toggle('clicked', hideSelfSales);
+        toggleSelfSalesButton.textContent = hideSelfSales ? 'Show Self Sales' : 'Hide Self Sales';
+
         lastRenderedIndex = 0; // Reset the index to start rendering from the top
         document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
         renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
@@ -145,6 +158,7 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
+        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
@@ -177,13 +191,16 @@ async function loadLiveActivities() {
 }
 
 function renderMoreSales(container, likesRef, usersRef) {
+    const currentUser = firebase.auth().currentUser; // Get the current user ID
+    
     if (lastRenderedIndex >= currentSales.length) {
         console.log("All sales have been loaded");
         return; // Exit if all sales have been rendered
     }
 
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
-        .filter(sale => !hideNonSellable || sellableTypes.includes(sale.saleType)); // Filter based on toggle state
+        .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
+                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
 
     lastRenderedIndex += salesToRender.length;
 
@@ -232,6 +249,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
