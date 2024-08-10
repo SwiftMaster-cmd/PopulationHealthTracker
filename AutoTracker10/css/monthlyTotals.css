@@ -13,6 +13,8 @@
     flex: 1;
     max-width: 50%; /* Ensure leaderboard takes up only 50% */
     box-sizing: border-box;
+    max-height: 400px; /* Adjust this value based on your design needs */
+
     overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
     background: none !important;
     padding: var(--margin-m);
@@ -67,7 +69,6 @@
 #leaderboard-section .leaderboard-item {
     font-size: 3rem; /* 2x bigger for leaderboard items */
     text-align: center; /* Center the text within each item */
-    max-height: 400px; /* Adjust this value based on your design needs */
 
     padding: var(--margin-s) var(--margin-m);
     overflow-x: hidden; /* Ensure no horizontal scrolling for items */
