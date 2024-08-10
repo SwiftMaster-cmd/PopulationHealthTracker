@@ -129,6 +129,9 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+if (index === 0) {
+    leaderboardItem.classList.add('first-place');
+}
 
 
 let currentSales = [];
