@@ -73,14 +73,14 @@
     font-size: 1.5rem; /* 1.5x bigger for live activities info */
     max-height: 400px; /* Adjust this value based on your design needs */
     overflow-y: auto;
-    width: 100%; /* Ensure the live activities section takes up full width */
+    width: 90%; /* Ensure the live activities section takes up full width */
     padding: 0; /* Remove padding to ensure it reaches the edge */
     box-sizing: border-box; /* Make sure padding doesn't reduce content width */
 }
 
 #live-activities-section .activity-item {
-    width: 100%; /* Ensure items take full width of container */
-    max-width: 100%; /* Ensure the content stretches to the edge */
+    width: 90%; /* Ensure items take full width of container */
+    max-width: 90%; /* Ensure the content stretches to the edge */
     text-align: left; /* Align text to the left */
     padding: 0; /* Remove padding to allow text to flow to the edges */
     margin: 0; /* Remove margin for full-width text */
