@@ -57,7 +57,7 @@
 
 #leaderboard-section .leaderboard-item {
     width: 100%; /* Ensure items take full width of container */
-    text-align: left; /* Align text to the left */
+    text-align: center; /* Center the text within each item */
     padding: var(--margin-s) var(--margin-m);
 }
 
@@ -69,6 +69,7 @@
     font-size: 1.5rem; /* 1.5x bigger for live activities info */
     max-height: 400px; /* Adjust this value based on your design needs */
     overflow-y: auto;
+    width: 100%; /* Take full width of the container */
     padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
 }
 
