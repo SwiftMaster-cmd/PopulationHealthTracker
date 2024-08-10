@@ -165,7 +165,7 @@ function renderMoreSales(container, likesRef, usersRef) {
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize);
     lastRenderedIndex += batchSize;
 
-    salesToRender.forEach(sale => {
+    salesToRender.forEach((sale, index) => {
         const saleElement = document.createElement('div');
         saleElement.classList.add('activity-item');
 
@@ -193,7 +193,14 @@ function renderMoreSales(container, likesRef, usersRef) {
             updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
     });
+
+    // Automatically load more sales if the last rendered sale is visible
+    const lastSaleElement = container.lastElementChild;
+    if (lastSaleElement && container.scrollHeight <= container.clientHeight) {
+        renderMoreSales(container, likesRef, usersRef);
+    }
 }
+
 
 function isToday(dateString) {
     const date = new Date(dateString);
