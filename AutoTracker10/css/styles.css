@@ -388,3 +388,29 @@ button:active {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+/* Container for leaderboard and live activities */
+.picker-leaderboard-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--margin-m); /* Optional: add space between the sections */
+}
+
+/* Leaderboard and live activities take up 50% of the screen */
+.leaderboard-container,
+#live-activities-section {
+    flex: 1;
+    max-width: 50%;
+}
+
+/* Stack the sections vertically on smaller screens */
+@media (max-width: 500px) {
+    .picker-leaderboard-container {
+        flex-direction: column;
+    }
+
+    .leaderboard-container,
+    #live-activities-section {
+        max-width: 100%;
+    }
+}
