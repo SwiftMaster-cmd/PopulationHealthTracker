@@ -195,6 +195,18 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
+        // Fetch all positions to determine the top 3 users
+        const top3Positions = {};
+        await positionsRef.once('value', (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                const { position } = childSnapshot.val();
+                const userId = childSnapshot.key;
+                if (position === 1 || position === 2 || position === 3) {
+                    top3Positions[userId] = position;
+                }
+            });
+        });
+
         salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
@@ -206,12 +218,12 @@ async function loadLiveActivities() {
 
             currentSales = await processSalesData(salesData);
             await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef, positionsRef);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions);
         });
 
         liveActivitiesSection.addEventListener('scroll', () => {
             if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef, positionsRef);
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef, top3Positions);
             }
         });
 
@@ -220,7 +232,7 @@ async function loadLiveActivities() {
     }
 }
 
-async function renderMoreSales(container, likesRef, usersRef, positionsRef) {
+async function renderMoreSales(container, likesRef, usersRef, top3Positions) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
     
     if (lastRenderedIndex >= currentSales.length) {
@@ -250,19 +262,16 @@ async function renderMoreSales(container, likesRef, usersRef, positionsRef) {
 
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-        // Check if the user is in the top 3 positions from the leaderboard
-        await positionsRef.child(sale.userId).once('value', snapshot => {
-            if (snapshot.exists()) {
-                const positionData = snapshot.val();
-                if (positionData.position === 1) {
-                    saleElement.classList.add('first-place');
-                } else if (positionData.position === 2) {
-                    saleElement.classList.add('second-place');
-                } else if (positionData.position === 3) {
-                    saleElement.classList.add('third-place');
-                }
+        // Apply glow effect based on the user's position in the top 3
+        if (top3Positions[sale.userId]) {
+            if (top3Positions[sale.userId] === 1) {
+                saleElement.classList.add('first-place');
+            } else if (top3Positions[sale.userId] === 2) {
+                saleElement.classList.add('second-place');
+            } else if (top3Positions[sale.userId] === 3) {
+                saleElement.classList.add('third-place');
             }
-        });
+        }
 
         saleElement.innerHTML = `
             <button class="like-button" data-like-path="${likePath}">
@@ -290,9 +299,10 @@ async function renderMoreSales(container, likesRef, usersRef, positionsRef) {
     // Automatically load more sales if the last rendered sale is visible and there are more to load
     const lastSaleElement = container.lastElementChild;
     if (lastSaleElement && lastRenderedIndex < currentSales.length) {
-        renderMoreSales(container, likesRef, usersRef, positionsRef);
+        renderMoreSales(container, likesRef, usersRef, top3Positions);
     }
 }
+
 
 
 function isToday(dateString) {
