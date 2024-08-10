@@ -316,3 +316,36 @@ button:active {
 
 
 
+/* Add this to your leaderboard.css file or at the end of the existing CSS */
+
+/* Make the leaderboard section scrollable */
+#leaderboard-section {
+    max-height: 400px; /* Adjust this value based on your design needs */
+    overflow-y: auto;
+    padding-right: 10px; /* To avoid content getting hidden by the scrollbar */
+}
+
+/* Optional: Customize the scrollbar */
+#leaderboard-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+#leaderboard-section::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+#leaderboard-section::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+#leaderboard-section::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+/* Ensure the leaderboard container doesn't interfere with the scrollable area */
+.leaderboard-container {
+    background: none !important;
+    padding: var(--margin-m);
+    border-radius: var(--margin-s);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
