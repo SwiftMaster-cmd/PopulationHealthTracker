@@ -250,7 +250,7 @@ async function renderMoreSales(container, likesRef, usersRef, positionsRef) {
 
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-        // Check if the user is in the top 3 positions
+        // Check if the user is in the top 3 positions from the leaderboard
         await positionsRef.child(sale.userId).once('value', snapshot => {
             if (snapshot.exists()) {
                 const positionData = snapshot.val();
