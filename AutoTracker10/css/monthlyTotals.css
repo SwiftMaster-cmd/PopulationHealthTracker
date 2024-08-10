@@ -159,6 +159,13 @@
     align-items: center;
     width: 100%;
 }
+/* Style for leaderboard section */
+#leaderboard-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
 
 /* Leaderboard item container */
 .leaderboard-item {
@@ -169,6 +176,9 @@
     max-width: 600px; /* Adjust based on your design */
     margin-bottom: var(--margin-s);
     padding: var(--margin-s);
+    background-color: var(--color-tertiary); /* Third background color for contrast */
+    border-radius: 12px; /* Optional: add rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: add a subtle shadow */
 }
 
 /* Position container */
