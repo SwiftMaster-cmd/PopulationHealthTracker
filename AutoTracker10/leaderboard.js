@@ -210,13 +210,12 @@ async function addUserNames(sales, usersRef) {
 }
 
 function renderSales(sales, container, likesRef, usersRef) {
-    container.innerHTML = '<h4>Live Activities</h4>';
+    container.innerHTML = ''; // Clear the container but don't add the title
 
     sales.forEach(sale => {
         const saleElement = document.createElement('div');
         saleElement.classList.add('activity-item');
 
-        // Use a sanitized path for the like button
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
         saleElement.innerHTML = `
@@ -237,12 +236,12 @@ function renderSales(sales, container, likesRef, usersRef) {
 
         likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
 
-        // Listen for changes to likes in real-time
         likesRef.child(likePath).on('value', snapshot => {
             updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
     });
 }
+
 
 function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     const likes = snapshot.val() || {};
