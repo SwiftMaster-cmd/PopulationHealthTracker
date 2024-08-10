@@ -68,6 +68,7 @@
 
 #live-activities-section .activity-item {
     width: 100%; /* Ensure items take full width of container */
+    max-width: 100%; /* Make sure the items stretch to the edge */
     text-align: left; /* Align text to the left */
     padding: var(--margin-s) var(--margin-m);
 }
