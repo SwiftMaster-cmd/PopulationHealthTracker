@@ -43,7 +43,12 @@
     justify-content: center; /* Center the pickers */
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
-    font-size: 1.25rem; /* Make the filters and buttons a little bigger */
+    font-size: 2rem; /* 2x bigger for the pickers */
+}
+
+.picker-header select {
+    padding: var(--margin-s) var(--margin-m);
+    font-size: inherit;
 }
 
 /* 2x bigger text size for leaderboard items */
@@ -78,12 +83,12 @@
     justify-content: center;
     gap: var(--margin-s);
     margin-bottom: var(--margin-m);
-    font-size: 1.25rem; /* Same size as the pickers */
+    font-size: 2rem; /* 2x bigger for the live activities buttons */
 }
 
-/* Basic styles for the toggle button */
 .toggle-button {
     padding: var(--margin-s) var(--margin-m);
+    font-size: inherit; /* Inherit the 2x bigger font size */
     border: none;
     border-radius: var(--margin-s);
     background-color: var(--color-primary);
