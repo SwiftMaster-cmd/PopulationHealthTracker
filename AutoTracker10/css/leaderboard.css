@@ -1,7 +1,6 @@
 /* First place text and total count background with gold shadow */
 .leaderboard-item.first-place .leaderboard-name,
-.leaderboard-item.first-place .leaderboard-position,
-.leaderboard-item.first-place .leaderboard-score {
+.leaderboard-item.first-place .leaderboard-position {
     color: #FFD700; /* Base gold color for text */
     text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 
                  0 0 10px rgba(255, 215, 0, 0.4), 
@@ -9,18 +8,19 @@
     animation: glow-animation-gold 1.5s infinite linear;
 }
 
-/* First place total count container background */
+/* First place total count container with glowing background */
 .leaderboard-item.first-place .leaderboard-score {
     background-color: #FFD700; /* Base gold color for background */
+    color: #000; /* Ensure text remains visible */
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 
                 0 0 10px rgba(255, 215, 0, 0.4), 
                 0 0 15px rgba(255, 215, 0, 0.2);
+    animation: glow-animation-gold 1.5s infinite linear;
 }
 
 /* Second place text and total count background with silver shadow */
 .leaderboard-item.second-place .leaderboard-name,
-.leaderboard-item.second-place .leaderboard-position,
-.leaderboard-item.second-place .leaderboard-score {
+.leaderboard-item.second-place .leaderboard-position {
     color: #C0C0C0; /* Base silver color for text */
     text-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 
                  0 0 8px rgba(192, 192, 192, 0.3), 
@@ -28,18 +28,19 @@
     animation: glow-animation-silver 1.5s infinite linear;
 }
 
-/* Second place total count container background */
+/* Second place total count container with glowing background */
 .leaderboard-item.second-place .leaderboard-score {
     background-color: #C0C0C0; /* Base silver color for background */
+    color: #000; /* Ensure text remains visible */
     box-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 
                 0 0 8px rgba(192, 192, 192, 0.3), 
                 0 0 12px rgba(192, 192, 192, 0.2);
+    animation: glow-animation-silver 1.5s infinite linear;
 }
 
 /* Third place text and total count background with bronze shadow */
 .leaderboard-item.third-place .leaderboard-name,
-.leaderboard-item.third-place .leaderboard-position,
-.leaderboard-item.third-place .leaderboard-score {
+.leaderboard-item.third-place .leaderboard-position {
     color: #CD7F32; /* Base bronze color for text */
     text-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 
                  0 0 6px rgba(205, 127, 50, 0.3), 
@@ -47,12 +48,14 @@
     animation: glow-animation-bronze 1.5s infinite linear;
 }
 
-/* Third place total count container background */
+/* Third place total count container with glowing background */
 .leaderboard-item.third-place .leaderboard-score {
     background-color: #CD7F32; /* Base bronze color for background */
+    color: #000; /* Ensure text remains visible */
     box-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 
                 0 0 6px rgba(205, 127, 50, 0.3), 
                 0 0 9px rgba(205, 127, 50, 0.2);
+    animation: glow-animation-bronze 1.5s infinite linear;
 }
 
 /* Keyframes for gold glow */
