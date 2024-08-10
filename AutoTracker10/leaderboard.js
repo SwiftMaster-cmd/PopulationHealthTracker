@@ -116,7 +116,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     });
 }
 
-
 let currentSales = [];
 let batchSize = 10; // Number of sales to load at a time
 let lastRenderedIndex = 0;
@@ -162,10 +161,15 @@ async function loadLiveActivities() {
 }
 
 function renderMoreSales(container, likesRef, usersRef) {
+    if (lastRenderedIndex >= currentSales.length) {
+        console.log("All sales have been loaded");
+        return; // Exit if all sales have been rendered
+    }
+
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize);
     lastRenderedIndex += batchSize;
 
-    salesToRender.forEach((sale, index) => {
+    salesToRender.forEach((sale) => {
         const saleElement = document.createElement('div');
         saleElement.classList.add('activity-item');
 
@@ -194,13 +198,12 @@ function renderMoreSales(container, likesRef, usersRef) {
         });
     });
 
-    // Automatically load more sales if the last rendered sale is visible
+    // Automatically load more sales if the last rendered sale is visible and there are more to load
     const lastSaleElement = container.lastElementChild;
-    if (lastSaleElement && container.scrollHeight <= container.clientHeight) {
+    if (lastSaleElement && lastRenderedIndex < currentSales.length) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
-
 
 function isToday(dateString) {
     const date = new Date(dateString);
@@ -209,6 +212,7 @@ function isToday(dateString) {
            date.getMonth() === today.getMonth() &&
            date.getFullYear() === today.getFullYear();
 }
+
 
 
 
