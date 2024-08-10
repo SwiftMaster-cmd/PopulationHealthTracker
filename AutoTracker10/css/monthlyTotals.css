@@ -265,19 +265,15 @@
 .leaderboard-item.first-place .leaderboard-name,
 .leaderboard-item.first-place .leaderboard-position {
     color: #FFD700; /* Gold color */
-    background-image: linear-gradient(90deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 1) 50%, rgba(255, 215, 0, 0.2) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: text-glow-gold 1.5s infinite linear;
+    animation: text-glow-gold 3s infinite linear; /* Slow glow from left to right */
 }
 
 @keyframes text-glow-gold {
     0% {
-        background-position: -200%;
+        text-shadow: -200px 0px 5px #FFD700, -100px 0px 10px #FFD700, 0px 0px 15px #FFD700;
     }
     100% {
-        background-position: 200%;
+        text-shadow: 200px 0px 5px #FFD700, 100px 0px 10px #FFD700, 0px 0px 15px #FFD700;
     }
 }
 
@@ -285,19 +281,15 @@
 .leaderboard-item.second-place .leaderboard-name,
 .leaderboard-item.second-place .leaderboard-position {
     color: #C0C0C0; /* Silver color */
-    background-image: linear-gradient(90deg, rgba(192, 192, 192, 0.2) 0%, rgba(192, 192, 192, 1) 50%, rgba(192, 192, 192, 0.2) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: text-glow-silver 1.5s infinite linear;
+    animation: text-glow-silver 3s infinite linear; /* Slow glow from left to right */
 }
 
 @keyframes text-glow-silver {
     0% {
-        background-position: -200%;
+        text-shadow: -200px 0px 5px #C0C0C0, -100px 0px 10px #C0C0C0, 0px 0px 15px #C0C0C0;
     }
     100% {
-        background-position: 200%;
+        text-shadow: 200px 0px 5px #C0C0C0, 100px 0px 10px #C0C0C0, 0px 0px 15px #C0C0C0;
     }
 }
 
@@ -305,19 +297,15 @@
 .leaderboard-item.third-place .leaderboard-name,
 .leaderboard-item.third-place .leaderboard-position {
     color: #CD7F32; /* Bronze color */
-    background-image: linear-gradient(90deg, rgba(205, 127, 50, 0.2) 0%, rgba(205, 127, 50, 1) 50%, rgba(205, 127, 50, 0.2) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: text-glow-bronze 1.5s infinite linear;
+    animation: text-glow-bronze 3s infinite linear; /* Slow glow from left to right */
 }
 
 @keyframes text-glow-bronze {
     0% {
-        background-position: -200%;
+        text-shadow: -200px 0px 5px #CD7F32, -100px 0px 10px #CD7F32, 0px 0px 15px #CD7F32;
     }
     100% {
-        background-position: 200%;
+        text-shadow: 200px 0px 5px #CD7F32, 100px 0px 10px #CD7F32, 0px 0px 15px #CD7F32;
     }
 }
 
