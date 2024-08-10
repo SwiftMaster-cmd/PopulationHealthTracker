@@ -13,7 +13,6 @@
     flex: 1;
     max-width: 50%; /* Ensure leaderboard takes up only 50% */
     box-sizing: border-box;
-    max-height: 400px; /* Adjust this value based on your design needs */
 
     overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
     background: none !important;
@@ -145,6 +144,8 @@
     align-items: center;
     justify-content: flex-start;
     width: 90%;
+    max-height: 400px; /* Adjust this value based on your design needs */
+
     max-width: 90%; /* Make sure it doesn't exceed the container width */
     margin-bottom: var(--margin-s);
     padding: var(--margin-s);
