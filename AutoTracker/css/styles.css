@@ -187,6 +187,8 @@ button:active {
 }
 
 .button {
+    font-size: 1.3em;
+
     padding: var(--margin-s) var(--margin-m);
     border: none;
     border-radius: var(--margin-s);
