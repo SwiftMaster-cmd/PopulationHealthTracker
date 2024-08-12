@@ -168,27 +168,17 @@ function drawWinningLine(ctx, centerX, centerY, radius) {
 
 
 function logWinningNode(nodes, currentAngle, angleStep) {
-    // Convert current angle from radians to degrees and normalize it between 0-360
-    let degrees = (currentAngle * (180 / Math.PI)) % 360;
+    // Adjust the angle to ensure 0 degrees is the correct reference point
+    const adjustedAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
 
-    // Adjust the angle to ensure 0 degrees is at the right side (3 o'clock position)
-    degrees = (degrees + 360) % 360;
+    // Calculate the winning node index based on the adjusted angle
+    const winningNodeIndex = Math.floor((2 * Math.PI - adjustedAngle) / angleStep) % nodes.length;
 
-    // Calculate the index of the node that the red line (0/360 degrees) is pointing at
-    // The node at the 360-degree mark is the one that starts at angle <= 0 and ends at > 0
-    let winningNodeIndex = Math.floor((360 - degrees) / angleStep) % nodes.length;
-
-    if (winningNodeIndex < 0) {
-        winningNodeIndex += nodes.length; // Ensure the index is positive
-    }
-
-    console.log("Current Angle (degrees):", degrees);
+    console.log("Current Angle (radians):", currentAngle);
+    console.log("Adjusted Angle (radians):", adjustedAngle);
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", nodes[winningNodeIndex]);
 }
-
-
-
 
 
 
