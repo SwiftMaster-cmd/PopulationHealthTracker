@@ -121,7 +121,15 @@
 
        
         <div class="donation-buttons-container">
-            <div class="donation-button" onclick="window.location.href='https://buy.stripe.com/aEU7t05qNc5qA4E8ww';">
+            <script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button
+  buy-button-id="buy_btn_1PmxBbP3su2SGtHcMwdiXpRj"
+  publishable-key="pk_live_51PmuU8P3su2SGtHchQUHuHUL4sWmpJ9xbftuUzK4C47XWrYRmK1Jsar7P3ZmLSUHJfSk4mpFD5k3I7kVW2OnZmyH0099DXJbQZ"
+>
+</stripe-buy-button>
                 <h2>$5</h2>
                 <p>Help support the growth of the site by donating $5 - It’s cheaper than a Netflix subscription, and way fewer cliffhangers!</p>
                 <p></p>
