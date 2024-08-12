@@ -2,51 +2,47 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-top: 20px;
-    flex-wrap: wrap; /* Ensures the buttons wrap nicely on smaller screens */
+    margin-top: 30px;
+    flex-wrap: nowrap; /* Keep the buttons side by side */
 }
 
 .donation-button {
-    width: 250px; /* Adjusted width to match your site's look */
-    background-color: var(--color-secondary); /* Use your site's color scheme */
+    width: 300px; /* Increased width */
+    background-color: var(--color-secondary);
     border: 2px solid var(--color-primary);
-    border-radius: 10px;
+    border-radius: 20px; /* More rounded corners */
     text-align: center;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-    margin: var(--margin-s);
-}
-
-.donation-button:hover {
-    transform: scale(1.05);
-    background-color: var(--color-quaternary); /* Hover effect to match your theme */
+    padding: 30px; /* Increased padding for more space inside */
+    box-shadow: none; /* Removed box shadow */
+    transition: none; /* Removed transition effects */
+    margin: 0 var(--margin-m); /* Added margin between buttons */
 }
 
 .donation-button h2 {
-    font-size: 1.8em;
-    margin-bottom: 10px;
+    font-size: 2.2em; /* Increased font size */
+    margin-bottom: 15px;
     color: var(--text-white);
+    font-weight: bold; /* Made font bolder */
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Fun, playful font */
 }
 
 .donation-button p {
-    font-size: 1.2em;
+    font-size: 1.5em; /* Increased font size */
     color: var(--text-white);
+    font-weight: bold; /* Made font bolder */
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Fun, playful font */
 }
 
-.donation-title {
-    text-align: center;
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-
-.donation-title h1 {
-    font-size: 2.5em;
+.button {
+    font-size: 1.2em; /* Increased font size for the button text */
+    font-weight: bold;
+    background-color: var(--color-primary); /* Solid color without hover effect */
     color: var(--text-white);
-}
-
-.donation-title p {
-    font-size: 1.2em;
-    color: var(--text-white);
-    margin-top: 10px;
+    padding: 15px 20px;
+    border-radius: 15px; /* Rounded corners for the button */
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    cursor: pointer;
+    border: none; /* Removed border */
 }
