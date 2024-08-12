@@ -20,6 +20,8 @@
     <script src="auth.js" defer></script>
     <script src="tracker.js" defer></script>
     <script src="points.js" defer></script>
+    <button id="checkoutButton" class="button">Buy Now</button>
+    <script src="Stripe.js" defer></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -48,19 +50,22 @@
 <body>
 
 
+
     
     <div class="header-container">
         <h1>Dashboard</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
         <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
 
+        <button id="checkoutButton" class="button">Donate</button>
         <button onclick="window.location.href='history.html'" class="button">Sales History</button>
         <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
         <button onclick="window.location.href='totals.html'" class="button">Monthly Totals</button>
         <button onclick="window.location.href='chart.html'" class="button">Chart</button>
         <div class="profile-button">P</div>
     </div>
-    
+
+
     <!-- Color Picker and Name Change Container -->
     <div class="color-picker-container" id="colorPickerContainer">
         <input type="color" id="colorPicker" />
