@@ -172,14 +172,14 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     let degrees = (currentAngle * (180 / Math.PI)) % 360;
 
     // Adjust the angle to ensure 0 degrees is at the right side (3 o'clock position)
-    degrees = (degrees + 90) % 360;
+    degrees = (degrees + 360) % 360;
 
-    if (degrees < 0) {
-        degrees += 360; // Ensure the angle is always positive
-    }
+    // The position where the red line is (0 or 360 degrees)
+    const redLineAngle = 360;
 
-    // Calculate which node is at the right side (0 degrees)
-    const winningNodeIndex = Math.floor(degrees / (360 / nodes.length)) % nodes.length;
+    // Calculate which node is at the 0-degree mark
+    // The node that starts at an angle less than or equal to degrees and ends at more than degrees is the winning node
+    const winningNodeIndex = Math.floor(((redLineAngle - degrees) + 360) % 360 / (360 / nodes.length));
 
     console.log("Current Angle (degrees):", degrees);
     console.log("Winning Node Index:", winningNodeIndex);
