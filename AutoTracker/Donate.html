@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="css/charts.css">
     <link rel="stylesheet" href="css/outcomes.css">
     <link rel="stylesheet" href="css/buttons.css">
@@ -20,6 +20,8 @@
     <script src="auth.js" defer></script>
     <script src="tracker.js" defer></script>
     <script src="points.js" defer></script>
+    <button id="checkoutButton" class="button">Buy Now</button>
+    <script src="stripe-handler.js" defer></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -27,11 +29,11 @@
     <script src="leaderboard.js" defer></script>
     <script src="liveActivities.js" defer></script>
     <script src="CSsearch.js" defer></script>
-    <script src="leaderboardScroll.js" defer></script>
+
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
     <script src="profilePopup.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
     <script>
@@ -42,23 +44,52 @@
       gtag('config', 'G-RVBYB0RR06');
     </script>
 
+<style>
+    .donation-buttons-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 20px;
+    }
 
+    .donation-button {
+        width: 400px;
+        height: 400px;
+        background-color: #f8f8f8;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        text-align: center;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+    .donation-button:hover {
+        transform: scale(1.05);
+    }
+
+    .donation-button h2 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+
+    .donation-button p {
+        font-size: 1.2em;
+        color: #555;
+    }
+</style>
   
 </head>
 <body>
 
 
-    
+
     
     <div class="header-container">
-        <h1>Leaderboard</h1>
+        <h1>Donate</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-        <button onclick="window.location.href='https://buy.stripe.com/aEU4gu5qN6T2264aEE';" class="button">
-            Donate!
-         </button>
-         <button onclick="window.location.href='Donate.html'" class="button">Dashboard</button>
-
         <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
+        <button onclick="window.location.href='Donate.html'" class="button">Dashboard</button>
 
         <button onclick="window.location.href='history.html'" class="button">Sales History</button>
         <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
@@ -66,9 +97,13 @@
         <button onclick="window.location.href='chart.html'" class="button">Chart</button>
         <div class="profile-button">P</div>
     </div>
-    
+
+
     <!-- Color Picker and Name Change Container -->
     <div class="color-picker-container" id="colorPickerContainer">
+
+       
+
         <input type="color" id="colorPicker" />
         <button id="applyColor" class="button">Apply Color Palette</button>
         <input type="text" id="nameInput" placeholder="Enter new name" />
@@ -80,60 +115,36 @@
         <!-- Navigation Buttons -->
 
     </div>
+
     <div class="main-container">
 
 
-        
-        <div class="picker-leaderboard-container container">
-            
-            <div class="leaderboard-container">
-                <div class="leaderboard-header">
-                    <h3 id="leaderboard-title">Leaderboard: Select RX</h3>
-                    <div class="picker-header">
-                        <select id="periodPicker" class="picker">
-                            <option value="day">Day</option>
-                            <option value="week">Week</option>
-                            <option value="month">Month</option>
-                        </select>
-                        <select id="saleTypePicker" class="picker">
-                            <option value="selectRX">S.R.X.</option>
-                            <option value="billableHRA">H.R.A.</option>
-                            <option value="transfer">Partner</option>
-                            <option value="selectPatientManagement">S.P.M.</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="leaderboard-section">
-                    <div class="leaderboard-item">
-                        <!-- Leaderboard items here -->
-                    </div>
-                </div>
+       
+        <div class="donation-buttons-container">
+            <div class="donation-button" onclick="window.location.href='https://buy.stripe.com/aEU7t05qNc5qA4E8ww';">
+                <h2>$5</h2>
+                <p>Help support the growth of the site by donating $5 - It’s cheaper than a Netflix subscription, and way fewer cliffhangers!</p>
+                <p></p>
             </div>
-            
-                
-                
-            
-            <div class="live-activities-container">
-                <h4 class="live-activities-title">Live Activities</h4>
-            
-                <!-- Toggle buttons for Show/Hide Non-sellable and Self Sales -->
-                <div class="toggle-buttons">
-                    <button id="toggleSellableButton" class="toggle-button">Hide Non-sellable</button>
-                    <button id="toggleSelfSalesButton" class="toggle-button">Hide Self Sales</button>
-                </div>
-            
-                <div id="live-activities-section"></div>
+            <div class="donation-button" onclick="window.location.href='https://buy.stripe.com/14k14E8EdhTt6Tq4gf';">
+                <h2>$10</h2>
+                <p>$10 Per Month</p>
+                <p>Because tracking sales is hard work, and so is resisting the urge to buy more coffee!</p>
             </div>
-            
-            
-            
+            <div class="donation-button" onclick="window.location.href='https://buy.stripe.com/eVaeYO16x8XT1dW5kk';">
+                <h2>$25</h2>
+                <p>$25 Per Month</p>
+                <p>That’s like buying me a business lunch... except I’ll probably spend it on snacks to keep me tracking those sales.</p>
+            </div>
         </div>
-
+        
+    
+    
     </div>
-
-     
-
-
+                    
+              
+                
+    
 
 
     
