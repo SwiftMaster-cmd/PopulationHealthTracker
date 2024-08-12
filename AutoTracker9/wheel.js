@@ -87,19 +87,22 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     const adjustedAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
 
     // Calculate the winning node index
-    const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
+    let winningNodeIndex = Math.floor(adjustedAngle / angleStep);
     
-    // Check if the adjusted angle is closer to the next node and adjust accordingly
-    let winningNode = nodes[winningNodeIndex];
+    // Adjust for rounding errors that might cause an off-by-one error
+    if (adjustedAngle % angleStep < 0.0001) {
+        winningNodeIndex = (winningNodeIndex + 1) % nodes.length;
+    }
 
-    // Highlight the winning node visually on the wheel
+    // Highlight the correct node
     highlightWinningNode(winningNodeIndex, nodes.length);
 
     console.log("Current Angle (radians):", currentAngle);
     console.log("Adjusted Angle (radians):", adjustedAngle);
     console.log("Winning Node Index:", winningNodeIndex);
-    console.log("Winning Node:", winningNode);
+    console.log("Winning Node:", nodes[winningNodeIndex]);
 }
+
 
 
 
@@ -244,18 +247,19 @@ function highlightWinningNode(winningNodeIndex, totalNodes) {
     const startAngle = winningNodeIndex * angleStep - Math.PI / 2;
     const endAngle = startAngle + angleStep;
 
-    // Redraw the winning node with the adjusted opacity
+    // Redraw the winning node with adjusted opacity
     ctx.save();
-    ctx.globalAlpha = 0.5; // Adjust the opacity between 0.5 and 1.0
+    ctx.globalAlpha = 0.5; // Set opacity to 0.5 for the winning node
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
     ctx.closePath();
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 1)'; // Keep the original fill style or adjust as needed
+    // Use the existing fill style for the node, just with adjusted opacity
     ctx.fill();
     ctx.restore();
 }
+
 
 
 
