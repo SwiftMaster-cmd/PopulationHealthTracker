@@ -82,25 +82,6 @@ function easeOutQuad(t) {
     return t * (2 - t);
 }
 
-function logWinningNode(nodes, currentAngle, angleStep) {
-    // Adjust the angle to make sure 0 degrees starts at the right middle
-    const adjustedAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
-
-    // Calculate the exact angle for the 0-degree line (where the red line is)
-    const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
-
-    // Ensure the index wraps around if needed
-    const correctedIndex = (winningNodeIndex + nodes.length) % nodes.length;
-
-    // Highlight the correct node
-    highlightWinningNode(correctedIndex, nodes.length);
-
-    console.log("Current Angle (radians):", currentAngle);
-    console.log("Adjusted Angle (radians):", adjustedAngle);
-    console.log("Winning Node Index:", correctedIndex);
-    console.log("Winning Node:", nodes[correctedIndex]);
-}
-
 
 
 
@@ -185,6 +166,26 @@ function drawWinningLine(ctx, centerX, centerY, radius) {
     ctx.stroke();
 }
 
+
+function logWinningNode(nodes, currentAngle, angleStep) {
+    // Adjust the angle to ensure 0 degrees is the correct reference point
+    const adjustedAngle = (currentAngle + Math.PI / 2) % (2 * Math.PI);
+
+    // Calculate the winning node index based on the adjusted angle
+    const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
+
+    // Ensure the index wraps around if needed
+    const correctedIndex = (winningNodeIndex + nodes.length) % nodes.length;
+
+    // Highlight the correct node
+    highlightWinningNode(correctedIndex, nodes.length);
+
+    console.log("Current Angle (radians):", currentAngle);
+    console.log("Adjusted Angle (radians):", adjustedAngle);
+    console.log("Winning Node Index:", correctedIndex);
+    console.log("Winning Node:", nodes[correctedIndex]);
+}
+
 function highlightWinningNode(winningNodeIndex, totalNodes) {
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -210,6 +211,7 @@ function highlightWinningNode(winningNodeIndex, totalNodes) {
     ctx.fill();
     ctx.restore();
 }
+
 
 
 
