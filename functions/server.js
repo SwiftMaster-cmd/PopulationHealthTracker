@@ -1,5 +1,5 @@
 const express = require('express');
-const stripe = require('stripe')('pk_live_51PmuU8P3su2SGtHchQUHuHUL4sWmpJ9xbftuUzK4C47XWrYRmK1Jsar7P3ZmLSUHJfSk4mpFD5k3I7kVW2OnZmyH0099DXJbQZ'); // Replace with your actual Stripe secret key
+const stripe = require('stripe')(process.env.pk_live_51PmuU8P3su2SGtHchQUHuHUL4sWmpJ9xbftuUzK4C47XWrYRmK1Jsar7P3ZmLSUHJfSk4mpFD5k3I7kVW2OnZmyH0099DXJbQZ); // Use the environment variable for the secret key
 const path = require('path');
 
 const app = express();
@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 4242;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Serve static files from the "public" directory relative to the project root
-app.use(express.static(path.join(__dirname, '../public')));
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Create a checkout session
 app.post('/create-checkout-session', async (req, res) => {
@@ -36,11 +36,6 @@ app.post('/create-checkout-session', async (req, res) => {
         console.error('Error creating checkout session:', error);
         res.status(500).json({ error: 'An error occurred, please try again later.' });
     }
-});
-
-// Default route for the root URL
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
 // Start the server
