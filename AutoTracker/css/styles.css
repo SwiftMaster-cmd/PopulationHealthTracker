@@ -313,3 +313,26 @@ button:active {
 .bottom-right-buttons .button:hover {
     background-color: #0056b3;
 }
+
+
+
+.glow-button {
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    padding: 15px 20px;
+    border-radius: 15px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    cursor: pointer;
+    border: none;
+    position: relative; /* Required for the glow effect */
+    box-shadow: 0 0 20px var(--color-primary), 0 0 30px var(--color-primary), 0 0 40px var(--color-primary), 0 0 50px var(--color-primary);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.glow-button:hover {
+    box-shadow: 0 0 30px var(--color-quaternary), 0 0 40px var(--color-quaternary), 0 0 50px var(--color-quaternary), 0 0 60px var(--color-quaternary);
+}
