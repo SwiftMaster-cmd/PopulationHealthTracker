@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="css/outcomes.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/leaderboard.css">
+    <link rel="stylesheet" href="css/donate.css">
+
     <link rel="stylesheet" href="css/monthlyTotals.css">
     <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
 
@@ -44,40 +46,7 @@
       gtag('config', 'G-RVBYB0RR06');
     </script>
 
-<style>
-    .donation-buttons-container {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        margin-top: 20px;
-    }
 
-    .donation-button {
-        width: 400px;
-        height: 400px;
-        background-color: #f8f8f8;
-        border: 2px solid #ccc;
-        border-radius: 10px;
-        text-align: center;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-    }
-
-    .donation-button:hover {
-        transform: scale(1.05);
-    }
-
-    .donation-button h2 {
-        font-size: 2.5em;
-        margin-bottom: 10px;
-    }
-
-    .donation-button p {
-        font-size: 1.2em;
-        color: #555;
-    }
-</style>
   
 </head>
 <body>
@@ -118,47 +87,31 @@
 
     <div class="main-container">
 
-
-       
         <div class="donation-buttons-container">
-
-
-            <div class="donation-button" onclick="window.location.href='https://buy.stripe.com/aEU7t05qNc5qA4E8ww';">
-              
-              
-                <h2>$5</h2>
-                <p>Help support the growth of the site by donating $5 - It’s cheaper than a Netflix subscription, and way fewer cliffhangers!</p>
-                <p></p>
+            <div class="donation-button">
+                <h2>$5 Donation</h2>
+                <stripe-buy-button
+                    buy-button-id="buy_btn_1MpxBbP3su2SGtHcMwdiXpRj"
+                    publishable-key="your-publishable-key-for-5">
+                </stripe-buy-button>
             </div>
-          
-          
-            <script async
-            src="https://js.stripe.com/v3/buy-button.js">
-          </script>
-          
-          <stripe-buy-button
-            buy-button-id="buy_btn_1PmxBbP3su2SGtHcMwdiXpRj"
-            publishable-key="pk_live_51PmuU8P3su2SGtHchQUHuHUL4sWmpJ9xbftuUzK4C47XWrYRmK1Jsar7P3ZmLSUHJfSk4mpFD5k3I7kVW2OnZmyH0099DXJbQZ"
-          >
-          </stripe-buy-button>            
-            
-                <h2>$10</h2>
-                <p>$10 Per Month</p>
-                <p>That’s like buying me lunch, but without the awkward small talk. Keep the good vibes flowing!</p>
+            <div class="donation-button">
+                <h2>$10 Donation</h2>
+                <stripe-buy-button
+                    buy-button-id="buy_btn_1MpxBbP3su2SGtHcMwdiXpRj"
+                    publishable-key="your-publishable-key-for-10">
+                </stripe-buy-button>
             </div>
-        
-        
-            <div class="donation-button" onclick="window.location.href='https://buy.stripe.com/eVaeYO16x8XT1dW5kk';">
-           
-           
-                <h2>$25</h2>
-                <p>$25 Per Month</p>
-                <p>That’s like buying me lunch... except I’ll probably spend it on snacks to keep me tracking those sales.</p>
+            <div class="donation-button">
+                <h2>$25 Donation</h2>
+                <stripe-buy-button
+                    buy-button-id="buy_btn_1MpxBbP3su2SGtHcMwdiXpRj"
+                    publishable-key="your-publishable-key-for-25">
+                </stripe-buy-button>
             </div>
         </div>
         
-    
-    
+     
     </div>
                     
               
