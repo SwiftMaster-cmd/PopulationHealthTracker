@@ -244,16 +244,19 @@ function highlightWinningNode(winningNodeIndex, totalNodes) {
     const startAngle = winningNodeIndex * angleStep - Math.PI / 2;
     const endAngle = startAngle + angleStep;
 
+    // Redraw the winning node with the adjusted opacity
     ctx.save();
+    ctx.globalAlpha = 0.5; // Adjust the opacity between 0.5 and 1.0
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
     ctx.closePath();
 
-    ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Semi-transparent red to highlight the winning node
+    ctx.fillStyle = 'rgba(0, 0, 0, 1)'; // Keep the original fill style or adjust as needed
     ctx.fill();
     ctx.restore();
 }
+
 
 
 function saveCurrentRotation(rotation) {
