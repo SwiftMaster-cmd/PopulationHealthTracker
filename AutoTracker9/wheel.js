@@ -178,13 +178,14 @@ function logWinningNode(nodes, currentAngle, angleStep) {
         degrees += 360; // Ensure the angle is always positive
     }
 
-    // Calculate the winning node index based on the adjusted angle
-    const winningNodeIndex = Math.floor((360 - degrees) / (360 / nodes.length)) % nodes.length;
+    // Calculate which node is at the right side (0 degrees)
+    const winningNodeIndex = Math.floor(degrees / (360 / nodes.length)) % nodes.length;
 
     console.log("Current Angle (degrees):", degrees);
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", nodes[winningNodeIndex]);
 }
+
 
 
 
