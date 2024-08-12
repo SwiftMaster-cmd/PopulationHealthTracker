@@ -46,3 +46,24 @@
     cursor: pointer;
     border: none; /* Removed border */
 }
+.donation-title {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.donation-title h1 {
+    font-size: 3em; /* Increased font size */
+    color: var(--text-white);
+    font-weight: bold; /* Made font bolder */
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Fun, playful font */
+    margin-bottom: 10px;
+}
+
+.donation-title p {
+    font-size: 1.8em; /* Increased font size */
+    color: var(--text-white);
+    font-weight: bold; /* Made font bolder */
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Fun, playful font */
+    margin-top: 0;
+}
