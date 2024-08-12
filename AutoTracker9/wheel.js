@@ -164,6 +164,9 @@ export function drawWheel(nodes, rotation = 0) {
         currentAngle += angleStep;
     });
 
+
+
+    
     // Draw every fifth degree number around the wheel's edges
     drawDegreeNumbers(ctx, centerX, centerY, radius);
 
@@ -181,6 +184,32 @@ function drawWinningLine(ctx, centerX, centerY, radius) {
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(centerX + radius, centerY); // Draw a line to the right middle (360 degrees)
     ctx.stroke();
+}
+
+function highlightWinningNode(winningNodeIndex, totalNodes) {
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const radius = Math.min(canvas.width, canvas.height) / 2;
+    const centerX = radius;
+    const centerY = canvas.height / 2;
+    const angleStep = (2 * Math.PI) / totalNodes;
+
+    const startAngle = winningNodeIndex * angleStep - Math.PI / 2;
+    const endAngle = startAngle + angleStep;
+
+    // Redraw the winning node with adjusted opacity
+    ctx.save();
+    ctx.globalAlpha = 0.5; // Set opacity to 0.5 for the winning node
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.closePath();
+
+    // Use the existing fill style for the node, just with adjusted opacity
+    ctx.fill();
+    ctx.restore();
 }
 
 
@@ -233,32 +262,6 @@ function drawNeedle(centerX, centerY, radius) {
     }
 }
 
-
-function highlightWinningNode(winningNodeIndex, totalNodes) {
-    const canvas = document.getElementById('wheel-canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const radius = Math.min(canvas.width, canvas.height) / 2;
-    const centerX = radius;
-    const centerY = canvas.height / 2;
-    const angleStep = (2 * Math.PI) / totalNodes;
-
-    const startAngle = winningNodeIndex * angleStep - Math.PI / 2;
-    const endAngle = startAngle + angleStep;
-
-    // Redraw the winning node with adjusted opacity
-    ctx.save();
-    ctx.globalAlpha = 0.5; // Set opacity to 0.5 for the winning node
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-    ctx.closePath();
-
-    // Use the existing fill style for the node, just with adjusted opacity
-    ctx.fill();
-    ctx.restore();
-}
 
 
 
