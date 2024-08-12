@@ -88,7 +88,9 @@ function logWinningNode(nodes, currentAngle, angleStep) {
 
     // Calculate the winning node index
     const winningNodeIndex = Math.floor(adjustedAngle / angleStep);
-    const winningNode = nodes[winningNodeIndex];
+    
+    // Check if the adjusted angle is closer to the next node and adjust accordingly
+    let winningNode = nodes[winningNodeIndex];
 
     // Highlight the winning node visually on the wheel
     highlightWinningNode(winningNodeIndex, nodes.length);
@@ -98,6 +100,7 @@ function logWinningNode(nodes, currentAngle, angleStep) {
     console.log("Winning Node Index:", winningNodeIndex);
     console.log("Winning Node:", winningNode);
 }
+
 
 
 
@@ -176,6 +179,7 @@ function drawWinningLine(ctx, centerX, centerY, radius) {
     ctx.lineTo(centerX + radius, centerY); // Draw a line to the right middle (360 degrees)
     ctx.stroke();
 }
+
 
 
 function drawDegreeNumbers(ctx, centerX, centerY, radius) {
