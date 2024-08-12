@@ -34,7 +34,7 @@
 }
 
 .buttonss {
-    font-size: 2.4em; /* Increased font size for the button text */
+    font-size: 2em; /* Increased font size for the button text */
     font-weight: bold;
     background-color: var(--color-primary); /* Solid color without hover effect */
     color: var(--text-white);
