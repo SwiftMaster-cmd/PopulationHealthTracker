@@ -7,7 +7,7 @@
 }
 
 .donation-button {
-    width: 300px; /* Increased width */
+    width: 500px; /* Increased width */
     background-color: var(--color-secondary);
     border: 2px solid var(--color-primary);
     border-radius: 20px; /* More rounded corners */
