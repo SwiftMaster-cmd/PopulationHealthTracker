@@ -255,98 +255,66 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
-async function loadLiveActivities() {
-    try {
-        const database = firebase.database();
-        const salesTimeFramesRef = database.ref('salesTimeFrames');
-        const usersRef = database.ref('users');
-        const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser;
 
-        const liveActivitiesSection = document.getElementById('live-activities-section');
-        if (!liveActivitiesSection) {
-            throw new Error('Live activities section element not found');
-        }
+function renderMoreSales(container, likesRef, usersRef) {
+    const currentUser = firebase.auth().currentUser; // Get the current user ID
+    
+    if (lastRenderedIndex >= currentSales.length) {
+        console.log("All sales have been loaded");
+        return; // Exit if all sales have been rendered
+    }
 
-        // Clear any previous listeners
-        salesTimeFramesRef.off();
+    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
+        .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
+                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
 
-        // Listen for new sales being added
-        salesTimeFramesRef.on('child_added', async snapshot => {
-            const newSaleData = snapshot.val();
-            const sales = await processSalesData({ [snapshot.key]: newSaleData });
-            await addUserNames(sales, usersRef);
+    lastRenderedIndex += salesToRender.length;
 
-            // Render the new sale item
-            renderSales(sales, liveActivitiesSection, likesRef, usersRef);
+    salesToRender.forEach((sale) => {
+        const saleDate = new Date(sale.saleTime);
+        const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const saleElement = document.createElement('div');
+        saleElement.classList.add('activity-item');
+
+        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+
+        saleElement.innerHTML = `
+            <button class="like-button" data-like-path="${likePath}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${formattedTime}
+            <div class="like-info" id="like-info-${likePath}"></div>
+        `;
+        container.appendChild(saleElement);
+
+        const likeButton = saleElement.querySelector('.like-button');
+        const likeInfoDiv = saleElement.querySelector('.like-info');
+
+        initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+
+        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+
+        likesRef.child(likePath).on('value', snapshot => {
+            updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
+    });
 
-        // Listen for existing sales being updated
-        salesTimeFramesRef.on('child_changed', async snapshot => {
-            const updatedSaleData = snapshot.val();
-            const updatedSales = await processSalesData({ [snapshot.key]: updatedSaleData });
-            await addUserNames(updatedSales, usersRef);
-
-            // Update the specific sale in the DOM
-            renderSales(updatedSales, liveActivitiesSection, likesRef, usersRef);
-        });
-
-        // Optional: Listen for sales being removed
-        salesTimeFramesRef.on('child_removed', snapshot => {
-            const saleId = snapshot.key;
-            const saleElement = document.getElementById(saleId);
-            if (saleElement) {
-                saleElement.remove();
-            }
-        });
-
-    } catch (error) {
-        console.error('Error loading live activities:', error);
+    // Automatically load more sales if the last rendered sale is visible and there are more to load
+    const lastSaleElement = container.lastElementChild;
+    if (lastSaleElement && lastRenderedIndex < currentSales.length) {
+        renderMoreSales(container, likesRef, usersRef);
     }
 }
 
 
-function renderSales(sales, container, likesRef, usersRef) {
-    sales.forEach(sale => {
-        const existingElement = document.getElementById(sale.saleId);
 
-        // If sale element already exists, update it
-        if (existingElement) {
-            existingElement.querySelector('.leaderboard-name').textContent = sale.userName;
-            existingElement.querySelector('.score-number').textContent = sale.formattedTime;
-            // Update likes and other dynamic content here if needed
-        } else {
-            // If sale element doesn't exist, create a new one
-            const saleElement = document.createElement('div');
-            saleElement.classList.add('activity-item');
-            saleElement.id = sale.saleId;
 
-            const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-            saleElement.innerHTML = `
-                <button class="like-button" data-like-path="${likePath}">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </button>
-                <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
-                <div class="like-info" id="like-info-${likePath}"></div>
-            `;
-            container.appendChild(saleElement);
 
-            const likeButton = saleElement.querySelector('.like-button');
-            const likeInfoDiv = saleElement.querySelector('.like-info');
 
-            initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
-
-            likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
-
-            likesRef.child(likePath).on('value', snapshot => {
-                updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
-            });
-        }
-    });
-}
 
 
 function isToday(dateString) {
