@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/leaderboard.css">
     <link rel="stylesheet" href="css/monthlyTotals.css">
+    <link rel="stylesheet" href="css/progressBars.css"> <!-- New CSS file for the main styles -->
+
     <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -22,6 +24,7 @@
     <script src="points.js" defer></script>
     <button id="checkoutButton" class="button">Buy Now</button>
     <script src="stripe-handler.js" defer></script>
+    <script src="progressBars.js"></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -136,6 +139,15 @@
         </div>
               
             
+        <div class="progress-bar-container">
+            <div id="srx-progress-bar" class="progress-bar"></div>
+            <div id="transfer-progress-bar" class="progress-bar"></div>
+            <div id="hra-progress-bar" class="progress-bar"></div>
+            <div id="spm-progress-bar" class="progress-bar"></div>
+        </div>
+        
+
+
 <!-- Chart Container for Week -->
 <div class="picker-chart-container container">
     <div class="picker-container">
