@@ -1,56 +1,48 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Authenticate and then load the progress bars
-    firebase.auth().onAuthStateChanged(user => {
+    // Ensure Firebase is initialized and authenticated user is available
+    firebase.auth().onAuthStateChanged(async user => {
         if (user) {
-            console.log(`User signed in: ${user.displayName}`);
-            loadProgressBars(user);
+            console.log('Authenticated user:', user.displayName);
+            const lastWeekSalesData = await getLastWeekSalesData(user);
+            const weeklyTotals = calculateWeeklyTotals(lastWeekSalesData);
+            const dailyAverages = calculateDailyAverages(weeklyTotals);
+
+            // Assuming currentDaySales is retrieved or calculated elsewhere
+            const currentDaySales = await getCurrentDaySales(user);
+
+            updateProgressBars(currentDaySales, dailyAverages);
         } else {
-            console.error('No user is signed in.');
+            console.error('User not authenticated');
         }
     });
 });
 
-async function loadProgressBars(user) {
-    try {
-        const salesOutcomesRef = firebase.database().ref('salesOutcomes').child(user.uid);
+async function getLastWeekSalesData(user) {
+    const salesOutcomesRef = firebase.database().ref('salesOutcomes').child(user.uid);
+    const { start, end } = getLastWeekRange();
 
-        const currentDate = new Date();
-        const currentDayOfWeek = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-        const lastWeekStart = new Date();
-        lastWeekStart.setDate(currentDate.getDate() - currentDayOfWeek - 7);
-        const lastWeekEnd = new Date();
-        lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+    const salesDataSnapshot = await salesOutcomesRef
+        .orderByChild('outcomeTime')
+        .startAt(start.getTime())
+        .endAt(end.getTime())
+        .once('value');
 
-        // Get sales data for the last week
-        const lastWeekSalesRef = salesOutcomesRef.orderByChild('outcomeTime')
-            .startAt(lastWeekStart.getTime())
-            .endAt(lastWeekEnd.getTime());
-        
-        const lastWeekSalesSnapshot = await lastWeekSalesRef.once('value');
-        const lastWeekSalesData = lastWeekSalesSnapshot.val();
-
-        if (!lastWeekSalesData) {
-            console.error('No sales data for last week.');
-            return;
-        }
-
-        const weeklyTotals = calculateWeeklyTotals(lastWeekSalesData);
-        const dailyAverages = calculateDailyAverages(weeklyTotals);
-
-        // Get current day's sales data
-        const currentDaySalesRef = salesOutcomesRef.orderByChild('outcomeTime')
-            .startAt(getCurrentDateKey());
-
-        const currentDaySalesSnapshot = await currentDaySalesRef.once('value');
-        const currentDaySales = currentDaySalesSnapshot.val() || { selectRX: 0, transfer: 0, billableHRA: 0, selectPatientManagement: 0 };
-
-        // Update progress bars
-        updateProgressBars(currentDaySales, dailyAverages);
-    } catch (error) {
-        console.error('Error loading progress bars:', error);
-    }
+    return salesDataSnapshot.val() || {};
 }
 
+function getLastWeekRange() {
+    const now = new Date();
+    const currentDayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const lastWeekEnd = new Date(now); // Last week's end is last Saturday
+    lastWeekEnd.setDate(now.getDate() - currentDayOfWeek);
+    const lastWeekStart = new Date(lastWeekEnd); // Last week's start is the previous Sunday
+    lastWeekStart.setDate(lastWeekEnd.getDate() - 6);
+
+    return {
+        start: lastWeekStart,
+        end: lastWeekEnd
+    };
+}
 
 function calculateWeeklyTotals(salesData) {
     const totals = {
@@ -60,11 +52,17 @@ function calculateWeeklyTotals(salesData) {
         selectPatientManagement: 0
     };
 
-    Object.values(salesData).forEach(dayData => {
-        totals.selectRX += dayData.selectRX || 0;
-        totals.transfer += dayData.transfer || 0;
-        totals.billableHRA += dayData.billableHRA || 0;
-        totals.selectPatientManagement += dayData.selectPatientManagement || 0;
+    Object.values(salesData).forEach(outcome => {
+        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+        if (saleType === 'Select RX') {
+            totals.selectRX++;
+        } else if (saleType === 'Transfer') {
+            totals.transfer++;
+        } else if (saleType === 'Billable HRA') {
+            totals.billableHRA++;
+        } else if (saleType === 'Select Patient Management') {
+            totals.selectPatientManagement++;
+        }
     });
 
     return totals;
@@ -78,6 +76,44 @@ function calculateDailyAverages(weeklyTotals) {
         billableHRA: weeklyTotals.billableHRA / daysInWeek,
         selectPatientManagement: weeklyTotals.selectPatientManagement / daysInWeek
     };
+}
+
+async function getCurrentDaySales(user) {
+    const salesOutcomesRef = firebase.database().ref('salesOutcomes').child(user.uid);
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const endOfDay = startOfDay + 86400000; // 24 hours in milliseconds
+
+    const currentDaySalesSnapshot = await salesOutcomesRef
+        .orderByChild('outcomeTime')
+        .startAt(startOfDay)
+        .endAt(endOfDay)
+        .once('value');
+
+    const currentDaySales = {
+        selectRX: 0,
+        transfer: 0,
+        billableHRA: 0,
+        selectPatientManagement: 0
+    };
+
+    const salesData = currentDaySalesSnapshot.val();
+    if (salesData) {
+        Object.values(salesData).forEach(outcome => {
+            const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+            if (saleType === 'Select RX') {
+                currentDaySales.selectRX++;
+            } else if (saleType === 'Transfer') {
+                currentDaySales.transfer++;
+            } else if (saleType === 'Billable HRA') {
+                currentDaySales.billableHRA++;
+            } else if (saleType === 'Select Patient Management') {
+                currentDaySales.selectPatientManagement++;
+            }
+        });
+    }
+
+    return currentDaySales;
 }
 
 function updateProgressBars(currentDaySales, dailyAverages) {
@@ -101,11 +137,19 @@ function updateProgressBar(salesType, currentValue, goalValue) {
     progressBar.textContent = `${currentValue} / ${goalValue} (${percentage}%)`;
 }
 
-function formatDateKey(date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
+function getSaleType(action, notes) {
+    const normalizedAction = action.toLowerCase();
 
-function getCurrentDateKey() {
-    const now = new Date();
-    return formatDateKey(now);
+    if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
+        return 'Select RX';
+    } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+        return 'Billable HRA';
+    } else if (normalizedAction.includes('notes') && /(vbc|transfer|xfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|dental|oak street|osh)/i.test(notes)) {
+        return 'Transfer';
+    } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
+        return 'Select Patient Management';
+    } else if (normalizedAction.includes('spm scheduled call')) {
+        return 'Select Patient Management';
+    }
+    return action;
 }
