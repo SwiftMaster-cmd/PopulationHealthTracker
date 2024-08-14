@@ -207,6 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+
+
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
@@ -220,10 +223,8 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off(); // Clear previous listeners
-
-        // Load initial sales data
-        salesTimeFramesRef.once('value', async salesSnapshot => {
+        salesTimeFramesRef.off('value'); // Clear previous listeners
+        salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
                 console.error('No sales data found');
@@ -244,21 +245,6 @@ async function loadLiveActivities() {
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
 
-        // Listen for new sales being added in real-time
-        salesTimeFramesRef.on('child_added', async snapshot => {
-            const newSale = snapshot.val();
-            const today = new Date();
-            const saleDate = new Date(newSale.saleTime);
-            if (saleDate.getDate() === today.getDate() &&
-                saleDate.getMonth() === today.getMonth() &&
-                saleDate.getFullYear() === today.getFullYear()) {
-
-                await addUserNames([newSale], usersRef);
-                renderSingleSale(liveActivitiesSection, newSale, likesRef, usersRef);
-            }
-        });
-
-        // Handle infinite scroll for past sales
         liveActivitiesSection.addEventListener('scroll', () => {
             if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
                 renderMoreSales(liveActivitiesSection, likesRef, usersRef);
@@ -270,38 +256,60 @@ async function loadLiveActivities() {
     }
 }
 
-function renderSingleSale(container, sale, likesRef, usersRef) {
+function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
-    const saleDate = new Date(sale.saleTime);
-    const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    if (lastRenderedIndex >= currentSales.length) {
+        console.log("All sales have been loaded");
+        return; // Exit if all sales have been rendered
+    }
 
-    const saleElement = document.createElement('div');
-    saleElement.classList.add('activity-item');
+    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
+        .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
+                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
 
-    const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+    lastRenderedIndex += salesToRender.length;
 
-    saleElement.innerHTML = `
-        <button class="like-button" data-like-path="${likePath}">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-        </button>
-        <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${formattedTime}
-        <div class="like-info" id="like-info-${likePath}"></div>
-    `;
-    container.appendChild(saleElement);
+    salesToRender.forEach((sale) => {
+        const saleDate = new Date(sale.saleTime);
+        const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    const likeButton = saleElement.querySelector('.like-button');
-    const likeInfoDiv = saleElement.querySelector('.like-info');
+        const saleElement = document.createElement('div');
+        saleElement.classList.add('activity-item');
 
-    initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-    likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+        saleElement.innerHTML = `
+            <button class="like-button" data-like-path="${likePath}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${formattedTime}
+            <div class="like-info" id="like-info-${likePath}"></div>
+        `;
+        container.appendChild(saleElement);
 
-    likesRef.child(likePath).on('value', snapshot => {
-        updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
+        const likeButton = saleElement.querySelector('.like-button');
+        const likeInfoDiv = saleElement.querySelector('.like-info');
+
+        initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+
+        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+
+        likesRef.child(likePath).on('value', snapshot => {
+            updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
+        });
     });
+
+    // Automatically load more sales if the last rendered sale is visible and there are more to load
+    const lastSaleElement = container.lastElementChild;
+    if (lastSaleElement && lastRenderedIndex < currentSales.length) {
+        renderMoreSales(container, likesRef, usersRef);
+    }
 }
+
+
 
 
 
