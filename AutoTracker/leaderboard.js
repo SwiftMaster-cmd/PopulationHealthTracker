@@ -216,41 +216,36 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser; // Get the current user ID
+        const currentUser = firebase.auth().currentUser;
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off('value'); // Clear previous listeners
-        salesTimeFramesRef.on('value', async salesSnapshot => {
-            const salesData = salesSnapshot.val();
-            if (!salesData) {
-                console.error('No sales data found');
-                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
-                return;
-            }
+        // Clear any previous listeners
+        salesTimeFramesRef.off('child_added');
+        salesTimeFramesRef.off('child_changed');
 
-            const today = new Date();
-            currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => {
-                const saleDate = new Date(sale.saleTime);
-                return saleDate.getDate() === today.getDate() &&
-                       saleDate.getMonth() === today.getMonth() &&
-                       saleDate.getFullYear() === today.getFullYear();
-            });
+        // Listen for new sales being added
+        salesTimeFramesRef.on('child_added', async snapshot => {
+            const newSaleData = snapshot.val();
+            const sales = await processSalesData({ [snapshot.key]: newSaleData });
+            await addUserNames(sales, usersRef);
 
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            // Render the new sale item
+            renderSales(sales, liveActivitiesSection, likesRef, usersRef);
         });
 
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-            }
-        });
+        // Listen for existing sales being updated
+        salesTimeFramesRef.on('child_changed', async snapshot => {
+            const updatedSaleData = snapshot.val();
+            const updatedSales = await processSalesData({ [snapshot.key]: updatedSaleData });
+            await addUserNames(updatedSales, usersRef);
 
+            // Re-render the sales to reflect the update
+            renderSales(updatedSales, liveActivitiesSection, likesRef, usersRef);
+        });
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
