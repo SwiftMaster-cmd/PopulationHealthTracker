@@ -212,33 +212,27 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off('value'); // Clear previous listeners
+        salesTimeFramesRef.off(); // Clear previous listeners
 
-        salesTimeFramesRef.on('value', async salesSnapshot => {
-            const salesData = salesSnapshot.val();
-            if (!salesData) {
-                console.error('No sales data found');
-                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
+        salesTimeFramesRef.on('child_added', async snapshot => {
+            const sale = snapshot.val();
+            if (!sale) {
+                console.error('No sale data found');
                 return;
             }
 
-            const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+            const saleDate = new Date(sale.timestamp).toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
 
-            const currentSales = await processSalesData(salesData, today); // Filter by today's date
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-        });
-
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            if (saleDate === today) {
+                await addUserNames([sale], usersRef);
+                renderSales([sale], liveActivitiesSection, likesRef, usersRef);
             }
         });
 
