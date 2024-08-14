@@ -207,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
@@ -221,14 +220,41 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        liveActivitiesSection.innerHTML = ''; // Clear previous content
+        salesTimeFramesRef.off(); // Clear previous listeners
 
-        // Listen for new sales in real-time
+        // Load initial sales data
+        salesTimeFramesRef.once('value', async salesSnapshot => {
+            const salesData = salesSnapshot.val();
+            if (!salesData) {
+                console.error('No sales data found');
+                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
+                return;
+            }
+
+            const today = new Date();
+            currentSales = await processSalesData(salesData);
+            currentSales = currentSales.filter(sale => {
+                const saleDate = new Date(sale.saleTime);
+                return saleDate.getDate() === today.getDate() &&
+                       saleDate.getMonth() === today.getMonth() &&
+                       saleDate.getFullYear() === today.getFullYear();
+            });
+
+            await addUserNames(currentSales, usersRef);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+        });
+
+        // Listen for new sales being added in real-time
         salesTimeFramesRef.on('child_added', async snapshot => {
-            const sale = snapshot.val();
-            if (isValidSale(sale)) {
-                await addUserNames([sale], usersRef);
-                renderSingleSale(liveActivitiesSection, sale, likesRef, usersRef);
+            const newSale = snapshot.val();
+            const today = new Date();
+            const saleDate = new Date(newSale.saleTime);
+            if (saleDate.getDate() === today.getDate() &&
+                saleDate.getMonth() === today.getMonth() &&
+                saleDate.getFullYear() === today.getFullYear()) {
+
+                await addUserNames([newSale], usersRef);
+                renderSingleSale(liveActivitiesSection, newSale, likesRef, usersRef);
             }
         });
 
@@ -242,14 +268,6 @@ async function loadLiveActivities() {
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
-}
-
-function isValidSale(sale) {
-    const today = new Date();
-    const saleDate = new Date(sale.saleTime);
-    return saleDate.getDate() === today.getDate() &&
-           saleDate.getMonth() === today.getMonth() &&
-           saleDate.getFullYear() === today.getFullYear();
 }
 
 function renderSingleSale(container, sale, likesRef, usersRef) {
@@ -284,11 +302,6 @@ function renderSingleSale(container, sale, likesRef, usersRef) {
         updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
     });
 }
-
-function renderMoreSales(container, likesRef, usersRef) {
-    // Your existing logic for rendering more sales, can be integrated with real-time updates as well
-}
-
 
 
 
