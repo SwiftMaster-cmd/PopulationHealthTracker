@@ -128,9 +128,7 @@ function loadChart(period, canvasId) {
 }
 
 function getDailyChartData(salesData) {
-    const { earliestHour, latestHour } = getEarliestAndLatestTimes(salesData);
-
-    const hours = Array.from({ length: latestHour - earliestHour + 1 }, (_, i) => formatHour(earliestHour + i));
+    const hours = Array.from({ length: 15 }, (_, i) => `${i + 7}:00`);
     const currentDayData = getCurrentDayData(salesData);
 
     const data = {
@@ -139,41 +137,6 @@ function getDailyChartData(salesData) {
     };
     return data;
 }
-
-function getEarliestAndLatestTimes(salesData) {
-    const now = new Date();
-    const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
-
-    let earliestHour = 24;
-    let latestHour = 0;
-
-    for (const account in salesData) {
-        for (const saleType in salesData[account]) {
-            salesData[account][saleType].forEach(saleTime => {
-                const saleDate = new Date(saleTime);
-                if (saleDate >= thirtyDaysAgo && saleDate <= now) {
-                    const saleHour = saleDate.getHours();
-                    if (saleHour < earliestHour) earliestHour = saleHour;
-                    if (saleHour > latestHour) latestHour = saleHour;
-                }
-            });
-        }
-    }
-
-    // Ensure earliestHour and latestHour are within a 12-hour range
-    earliestHour = Math.max(earliestHour, 7);
-    latestHour = Math.min(latestHour, 21);
-
-    return { earliestHour, latestHour };
-}
-
-function formatHour(hour) {
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const standardHour = hour % 12 || 12;
-    return `${standardHour}:00 ${period}`;
-}
-
-
 
 function getWeeklyChartData(salesData) {
     const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
