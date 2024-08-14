@@ -223,30 +223,48 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off('value'); // Clear previous listeners
-        salesTimeFramesRef.on('value', async salesSnapshot => {
-            const salesData = salesSnapshot.val();
-            if (!salesData) {
-                console.error('No sales data found');
-                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
-                return;
-            }
+        salesTimeFramesRef.off('child_added'); // Clear previous listeners
+        salesTimeFramesRef.off('child_changed');
+        salesTimeFramesRef.off('child_removed');
 
+        salesTimeFramesRef.on('child_added', async snapshot => {
+            const sale = snapshot.val();
             const today = new Date();
-            currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => {
-                const saleDate = new Date(sale.saleTime);
-                return saleDate.getDate() === today.getDate() &&
-                       saleDate.getMonth() === today.getMonth() &&
-                       saleDate.getFullYear() === today.getFullYear();
-            });
+            const saleDate = new Date(sale.saleTime);
 
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            if (saleDate.getDate() === today.getDate() &&
+                saleDate.getMonth() === today.getMonth() &&
+                saleDate.getFullYear() === today.getFullYear()) {
+                currentSales.push(sale);
+                await addUserNames([sale], usersRef);
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            }
         });
 
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+        salesTimeFramesRef.on('child_changed', async snapshot => {
+            const updatedSale = snapshot.val();
+            const today = new Date();
+            const saleDate = new Date(updatedSale.saleTime);
+
+            if (saleDate.getDate() === today.getDate() &&
+                saleDate.getMonth() === today.getMonth() &&
+                saleDate.getFullYear() === today.getFullYear()) {
+                const index = currentSales.findIndex(sale => sale.saleTime === updatedSale.saleTime);
+                if (index !== -1) {
+                    currentSales[index] = updatedSale;
+                    liveActivitiesSection.innerHTML = ''; // Clear and re-render to show the updated sale
+                    await addUserNames(currentSales, usersRef);
+                    renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+                }
+            }
+        });
+
+        salesTimeFramesRef.on('child_removed', snapshot => {
+            const removedSale = snapshot.val();
+            const index = currentSales.findIndex(sale => sale.saleTime === removedSale.saleTime);
+            if (index !== -1) {
+                currentSales.splice(index, 1);
+                liveActivitiesSection.innerHTML = ''; // Clear and re-render to remove the sale
                 renderMoreSales(liveActivitiesSection, likesRef, usersRef);
             }
         });
@@ -258,7 +276,7 @@ async function loadLiveActivities() {
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
-    
+
     if (lastRenderedIndex >= currentSales.length) {
         console.log("All sales have been loaded");
         return; // Exit if all sales have been rendered
