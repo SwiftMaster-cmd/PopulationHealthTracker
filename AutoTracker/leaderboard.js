@@ -472,7 +472,6 @@ async function calculateAndSaveWeeklyDailyAverages() {
     const salesCountsRef = database.ref('salesCounts');
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    const startDate = oneWeekAgo.toISOString().split('T')[0]; // Start date in YYYY-MM-DD format
 
     salesOutcomesRef.once('value', snapshot => {
         const salesData = snapshot.val();
@@ -481,48 +480,67 @@ async function calculateAndSaveWeeklyDailyAverages() {
             return;
         }
 
-        for (const userId in salesData) {
-            const userSales = salesData[userId];
-            let weeklyTotals = {
-                selectRX: 0,
-                selectPatientManagement: 0,
-                hraCompleted: 0,
-                notes: 0
-            };
-            let daysCounted = 0;
+        // Initialize object to hold weekly totals and day counts for each user
+        const userWeeklyData = {};
 
-            for (const date in userSales.day) {
-                if (date >= startDate) {
-                    // If the sale date is within the past week
-                    const dailySales = userSales.day[date];
-                    weeklyTotals.selectRX += dailySales.selectRX || 0;
-                    weeklyTotals.selectPatientManagement += dailySales.selectPatientManagement || 0;
-                    weeklyTotals.hraCompleted += dailySales.hraCompleted || 0;
-                    weeklyTotals.notes += dailySales.notes || 0;
-                    daysCounted++;
+        for (const saleId in salesData) {
+            const sale = salesData[saleId];
+            const saleTime = new Date(sale.outcomeTime);
+            const saleDate = saleTime.toISOString().split('T')[0];
+
+            if (saleTime >= oneWeekAgo) {
+                const userId = sale.userId;
+                const saleType = getSaleType(sale.assignAction); // Function to map `assignAction` to your sale types like `selectRX`, `selectPatientManagement`, etc.
+
+                if (!userWeeklyData[userId]) {
+                    userWeeklyData[userId] = {
+                        selectRX: 0,
+                        selectPatientManagement: 0,
+                        hraCompleted: 0,
+                        notes: 0,
+                        dayCounts: 0,
+                    };
                 }
-            }
 
-            if (daysCounted > 0) {
-                // Calculate the average daily sales for each sale type over the past week
-                const dailyAverages = {
-                    selectRX: weeklyTotals.selectRX / 7, // Dividing by 7 days for daily average
-                    selectPatientManagement: weeklyTotals.selectPatientManagement / 7,
-                    hraCompleted: weeklyTotals.hraCompleted / 7,
-                    notes: weeklyTotals.notes / 7
-                };
-
-                // Save the daily averages to the salesCounts node
-                salesCountsRef.child(`${userId}/dailyAverages`).set(dailyAverages);
-            } else {
-                console.log(`No sales data for user ${userId} in the past week.`);
+                // Sum up the sales based on their type
+                if (saleType) {
+                    userWeeklyData[userId][saleType]++;
+                }
+                userWeeklyData[userId].dayCounts++;
             }
+        }
+
+        // Calculate the daily averages and save to `salesCounts`
+        for (const userId in userWeeklyData) {
+            const data = userWeeklyData[userId];
+            const dailyAverages = {
+                selectRX: data.selectRX / 7,
+                selectPatientManagement: data.selectPatientManagement / 7,
+                hraCompleted: data.hraCompleted / 7,
+                notes: data.notes / 7,
+            };
+
+            salesCountsRef.child(`${userId}/dailyAverages`).set(dailyAverages);
         }
 
         console.log('Daily averages for the past week calculated and saved to salesCounts.');
     }, error => {
         console.error('Error fetching sales data from salesOutcomes for calculating daily averages:', error);
     });
+}
+
+function getSaleType(assignAction) {
+    // Map assignAction to sale types
+    if (assignAction.includes('RX')) {
+        return 'selectRX';
+    } else if (assignAction.includes('Patient Management')) {
+        return 'selectPatientManagement';
+    } else if (assignAction.includes('HRA')) {
+        return 'hraCompleted';
+    } else if (assignAction.includes('Notes')) {
+        return 'notes';
+    }
+    return null;
 }
 
 // Call this function at an appropriate place in your code
@@ -533,6 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
 
 
