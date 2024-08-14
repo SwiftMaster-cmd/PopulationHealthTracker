@@ -137,6 +137,32 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 }
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const periodPicker = document.getElementById('periodPicker');
+    const saleTypePicker = document.getElementById('saleTypePicker');
+    const leaderboardTitle = document.getElementById('leaderboard-title');
+
+    periodPicker.addEventListener('change', () => {
+        loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+    });
+
+    saleTypePicker.addEventListener('change', () => {
+        loadLeaderboard(periodPicker.value, saleTypePicker.value);
+        leaderboardTitle.textContent = `Leaderboard: ${getReadableTitle(saleTypePicker.value)}`;
+    });
+
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            console.log(`User signed in: ${user.uid}`);
+            checkAndSetUserName(user.uid);
+            loadLeaderboard(periodPicker.value, saleTypePicker.value);
+            loadLiveActivities(); // Load live activities in real-time
+        } else {
+            console.log('No user signed in.');
+        }
+    });
+});
 
 async function loadLiveActivities() {
     try {
@@ -144,12 +170,14 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
+        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
 
+        salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
@@ -158,18 +186,22 @@ async function loadLiveActivities() {
                 return;
             }
 
-            console.log('Sales data:', salesData);
-            const sales = await processSalesData(salesData);
-            const latestSales = sales.slice(0, 5); // Get the latest 5 sales
-
-            console.log('Processed sales data:', latestSales);
-            await addUserNames(latestSales, usersRef);
-            renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
+            const currentSales = await processSalesData(salesData);
+            await addUserNames(currentSales, usersRef);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
+
+        liveActivitiesSection.addEventListener('scroll', () => {
+            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            }
+        });
+
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
 }
+
 
 async function processSalesData(salesData) {
     const sales = [];
