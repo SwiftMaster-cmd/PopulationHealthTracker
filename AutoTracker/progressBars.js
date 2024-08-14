@@ -2,6 +2,8 @@ document.addEventListener('firebaseInitialized', function() {
     const database = firebase.database();
 
     function createProgressBar(container, label, value, max) {
+        console.log(`Creating progress bar for ${label}: ${value}/${max}`); // Debugging log
+
         const progressContainer = document.createElement('div');
         progressContainer.className = 'progress-container';
 
@@ -24,7 +26,9 @@ document.addEventListener('firebaseInitialized', function() {
 
         // Animate the progress bar width to match the percentage
         setTimeout(() => {
-            progressFill.style.width = `${Math.min((value / max) * 100, 100)}%`;
+            const percentage = Math.min((value / max) * 100, 100);
+            console.log(`Animating progress bar for ${label} to ${percentage}%`); // Debugging log
+            progressFill.style.width = `${percentage}%`;
         }, 0);
     }
 
@@ -33,7 +37,6 @@ document.addEventListener('firebaseInitialized', function() {
         const outcomesRef = database.ref(`salesOutcomes/${user.uid}`);
         const now = new Date();
 
-        // Reference to the container where progress bars will be displayed
         const progressBarsContainer = document.getElementById('progress-bars-container');
         if (!progressBarsContainer) {
             console.error('Progress bars container not found');
@@ -48,6 +51,8 @@ document.addEventListener('firebaseInitialized', function() {
                 return;
             }
 
+            console.log('Daily averages:', dailyAverages); // Debugging log
+
             const currentTotals = {
                 selectRX: 0,
                 selectPatientManagement: 0,
@@ -57,6 +62,8 @@ document.addEventListener('firebaseInitialized', function() {
 
             outcomesRef.once('value', (outcomesSnapshot) => {
                 const outcomes = outcomesSnapshot.val();
+
+                console.log('Today\'s sales outcomes:', outcomes); // Debugging log
 
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
@@ -76,6 +83,8 @@ document.addEventListener('firebaseInitialized', function() {
                         }
                     }
                 }
+
+                console.log('Current totals:', currentTotals); // Debugging log
 
                 // Create progress bars for all sales types
                 createProgressBar(progressBarsContainer, 'Select RX', currentTotals.selectRX, dailyAverages.selectRX);
@@ -109,10 +118,12 @@ document.addEventListener('firebaseInitialized', function() {
         return action;
     }
 
-    // Call updateProgressBars when the user is authenticated
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
+            console.log('User authenticated:', user.uid); // Debugging log
             updateProgressBars(user);
+        } else {
+            console.error('User not authenticated'); // Debugging log
         }
     });
 });
