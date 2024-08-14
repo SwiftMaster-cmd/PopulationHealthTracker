@@ -10,17 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
-async function loadProgressBars() {
+async function loadProgressBars(user) {
     try {
         const salesCountsRef = firebase.database().ref('salesCounts');
-        const usersRef = firebase.database().ref('users');
-        const currentUserId = firebase.auth().currentUser?.uid;
-
-        if (!currentUserId) {
-            console.error('No user is signed in.');
-            return;
-        }
+        const currentUserId = user.uid;
 
         const currentDate = new Date();
         const currentDayOfWeek = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
