@@ -223,26 +223,23 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off('value'); // Clear previous listeners
-        salesTimeFramesRef.on('value', async salesSnapshot => {
-            const salesData = salesSnapshot.val();
-            if (!salesData) {
-                console.error('No sales data found');
-                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
-                return;
-            }
+        currentSales = []; // Initialize an empty array to store sales
 
+        salesTimeFramesRef.on('child_added', async saleSnapshot => {
+            const sale = saleSnapshot.val();
+            const saleDate = new Date(sale.saleTime);
             const today = new Date();
-            currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => {
-                const saleDate = new Date(sale.saleTime);
-                return saleDate.getDate() === today.getDate() &&
-                       saleDate.getMonth() === today.getMonth() &&
-                       saleDate.getFullYear() === today.getFullYear();
-            });
 
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            // Check if the sale is from today
+            if (saleDate.getDate() === today.getDate() &&
+                saleDate.getMonth() === today.getMonth() &&
+                saleDate.getFullYear() === today.getFullYear()) {
+                
+                await addUserNames([sale], usersRef); // Add user name to the sale
+                currentSales.push(sale); // Add the sale to the current sales list
+
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef); // Render the new sale
+            }
         });
 
         liveActivitiesSection.addEventListener('scroll', () => {
@@ -255,7 +252,6 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
-
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
     
