@@ -88,15 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     
-        // Function to generate a unique key for each sale outcome (optional, can be removed if not used)
-        function generateUniqueKey(outcome) {
-            const action = outcome.assignAction;
-            const accountNumber = outcome.accountNumber;
-            const firstName = outcome.customerInfo.firstName;
-            const lastName = outcome.customerInfo.lastName;
-            return `${accountNumber}-${firstName}-${lastName}-${action}`;
-        }
-
 
 
     function formatTime(dateTime) {
@@ -109,18 +100,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
-
+    
         if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
             return 'Select RX';
         } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
             return 'Billable HRA';
-        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+        } else if (normalizedAction.includes('notes') && /(vbc|transfer|xfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|dental|oak street|osh)/i.test(notes)) {
             return 'Transfer';
         } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
+            return 'Select Patient Management';
+        } else if (normalizedAction.includes('spm scheduled call')) {
             return 'Select Patient Management';
         }
         return action;
     }
+    
 
 
     Date.prototype.getWeekNumber = function() {
@@ -381,7 +375,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 document.addEventListener('DOMContentLoaded', function() {
     // Helper functions
 
@@ -390,41 +383,50 @@ document.addEventListener('DOMContentLoaded', function() {
         const database = firebase.database();
         const outcomesRef = database.ref('salesOutcomes/' + user.uid);
 
-        outcomesRef.once('value', (snapshot) => {
-            const outcomes = snapshot.val();
-            const seenOutcomes = {};
+        const seenOutcomes = {};
 
-            snapshot.forEach(childSnapshot => {
-                const outcome = childSnapshot.val();
-                const action = outcome.assignAction;
-                const accountNumber = outcome.accountNumber;
-                const firstName = outcome.customerInfo.firstName;
-                const lastName = outcome.customerInfo.lastName;
-                const key = `${accountNumber}-${firstName}-${lastName}-${action}`;
+        outcomesRef.on('child_added', (childSnapshot) => {
+            processOutcome(childSnapshot, seenOutcomes, outcomesRef);
+        });
 
-                if (seenOutcomes[key]) {
-                    // If we have already seen this combination, compare the timestamps
-                    const existingTime = new Date(seenOutcomes[key].outcomeTime);
-                    const currentTime = new Date(outcome.outcomeTime);
-
-                    if (currentTime > existingTime) {
-                        // Remove the older record
-                        outcomesRef.child(seenOutcomes[key].key).remove();
-                        // Update the seenOutcomes with the latest record
-                        seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
-                    } else {
-                        // Remove the current record as it is older
-                        outcomesRef.child(childSnapshot.key).remove();
-                    }
-                } else {
-                    // Add the record to seenOutcomes
-                    seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
-                }
-            });
-        }, (error) => {
-            console.error('Error fetching sales outcomes:', error);
+        outcomesRef.on('child_changed', (childSnapshot) => {
+            processOutcome(childSnapshot, seenOutcomes, outcomesRef);
         });
     }
+
+    // Function to process and remove duplicates
+    function processOutcome(childSnapshot, seenOutcomes, outcomesRef) {
+        const outcome = childSnapshot.val();
+        const action = outcome.assignAction;
+        const accountNumber = outcome.accountNumber;
+        const firstName = outcome.customerInfo.firstName;
+        const lastName = outcome.customerInfo.lastName;
+        const notes = outcome.notes;
+        const key = `${accountNumber}-${firstName}-${lastName}-${action}`;
+
+        const isTransfer = action.toLowerCase().includes('transfer') && !/transfer/i.test(notes);
+
+        if (seenOutcomes[key] && (!isTransfer || (isTransfer && !seenOutcomes[key].notes.toLowerCase().includes('transfer')))) {
+            // If we have already seen this combination and it’s not allowed to have duplicates (except for "transfer" notes), compare the timestamps
+            const existingTime = new Date(seenOutcomes[key].outcomeTime);
+            const currentTime = new Date(outcome.outcomeTime);
+
+            if (currentTime > existingTime) {
+                // Remove the older record
+                outcomesRef.child(seenOutcomes[key].key).remove();
+                // Update the seenOutcomes with the latest record
+                seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime, notes: outcome.notes };
+            } else {
+                // Remove the current record as it is older
+                outcomesRef.child(childSnapshot.key).remove();
+            }
+        } else {
+            // Add the record to seenOutcomes
+            seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime, notes: outcome.notes };
+        }
+    }
+
+
 
     // Authenticate and call removeDuplicates
     firebase.auth().onAuthStateChanged(user => {
