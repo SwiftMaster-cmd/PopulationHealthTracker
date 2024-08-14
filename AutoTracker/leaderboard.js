@@ -461,6 +461,83 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     }
 }
 
+
+
+
+
+
+async function calculateAndSaveWeeklyAverages() {
+    const database = firebase.database();
+    const salesCountsRef = database.ref('salesCounts');
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const startDate = oneWeekAgo.toISOString().split('T')[0]; // Start date in YYYY-MM-DD format
+
+    salesCountsRef.once('value', snapshot => {
+        const salesData = snapshot.val();
+        if (!salesData) {
+            console.error('No sales data found for calculating weekly averages.');
+            return;
+        }
+
+        for (const userId in salesData) {
+            const userSales = salesData[userId];
+            let weeklyTotals = {
+                selectRX: 0,
+                selectPatientManagement: 0,
+                hraCompleted: 0,
+                notes: 0
+            };
+            let daysCounted = 0;
+
+            for (const date in userSales.day) {
+                if (date >= startDate) {
+                    // If the sale date is within the past week
+                    const dailySales = userSales.day[date];
+                    weeklyTotals.selectRX += dailySales.selectRX || 0;
+                    weeklyTotals.selectPatientManagement += dailySales.selectPatientManagement || 0;
+                    weeklyTotals.hraCompleted += dailySales.hraCompleted || 0;
+                    weeklyTotals.notes += dailySales.notes || 0;
+                    daysCounted++;
+                }
+            }
+
+            if (daysCounted > 0) {
+                // Calculate the average for each sale type
+                const weeklyAverages = {
+                    selectRX: weeklyTotals.selectRX / daysCounted,
+                    selectPatientManagement: weeklyTotals.selectPatientManagement / daysCounted,
+                    hraCompleted: weeklyTotals.hraCompleted / daysCounted,
+                    notes: weeklyTotals.notes / daysCounted
+                };
+
+                // Save the weekly averages to the database
+                salesCountsRef.child(`${userId}/weeklyAverages`).set(weeklyAverages);
+            } else {
+                console.log(`No sales data for user ${userId} in the past week.`);
+            }
+        }
+
+        console.log('Weekly averages calculated and saved.');
+    }, error => {
+        console.error('Error fetching sales data for calculating weekly averages:', error);
+    });
+}
+
+// Call this function at an appropriate place in your code
+document.addEventListener('DOMContentLoaded', () => {
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            calculateAndSaveWeeklyAverages();
+        }
+    });
+});
+
+
+
+
+
+
 async function initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef) {
     try {
         const snapshot = await likesRef.child(likePath).once('value');
@@ -502,3 +579,5 @@ function getReadableTitle(saleType) {
             return saleType;
     }
 }
+
+
