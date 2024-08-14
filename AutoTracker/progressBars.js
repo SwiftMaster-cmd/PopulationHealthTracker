@@ -3,21 +3,21 @@ document.addEventListener('DOMContentLoaded', function() {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             console.log(`User signed in: ${user.displayName}`);
-            loadProgressBars(user);
+            calculateAndStoreWeeklyAverages(); // Calculate and store weekly averages
+            loadProgressBars(); // Load progress bars comparing today with weekly averages
         } else {
             console.error('No user is signed in.');
         }
     });
 });
 
-async function loadProgressBars() {
+// Function to calculate and store the previous week's averages for each sales type
+async function calculateAndStoreWeeklyAverages() {
     const salesOutcomesRef = firebase.database().ref('salesOutcomes');
-    const currentUser = firebase.auth().currentUser;
-    
-    if (!currentUser) {
-        console.error('No user signed in.');
-        return;
-    }
+    const salesCountsRef = firebase.database().ref('salesCounts');
+    const today = new Date();
+    const weekAgo = new Date(today);
+    weekAgo.setDate(today.getDate() - 7);
 
     try {
         const salesSnapshot = await salesOutcomesRef.once('value');
@@ -28,82 +28,98 @@ async function loadProgressBars() {
             return;
         }
 
-        const previousWeekAverages = calculatePreviousWeekAverages(salesData);
-        const todayTotals = calculateTodayTotals(salesData);
+        const weeklyAverages = {};
 
-        updateProgressBars(previousWeekAverages, todayTotals);
+        // Iterate through sales data to calculate weekly averages
+        for (const userId in salesData) {
+            for (const saleId in salesData[userId]) {
+                const sale = salesData[userId][saleId];
+                const saleDate = new Date(sale.outcomeTime);
+
+                if (saleDate >= weekAgo && saleDate < today) {
+                    const saleType = sale.notesValue; // Assuming notesValue represents the sale type
+                    if (!weeklyAverages[saleType]) {
+                        weeklyAverages[saleType] = { total: 0, count: 0 };
+                    }
+                    weeklyAverages[saleType].total += 1;
+                    weeklyAverages[saleType].count += 1;
+                }
+            }
+        }
+
+        // Calculate and store the average for each sale type
+        for (const saleType in weeklyAverages) {
+            const average = weeklyAverages[saleType].count
+                ? weeklyAverages[saleType].total / weeklyAverages[saleType].count
+                : 0;
+
+            await salesCountsRef.child(`weeklyAverages/${saleType}`).set(average);
+        }
+
+        console.log('Weekly averages stored successfully.');
+
+    } catch (error) {
+        console.error('Error calculating and storing weekly averages:', error);
+    }
+}
+
+// Function to load progress bars by comparing today's sales with weekly averages
+async function loadProgressBars() {
+    const salesCountsRef = firebase.database().ref('salesCounts');
+    const salesOutcomesRef = firebase.database().ref('salesOutcomes');
+    const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
+    try {
+        const [averagesSnapshot, salesSnapshot] = await Promise.all([
+            salesCountsRef.child('weeklyAverages').once('value'),
+            salesOutcomesRef.once('value')
+        ]);
+
+        const weeklyAverages = averagesSnapshot.val();
+        const salesData = salesSnapshot.val();
+
+        if (!weeklyAverages || !salesData) {
+            console.error('No data found.');
+            return;
+        }
+
+        const todayTotals = {};
+
+        // Calculate today's totals
+        for (const userId in salesData) {
+            for (const saleId in salesData[userId]) {
+                const sale = salesData[userId][saleId];
+                const saleDate = new Date(sale.outcomeTime).toISOString().split('T')[0];
+
+                if (saleDate === today) {
+                    const saleType = sale.notesValue; // Assuming notesValue represents the sale type
+                    if (!todayTotals[saleType]) {
+                        todayTotals[saleType] = 0;
+                    }
+                    todayTotals[saleType] += 1;
+                }
+            }
+        }
+
+        // Update progress bars based on today's totals compared to weekly averages
+        updateProgressBars(weeklyAverages, todayTotals);
+
     } catch (error) {
         console.error('Error loading progress bars:', error);
     }
 }
 
-function calculatePreviousWeekAverages(salesData) {
-    const lastWeekSales = {};
-    const today = new Date();
-    const weekAgo = new Date(today);
-    weekAgo.setDate(today.getDate() - 7);
-
-    for (const userId in salesData) {
-        for (const saleId in salesData[userId]) {
-            const sale = salesData[userId][saleId];
-            const saleDate = new Date(sale.outcomeTime);
-
-            if (saleDate >= weekAgo && saleDate < today) {
-                const saleType = sale.notesValue; // Assuming notesValue represents the sale type
-                if (!lastWeekSales[saleType]) {
-                    lastWeekSales[saleType] = { total: 0, count: 0 };
-                }
-                lastWeekSales[saleType].total += 1;
-                lastWeekSales[saleType].count += 1;
-            }
-        }
-    }
-
-    // Calculate the average for each sale type
-    for (const saleType in lastWeekSales) {
-        lastWeekSales[saleType] = lastWeekSales[saleType].count
-            ? lastWeekSales[saleType].total / lastWeekSales[saleType].count
-            : 0;
-    }
-
-    return lastWeekSales;
-}
-
-
-function calculateTodayTotals(salesData) {
-    const todayTotals = {};
-    const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-
-    for (const userId in salesData) {
-        for (const saleId in salesData[userId]) {
-            const sale = salesData[userId][saleId];
-            const saleDate = new Date(sale.outcomeTime).toISOString().split('T')[0];
-
-            if (saleDate === today) {
-                const saleType = sale.notesValue; // Assuming notesValue represents the sale type
-                if (!todayTotals[saleType]) {
-                    todayTotals[saleType] = 0;
-                }
-                todayTotals[saleType] += 1; // Increment the count
-            }
-        }
-    }
-
-    return todayTotals;
-}
-
-
-function updateProgressBars(previousWeekAverages, todayTotals) {
-    for (const saleType in previousWeekAverages) {
-        const average = previousWeekAverages[saleType];
-        const todayTotal = todayTotals[saleType];
+// Function to update progress bars
+function updateProgressBars(weeklyAverages, todayTotals) {
+    for (const saleType in weeklyAverages) {
+        const average = weeklyAverages[saleType];
+        const todayTotal = todayTotals[saleType] || 0;
         const progressBar = document.getElementById(`${saleType}-progress-bar`);
 
         if (progressBar) {
-            const progressPercentage = (todayTotal / average) * 100;
+            const progressPercentage = average ? (todayTotal / average) * 100 : 0;
             progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
 
-            // Optionally, you can also update a label to show progress percentage
             const progressLabel = document.getElementById(`${saleType}-progress-label`);
             if (progressLabel) {
                 progressLabel.textContent = `${Math.round(progressPercentage)}% of weekly average`;
