@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+function sanitizeForFirebaseKey(key) {
+    return key.replace(/[.#$[\]]/g, '_'); // Replace invalid characters with underscores
+}
 
-// Function to calculate and store the previous week's averages for each sales type
 async function calculateAndStoreWeeklyAverages() {
     const salesOutcomesRef = firebase.database().ref('salesOutcomes');
     const salesCountsRef = firebase.database().ref('salesCounts');
@@ -37,7 +39,7 @@ async function calculateAndStoreWeeklyAverages() {
                 const saleDate = new Date(sale.outcomeTime);
 
                 if (saleDate >= weekAgo && saleDate < today) {
-                    const saleType = sale.notesValue; // Assuming notesValue represents the sale type
+                    const saleType = sanitizeForFirebaseKey(sale.notesValue || 'unknown'); // Sanitize the sale type
                     if (!weeklyAverages[saleType]) {
                         weeklyAverages[saleType] = { total: 0, count: 0 };
                     }
