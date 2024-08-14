@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadProgressBars() {
     const salesCountsRef = firebase.database().ref('salesCounts');
     const currentUserId = firebase.auth().currentUser?.uid;
-
+    console.log('Current User ID:', currentUserId);
+    
     if (!currentUserId) {
         console.error('No user is signed in.');
         return;
