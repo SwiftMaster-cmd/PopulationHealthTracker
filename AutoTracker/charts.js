@@ -128,7 +128,27 @@ function loadChart(period, canvasId) {
 }
 
 function getDailyChartData(salesData) {
-    const hours = Array.from({ length: 15 }, (_, i) => `${i + 7}:00`);
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+    let earliestTime = 24; // Start with the latest possible hour
+    let latestTime = 0; // Start with the earliest possible hour
+
+    // Find the earliest and latest sale times in the last 30 days
+    for (const account in salesData) {
+        for (const saleType in salesData[account]) {
+            salesData[account][saleType].forEach(saleTime => {
+                const saleDate = new Date(saleTime);
+                if (saleDate >= thirtyDaysAgo && saleDate <= now) {
+                    const saleHour = saleDate.getHours();
+                    if (saleHour < earliestTime) earliestTime = saleHour;
+                    if (saleHour > latestTime) latestTime = saleHour;
+                }
+            });
+        }
+    }
+
+    // Generate time labels based on the earliest and latest times
+    const hours = Array.from({ length: (latestTime - earliestTime + 1) }, (_, i) => `${i + earliestTime}:00`);
     const currentDayData = getCurrentDayData(salesData);
 
     const data = {
