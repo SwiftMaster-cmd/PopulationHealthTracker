@@ -228,26 +228,7 @@ async function loadLiveActivities() {
                 return;
             }
 
-            // Filter salesData to only include today's sales
-            const today = new Date();
-            const todayString = today.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
-
-            const todaysSalesData = Object.keys(salesData).reduce((acc, key) => {
-                const saleDate = new Date(salesData[key].saleTime);
-                const saleDateString = saleDate.toISOString().split('T')[0];
-                if (saleDateString === todayString) {
-                    acc[key] = salesData[key];
-                }
-                return acc;
-            }, {});
-
-            if (Object.keys(todaysSalesData).length === 0) {
-                console.error('No sales data found for today');
-                liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
-                return;
-            }
-
-            currentSales = await processSalesData(todaysSalesData);
+            currentSales = await processSalesData(salesData);
             await addUserNames(currentSales, usersRef);
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
@@ -322,6 +303,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
