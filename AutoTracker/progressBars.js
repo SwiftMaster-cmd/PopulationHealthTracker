@@ -66,26 +66,28 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 'billableHRA', label: 'Billable HRA', total: dailyAverages.billableHRA, current: todaySales.billableHRA },
             { id: 'transfer', label: 'Transfer', total: dailyAverages.transfer, current: todaySales.transfer }
         ];
-
+    
         progressBarConfigs.forEach(config => {
             if (config.total > 0) { // Only show progress bars with a positive daily average
                 const progressBar = document.getElementById(config.id + '-progress');
-                const progressText = document.getElementById(config.id + '-text');
-
-                if (progressBar && progressText) {
+                const progressCurrent = document.getElementById(config.id + '-current');
+                const progressGoal = document.getElementById(config.id + '-goal');
+    
+                if (progressBar && progressCurrent && progressGoal) {
                     const percentage = Math.min((config.current / config.total) * 100, 100);
                     progressBar.style.width = percentage + '%';
-                    progressText.textContent = `${config.label}: ${config.current}/${config.total} (${Math.round(percentage)}%)`;
-                    progressBar.parentElement.style.display = 'block'; // Ensure it's visible
+                    progressCurrent.textContent = config.current;
+                    progressGoal.textContent = config.total;
+                    progressBar.parentElement.parentElement.style.display = 'block'; // Ensure it's visible
                 }
             } else {
                 // Hide the progress bar if the daily average rounds to 0
-                const progressBarContainer = document.getElementById(config.id + '-progress').parentElement;
-                progressBarContainer.style.display = 'none';
+                const progressBarWrapper = document.getElementById(config.id + '-progress').parentElement.parentElement;
+                progressBarWrapper.style.display = 'none';
             }
         });
     }
-
+    
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             createProgressBars(user);

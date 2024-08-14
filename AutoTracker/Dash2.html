@@ -138,24 +138,36 @@
         </div>
               
 
-        <d<div id="progress-bars">
-            <div class="progress-container">
-                <div id="selectRX-progress" class="progress-bar"></div>
-                <span id="selectRX-text"></span>
+        <div id="progress-bars">
+            <div class="progress-wrapper">
+                <div class="progress-title">
+                    Select RX - <span id="selectRX-current">2</span>
+                </div>
+                <div class="progress-container" data-type="selectRX">
+                    <div class="bar-container">
+                        <div id="selectRX-progress" class="progress-bar"></div>
+                    </div>
+                    <div class="goal-container">
+                        <span id="selectRX-goal">4</span>
+                    </div>
+                </div>
             </div>
-            <div class="progress-container">
-                <div id="selectPatientManagement-progress" class="progress-bar"></div>
-                <span id="selectPatientManagement-text"></span>
-            </div>
-            <div class="progress-container">
-                <div id="billableHRA-progress" class="progress-bar"></div>
-                <span id="billableHRA-text"></span>
-            </div>
-            <div class="progress-container">
-                <div id="transfer-progress" class="progress-bar"></div>
-                <span id="transfer-text"></span>
+            <!-- Repeat for other sales types -->
+            <div class="progress-wrapper">
+                <div class="progress-title">
+                    Select Patient Management - <span id="selectPatientManagement-current">3</span>
+                </div>
+                <div class="progress-container" data-type="selectPatientManagement">
+                    <div class="bar-container">
+                        <div id="selectPatientManagement-progress" class="progress-bar"></div>
+                    </div>
+                    <div class="goal-container">
+                        <span id="selectPatientManagement-goal">5</span>
+                    </div>
+                </div>
             </div>
         </div>
+        
         
 
 <!-- Chart Container for Week -->
