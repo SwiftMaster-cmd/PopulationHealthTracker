@@ -377,7 +377,80 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Helper functions
+ // Function to calculate daily averages from last week's sales and save them to salesCounts
+ async function calculateAndSaveWeeklyDailyAverages(user) {
+    const database = firebase.database();
+    const salesOutcomesRef = database.ref('salesOutcomes/' + user.uid);
+    const salesCountsRef = database.ref('salesCounts/' + user.uid);
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const startDate = oneWeekAgo.toISOString().split('T')[0]; // Start date in YYYY-MM-DD format
+    const now = new Date();
 
+    try {
+        const snapshot = await salesOutcomesRef.once('value');
+        const salesData = snapshot.val();
+        if (!salesData) {
+            console.error('No sales data found in salesOutcomes for calculating weekly daily averages.');
+            return;
+        }
+
+        const weeklyTotals = {
+            selectRX: 0,
+            selectPatientManagement: 0,
+            billableHRA: 0,
+            transfer: 0
+        };
+        let daysCounted = 0;
+
+        for (const key in salesData) {
+            const outcome = salesData[key];
+            const outcomeTime = new Date(outcome.outcomeTime);
+
+            if (outcomeTime >= oneWeekAgo && outcomeTime <= now) {
+                const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
+
+                if (saleType === 'Select RX') {
+                    weeklyTotals.selectRX++;
+                } else if (saleType === 'Select Patient Management') {
+                    weeklyTotals.selectPatientManagement++;
+                } else if (saleType === 'Billable HRA') {
+                    weeklyTotals.billableHRA++;
+                } else if (saleType === 'Transfer') {
+                    weeklyTotals.transfer++;
+                }
+
+                daysCounted++;
+            }
+        }
+
+        if (daysCounted > 0) {
+            // Calculate the average daily sales for each sale type over the past week
+            const dailyAverages = {
+                selectRX: weeklyTotals.selectRX / 7,
+                selectPatientManagement: weeklyTotals.selectPatientManagement / 7,
+                billableHRA: weeklyTotals.billableHRA / 7,
+                transfer: weeklyTotals.transfer / 7
+            };
+
+            // Save the daily averages to the salesCounts node
+            await salesCountsRef.child('dailyAverages').set(dailyAverages);
+            console.log('Daily averages for the past week calculated and saved to salesCounts.');
+        } else {
+            console.log(`No sales data for the user in the past week.`);
+        }
+    } catch (error) {
+        console.error('Error fetching sales data from salesOutcomes for calculating daily averages:', error);
+    }
+}
+
+// Call the calculation function when a user is authenticated
+firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+        calculateAndSaveWeeklyDailyAverages(user);
+        displaySalesOutcomes(user); // Existing function to display sales outcomes
+    }
+});
     // Function to remove duplicates
     function removeDuplicates(user) {
         const database = firebase.database();
