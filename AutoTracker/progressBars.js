@@ -43,35 +43,55 @@ function calculatePreviousWeekAverages(salesData) {
     const weekAgo = new Date(today);
     weekAgo.setDate(today.getDate() - 7);
 
-    for (const saleType in salesData) {
-        let total = 0;
-        let count = 0;
-
-        for (const day in salesData[saleType]) {
-            const saleDate = new Date(day);
+    for (const userId in salesData) {
+        for (const saleId in salesData[userId]) {
+            const sale = salesData[userId][saleId];
+            const saleDate = new Date(sale.outcomeTime);
 
             if (saleDate >= weekAgo && saleDate < today) {
-                total += salesData[saleType][day];
-                count++;
+                const saleType = sale.notesValue; // Assuming notesValue represents the sale type
+                if (!lastWeekSales[saleType]) {
+                    lastWeekSales[saleType] = { total: 0, count: 0 };
+                }
+                lastWeekSales[saleType].total += 1;
+                lastWeekSales[saleType].count += 1;
             }
         }
+    }
 
-        lastWeekSales[saleType] = count ? total / count : 0; // Calculate the average
+    // Calculate the average for each sale type
+    for (const saleType in lastWeekSales) {
+        lastWeekSales[saleType] = lastWeekSales[saleType].count
+            ? lastWeekSales[saleType].total / lastWeekSales[saleType].count
+            : 0;
     }
 
     return lastWeekSales;
 }
 
+
 function calculateTodayTotals(salesData) {
     const todayTotals = {};
     const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
-    for (const saleType in salesData) {
-        todayTotals[saleType] = salesData[saleType][today] || 0; // Get today's total or 0 if none
+    for (const userId in salesData) {
+        for (const saleId in salesData[userId]) {
+            const sale = salesData[userId][saleId];
+            const saleDate = new Date(sale.outcomeTime).toISOString().split('T')[0];
+
+            if (saleDate === today) {
+                const saleType = sale.notesValue; // Assuming notesValue represents the sale type
+                if (!todayTotals[saleType]) {
+                    todayTotals[saleType] = 0;
+                }
+                todayTotals[saleType] += 1; // Increment the count
+            }
+        }
     }
 
     return todayTotals;
 }
+
 
 function updateProgressBars(previousWeekAverages, todayTotals) {
     for (const saleType in previousWeekAverages) {
