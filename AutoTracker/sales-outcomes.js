@@ -451,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
     // Helper functions
 
@@ -460,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const database = firebase.database();
         const outcomesRef = database.ref('salesOutcomes/' + user.uid);
 
-        outcomesRef.once('value', (snapshot) => {
+        outcomesRef.on('value', (snapshot) => { // Listen for real-time updates
             const outcomes = snapshot.val();
             const seenOutcomes = {};
 
