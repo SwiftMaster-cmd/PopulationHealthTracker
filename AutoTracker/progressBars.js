@@ -2,8 +2,6 @@ document.addEventListener('firebaseInitialized', function() {
     const database = firebase.database();
 
     function createProgressBar(container, label, value, max) {
-        if (max === 0) return; // Don't create a progress bar if the max (daily average) is 0
-
         const progressContainer = document.createElement('div');
         progressContainer.className = 'progress-container';
 
@@ -50,13 +48,6 @@ document.addEventListener('firebaseInitialized', function() {
                 return;
             }
 
-            const roundedAverages = {
-                selectRX: Math.round(dailyAverages.selectRX || 0),
-                selectPatientManagement: Math.round(dailyAverages.selectPatientManagement || 0),
-                billableHRA: Math.round(dailyAverages.billableHRA || 0),
-                transfer: Math.round(dailyAverages.transfer || 0)
-            };
-
             const currentTotals = {
                 selectRX: 0,
                 selectPatientManagement: 0,
@@ -64,7 +55,7 @@ document.addEventListener('firebaseInitialized', function() {
                 transfer: 0
             };
 
-            outcomesRef.on('value', (outcomesSnapshot) => {
+            outcomesRef.once('value', (outcomesSnapshot) => {
                 const outcomes = outcomesSnapshot.val();
 
                 for (const key in outcomes) {
@@ -86,19 +77,11 @@ document.addEventListener('firebaseInitialized', function() {
                     }
                 }
 
-                // Create progress bars only if the daily average is greater than 0
-                if (roundedAverages.selectRX > 0) {
-                    createProgressBar(progressBarsContainer, 'Select RX', currentTotals.selectRX, roundedAverages.selectRX);
-                }
-                if (roundedAverages.selectPatientManagement > 0) {
-                    createProgressBar(progressBarsContainer, 'Select Patient Management', currentTotals.selectPatientManagement, roundedAverages.selectPatientManagement);
-                }
-                if (roundedAverages.billableHRA > 0) {
-                    createProgressBar(progressBarsContainer, 'Billable HRA', currentTotals.billableHRA, roundedAverages.billableHRA);
-                }
-                if (roundedAverages.transfer > 0) {
-                    createProgressBar(progressBarsContainer, 'Transfer', currentTotals.transfer, roundedAverages.transfer);
-                }
+                // Create progress bars for all sales types
+                createProgressBar(progressBarsContainer, 'Select RX', currentTotals.selectRX, dailyAverages.selectRX);
+                createProgressBar(progressBarsContainer, 'Select Patient Management', currentTotals.selectPatientManagement, dailyAverages.selectPatientManagement);
+                createProgressBar(progressBarsContainer, 'Billable HRA', currentTotals.billableHRA, dailyAverages.billableHRA);
+                createProgressBar(progressBarsContainer, 'Transfer', currentTotals.transfer, dailyAverages.transfer);
             });
         });
     }
