@@ -47,6 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            // Round the totals and daily averages
+            for (let key in dailyAverages) {
+                dailyAverages[key] = Math.round(dailyAverages[key]);
+                todaySales[key] = Math.round(todaySales[key]);
+            }
+
             updateProgressBars(todaySales, dailyAverages);
         } catch (error) {
             console.error('Error fetching sales data or daily averages:', error);
@@ -62,13 +68,20 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
 
         progressBarConfigs.forEach(config => {
-            const progressBar = document.getElementById(config.id + '-progress');
-            const progressText = document.getElementById(config.id + '-text');
+            if (config.total > 0) { // Only show progress bars with a positive daily average
+                const progressBar = document.getElementById(config.id + '-progress');
+                const progressText = document.getElementById(config.id + '-text');
 
-            if (progressBar && progressText) {
-                const percentage = Math.min((config.current / config.total) * 100, 100);
-                progressBar.style.width = percentage + '%';
-                progressText.textContent = `${config.label}: ${config.current}/${config.total} (${Math.round(percentage)}%)`;
+                if (progressBar && progressText) {
+                    const percentage = Math.min((config.current / config.total) * 100, 100);
+                    progressBar.style.width = percentage + '%';
+                    progressText.textContent = `${config.label}: ${config.current}/${config.total} (${Math.round(percentage)}%)`;
+                    progressBar.parentElement.style.display = 'block'; // Ensure it's visible
+                }
+            } else {
+                // Hide the progress bar if the daily average rounds to 0
+                const progressBarContainer = document.getElementById(config.id + '-progress').parentElement;
+                progressBarContainer.style.display = 'none';
             }
         });
     }
