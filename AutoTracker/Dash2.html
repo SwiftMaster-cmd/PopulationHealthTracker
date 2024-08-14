@@ -23,7 +23,7 @@
     <script src="tracker.js" defer></script>
     <script src="points.js" defer></script>
     <script src="stripe-handler.js" defer></script>
-    <script src="progressBars.js" ></script>
+    <script src="progressBars.js" defer></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -138,9 +138,25 @@
         </div>
               
 
-        <div id="progress-bars-container"></div>
-
-
+        <d<div id="progress-bars">
+            <div class="progress-container">
+                <div id="selectRX-progress" class="progress-bar"></div>
+                <span id="selectRX-text"></span>
+            </div>
+            <div class="progress-container">
+                <div id="selectPatientManagement-progress" class="progress-bar"></div>
+                <span id="selectPatientManagement-text"></span>
+            </div>
+            <div class="progress-container">
+                <div id="billableHRA-progress" class="progress-bar"></div>
+                <span id="billableHRA-text"></span>
+            </div>
+            <div class="progress-container">
+                <div id="transfer-progress" class="progress-bar"></div>
+                <span id="transfer-text"></span>
+            </div>
+        </div>
+        
 
 <!-- Chart Container for Week -->
 <div class="picker-chart-container container">

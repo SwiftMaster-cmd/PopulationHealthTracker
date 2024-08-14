@@ -1,129 +1,83 @@
-document.addEventListener('firebaseInitialized', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const database = firebase.database();
 
-    function createProgressBar(container, label, value, max) {
-        console.log(`Creating progress bar for ${label}: ${value}/${max}`); // Debugging log
+    async function createProgressBars(user) {
+        const salesCountsRef = database.ref('salesCounts/' + user.uid);
+        const outcomesRef = database.ref('salesOutcomes/' + user.uid);
 
-        const progressContainer = document.createElement('div');
-        progressContainer.className = 'progress-container';
-
-        const progressLabel = document.createElement('span');
-        progressLabel.className = 'progress-label';
-        progressLabel.textContent = `${label}: ${value}/${max}`;
-
-        const progressBar = document.createElement('div');
-        progressBar.className = 'progress-bar';
-
-        const progressFill = document.createElement('div');
-        progressFill.className = 'progress-fill';
-        progressFill.style.width = '0%'; // Start with 0% width for animation
-
-        progressBar.appendChild(progressFill);
-        progressContainer.appendChild(progressLabel);
-        progressContainer.appendChild(progressBar);
-
-        container.appendChild(progressContainer);
-
-        // Animate the progress bar width to match the percentage
-        setTimeout(() => {
-            const percentage = Math.min((value / max) * 100, 100);
-            console.log(`Animating progress bar for ${label} to ${percentage}%`); // Debugging log
-            progressFill.style.width = `${percentage}%`;
-        }, 0);
-    }
-
-    function updateProgressBars(user) {
-        const salesCountsRef = database.ref(`salesCounts/${user.uid}`);
-        const outcomesRef = database.ref(`salesOutcomes/${user.uid}`);
-        const now = new Date();
-
-        const progressBarsContainer = document.getElementById('progress-bars-container');
-        if (!progressBarsContainer) {
-            console.error('Progress bars container not found');
-            return;
-        }
-        progressBarsContainer.innerHTML = ''; // Clear any existing progress bars
-
-        salesCountsRef.child('dailyAverages').once('value', (snapshot) => {
-            const dailyAverages = snapshot.val();
+        try {
+            const salesCountsSnapshot = await salesCountsRef.once('value');
+            const dailyAverages = salesCountsSnapshot.val()?.dailyAverages;
             if (!dailyAverages) {
-                console.error('No daily averages found for the user');
+                console.error('Daily averages not found in salesCounts.');
                 return;
             }
 
-            console.log('Daily averages:', dailyAverages); // Debugging log
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Set time to start of day
+            const now = new Date();
 
-            const currentTotals = {
+            const todaySales = {
                 selectRX: 0,
                 selectPatientManagement: 0,
                 billableHRA: 0,
                 transfer: 0
             };
 
-            outcomesRef.once('value', (outcomesSnapshot) => {
-                const outcomes = outcomesSnapshot.val();
+            const outcomesSnapshot = await outcomesRef.once('value');
+            const outcomes = outcomesSnapshot.val();
 
-                console.log('Today\'s sales outcomes:', outcomes); // Debugging log
-
+            if (outcomes) {
                 for (const key in outcomes) {
                     const outcome = outcomes[key];
+                    const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
                     const outcomeTime = new Date(outcome.outcomeTime);
 
-                    if (isSameDay(outcomeTime, now)) {
-                        const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-
+                    if (outcomeTime >= today && outcomeTime <= now) {
                         if (saleType === 'Select RX') {
-                            currentTotals.selectRX++;
+                            todaySales.selectRX++;
                         } else if (saleType === 'Select Patient Management') {
-                            currentTotals.selectPatientManagement++;
+                            todaySales.selectPatientManagement++;
                         } else if (saleType === 'Billable HRA') {
-                            currentTotals.billableHRA++;
+                            todaySales.billableHRA++;
                         } else if (saleType === 'Transfer') {
-                            currentTotals.transfer++;
+                            todaySales.transfer++;
                         }
                     }
                 }
+            }
 
-                console.log('Current totals:', currentTotals); // Debugging log
-
-                // Create progress bars for all sales types
-                createProgressBar(progressBarsContainer, 'Select RX', currentTotals.selectRX, dailyAverages.selectRX);
-                createProgressBar(progressBarsContainer, 'Select Patient Management', currentTotals.selectPatientManagement, dailyAverages.selectPatientManagement);
-                createProgressBar(progressBarsContainer, 'Billable HRA', currentTotals.billableHRA, dailyAverages.billableHRA);
-                createProgressBar(progressBarsContainer, 'Transfer', currentTotals.transfer, dailyAverages.transfer);
-            });
-        });
-    }
-
-    function isSameDay(date1, date2) {
-        return date1.getFullYear() === date2.getFullYear() &&
-               date1.getMonth() === date2.getMonth() &&
-               date1.getDate() === date2.getDate();
-    }
-
-    function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-
-        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-            return 'Select RX';
-        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
-            return 'Billable HRA';
-        } else if (normalizedAction.includes('notes') && /(vbc|transfer|xfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|dental|oak street|osh)/i.test(notes)) {
-            return 'Transfer';
-        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
-            return 'Select Patient Management';
-        } else if (normalizedAction.includes('spm scheduled call')) {
-            return 'Select Patient Management';
+            updateProgressBars(todaySales, dailyAverages);
+        } catch (error) {
+            console.error('Error fetching sales data or daily averages:', error);
         }
-        return action;
+    }
+
+    function updateProgressBars(todaySales, dailyAverages) {
+        const progressBarConfigs = [
+            { id: 'selectRX', label: 'Select RX', total: dailyAverages.selectRX, current: todaySales.selectRX },
+            { id: 'selectPatientManagement', label: 'Select Patient Management', total: dailyAverages.selectPatientManagement, current: todaySales.selectPatientManagement },
+            { id: 'billableHRA', label: 'Billable HRA', total: dailyAverages.billableHRA, current: todaySales.billableHRA },
+            { id: 'transfer', label: 'Transfer', total: dailyAverages.transfer, current: todaySales.transfer }
+        ];
+
+        progressBarConfigs.forEach(config => {
+            const progressBar = document.getElementById(config.id + '-progress');
+            const progressText = document.getElementById(config.id + '-text');
+
+            if (progressBar && progressText) {
+                const percentage = Math.min((config.current / config.total) * 100, 100);
+                progressBar.style.width = percentage + '%';
+                progressText.textContent = `${config.label}: ${config.current}/${config.total} (${Math.round(percentage)}%)`;
+            }
+        });
     }
 
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            console.log('User authenticated:', user.uid); // Debugging log
-            updateProgressBars(user);
+            createProgressBars(user);
         } else {
-            console.error('User not authenticated'); // Debugging log
+            console.error('User not authenticated');
         }
     });
 });
