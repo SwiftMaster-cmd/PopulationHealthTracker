@@ -2,42 +2,50 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProgressBars();
 });
 
-function loadProgressBars() {
-    const salesCountsRef = firebase.database().ref('salesCounts');
-    const currentUserId = firebase.auth().currentUser?.uid;
-    console.log('Current User ID:', currentUserId);
-    
-    if (!currentUserId) {
-        console.error('No user is signed in.');
-        return;
-    }
+async function loadProgressBars() {
+    try {
+        const salesCountsRef = firebase.database().ref('salesCounts');
+        const usersRef = firebase.database().ref('users');
+        const currentUserId = firebase.auth().currentUser?.uid;
 
-    const currentDate = new Date();
-    const currentDayOfWeek = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    const lastWeekStart = new Date();
-    lastWeekStart.setDate(currentDate.getDate() - currentDayOfWeek - 7);
-    const lastWeekEnd = new Date();
-    lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+        if (!currentUserId) {
+            console.error('No user is signed in.');
+            return;
+        }
 
-    const lastWeekSalesRef = salesCountsRef.child(currentUserId).orderByKey().startAt(formatDateKey(lastWeekStart)).endAt(formatDateKey(lastWeekEnd));
+        const currentDate = new Date();
+        const currentDayOfWeek = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const lastWeekStart = new Date();
+        lastWeekStart.setDate(currentDate.getDate() - currentDayOfWeek - 7);
+        const lastWeekEnd = new Date();
+        lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
 
-    lastWeekSalesRef.once('value', snapshot => {
-        const salesData = snapshot.val();
+        // Get sales data for the last week
+        const lastWeekSalesRef = salesCountsRef.child(currentUserId).orderByKey()
+            .startAt(formatDateKey(lastWeekStart))
+            .endAt(formatDateKey(lastWeekEnd));
+        
+        const lastWeekSalesSnapshot = await lastWeekSalesRef.once('value');
+        const lastWeekSalesData = lastWeekSalesSnapshot.val();
 
-        if (!salesData) {
+        if (!lastWeekSalesData) {
             console.error('No sales data for last week.');
             return;
         }
 
-        const weeklyTotals = calculateWeeklyTotals(salesData);
+        const weeklyTotals = calculateWeeklyTotals(lastWeekSalesData);
         const dailyAverages = calculateDailyAverages(weeklyTotals);
-        const currentSalesRef = salesCountsRef.child(currentUserId).child(getCurrentDateKey());
 
-        currentSalesRef.once('value', currentDaySnapshot => {
-            const currentDaySales = currentDaySnapshot.val() || { selectRX: 0, transfer: 0, billableHRA: 0, selectPatientManagement: 0 };
-            updateProgressBars(currentDaySales, dailyAverages);
-        });
-    });
+        // Get current day's sales data
+        const currentDaySalesRef = salesCountsRef.child(currentUserId).child(getCurrentDateKey());
+        const currentDaySalesSnapshot = await currentDaySalesRef.once('value');
+        const currentDaySales = currentDaySalesSnapshot.val() || { selectRX: 0, transfer: 0, billableHRA: 0, selectPatientManagement: 0 };
+
+        // Update progress bars
+        updateProgressBars(currentDaySales, dailyAverages);
+    } catch (error) {
+        console.error('Error loading progress bars:', error);
+    }
 }
 
 function calculateWeeklyTotals(salesData) {
@@ -77,7 +85,13 @@ function updateProgressBars(currentDaySales, dailyAverages) {
 
 function updateProgressBar(salesType, currentValue, goalValue) {
     const progressBar = document.getElementById(`${salesType}-progress-bar`);
+    if (!progressBar) {
+        console.error(`Progress bar element not found for ${salesType}`);
+        return;
+    }
+
     const percentage = Math.min(100, (currentValue / goalValue) * 100).toFixed(2);
+    console.log(`Updating ${salesType} progress bar: ${currentValue} / ${goalValue} (${percentage}%)`);
 
     progressBar.style.width = `${percentage}%`;
     progressBar.textContent = `${currentValue} / ${goalValue} (${percentage}%)`;
