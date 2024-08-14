@@ -1,5 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
-    loadProgressBars();
+document.addEventListener('DOMContentLoaded', function() {
+    // Authenticate and then load the progress bars
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            console.log(`User signed in: ${user.displayName}`);
+            loadProgressBars(user);
+        } else {
+            console.error('No user is signed in.');
+        }
+    });
 });
 
 async function loadProgressBars() {
