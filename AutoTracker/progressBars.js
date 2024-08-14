@@ -86,11 +86,19 @@ document.addEventListener('firebaseInitialized', function() {
                     }
                 }
 
-                // Create progress bars for each sale type, but only if the average is greater than 0
-                createProgressBar(progressBarsContainer, 'Select RX', currentTotals.selectRX, roundedAverages.selectRX);
-                createProgressBar(progressBarsContainer, 'Select Patient Management', currentTotals.selectPatientManagement, roundedAverages.selectPatientManagement);
-                createProgressBar(progressBarsContainer, 'Billable HRA', currentTotals.billableHRA, roundedAverages.billableHRA);
-                createProgressBar(progressBarsContainer, 'Transfer', currentTotals.transfer, roundedAverages.transfer);
+                // Create progress bars only if the daily average is greater than 0
+                if (roundedAverages.selectRX > 0) {
+                    createProgressBar(progressBarsContainer, 'Select RX', currentTotals.selectRX, roundedAverages.selectRX);
+                }
+                if (roundedAverages.selectPatientManagement > 0) {
+                    createProgressBar(progressBarsContainer, 'Select Patient Management', currentTotals.selectPatientManagement, roundedAverages.selectPatientManagement);
+                }
+                if (roundedAverages.billableHRA > 0) {
+                    createProgressBar(progressBarsContainer, 'Billable HRA', currentTotals.billableHRA, roundedAverages.billableHRA);
+                }
+                if (roundedAverages.transfer > 0) {
+                    createProgressBar(progressBarsContainer, 'Transfer', currentTotals.transfer, roundedAverages.transfer);
+                }
             });
         });
     }
