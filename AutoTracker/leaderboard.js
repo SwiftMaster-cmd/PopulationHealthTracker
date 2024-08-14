@@ -47,6 +47,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
+    const lastResetRef = database.ref('lastReset'); // Reference to store the last reset date
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -56,7 +57,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     salesCountsRef.off('value');
 
-    salesCountsRef.on('value', salesSnapshot => {
+    salesCountsRef.on('value', async salesSnapshot => {
         const salesData = salesSnapshot.val();
         if (!salesData) {
             console.error('No sales data found');
@@ -65,71 +66,90 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
         const users = [];
 
-        firebase.auth().onAuthStateChanged(user => {
+        firebase.auth().onAuthStateChanged(async user => {
             if (user) {
-                usersRef.once('value', usersSnapshot => {
-                    const usersData = usersSnapshot.val();
-                    const currentUserId = user.uid;
+                // Check if daily reset is needed
+                const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+                const lastResetSnapshot = await lastResetRef.once('value');
+                const lastResetDate = lastResetSnapshot.val();
 
+                if (lastResetDate !== today) {
+                    // Reset sales counts for the day
                     for (const userId in salesData) {
-                        const userData = salesData[userId];
-                        let count = 0;
-
-                        if (period === 'day') {
-                            if (userData.day && userData.day[saleType] !== undefined) {
-                                count = userData.day[saleType]; // Access the count directly
-                            }
-                        } else if (period === 'week') {
-                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                        } else if (period === 'month') {
-                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
-                        }
-
-                        let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                        users.push({ userId, name, count });
+                        salesCountsRef.child(`${userId}/day`).set({
+                            selectRX: 0, // Reset specific sale types here as needed
+                            // Add other sale types to reset if necessary
+                        });
                     }
 
-                    users.sort((a, b) => b.count - a.count);
+                    // Update the last reset date
+                    lastResetRef.set(today);
+                    console.log('Daily sales counts reset');
+                }
 
-                    leaderboardSection.innerHTML = ''; // Clear the section before adding new items
+                // Proceed with loading the leaderboard
+                const usersSnapshot = await usersRef.once('value');
+                const usersData = usersSnapshot.val();
+                const currentUserId = user.uid;
 
-                    users.forEach((user, index) => {
-                        // Create the leaderboard item container
-                        const leaderboardItem = document.createElement('div');
-                        leaderboardItem.classList.add('leaderboard-item');
+                for (const userId in salesData) {
+                    const userData = salesData[userId];
+                    let count = 0;
 
-                        // Add the appropriate class based on rank
-                        if (index === 0) {
-                            leaderboardItem.classList.add('first-place');
-                        } else if (index === 1) {
-                            leaderboardItem.classList.add('second-place');
-                        } else if (index === 2) {
-                            leaderboardItem.classList.add('third-place');
+                    if (period === 'day') {
+                        if (userData.day && userData.day[saleType] !== undefined) {
+                            count = userData.day[saleType]; // Access the count directly
                         }
+                    } else if (period === 'week') {
+                        count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                    } else if (period === 'month') {
+                        count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
+                    }
 
-                        // Create the position container
-                        const positionContainer = document.createElement('div');
-                        positionContainer.classList.add('leaderboard-position');
-                        positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
+                    let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                    users.push({ userId, name, count });
+                }
 
-                        // Create the name container
-                        const nameContainer = document.createElement('div');
-                        nameContainer.classList.add('leaderboard-name');
-                        nameContainer.textContent = user.name;
+                users.sort((a, b) => b.count - a.count);
 
-                        // Create the score container
-                        const scoreContainer = document.createElement('div');
-                        scoreContainer.classList.add('leaderboard-score');
-                        scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
+                leaderboardSection.innerHTML = ''; // Clear the section before adding new items
 
-                        // Append the containers to the leaderboard item
-                        leaderboardItem.appendChild(positionContainer);
-                        leaderboardItem.appendChild(nameContainer);
-                        leaderboardItem.appendChild(scoreContainer);
+                users.forEach((user, index) => {
+                    // Create the leaderboard item container
+                    const leaderboardItem = document.createElement('div');
+                    leaderboardItem.classList.add('leaderboard-item');
 
-                        // Append the leaderboard item to the section
-                        leaderboardSection.appendChild(leaderboardItem);
-                    });
+                    // Add the appropriate class based on rank
+                    if (index === 0) {
+                        leaderboardItem.classList.add('first-place');
+                    } else if (index === 1) {
+                        leaderboardItem.classList.add('second-place');
+                    } else if (index === 2) {
+                        leaderboardItem.classList.add('third-place');
+                    }
+
+                    // Create the position container
+                    const positionContainer = document.createElement('div');
+                    positionContainer.classList.add('leaderboard-position');
+                    positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
+
+                    // Create the name container
+                    const nameContainer = document.createElement('div');
+                    nameContainer.classList.add('leaderboard-name');
+                    nameContainer.textContent = user.name;
+
+                    // Create the score container
+                    const scoreContainer = document.createElement('div');
+                    scoreContainer.classList.add('leaderboard-score');
+                    scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
+
+                    // Append the containers to the leaderboard item
+                    leaderboardItem.appendChild(positionContainer);
+                    leaderboardItem.appendChild(nameContainer);
+                    leaderboardItem.appendChild(scoreContainer);
+
+                    // Append the leaderboard item to the section
+                    leaderboardSection.appendChild(leaderboardItem);
                 });
             } else {
                 console.error('No user is signed in.');
@@ -139,6 +159,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 
