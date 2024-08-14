@@ -468,15 +468,16 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
 
 async function calculateAndSaveWeeklyDailyAverages() {
     const database = firebase.database();
+    const salesOutcomesRef = database.ref('salesOutcomes');
     const salesCountsRef = database.ref('salesCounts');
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     const startDate = oneWeekAgo.toISOString().split('T')[0]; // Start date in YYYY-MM-DD format
 
-    salesCountsRef.once('value', snapshot => {
+    salesOutcomesRef.once('value', snapshot => {
         const salesData = snapshot.val();
         if (!salesData) {
-            console.error('No sales data found for calculating weekly daily averages.');
+            console.error('No sales data found in salesOutcomes for calculating weekly daily averages.');
             return;
         }
 
@@ -511,16 +512,16 @@ async function calculateAndSaveWeeklyDailyAverages() {
                     notes: weeklyTotals.notes / 7
                 };
 
-                // Save the daily averages to the database
+                // Save the daily averages to the salesCounts node
                 salesCountsRef.child(`${userId}/dailyAverages`).set(dailyAverages);
             } else {
                 console.log(`No sales data for user ${userId} in the past week.`);
             }
         }
 
-        console.log('Daily averages for the past week calculated and saved.');
+        console.log('Daily averages for the past week calculated and saved to salesCounts.');
     }, error => {
-        console.error('Error fetching sales data for calculating daily averages:', error);
+        console.error('Error fetching sales data from salesOutcomes for calculating daily averages:', error);
     });
 }
 
@@ -532,6 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
 
 
