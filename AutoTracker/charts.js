@@ -143,7 +143,7 @@ function getDailyChartData(salesData) {
 function getEarliestAndLatestTimes(salesData) {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
-    
+
     let earliestHour = 24;
     let latestHour = 0;
 
@@ -159,6 +159,10 @@ function getEarliestAndLatestTimes(salesData) {
             });
         }
     }
+
+    // Ensure earliestHour and latestHour are within a 12-hour range
+    earliestHour = Math.max(earliestHour, 7);
+    latestHour = Math.min(latestHour, 21);
 
     return { earliestHour, latestHour };
 }
