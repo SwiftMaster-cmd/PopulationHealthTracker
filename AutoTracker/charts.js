@@ -139,7 +139,7 @@ function getDailyChartData(salesData) {
 }
 
 function getWeeklyChartData(salesData) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = ['S', 'M', 'T', 'W', 'Th', 'F', 'S'];
     const now = new Date();
     const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay())).setHours(0, 0, 0, 0);
     const endOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + 6)).setHours(23, 59, 59, 999);
