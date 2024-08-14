@@ -140,24 +140,58 @@ function getDailyChartData(salesData) {
 
 function getWeeklyChartData(salesData) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const currentWeekData = getCurrentWeekData(salesData);
+    const now = new Date();
+    const firstDayOfWeek = now.getDate() - now.getDay(); // Get the first day of the current week (Sunday)
+    const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
+    const endOfWeek = new Date(now.setDate(firstDayOfWeek + 6)).setHours(23, 59, 59, 999);
+
+    const currentWeekSales = {};
+
+    for (const account in salesData) {
+        currentWeekSales[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentWeekSales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime).getTime();
+                return saleDate >= startOfWeek && saleDate <= endOfWeek;
+            });
+        }
+    }
 
     const data = {
         labels: days,
-        datasets: createDatasets(days, currentWeekData, 'week')
+        datasets: createDatasets(days, currentWeekSales, 'week')
     };
     return data;
 }
 
+
 function getMonthlyChartData(salesData) {
-    const today = new Date().getDate();
-    const daysInMonth = Array.from({ length: today }, (_, i) => (i + 1).toString());
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).setHours(23, 59, 59, 999);
+
+    const daysInMonth = Array.from({ length: now.getDate() }, (_, i) => (i + 1).toString());
+    const currentMonthSales = {};
+
+    for (const account in salesData) {
+        currentMonthSales[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentMonthSales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime).getTime();
+                return saleDate >= startOfMonth && saleDate <= endOfMonth;
+            });
+        }
+    }
+
     const data = {
         labels: daysInMonth,
-        datasets: createDatasets(daysInMonth, salesData, 'month')
+        datasets: createDatasets(daysInMonth, currentMonthSales, 'month')
     };
     return data;
 }
+
 
 
 function getCurrentDayData(salesData) {
