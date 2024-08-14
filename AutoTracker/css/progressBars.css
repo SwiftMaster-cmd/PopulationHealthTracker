@@ -1,19 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Apple+System+UI:ital,wght@0,700;1,700&display=swap');
+
 .progress-container {
+    position: relative;
     width: 100%;
-    background-color: #f3f3f3;
-    border-radius: 4px;
-    margin: 10px 0;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--margin-s);
+    overflow: hidden;
+    margin-bottom: var(--margin-m);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .progress-bar {
-    height: 20px;
-    background-color: #4caf50;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--color-quinary); /* Initial color */
+    border-radius: var(--margin-s);
     width: 0%;
-    border-radius: 4px;
-    transition: width 0.3s;
+    transition: width 0.5s ease, background-color 0.3s ease;
 }
 
-#progress-bars span {
-    display: block;
-    margin-top: 5px;
+.progress-container[data-type="selectRX"] .progress-bar {
+    background-color: var(--color-primary);
+}
+
+.progress-container[data-type="selectPatientManagement"] .progress-bar {
+    background-color: var(--color-secondary);
+}
+
+.progress-container[data-type="billableHRA"] .progress-bar {
+    background-color: var(--color-tertiary);
+}
+
+.progress-container[data-type="transfer"] .progress-bar {
+    background-color: var(--color-quaternary);
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-white);
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1;
+}
+
+@keyframes realTimeProgress {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+/* For small screens */
+@media (max-width: 768px) {
+    .progress-container {
+        height: 25px;
+    }
+
+    .progress-text {
+        font-size: 0.85rem;
+    }
 }
