@@ -147,8 +147,14 @@ function getDailyChartData(salesData) {
         }
     }
 
-    // Generate time labels based on the earliest and latest times
-    const hours = Array.from({ length: (latestTime - earliestTime + 1) }, (_, i) => `${i + earliestTime}:00`);
+    // Generate time labels based on the earliest and latest times in 12-hour format
+    const hours = Array.from({ length: (latestTime - earliestTime + 1) }, (_, i) => {
+        let hour = i + earliestTime;
+        let period = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12; // Convert to 12-hour format, with 12 instead of 0
+        return `${hour} ${period}`;
+    });
+
     const currentDayData = getCurrentDayData(salesData);
 
     const data = {
@@ -157,6 +163,7 @@ function getDailyChartData(salesData) {
     };
     return data;
 }
+
 
 function getWeeklyChartData(salesData) {
     const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
