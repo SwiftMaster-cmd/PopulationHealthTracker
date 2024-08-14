@@ -466,7 +466,7 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
 
 
 
-async function calculateAndSaveWeeklyAverages() {
+async function calculateAndSaveWeeklyDailyAverages() {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const oneWeekAgo = new Date();
@@ -476,7 +476,7 @@ async function calculateAndSaveWeeklyAverages() {
     salesCountsRef.once('value', snapshot => {
         const salesData = snapshot.val();
         if (!salesData) {
-            console.error('No sales data found for calculating weekly averages.');
+            console.error('No sales data found for calculating weekly daily averages.');
             return;
         }
 
@@ -503,24 +503,24 @@ async function calculateAndSaveWeeklyAverages() {
             }
 
             if (daysCounted > 0) {
-                // Calculate the average for each sale type
-                const weeklyAverages = {
-                    selectRX: weeklyTotals.selectRX / daysCounted,
-                    selectPatientManagement: weeklyTotals.selectPatientManagement / daysCounted,
-                    hraCompleted: weeklyTotals.hraCompleted / daysCounted,
-                    notes: weeklyTotals.notes / daysCounted
+                // Calculate the average daily sales for each sale type over the past week
+                const dailyAverages = {
+                    selectRX: weeklyTotals.selectRX / 7, // Dividing by 7 days for daily average
+                    selectPatientManagement: weeklyTotals.selectPatientManagement / 7,
+                    hraCompleted: weeklyTotals.hraCompleted / 7,
+                    notes: weeklyTotals.notes / 7
                 };
 
-                // Save the weekly averages to the database
-                salesCountsRef.child(`${userId}/weeklyAverages`).set(weeklyAverages);
+                // Save the daily averages to the database
+                salesCountsRef.child(`${userId}/dailyAverages`).set(dailyAverages);
             } else {
                 console.log(`No sales data for user ${userId} in the past week.`);
             }
         }
 
-        console.log('Weekly averages calculated and saved.');
+        console.log('Daily averages for the past week calculated and saved.');
     }, error => {
-        console.error('Error fetching sales data for calculating weekly averages:', error);
+        console.error('Error fetching sales data for calculating daily averages:', error);
     });
 }
 
@@ -528,7 +528,7 @@ async function calculateAndSaveWeeklyAverages() {
 document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            calculateAndSaveWeeklyAverages();
+            calculateAndSaveWeeklyDailyAverages();
         }
     });
 });
