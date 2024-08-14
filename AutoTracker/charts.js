@@ -139,7 +139,7 @@ function getDailyChartData(salesData) {
 }
 
 function getWeeklyChartData(salesData) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     const now = new Date();
     const firstDayOfWeek = now.getDate() - now.getDay(); // Get the first day of the current week (Sunday)
     const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
@@ -166,19 +166,20 @@ function getWeeklyChartData(salesData) {
 }
 
 
+
 function getMonthlyChartData(salesData) {
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).setHours(0, 0, 0, 0);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).setHours(23, 59, 59, 999);
-
+    
     const daysInMonth = Array.from({ length: now.getDate() }, (_, i) => (i + 1).toString());
-    const currentMonthSales = {};
+    const currentMonthData = {};
 
     for (const account in salesData) {
-        currentMonthSales[account] = {};
+        currentMonthData[account] = {};
 
         for (const saleType in salesData[account]) {
-            currentMonthSales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+            currentMonthData[account][saleType] = salesData[account][saleType].filter(saleTime => {
                 const saleDate = new Date(saleTime).getTime();
                 return saleDate >= startOfMonth && saleDate <= endOfMonth;
             });
@@ -187,11 +188,10 @@ function getMonthlyChartData(salesData) {
 
     const data = {
         labels: daysInMonth,
-        datasets: createDatasets(daysInMonth, currentMonthSales, 'month')
+        datasets: createDatasets(daysInMonth, currentMonthData, 'month')
     };
     return data;
 }
-
 
 
 
