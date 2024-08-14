@@ -212,27 +212,30 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
+        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off(); // Clear previous listeners
-
-        salesTimeFramesRef.on('child_added', async snapshot => {
-            const sale = snapshot.val();
-            if (!sale) {
-                console.error('No sale data found');
+        salesTimeFramesRef.off('value'); // Clear previous listeners
+        salesTimeFramesRef.on('value', async salesSnapshot => {
+            const salesData = salesSnapshot.val();
+            if (!salesData) {
+                console.error('No sales data found');
+                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
                 return;
             }
 
-            const saleDate = new Date(sale.timestamp).toISOString().split('T')[0];
-            const today = new Date().toISOString().split('T')[0];
+            currentSales = await processSalesData(salesData);
+            await addUserNames(currentSales, usersRef);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+        });
 
-            if (saleDate === today) {
-                await addUserNames([sale], usersRef);
-                renderSales([sale], liveActivitiesSection, likesRef, usersRef);
+        liveActivitiesSection.addEventListener('scroll', () => {
+            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
             }
         });
 
@@ -240,25 +243,6 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
-
-async function processSalesData(salesData, today) {
-    const currentSales = [];
-
-    for (const saleId in salesData) {
-        const sale = salesData[saleId];
-        const saleDate = new Date(sale.timestamp).toISOString().split('T')[0];
-
-        if (saleDate === today) {
-            currentSales.push(sale);
-        }
-    }
-
-    // Sort by timestamp if needed, for example:
-    currentSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-    return currentSales;
-}
-
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
