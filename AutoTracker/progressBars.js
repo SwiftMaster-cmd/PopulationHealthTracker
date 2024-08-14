@@ -12,8 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadProgressBars(user) {
     try {
-        const salesCountsRef = firebase.database().ref('salesCounts');
-        const currentUserId = user.uid;
+        const salesOutcomesRef = firebase.database().ref('salesOutcomes').child(user.uid);
 
         const currentDate = new Date();
         const currentDayOfWeek = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
@@ -23,9 +22,9 @@ async function loadProgressBars(user) {
         lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
 
         // Get sales data for the last week
-        const lastWeekSalesRef = salesCountsRef.child(currentUserId).orderByKey()
-            .startAt(formatDateKey(lastWeekStart))
-            .endAt(formatDateKey(lastWeekEnd));
+        const lastWeekSalesRef = salesOutcomesRef.orderByChild('outcomeTime')
+            .startAt(lastWeekStart.getTime())
+            .endAt(lastWeekEnd.getTime());
         
         const lastWeekSalesSnapshot = await lastWeekSalesRef.once('value');
         const lastWeekSalesData = lastWeekSalesSnapshot.val();
@@ -39,7 +38,9 @@ async function loadProgressBars(user) {
         const dailyAverages = calculateDailyAverages(weeklyTotals);
 
         // Get current day's sales data
-        const currentDaySalesRef = salesCountsRef.child(currentUserId).child(getCurrentDateKey());
+        const currentDaySalesRef = salesOutcomesRef.orderByChild('outcomeTime')
+            .startAt(getCurrentDateKey());
+
         const currentDaySalesSnapshot = await currentDaySalesRef.once('value');
         const currentDaySales = currentDaySalesSnapshot.val() || { selectRX: 0, transfer: 0, billableHRA: 0, selectPatientManagement: 0 };
 
@@ -49,6 +50,7 @@ async function loadProgressBars(user) {
         console.error('Error loading progress bars:', error);
     }
 }
+
 
 function calculateWeeklyTotals(salesData) {
     const totals = {
