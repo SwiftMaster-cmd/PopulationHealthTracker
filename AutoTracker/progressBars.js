@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Authenticate and then load the progress bars
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             console.log(`User signed in: ${user.displayName}`);
@@ -37,7 +36,7 @@ async function calculateAndStoreWeeklyAverages() {
                 const saleDate = new Date(sale.outcomeTime);
 
                 if (saleDate >= weekAgo && saleDate < today) {
-                    const saleType = sanitizeForFirebaseKey(sale.notesValue || 'unknown'); // Sanitize the sale type
+                    const saleType = sanitizeForFirebaseKey(sale.assignAction || 'unknown'); // Sanitize the sale type
                     if (!weeklyAverages[saleType]) {
                         weeklyAverages[saleType] = { total: 0, count: 0 };
                     }
@@ -92,7 +91,7 @@ async function loadProgressBars() {
                 const saleDate = new Date(sale.outcomeTime).toISOString().split('T')[0];
 
                 if (saleDate === today) {
-                    const saleType = sanitizeForFirebaseKey(sale.notesValue || 'unknown'); // Sanitize the sale type
+                    const saleType = sanitizeForFirebaseKey(sale.assignAction || 'unknown'); // Sanitize the sale type
                     if (!todayTotals[saleType]) {
                         todayTotals[saleType] = 0;
                     }
