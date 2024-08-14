@@ -166,7 +166,7 @@ function getDailyChartData(salesData) {
 
 
 function getWeeklyChartData(salesData) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     const now = new Date();
     const firstDayOfWeek = now.getDate() - now.getDay(); // Get the first day of the current week (Sunday)
     const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
