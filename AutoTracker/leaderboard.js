@@ -217,6 +217,7 @@ async function loadLiveActivities() {
         }
 
         salesTimeFramesRef.off('value'); // Clear previous listeners
+
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
@@ -225,7 +226,9 @@ async function loadLiveActivities() {
                 return;
             }
 
-            currentSales = await processSalesData(salesData);
+            const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
+            const currentSales = await processSalesData(salesData, today); // Filter by today's date
             await addUserNames(currentSales, usersRef);
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
@@ -240,6 +243,25 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
+
+async function processSalesData(salesData, today) {
+    const currentSales = [];
+
+    for (const saleId in salesData) {
+        const sale = salesData[saleId];
+        const saleDate = new Date(sale.timestamp).toISOString().split('T')[0];
+
+        if (saleDate === today) {
+            currentSales.push(sale);
+        }
+    }
+
+    // Sort by timestamp if needed, for example:
+    currentSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    return currentSales;
+}
+
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
