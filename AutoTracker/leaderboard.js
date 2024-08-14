@@ -106,8 +106,11 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                         count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
                     }
 
-                    let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                    users.push({ userId, name, count });
+                    // Only include users with non-zero sales counts
+                    if (count > 0) {
+                        let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                        users.push({ userId, name, count });
+                    }
                 }
 
                 users.sort((a, b) => b.count - a.count);
