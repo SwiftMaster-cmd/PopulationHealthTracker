@@ -66,13 +66,13 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 'billableHRA', label: 'Billable HRA', total: dailyAverages.billableHRA, current: todaySales.billableHRA },
             { id: 'transfer', label: 'Transfer', total: dailyAverages.transfer, current: todaySales.transfer }
         ];
-    
+
         progressBarConfigs.forEach(config => {
             if (config.total > 0) { // Only show progress bars with a positive daily average
                 const progressBar = document.getElementById(config.id + '-progress');
                 const progressCurrent = document.getElementById(config.id + '-current');
                 const progressGoal = document.getElementById(config.id + '-goal');
-    
+
                 if (progressBar && progressCurrent && progressGoal) {
                     const percentage = Math.min((config.current / config.total) * 100, 100);
                     progressBar.style.width = percentage + '%';
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             createProgressBars(user);
