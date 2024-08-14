@@ -453,21 +453,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
 document.addEventListener('DOMContentLoaded', function() {
     // Helper functions
 
-    // Function to remove duplicates
-    function removeDuplicates(user) {
+    // Function to remove duplicates for a specific user's sales outcomes
+    function removeDuplicatesForUser(userId, outcomes) {
         const database = firebase.database();
-        const outcomesRef = database.ref('salesOutcomes/' + user.uid);
+        const outcomesRef = database.ref('salesOutcomes/' + userId);
+        const seenOutcomes = {};
 
-        outcomesRef.on('value', (snapshot) => { // Listen for real-time updates
-            const outcomes = snapshot.val();
-            const seenOutcomes = {};
-
-            snapshot.forEach(childSnapshot => {
-                const outcome = childSnapshot.val();
+        for (const outcomeKey in outcomes) {
+            if (outcomes.hasOwnProperty(outcomeKey)) {
+                const outcome = outcomes[outcomeKey];
                 const action = outcome.assignAction;
                 const accountNumber = outcome.accountNumber;
                 const firstName = outcome.customerInfo.firstName;
@@ -483,14 +480,31 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Remove the older record
                         outcomesRef.child(seenOutcomes[key].key).remove();
                         // Update the seenOutcomes with the latest record
-                        seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
+                        seenOutcomes[key] = { key: outcomeKey, outcomeTime: outcome.outcomeTime };
                     } else {
                         // Remove the current record as it is older
-                        outcomesRef.child(childSnapshot.key).remove();
+                        outcomesRef.child(outcomeKey).remove();
                     }
                 } else {
                     // Add the record to seenOutcomes
-                    seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
+                    seenOutcomes[key] = { key: outcomeKey, outcomeTime: outcome.outcomeTime };
+                }
+            }
+        }
+    }
+
+    // Function to remove duplicates for all users
+    function removeDuplicatesForAllUsers() {
+        const database = firebase.database();
+        const salesOutcomesRef = database.ref('salesOutcomes');
+
+        salesOutcomesRef.on('value', (snapshot) => { // Listen for real-time updates
+            snapshot.forEach(userSnapshot => {
+                const userId = userSnapshot.key;
+                const userOutcomes = userSnapshot.val();
+
+                if (userOutcomes) {
+                    removeDuplicatesForUser(userId, userOutcomes);
                 }
             });
         }, (error) => {
@@ -498,11 +512,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Authenticate and call removeDuplicates
+    // Authenticate and call removeDuplicatesForAllUsers
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             console.log('Authenticated user:', user.displayName);
-            removeDuplicates(user);
+            removeDuplicatesForAllUsers();
         } else {
             console.error('User not authenticated');
         }
