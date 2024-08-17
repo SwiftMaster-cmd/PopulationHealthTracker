@@ -316,8 +316,11 @@ function createDatasets(labels, salesData, period) {
 function getSaleCountForLabel(salesData, period, saleType, label) {
     let count = 0;
 
+    console.log(`Processing saleType: ${saleType}, label: ${label}`);
+
     Object.values(salesData).forEach(accountData => {
         const sales = accountData[saleType];
+        console.log(`Sales data for ${saleType}: `, sales);
         if (sales) {
             sales.forEach(saleTime => {
                 const saleDate = new Date(saleTime);
@@ -333,8 +336,10 @@ function getSaleCountForLabel(salesData, period, saleType, label) {
         }
     });
 
+    console.log(`Count for ${saleType} at ${label}: ${count}`);
     return count;
 }
+
 
 function formatHour(date) {
     const hours = date.getHours();
