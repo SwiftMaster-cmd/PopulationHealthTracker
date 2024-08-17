@@ -29,10 +29,25 @@ function changeChart(period) {
     const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
     loadChart(period, canvasId); // Load the selected chart data
 }
+// Adjusts the date and reloads the chart based on the current period
+function navigateDate(direction) {
+    const activeChart = document.querySelector('.picker-chart-container.container[style*="display: flex;"]');
 
+    if (activeChart.id.includes('Day')) {
+        currentDate.setDate(currentDate.getDate() + direction);
+        loadChart('day', 'salesChartDay');
+    } else if (activeChart.id.includes('Week')) {
+        currentDate.setDate(currentDate.getDate() + (direction * 7));
+        loadChart('week', 'salesChartWeek');
+    } else if (activeChart.id.includes('Month')) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        loadChart('month', 'salesChartMonth');
+    }
+}
 
 
 let salesCharts = {};
+let currentDate = new Date(); // Keeps track of the current date displayed
 
 function loadChart(period, canvasId) {
     const database = firebase.database();
@@ -50,11 +65,11 @@ function loadChart(period, canvasId) {
                 };
 
                 if (period === 'day') {
-                    chartData = getDailyChartData(salesData);
+                    chartData = getDailyChartData(salesData, currentDate);
                 } else if (period === 'week') {
-                    chartData = getWeeklyChartData(salesData);
+                    chartData = getWeeklyChartData(salesData, currentDate);
                 } else if (period === 'month') {
-                    chartData = getMonthlyChartData(salesData);
+                    chartData = getMonthlyChartData(salesData, currentDate);
                 }
 
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
@@ -145,8 +160,8 @@ function loadChart(period, canvasId) {
     });
 }
 
-function getDailyChartData(salesData) {
-    const now = new Date();
+function getDailyChartData(salesData, date) {
+    const now = date || new Date();
     const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
     let earliestTime = 24; // Start with the latest possible hour
     let latestTime = 0; // Start with the earliest possible hour
@@ -173,7 +188,7 @@ function getDailyChartData(salesData) {
         return `${hour} ${period}`;
     });
 
-    const currentDayData = getCurrentDayData(salesData);
+    const currentDayData = getCurrentDayData(salesData, now);
 
     const data = {
         labels: hours,
@@ -182,10 +197,9 @@ function getDailyChartData(salesData) {
     return data;
 }
 
-
-function getWeeklyChartData(salesData) {
+function getWeeklyChartData(salesData, date) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const now = new Date();
+    const now = date || new Date();
     const firstDayOfWeek = now.getDate() - now.getDay(); // Get the first day of the current week (Sunday)
     const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
     const endOfWeek = new Date(now.setDate(firstDayOfWeek + 6)).setHours(23, 59, 59, 999);
@@ -210,13 +224,8 @@ function getWeeklyChartData(salesData) {
     return data;
 }
 
-
-
-
-
-
-function getMonthlyChartData(salesData) {
-    const now = new Date();
+function getMonthlyChartData(salesData, date) {
+    const now = date || new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).setHours(0, 0, 0, 0);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).setHours(23, 59, 59, 999);
     
@@ -241,6 +250,20 @@ function getMonthlyChartData(salesData) {
     return data;
 }
 
+function navigateDate(direction) {
+    const activeChart = document.querySelector('.picker-chart-container.container[style*="display: flex;"]');
+
+    if (activeChart.id.includes('Day')) {
+        currentDate.setDate(currentDate.getDate() + direction);
+        loadChart('day', 'salesChartDay');
+    } else if (activeChart.id.includes('Week')) {
+        currentDate.setDate(currentDate.getDate() + (direction * 7));
+        loadChart('week', 'salesChartWeek');
+    } else if (activeChart.id.includes('Month')) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        loadChart('month', 'salesChartMonth');
+    }
+}
 
 
 
