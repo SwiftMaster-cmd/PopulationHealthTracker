@@ -21,30 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function toggleSaleTypeVisibility(saleType, button) {
-    const chart = salesCharts[getCurrentChartId()];
-    if (!chart) {
-        console.error('No chart found for the current ID.');
-        return;
-    }
+    Object.keys(salesCharts).forEach(chartId => {
+        const chart = salesCharts[chartId];
+        const dataset = chart.data.datasets.find(ds => ds.label === saleType);
+        if (dataset) {
+            dataset.hidden = !dataset.hidden;
 
-    const dataset = chart.data.datasets.find(ds => ds.label === saleType);
-    if (!dataset) {
-        console.error(`Dataset with label ${saleType} not found.`);
-        return;
-    }
+            // Update button appearance based on visibility
+            if (dataset.hidden) {
+                button.classList.add('hidden');
+            } else {
+                button.classList.remove('hidden');
+            }
 
-    // Toggle the visibility
-    dataset.hidden = !dataset.hidden;
-
-    // Update button appearance based on visibility
-    if (dataset.hidden) {
-        button.classList.add('hidden');
-    } else {
-        button.classList.remove('hidden');
-    }
-
-    // Update the chart to reflect the changes
-    chart.update();
+            chart.update(); // Update the chart to reflect the changes
+        }
+    });
 }
 
 function getCurrentChartId() {
@@ -53,7 +45,6 @@ function getCurrentChartId() {
         const chartId = visibleChartContainer.querySelector('canvas').id;
         return chartId;
     }
-    console.error('No visible chart container found.');
     return null;
 }
 
@@ -175,11 +166,10 @@ function loadChart(period, canvasId) {
                             }
                         }
                     });
-                }
 
-                // Apply visibility based on the footer buttons
-                updateDatasetVisibility(chartData.datasets);
-                salesCharts[canvasId].update();
+                    // Apply visibility based on the footer buttons
+                    updateDatasetVisibility(salesCharts[canvasId].data.datasets);
+                }
             }, error => {
                 console.error('Error fetching sales data:', error);
             });
@@ -201,6 +191,10 @@ function updateDatasetVisibility(datasets) {
     });
 }
 
+function hexToRgba(hex, alpha) {
+    const [r, g, b] = hex.match(/\d+/g).map(Number);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 function getDailyChartData(salesData) {
     const now = new Date();
