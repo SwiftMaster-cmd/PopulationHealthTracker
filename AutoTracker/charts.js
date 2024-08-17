@@ -48,17 +48,22 @@ function changeChart(period) {
 function navigateDate(direction) {
     const activeChart = document.querySelector('.picker-chart-container.container[style*="display: flex;"]');
 
-    if (activeChart.id.includes('Day')) {
-        currentDate.setDate(currentDate.getDate() + direction);
-        loadChart('day', 'salesChartDay');
-    } else if (activeChart.id.includes('Week')) {
-        currentDate.setDate(currentDate.getDate() + (direction * 7));
-        loadChart('week', 'salesChartWeek');
-    } else if (activeChart.id.includes('Month')) {
-        currentDate.setMonth(currentDate.getMonth() + direction);
-        loadChart('month', 'salesChartMonth');
+    if (activeChart) {
+        if (activeChart.id.includes('Day')) {
+            currentDate.setDate(currentDate.getDate() + direction);
+            loadChart('day', 'salesChartDay');
+        } else if (activeChart.id.includes('Week')) {
+            currentDate.setDate(currentDate.getDate() + (direction * 7));
+            loadChart('week', 'salesChartWeek');
+        } else if (activeChart.id.includes('Month')) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            loadChart('month', 'salesChartMonth');
+        }
+    } else {
+        console.error("No active chart found.");
     }
 }
+
 
 function loadChart(period, canvasId) {
     const database = firebase.database();
