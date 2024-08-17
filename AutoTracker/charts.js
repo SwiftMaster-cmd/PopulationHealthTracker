@@ -53,9 +53,9 @@ function getCurrentChartId() {
         const chartId = visibleChartContainer.querySelector('canvas').id;
         return chartId;
     }
+    console.error('No visible chart container found.');
     return null;
 }
-
 
 function changeChart(period) {
     const chartIds = ['Day', 'Week', 'Month'];
@@ -75,6 +75,7 @@ function changeChart(period) {
     const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
     loadChart(period, canvasId); // Load the selected chart data
 }
+
 
 
 
