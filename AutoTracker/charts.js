@@ -223,20 +223,52 @@ function getDayDateRange() {
 }
 
 function createDatasets(labels, salesData, period) {
-    const datasets = ['SPM', 'Transfer', 'HRA', 'SRX'].map((saleType, index) => {
-        const colors = ['rgb(255, 102, 102)', 'rgb(148, 255, 119)', 'rgb(255, 249, 112)', 'rgb(255, 95, 236)'];
-        return {
-            label: saleType,
-            data: labels.map(label => getSaleCountForLabel(salesData, period, saleType, label)),
-            borderColor: colors[index],
-            backgroundColor: hexToRgba(colors[index], 0.25),
-            pointBackgroundColor: '#ffffff',
-            pointBorderColor: colors[index],
+    const datasets = [
+        {
+            label: 'SPM',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
+            borderColor: 'rgb(255, 102, 102)', // Red
+            backgroundColor: hexToRgba('rgb(255, 102, 102)', 0.25), // Red with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 102, 102)', // border color same as line
             pointBorderWidth: 2,
             fill: 'origin',
-            order: 4 - index
-        };
-    });
+            order: 4 // Ensure this dataset is always in front
+        },
+        {
+            label: 'Transfer',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
+            borderColor: 'rgb(148, 255, 119)', // Keylime
+            backgroundColor: hexToRgba('rgb(148, 255, 119)', 0.25), // Keylime with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(148, 255, 119)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 3 // Ensure this dataset is behind SPM but in front of others
+        },
+        {
+            label: 'HRA',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
+            borderColor: 'rgb(255, 249, 112)', // Yellow
+            backgroundColor: hexToRgba('rgb(255, 249, 112)', 0.25), // Yellow with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 249, 112)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 2 // Ensure this dataset is behind Transfer but in front of SRX
+        },
+        {
+            label: 'SRX',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
+            borderColor: 'rgb(255, 95, 236)', // Magenta
+            backgroundColor: hexToRgba('rgb(255, 95, 236)', 0.25), // Magenta with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 95, 236)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 1 // Ensure this dataset is at the back
+        }
+    ];
 
     return datasets;
 }
@@ -249,7 +281,8 @@ function getSaleCountForLabel(salesData, period, saleType, label) {
         if (sales) {
             sales.forEach(saleTime => {
                 const saleDate = new Date(saleTime);
-                if ((period === 'day' && formatHour(saleDate) === label && saleDate.getHours() >= 7 && saleDate.getHours() <= 21) ||
+                const saleHour = saleDate.getHours();
+                if ((period === 'day' && formatHour(saleDate) === label && saleHour >= 7 && saleHour <= 21) ||
                     (period === 'week' && formatDay(saleDate) === label) ||
                     (period === 'month' && saleDate.getDate().toString() === label)) {
                     count++;
@@ -273,7 +306,7 @@ function formatDay(date) {
 
 function hexToRgba(hex, alpha) {
     const [r, g, b] = hex.match(/\d+/g).map(Number);
-    return `rgba(${r}, ${b}, ${b}, ${alpha})`;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 // Apply color palette to the chart
