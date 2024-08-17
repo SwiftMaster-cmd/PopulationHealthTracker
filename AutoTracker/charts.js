@@ -108,8 +108,6 @@ function loadChart(period, canvasId) {
                     salesCharts[canvasId].options.scales.y.ticks.color = textColor;
                     salesCharts[canvasId].options.scales.x.ticks.font.size = 24;
                     salesCharts[canvasId].options.scales.y.ticks.font.size = 24;
-                    salesCharts[canvasId].options.plugins.legend.labels.color = textColor;
-                    salesCharts[canvasId].options.plugins.legend.labels.font.size = 24;
                     salesCharts[canvasId].update();
                 } else {
                     salesCharts[canvasId] = new Chart(ctx, {
@@ -147,12 +145,7 @@ function loadChart(period, canvasId) {
                             },
                             plugins: {
                                 legend: {
-                                    labels: {
-                                        color: textColor,
-                                        font: {
-                                            size: 24
-                                        }
-                                    }
+                                    display: false // Hide the legend
                                 }
                             },
                             elements: {
@@ -176,6 +169,10 @@ function loadChart(period, canvasId) {
                         }
                     });
                 }
+
+                // Apply visibility based on the footer buttons
+                updateDatasetVisibility(chartData.datasets);
+                salesCharts[canvasId].update();
             }, error => {
                 console.error('Error fetching sales data:', error);
             });
@@ -184,6 +181,19 @@ function loadChart(period, canvasId) {
         }
     });
 }
+
+function updateDatasetVisibility(datasets) {
+    const legendButtons = document.querySelectorAll('.legend-button');
+
+    legendButtons.forEach(button => {
+        const saleType = button.getAttribute('data-sale-type');
+        const dataset = datasets.find(ds => ds.label === saleType);
+        if (dataset) {
+            dataset.hidden = button.classList.contains('hidden');
+        }
+    });
+}
+
 
 function getDailyChartData(salesData) {
     const now = new Date();
