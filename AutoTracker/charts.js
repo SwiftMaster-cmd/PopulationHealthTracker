@@ -13,9 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
         applyColorPalette(defaultColor);
     }
 
-    // Add event listeners for the previous and next buttons
-    document.getElementById('prevButton').addEventListener('click', () => navigateDate(-1));
-    document.getElementById('nextButton').addEventListener('click', () => navigateDate(1));
+ // Add event listeners for the previous and next buttons
+ const prevButton = document.getElementById('prevButton');
+ const nextButton = document.getElementById('nextButton');
+ 
+ if (prevButton && nextButton) {
+     prevButton.addEventListener('click', () => navigateDate(-1));
+     nextButton.addEventListener('click', () => navigateDate(1));
+ } else {
+     console.error("Previous or Next button not found in the DOM.");
+ }
 });
 
 function changeChart(period) {
