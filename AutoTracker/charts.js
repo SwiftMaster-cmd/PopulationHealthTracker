@@ -1,3 +1,6 @@
+let salesCharts = {};
+let currentDate = new Date(); // Keeps track of the current date displayed
+
 document.addEventListener('DOMContentLoaded', () => {
     changeChart('day'); // Load the default chart (day)
     
@@ -9,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
         applyColorPalette(defaultColor);
     }
+
+    // Add event listeners for the previous and next buttons
+    document.getElementById('prevButton').addEventListener('click', () => navigateDate(-1));
+    document.getElementById('nextButton').addEventListener('click', () => navigateDate(1));
 });
 
 function changeChart(period) {
@@ -29,6 +36,7 @@ function changeChart(period) {
     const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
     loadChart(period, canvasId); // Load the selected chart data
 }
+
 // Adjusts the date and reloads the chart based on the current period
 function navigateDate(direction) {
     const activeChart = document.querySelector('.picker-chart-container.container[style*="display: flex;"]');
@@ -44,10 +52,6 @@ function navigateDate(direction) {
         loadChart('month', 'salesChartMonth');
     }
 }
-
-
-let salesCharts = {};
-let currentDate = new Date(); // Keeps track of the current date displayed
 
 function loadChart(period, canvasId) {
     const database = firebase.database();
@@ -250,26 +254,9 @@ function getMonthlyChartData(salesData, date) {
     return data;
 }
 
-function navigateDate(direction) {
-    const activeChart = document.querySelector('.picker-chart-container.container[style*="display: flex;"]');
-
-    if (activeChart.id.includes('Day')) {
-        currentDate.setDate(currentDate.getDate() + direction);
-        loadChart('day', 'salesChartDay');
-    } else if (activeChart.id.includes('Week')) {
-        currentDate.setDate(currentDate.getDate() + (direction * 7));
-        loadChart('week', 'salesChartWeek');
-    } else if (activeChart.id.includes('Month')) {
-        currentDate.setMonth(currentDate.getMonth() + direction);
-        loadChart('month', 'salesChartMonth');
-    }
-}
-
-
-
-function getCurrentDayData(salesData) {
+function getCurrentDayData(salesData, date) {
     const currentDaySales = {};
-    const now = new Date();
+    const now = date || new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     const endOfDay = startOfDay + 24 * 60 * 60 * 1000;
 
@@ -287,9 +274,9 @@ function getCurrentDayData(salesData) {
     return currentDaySales;
 }
 
-function getCurrentWeekData(salesData) {
+function getCurrentWeekData(salesData, date) {
     const currentWeekSales = {};
-    const now = new Date();
+    const now = date || new Date();
     const firstDayOfWeek = now.getDate() - now.getDay(); // Sunday
 
     for (const account in salesData) {
@@ -306,8 +293,6 @@ function getCurrentWeekData(salesData) {
 
     return currentWeekSales;
 }
-
-
 
 function createDatasets(labels, salesData, period) {
     const datasets = [
@@ -447,7 +432,6 @@ function checkChartHeight() {
     });
 }
 
-
 window.addEventListener('resize', () => {
     checkChartHeight();
     if (salesChart) {
@@ -459,4 +443,3 @@ document.addEventListener('DOMContentLoaded', () => {
     checkChartHeight();
     // Your existing code...
 });
-
