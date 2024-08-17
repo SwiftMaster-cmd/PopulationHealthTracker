@@ -141,8 +141,6 @@ function loadChart(period, canvasId) {
                     salesCharts[canvasId].options.plugins.legend.labels.color = textColor;
                     salesCharts[canvasId].options.plugins.legend.labels.font.size = 24;
                     salesCharts[canvasId].update();
-                } else {
-                   
                 }
             }, error => {
                 console.error('Error fetching sales data:', error);
