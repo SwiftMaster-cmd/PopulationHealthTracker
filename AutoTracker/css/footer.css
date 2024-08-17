@@ -39,6 +39,33 @@
     transform: translateY(0);
 }
 
+.footer-container.legend-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.legend-button {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.legend-button.hidden {
+    opacity: 0.5;
+}
+
+
+
+
+
+
+
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;
@@ -49,3 +76,4 @@
         margin-bottom: var(--margin-s);
     }
 }
+

@@ -30,6 +30,76 @@ function changeChart(period) {
     loadChart(period, canvasId); // Load the selected chart data
 }
 
+function createDatasets(labels, salesData, period) {
+    const datasets = [
+        {
+            label: 'SPM',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
+            borderColor: 'rgb(255, 102, 102)', // Red
+            backgroundColor: hexToRgba('rgb(255, 102, 102)', 0.25), // Red with 0.25 opacity
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: 'rgb(255, 102, 102)',
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 4
+        },
+        {
+            label: 'Transfer',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
+            borderColor: 'rgb(148, 255, 119)', // Keylime
+            backgroundColor: hexToRgba('rgb(148, 255, 119)', 0.25),
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: 'rgb(148, 255, 119)',
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 3
+        },
+        {
+            label: 'HRA',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
+            borderColor: 'rgb(255, 249, 112)', // Yellow
+            backgroundColor: hexToRgba('rgb(255, 249, 112)', 0.25),
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: 'rgb(255, 249, 112)',
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 2
+        },
+        {
+            label: 'SRX',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
+            borderColor: 'rgb(255, 95, 236)', // Magenta
+            backgroundColor: hexToRgba('rgb(255, 95, 236)', 0.25),
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: 'rgb(255, 95, 236)',
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 1
+        }
+    ];
+
+    return datasets;
+}
+
+
+function toggleSaleTypeVisibility(saleType) {
+    const chart = salesCharts[Object.keys(salesCharts)[0]]; // Get the active chart
+    if (chart) {
+        const dataset = chart.data.datasets.find(dataset => dataset.label === saleType);
+        if (dataset) {
+            dataset.hidden = !dataset.hidden; // Toggle visibility
+            chart.update();
+
+            // Update button appearance
+            const button = document.querySelector(`.legend-button[data-sale-type="${saleType}"]`);
+            if (dataset.hidden) {
+                button.classList.add('hidden');
+            } else {
+                button.classList.remove('hidden');
+            }
+        }
+    }
+}
 
 
 let salesCharts = {};
@@ -72,69 +142,7 @@ function loadChart(period, canvasId) {
                     salesCharts[canvasId].options.plugins.legend.labels.font.size = 24;
                     salesCharts[canvasId].update();
                 } else {
-                    salesCharts[canvasId] = new Chart(ctx, {
-                        type: 'line',
-                        data: chartData,
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        color: textColor,
-                                        font: {
-                                            size: 24
-                                        }
-                                    },
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
-                                        lineWidth: 1
-                                    }
-                                },
-                                x: {
-                                    ticks: {
-                                        color: textColor,
-                                        font: {
-                                            size: 24,
-                                            family: 'Arial',
-                                            weight: 'bold'
-                                        }
-                                    },
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
-                                        lineWidth: 1
-                                    }
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    labels: {
-                                        color: textColor,
-                                        font: {
-                                            size: 24
-                                        }
-                                    }
-                                }
-                            },
-                            elements: {
-                                line: {
-                                    tension: 0.4, // smooth curves
-                                    borderWidth: 3, // set line width to 3 for thicker lines
-                                    fill: 'origin', // fill only the area below
-                                    backgroundColor: function(context) {
-                                        const color = context.dataset.borderColor;
-                                        return hexToRgba(color, 0.1); // reduce fill opacity
-                                    }
-                                },
-                                point: {
-                                    backgroundColor: '#ffffff', // white dots
-                                    borderColor: function(context) {
-                                        return context.dataset.borderColor;
-                                    },
-                                    borderWidth: 2
-                                }
-                            }
-                        }
-                    });
+                   
                 }
             }, error => {
                 console.error('Error fetching sales data:', error);
