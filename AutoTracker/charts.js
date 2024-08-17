@@ -141,6 +141,70 @@ function loadChart(period, canvasId) {
                     salesCharts[canvasId].options.plugins.legend.labels.color = textColor;
                     salesCharts[canvasId].options.plugins.legend.labels.font.size = 24;
                     salesCharts[canvasId].update();
+                } else {
+                    salesCharts[canvasId] = new Chart(ctx, {
+                        type: 'line',
+                        data: chartData,
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        lineWidth: 1
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24,
+                                            family: 'Arial',
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        lineWidth: 1
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24
+                                        }
+                                    }
+                                }
+                            },
+                            elements: {
+                                line: {
+                                    tension: 0.4, // smooth curves
+                                    borderWidth: 3, // set line width to 3 for thicker lines
+                                    fill: 'origin', // fill only the area below
+                                    backgroundColor: function(context) {
+                                        const color = context.dataset.borderColor;
+                                        return hexToRgba(color, 0.1); // reduce fill opacity
+                                    }
+                                },
+                                point: {
+                                    backgroundColor: '#ffffff', // white dots
+                                    borderColor: function(context) {
+                                        return context.dataset.borderColor;
+                                    },
+                                    borderWidth: 2
+                                }
+                            }
+                        }
+                    });
                 }
             }, error => {
                 console.error('Error fetching sales data:', error);
