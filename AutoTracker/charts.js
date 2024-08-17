@@ -12,23 +12,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function changeChart(period) {
-    const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
-    const chartContainers = document.querySelectorAll('.chart-container');
+    const chartIds = ['Day', 'Week', 'Month'];
+    const selectedChartId = `chartContainer${period.charAt(0).toUpperCase() + period.slice(1)}`;
 
-    // Hide all chart containers
-    chartContainers.forEach(container => {
-        container.style.display = 'none';
+    chartIds.forEach(id => {
+        const container = document.getElementById(`chartContainer${id}`);
+        if (container) {
+            if (`chartContainer${id}` === selectedChartId) {
+                container.style.display = 'flex'; // Show the selected chart
+            } else {
+                container.style.display = 'none'; // Hide the others
+            }
+        }
     });
 
-    // Show the selected chart container
-    const selectedContainer = document.getElementById(`chartContainer${period.charAt(0).toUpperCase() + period.slice(1)}`);
-    if (selectedContainer) {
-        selectedContainer.style.display = 'flex';
-    }
-
-    // Load the selected chart data
-    loadChart(period, canvasId);
+    const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
+    loadChart(period, canvasId); // Load the selected chart data
 }
+
 
 
 let salesCharts = {};
