@@ -1,31 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
-    initializeApp();
+    changeChart('day'); // Load the default chart (day)
+    
+    // Load color palette from local storage if available
+    const savedColor = localStorage.getItem('baseColor');
+    if (savedColor) {
+        applyColorPalette(savedColor);
+    } else {
+        const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
+        applyColorPalette(defaultColor);
+    }
 });
 
-function initializeApp() {
-    loadAllCharts();
-    loadSavedColorPalette();
-    addResizeListeners();
-}
+function changeChart(period) {
+    const chartIds = ['Day', 'Week', 'Month'];
+    const selectedChartId = `chartContainer${period.charAt(0).toUpperCase() + period.slice(1)}`;
 
-function loadAllCharts() {
-    loadChart('day', 'salesChartDay');
-    loadChart('week', 'salesChartWeek');
-    loadChart('month', 'salesChartMonth');
-}
-
-function loadSavedColorPalette() {
-    const savedColor = localStorage.getItem('baseColor');
-    const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
-    applyColorPalette(savedColor || defaultColor);
-}
-
-function addResizeListeners() {
-    window.addEventListener('resize', () => {
-        resizeCharts();
-        checkChartHeight();
+    chartIds.forEach(id => {
+        const container = document.getElementById(`chartContainer${id}`);
+        if (container) {
+            if (`chartContainer${id}` === selectedChartId) {
+                container.style.display = 'flex'; // Show the selected chart
+            } else {
+                container.style.display = 'none'; // Hide the others
+            }
+        }
     });
+
+    const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
+    loadChart(period, canvasId); // Load the selected chart data
 }
+
+
 
 let salesCharts = {};
 
@@ -39,7 +44,18 @@ function loadChart(period, canvasId) {
 
             salesTimeFramesRef.child(currentUserId).on('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
-                let chartData = getChartDataForPeriod(period, salesData);
+                let chartData = {
+                    labels: [],
+                    datasets: []
+                };
+
+                if (period === 'day') {
+                    chartData = getDailyChartData(salesData);
+                } else if (period === 'week') {
+                    chartData = getWeeklyChartData(salesData);
+                } else if (period === 'month') {
+                    chartData = getMonthlyChartData(salesData);
+                }
 
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
                 const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
@@ -47,9 +63,78 @@ function loadChart(period, canvasId) {
                 const ctx = document.getElementById(canvasId).getContext('2d');
 
                 if (salesCharts[canvasId] instanceof Chart) {
-                    updateExistingChart(canvasId, chartData, textColor);
+                    salesCharts[canvasId].data = chartData;
+                    salesCharts[canvasId].options.scales.x.ticks.color = textColor;
+                    salesCharts[canvasId].options.scales.y.ticks.color = textColor;
+                    salesCharts[canvasId].options.scales.x.ticks.font.size = 24;
+                    salesCharts[canvasId].options.scales.y.ticks.font.size = 24;
+                    salesCharts[canvasId].options.plugins.legend.labels.color = textColor;
+                    salesCharts[canvasId].options.plugins.legend.labels.font.size = 24;
+                    salesCharts[canvasId].update();
                 } else {
-                    createNewChart(ctx, canvasId, chartData, textColor);
+                    salesCharts[canvasId] = new Chart(ctx, {
+                        type: 'line',
+                        data: chartData,
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        lineWidth: 1
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24,
+                                            family: 'Arial',
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.25)', // White grid lines with 0.25 opacity
+                                        lineWidth: 1
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: textColor,
+                                        font: {
+                                            size: 24
+                                        }
+                                    }
+                                }
+                            },
+                            elements: {
+                                line: {
+                                    tension: 0.4, // smooth curves
+                                    borderWidth: 3, // set line width to 3 for thicker lines
+                                    fill: 'origin', // fill only the area below
+                                    backgroundColor: function(context) {
+                                        const color = context.dataset.borderColor;
+                                        return hexToRgba(color, 0.1); // reduce fill opacity
+                                    }
+                                },
+                                point: {
+                                    backgroundColor: '#ffffff', // white dots
+                                    borderColor: function(context) {
+                                        return context.dataset.borderColor;
+                                    },
+                                    borderWidth: 2
+                                }
+                            }
+                        }
+                    });
                 }
             }, error => {
                 console.error('Error fetching sales data:', error);
@@ -60,183 +145,204 @@ function loadChart(period, canvasId) {
     });
 }
 
-function getChartDataForPeriod(period, salesData) {
-    switch (period) {
-        case 'day': return getDailyChartData(salesData);
-        case 'week': return getWeeklyChartData(salesData);
-        case 'month': return getMonthlyChartData(salesData);
-        default: return { labels: [], datasets: [] };
-    }
-}
-
-function updateExistingChart(canvasId, chartData, textColor) {
-    const chart = salesCharts[canvasId];
-    chart.data = chartData;
-    applyChartTextStyle(chart, textColor);
-    chart.update();
-}
-
-function createNewChart(ctx, canvasId, chartData, textColor) {
-    salesCharts[canvasId] = new Chart(ctx, {
-        type: 'line',
-        data: chartData,
-        options: {
-            scales: getChartScales(textColor),
-            plugins: { legend: { display: false } },
-            elements: getChartElements()
-        }
-    });
-}
-
-function getChartScales(textColor) {
-    return {
-        y: getChartAxisOptions(textColor),
-        x: getChartAxisOptions(textColor)
-    };
-}
-
-function getChartAxisOptions(textColor) {
-    return {
-        beginAtZero: true,
-        ticks: {
-            color: textColor,
-            font: { size: 24 }
-        },
-        grid: {
-            color: 'rgba(255, 255, 255, 0.25)',
-            lineWidth: 1
-        }
-    };
-}
-
-function getChartElements() {
-    return {
-        line: {
-            tension: 0.4,
-            borderWidth: 3,
-            fill: 'origin',
-            backgroundColor: context => hexToRgba(context.dataset.borderColor, 0.1)
-        },
-        point: {
-            backgroundColor: '#ffffff',
-            borderColor: context => context.dataset.borderColor,
-            borderWidth: 2
-        }
-    };
-}
-
 function getDailyChartData(salesData) {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
-    const { earliestTime, latestTime } = getEarliestAndLatestTimes(salesData, thirtyDaysAgo, now);
-    const hours = generateTimeLabels(earliestTime, latestTime);
-    const currentDayData = filterSalesDataByTimeRange(salesData, thirtyDaysAgo.getTime(), now.getTime());
+    let earliestTime = 24; // Start with the latest possible hour
+    let latestTime = 0; // Start with the earliest possible hour
 
-    return {
+    // Find the earliest and latest sale times in the last 30 days
+    for (const account in salesData) {
+        for (const saleType in salesData[account]) {
+            salesData[account][saleType].forEach(saleTime => {
+                const saleDate = new Date(saleTime);
+                if (saleDate >= thirtyDaysAgo && saleDate <= now) {
+                    const saleHour = saleDate.getHours();
+                    if (saleHour < earliestTime) earliestTime = saleHour;
+                    if (saleHour > latestTime) latestTime = saleHour;
+                }
+            });
+        }
+    }
+
+    // Generate time labels based on the earliest and latest times in 12-hour format
+    const hours = Array.from({ length: (latestTime - earliestTime + 1) }, (_, i) => {
+        let hour = i + earliestTime;
+        let period = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12; // Convert to 12-hour format, with 12 instead of 0
+        return `${hour} ${period}`;
+    });
+
+    const currentDayData = getCurrentDayData(salesData);
+
+    const data = {
         labels: hours,
         datasets: createDatasets(hours, currentDayData, 'day')
     };
+    return data;
 }
+
 
 function getWeeklyChartData(salesData) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const now = new Date();
-    const firstDayOfWeek = now.getDate() - now.getDay();
+    const firstDayOfWeek = now.getDate() - now.getDay(); // Get the first day of the current week (Sunday)
     const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
     const endOfWeek = new Date(now.setDate(firstDayOfWeek + 6)).setHours(23, 59, 59, 999);
-    const currentWeekData = filterSalesDataByTimeRange(salesData, startOfWeek, endOfWeek);
 
-    return {
+    const currentWeekSales = {};
+
+    for (const account in salesData) {
+        currentWeekSales[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentWeekSales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime).getTime();
+                return saleDate >= startOfWeek && saleDate <= endOfWeek;
+            });
+        }
+    }
+
+    const data = {
         labels: days,
-        datasets: createDatasets(days, currentWeekData, 'week')
+        datasets: createDatasets(days, currentWeekSales, 'week')
     };
+    return data;
 }
+
+
+
+
+
 
 function getMonthlyChartData(salesData) {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).setHours(0, 0, 0, 0);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).setHours(23, 59, 59, 999);
+    
     const daysInMonth = Array.from({ length: now.getDate() }, (_, i) => (i + 1).toString());
-    const currentMonthData = filterSalesDataByTimeRange(salesData, startOfMonth, endOfMonth);
+    const currentMonthData = {};
 
-    return {
+    for (const account in salesData) {
+        currentMonthData[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentMonthData[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime).getTime();
+                return saleDate >= startOfMonth && saleDate <= endOfMonth;
+            });
+        }
+    }
+
+    const data = {
         labels: daysInMonth,
         datasets: createDatasets(daysInMonth, currentMonthData, 'month')
     };
+    return data;
 }
 
-function getEarliestAndLatestTimes(salesData, startDate, endDate) {
-    let earliestTime = 24;
-    let latestTime = 0;
 
-    Object.values(salesData).forEach(accountData => {
-        Object.values(accountData).forEach(sales => {
-            sales.forEach(saleTime => {
-                const saleDate = new Date(saleTime);
-                if (saleDate >= startDate && saleDate <= endDate) {
-                    const saleHour = saleDate.getHours();
-                    earliestTime = Math.min(earliestTime, saleHour);
-                    latestTime = Math.max(latestTime, saleHour);
-                }
-            });
-        });
-    });
 
-    return { earliestTime, latestTime };
-}
 
-function generateTimeLabels(earliestTime, latestTime) {
-    return Array.from({ length: (latestTime - earliestTime + 1) }, (_, i) => {
-        let hour = i + earliestTime;
-        const period = hour >= 12 ? 'PM' : 'AM';
-        hour = hour % 12 || 12;
-        return `${hour} ${period}`;
-    });
-}
+function getCurrentDayData(salesData) {
+    const currentDaySales = {};
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const endOfDay = startOfDay + 24 * 60 * 60 * 1000;
 
-function filterSalesDataByTimeRange(salesData, startTime, endTime) {
-    const filteredData = {};
+    for (const account in salesData) {
+        currentDaySales[account] = {};
 
-    Object.entries(salesData).forEach(([account, accountData]) => {
-        filteredData[account] = {};
-
-        Object.entries(accountData).forEach(([saleType, sales]) => {
-            filteredData[account][saleType] = sales.filter(saleTime => {
+        for (const saleType in salesData[account]) {
+            currentDaySales[account][saleType] = salesData[account][saleType].filter(saleTime => {
                 const saleDate = new Date(saleTime).getTime();
-                return saleDate >= startTime && saleDate <= endTime;
+                return saleDate >= startOfDay && saleDate < endOfDay;
             });
-        });
-    });
+        }
+    }
 
-    return filteredData;
+    return currentDaySales;
 }
+
+function getCurrentWeekData(salesData) {
+    const currentWeekSales = {};
+    const now = new Date();
+    const firstDayOfWeek = now.getDate() - now.getDay(); // Sunday
+
+    for (const account in salesData) {
+        currentWeekSales[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentWeekSales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime);
+                const dayDifference = Math.floor((saleDate - new Date(saleDate.getFullYear(), saleDate.getMonth(), firstDayOfWeek)) / (1000 * 60 * 60 * 24));
+                return dayDifference >= 0 && dayDifference < 7;
+            });
+        }
+    }
+
+    return currentWeekSales;
+}
+
+
 
 function createDatasets(labels, salesData, period) {
-    const saleTypes = [
-        { label: 'SPM', color: 'rgb(255, 102, 102)' }, // Red
-        { label: 'Transfer', color: 'rgb(148, 255, 119)' }, // Keylime
-        { label: 'HRA', color: 'rgb(255, 249, 112)' }, // Yellow
-        { label: 'SRX', color: 'rgb(255, 95, 236)' } // Magenta
+    const datasets = [
+        {
+            label: 'SPM',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select Patient Management', label)),
+            borderColor: 'rgb(255, 102, 102)', // Red
+            backgroundColor: hexToRgba('rgb(255, 102, 102)', 0.25), // Red with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 102, 102)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 4 // Ensure this dataset is always in front
+        },
+        {
+            label: 'Transfer',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Transfer', label)),
+            borderColor: 'rgb(148, 255, 119)', // Keylime
+            backgroundColor: hexToRgba('rgb(148, 255, 119)', 0.25), // Keylime with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(148, 255, 119)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 3 // Ensure this dataset is behind SPM but in front of others
+        },
+        {
+            label: 'HRA',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Billable HRA', label)),
+            borderColor: 'rgb(255, 249, 112)', // Yellow
+            backgroundColor: hexToRgba('rgb(255, 249, 112)', 0.25), // Yellow with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 249, 112)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 2 // Ensure this dataset is behind Transfer but in front of SRX
+        },
+        {
+            label: 'SRX',
+            data: labels.map(label => getSaleCountForLabel(salesData, period, 'Select RX', label)),
+            borderColor: 'rgb(255, 95, 236)', // Magenta
+            backgroundColor: hexToRgba('rgb(255, 95, 236)', 0.25), // Magenta with 0.25 opacity
+            pointBackgroundColor: '#ffffff', // white dots
+            pointBorderColor: 'rgb(255, 95, 236)', // border color same as line
+            pointBorderWidth: 2,
+            fill: 'origin',
+            order: 1 // Ensure this dataset is at the back
+        }
     ];
 
-    return saleTypes.map(({ label, color }) => ({
-        label,
-        data: labels.map(lbl => getSaleCountForLabel(salesData, period, label, lbl)),
-        borderColor: color,
-        backgroundColor: hexToRgba(color, 0.25),
-        pointBackgroundColor: '#ffffff',
-        pointBorderColor: color,
-        pointBorderWidth: 2,
-        fill: 'origin',
-        order: 4 - saleTypes.findIndex(s => s.label === label) // Ensure ordering based on label
-    }));
+    return datasets;
 }
 
 function getSaleCountForLabel(salesData, period, saleType, label) {
     let count = 0;
 
-    Object.values(salesData).forEach(accountData => {
-        const sales = accountData[saleType];
+    for (const account in salesData) {
+        const sales = salesData[account][saleType];
+
         if (sales) {
             sales.forEach(saleTime => {
                 const saleDate = new Date(saleTime);
@@ -250,7 +356,7 @@ function getSaleCountForLabel(salesData, period, saleType, label) {
                 }
             });
         }
-    });
+    }
 
     return count;
 }
@@ -259,7 +365,6 @@ function formatHour(date) {
     const hours = date.getHours();
     return `${hours}:00`;
 }
-
 function formatDay(date) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     return days[date.getDay()];
@@ -270,35 +375,65 @@ function hexToRgba(hex, alpha) {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+// Apply color palette to the chart
 function applyColorPalette(color) {
     document.documentElement.style.setProperty('--color-primary', color);
     document.documentElement.style.setProperty('--color-secondary', chroma(color).darken(1.5).hex());
     document.documentElement.style.setProperty('--background-color', chroma(color).brighten(3).hex());
 
-    resizeCharts();
+    if (salesChart instanceof Chart) {
+        const textColor = chroma(color).luminance() < 0.5 ? '#ffffff' : '#000000';
+        salesChart.options.scales.x.ticks.color = textColor;
+        salesChart.options.scales.y.ticks.color = textColor;
+        salesChart.options.plugins.legend.labels.color = textColor;
+        salesChart.update();
+    }
 }
 
+// Save the color palette
 function saveColorPalette(color) {
     localStorage.setItem('baseColor', color);
     applyColorPalette(color);
 }
 
+// Initialize color picker
 document.getElementById('applyColor').addEventListener('click', () => {
     const colorPicker = document.getElementById('colorPicker');
     const selectedColor = colorPicker.value;
     saveColorPalette(selectedColor);
 });
 
-function resizeCharts() {
-    Object.values(salesCharts).forEach(chart => chart.resize());
-}
+window.addEventListener('resize', () => {
+    if (salesChart) {
+        salesChart.resize();
+    }
+});
 
 function checkChartHeight() {
     const chartContainers = document.querySelectorAll('.chart-container');
     chartContainers.forEach(chartContainer => {
         const rotateMessage = chartContainer.querySelector('#rotateMessage');
-        const isHeightTooSmall = chartContainer.clientHeight < 300;
-        chartContainer.style.display = isHeightTooSmall ? 'none' : 'flex';
-        rotateMessage.style.display = isHeightTooSmall ? 'block' : 'none';
+
+        if (chartContainer.clientHeight < 300) {
+            chartContainer.style.display = 'none';
+            rotateMessage.style.display = 'block';
+        } else {
+            chartContainer.style.display = 'flex';
+            rotateMessage.style.display = 'none';
+        }
     });
 }
+
+
+window.addEventListener('resize', () => {
+    checkChartHeight();
+    if (salesChart) {
+        salesChart.resize();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkChartHeight();
+    // Your existing code...
+});
+
