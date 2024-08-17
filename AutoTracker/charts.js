@@ -3,26 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-    changeChart('day'); // Load the default chart (day)
+    loadAllCharts();
     loadSavedColorPalette();
-    addLegendButtonListeners();
     addResizeListeners();
+}
+
+function loadAllCharts() {
+    loadChart('day', 'salesChartDay');
+    loadChart('week', 'salesChartWeek');
+    loadChart('month', 'salesChartMonth');
 }
 
 function loadSavedColorPalette() {
     const savedColor = localStorage.getItem('baseColor');
     const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
     applyColorPalette(savedColor || defaultColor);
-}
-
-function addLegendButtonListeners() {
-    const legendButtons = document.querySelectorAll('.legend-button');
-    legendButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const saleType = button.getAttribute('data-sale-type');
-            toggleSaleTypeVisibility(saleType, button);
-        });
-    });
 }
 
 function addResizeListeners() {
@@ -32,41 +27,9 @@ function addResizeListeners() {
     });
 }
 
-function toggleSaleTypeVisibility(saleType, button) {
-    Object.keys(salesCharts).forEach(chartId => {
-        const chart = salesCharts[chartId];
-        const dataset = chart.data.datasets.find(ds => ds.label === saleType);
-        if (dataset) {
-            dataset.hidden = !dataset.hidden;
-            updateButtonAppearance(button, dataset.hidden);
-            chart.update();
-        }
-    });
-}
-
-function updateButtonAppearance(button, hidden) {
-    button.classList.toggle('hidden', hidden);
-}
-
-function changeChart(period) {
-    showSelectedChartContainer(period);
-    const canvasId = `salesChart${capitalize(period)}`;
-    loadChartData(period, canvasId);
-}
-
-function showSelectedChartContainer(period) {
-    const chartIds = ['Day', 'Week', 'Month'];
-    const selectedChartId = `chartContainer${capitalize(period)}`;
-    
-    chartIds.forEach(id => {
-        const container = document.getElementById(`chartContainer${id}`);
-        container.style.display = `chartContainer${id}` === selectedChartId ? 'flex' : 'none';
-    });
-}
-
 let salesCharts = {};
 
-function loadChartData(period, canvasId) {
+function loadChart(period, canvasId) {
     const database = firebase.database();
     const salesTimeFramesRef = database.ref('salesTimeFrames');
 
@@ -76,16 +39,18 @@ function loadChartData(period, canvasId) {
 
             salesTimeFramesRef.child(currentUserId).on('value', salesSnapshot => {
                 const salesData = salesSnapshot.val();
-                const chartData = getChartDataForPeriod(period, salesData);
+                let chartData = getChartDataForPeriod(period, salesData);
+
+                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+                const textColor = chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
+
                 const ctx = document.getElementById(canvasId).getContext('2d');
 
                 if (salesCharts[canvasId] instanceof Chart) {
-                    updateExistingChart(canvasId, chartData);
+                    updateExistingChart(canvasId, chartData, textColor);
                 } else {
-                    createNewChart(ctx, canvasId, chartData);
+                    createNewChart(ctx, canvasId, chartData, textColor);
                 }
-
-                updateDatasetVisibility(salesCharts[canvasId].data.datasets);
             }, error => {
                 console.error('Error fetching sales data:', error);
             });
@@ -104,27 +69,26 @@ function getChartDataForPeriod(period, salesData) {
     }
 }
 
-function updateExistingChart(canvasId, chartData) {
+function updateExistingChart(canvasId, chartData, textColor) {
     const chart = salesCharts[canvasId];
     chart.data = chartData;
-    applyChartTextStyle(chart);
+    applyChartTextStyle(chart, textColor);
     chart.update();
 }
 
-function createNewChart(ctx, canvasId, chartData) {
+function createNewChart(ctx, canvasId, chartData, textColor) {
     salesCharts[canvasId] = new Chart(ctx, {
         type: 'line',
         data: chartData,
         options: {
-            scales: getChartScales(),
+            scales: getChartScales(textColor),
             plugins: { legend: { display: false } },
             elements: getChartElements()
         }
     });
 }
 
-function getChartScales() {
-    const textColor = getTextColor();
+function getChartScales(textColor) {
     return {
         y: getChartAxisOptions(textColor),
         x: getChartAxisOptions(textColor)
@@ -161,42 +125,12 @@ function getChartElements() {
     };
 }
 
-function getTextColor() {
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
-    return chroma(primaryColor).luminance() < 0.5 ? '#ffffff' : '#000000';
-}
-
-function resizeCharts() {
-    Object.values(salesCharts).forEach(chart => chart.resize());
-}
-
-function checkChartHeight() {
-    const chartContainers = document.querySelectorAll('.chart-container');
-    chartContainers.forEach(chartContainer => {
-        const rotateMessage = chartContainer.querySelector('#rotateMessage');
-        const isHeightTooSmall = chartContainer.clientHeight < 300;
-        chartContainer.style.display = isHeightTooSmall ? 'none' : 'flex';
-        rotateMessage.style.display = isHeightTooSmall ? 'block' : 'none';
-    });
-}
-
-function updateDatasetVisibility(datasets) {
-    const legendButtons = document.querySelectorAll('.legend-button');
-    legendButtons.forEach(button => {
-        const saleType = button.getAttribute('data-sale-type');
-        const dataset = datasets.find(ds => ds.label === saleType);
-        if (dataset) {
-            dataset.hidden = button.classList.contains('hidden');
-        }
-    });
-}
-
 function getDailyChartData(salesData) {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
     const { earliestTime, latestTime } = getEarliestAndLatestTimes(salesData, thirtyDaysAgo, now);
     const hours = generateTimeLabels(earliestTime, latestTime);
-    const currentDayData = getCurrentDayData(salesData);
+    const currentDayData = filterSalesDataByTimeRange(salesData, thirtyDaysAgo.getTime(), now.getTime());
 
     return {
         labels: hours,
@@ -206,18 +140,24 @@ function getDailyChartData(salesData) {
 
 function getWeeklyChartData(salesData) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const currentWeekSales = getCurrentWeekData(salesData);
+    const now = new Date();
+    const firstDayOfWeek = now.getDate() - now.getDay();
+    const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
+    const endOfWeek = new Date(now.setDate(firstDayOfWeek + 6)).setHours(23, 59, 59, 999);
+    const currentWeekData = filterSalesDataByTimeRange(salesData, startOfWeek, endOfWeek);
 
     return {
         labels: days,
-        datasets: createDatasets(days, currentWeekSales, 'week')
+        datasets: createDatasets(days, currentWeekData, 'week')
     };
 }
 
 function getMonthlyChartData(salesData) {
     const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).setHours(0, 0, 0, 0);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).setHours(23, 59, 59, 999);
     const daysInMonth = Array.from({ length: now.getDate() }, (_, i) => (i + 1).toString());
-    const currentMonthData = getCurrentMonthData(salesData);
+    const currentMonthData = filterSalesDataByTimeRange(salesData, startOfMonth, endOfMonth);
 
     return {
         labels: daysInMonth,
@@ -252,27 +192,6 @@ function generateTimeLabels(earliestTime, latestTime) {
         hour = hour % 12 || 12;
         return `${hour} ${period}`;
     });
-}
-
-function getCurrentDayData(salesData) {
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    return filterSalesDataByTimeRange(salesData, startOfDay, startOfDay + 24 * 60 * 60 * 1000);
-}
-
-function getCurrentWeekData(salesData) {
-    const now = new Date();
-    const firstDayOfWeek = now.getDate() - now.getDay();
-    const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
-    const endOfWeek = new Date(now.setDate(firstDayOfWeek + 6)).setHours(23, 59, 59, 999);
-    return filterSalesDataByTimeRange(salesData, startOfWeek, endOfWeek);
-}
-
-function getCurrentMonthData(salesData) {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).setHours(0, 0, 0, 0);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).setHours(23, 59, 59, 999);
-    return filterSalesDataByTimeRange(salesData, startOfMonth, endOfMonth);
 }
 
 function filterSalesDataByTimeRange(salesData, startTime, endTime) {
@@ -316,11 +235,8 @@ function createDatasets(labels, salesData, period) {
 function getSaleCountForLabel(salesData, period, saleType, label) {
     let count = 0;
 
-    console.log(`Processing saleType: ${saleType}, label: ${label}`);
-
     Object.values(salesData).forEach(accountData => {
         const sales = accountData[saleType];
-        console.log(`Sales data for ${saleType}: `, sales);
         if (sales) {
             sales.forEach(saleTime => {
                 const saleDate = new Date(saleTime);
@@ -336,10 +252,8 @@ function getSaleCountForLabel(salesData, period, saleType, label) {
         }
     });
 
-    console.log(`Count for ${saleType} at ${label}: ${count}`);
     return count;
 }
-
 
 function formatHour(date) {
     const hours = date.getHours();
@@ -356,11 +270,6 @@ function hexToRgba(hex, alpha) {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// Apply color palette to the chart
 function applyColorPalette(color) {
     document.documentElement.style.setProperty('--color-primary', color);
     document.documentElement.style.setProperty('--color-secondary', chroma(color).darken(1.5).hex());
@@ -369,15 +278,27 @@ function applyColorPalette(color) {
     resizeCharts();
 }
 
-// Save the color palette
 function saveColorPalette(color) {
     localStorage.setItem('baseColor', color);
     applyColorPalette(color);
 }
 
-// Initialize color picker
 document.getElementById('applyColor').addEventListener('click', () => {
     const colorPicker = document.getElementById('colorPicker');
     const selectedColor = colorPicker.value;
     saveColorPalette(selectedColor);
 });
+
+function resizeCharts() {
+    Object.values(salesCharts).forEach(chart => chart.resize());
+}
+
+function checkChartHeight() {
+    const chartContainers = document.querySelectorAll('.chart-container');
+    chartContainers.forEach(chartContainer => {
+        const rotateMessage = chartContainer.querySelector('#rotateMessage');
+        const isHeightTooSmall = chartContainer.clientHeight < 300;
+        chartContainer.style.display = isHeightTooSmall ? 'none' : 'flex';
+        rotateMessage.style.display = isHeightTooSmall ? 'block' : 'none';
+    });
+}
