@@ -22,10 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function toggleSaleTypeVisibility(saleType, button) {
     const chart = salesCharts[getCurrentChartId()];
-    if (!chart) return;
+    if (!chart) {
+        console.error('No chart found for the current ID.');
+        return;
+    }
 
     const dataset = chart.data.datasets.find(ds => ds.label === saleType);
-    if (!dataset) return;
+    if (!dataset) {
+        console.error(`Dataset with label ${saleType} not found.`);
+        return;
+    }
 
     // Toggle the visibility
     dataset.hidden = !dataset.hidden;
