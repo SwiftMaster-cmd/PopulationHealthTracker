@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     changeChart('day'); // Load the default chart (day)
-    
+
     // Load color palette from local storage if available
     const savedColor = localStorage.getItem('baseColor');
     if (savedColor) {
@@ -9,7 +9,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
         applyColorPalette(defaultColor);
     }
+
+    // Add event listeners to legend buttons for toggling visibility
+    const legendButtons = document.querySelectorAll('.legend-button');
+    legendButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const saleType = button.getAttribute('data-sale-type');
+            toggleSaleTypeVisibility(saleType, button);
+        });
+    });
 });
+
+function toggleSaleTypeVisibility(saleType, button) {
+    const chart = salesCharts[getCurrentChartId()];
+    if (!chart) return;
+
+    const dataset = chart.data.datasets.find(ds => ds.label === saleType);
+    if (!dataset) return;
+
+    // Toggle the visibility
+    dataset.hidden = !dataset.hidden;
+
+    // Update button appearance based on visibility
+    if (dataset.hidden) {
+        button.classList.add('hidden');
+    } else {
+        button.classList.remove('hidden');
+    }
+
+    // Update the chart to reflect the changes
+    chart.update();
+}
+
+function getCurrentChartId() {
+    const visibleChartContainer = document.querySelector('.picker-chart-container.container[style*="display: flex"]');
+    if (visibleChartContainer) {
+        const chartId = visibleChartContainer.querySelector('canvas').id;
+        return chartId;
+    }
+    return null;
+}
+
 
 function changeChart(period) {
     const chartIds = ['Day', 'Week', 'Month'];
