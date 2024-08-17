@@ -493,43 +493,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Helper functions
-    
-    // Function to remove duplicates
-    function removeDuplicates(user) {
+    // Function to remove duplicates for all users
+    function removeDuplicatesForAllUsers() {
         const database = firebase.database();
-        const outcomesRef = database.ref('salesOutcomes/' + user.uid);
+        const salesOutcomesRef = database.ref('salesOutcomes');
 
-        outcomesRef.once('value', (snapshot) => {
-            const outcomes = snapshot.val();
-            const seenOutcomes = {};
+        salesOutcomesRef.on('value', (snapshot) => { // Listen for real-time updates
+            snapshot.forEach(userSnapshot => {
+                const userId = userSnapshot.key;
+                const userOutcomes = userSnapshot.val();
 
-            snapshot.forEach(childSnapshot => {
-                const outcome = childSnapshot.val();
-                const action = outcome.assignAction;
-                const accountNumber = outcome.accountNumber;
-                const firstName = outcome.customerInfo.firstName;
-                const lastName = outcome.customerInfo.lastName;
-                const key = `${accountNumber}-${firstName}-${lastName}-${action}`;
-
-                if (seenOutcomes[key]) {
-                    // If we have already seen this combination, compare the timestamps
-                    const existingTime = new Date(seenOutcomes[key].outcomeTime);
-                    const currentTime = new Date(outcome.outcomeTime);
-
-                    if (currentTime > existingTime) {
-                        // Remove the older record
-                        outcomesRef.child(seenOutcomes[key].key).remove();
-                        // Update the seenOutcomes with the latest record
-                        seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
-                    } else {
-                        // Remove the current record as it is older
-                        outcomesRef.child(childSnapshot.key).remove();
-                    }
-                } else {
-                    // Add the record to seenOutcomes
-                    seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
+                if (userOutcomes) {
+                    removeDuplicatesForUser(userId, userOutcomes);
                 }
             });
         }, (error) => {
@@ -537,11 +512,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Authenticate and call removeDuplicates
+    // Authenticate and call removeDuplicatesForAllUsers
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             console.log('Authenticated user:', user.displayName);
-            removeDuplicates(user);
+            removeDuplicatesForAllUsers();
         } else {
             console.error('User not authenticated');
         }
