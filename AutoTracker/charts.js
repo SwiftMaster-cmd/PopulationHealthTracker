@@ -13,8 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function changeChart(period) {
     const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
+    const chartContainers = document.querySelectorAll('.chart-container');
+    
+    // Hide all chart containers
+    chartContainers.forEach(container => {
+        container.style.display = 'none';
+    });
+    
+    // Show the selected chart container
+    const selectedContainer = document.getElementById(`chartContainer${period.charAt(0).toUpperCase() + period.slice(1)}`);
+    selectedContainer.style.display = 'flex';
+
+    // Load the selected chart data
     loadChart(period, canvasId);
 }
+
 
 let salesCharts = {};
 
