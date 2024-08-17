@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize all charts with different periods
-    loadChart('day', 'salesChartDay');
-    loadChart('week', 'salesChartWeek');
-    loadChart('month', 'salesChartMonth');
-
+    changeChart('day'); // Load the default chart (day)
+    
     // Load color palette from local storage if available
     const savedColor = localStorage.getItem('baseColor');
     if (savedColor) {
@@ -13,6 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
         applyColorPalette(defaultColor);
     }
 });
+
+function changeChart(period) {
+    const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
+    loadChart(period, canvasId);
+}
 
 let salesCharts = {};
 
@@ -392,17 +394,20 @@ window.addEventListener('resize', () => {
 });
 
 function checkChartHeight() {
-    const chartContainer = document.getElementById('chartContainer');
-    const rotateMessage = document.getElementById('rotateMessage');
+    const chartContainers = document.querySelectorAll('.chart-container');
+    chartContainers.forEach(chartContainer => {
+        const rotateMessage = chartContainer.querySelector('#rotateMessage');
 
-    if (chartContainer.clientHeight < 300) {
-        chartContainer.style.display = 'none';
-        rotateMessage.style.display = 'block';
-    } else {
-        chartContainer.style.display = 'flex';
-        rotateMessage.style.display = 'none';
-    }
+        if (chartContainer.clientHeight < 300) {
+            chartContainer.style.display = 'none';
+            rotateMessage.style.display = 'block';
+        } else {
+            chartContainer.style.display = 'flex';
+            rotateMessage.style.display = 'none';
+        }
+    });
 }
+
 
 window.addEventListener('resize', () => {
     checkChartHeight();

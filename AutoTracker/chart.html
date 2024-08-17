@@ -85,44 +85,21 @@
 
      
 
-      <!-- Chart Container for Day -->
-<div class="picker-chart-container container">
-    <div class="picker-container">
-        <h3>Day</h3>
-    </div>
-    <div id="rotateMessageDay" style="display: none; color: black; text-align: center; text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;">
-        Please rotate your device and refresh the page to view the chart.
-    </div>
-    <div id="chartContainerDay">
-        <canvas id="salesChartDay"></canvas>
-    </div>
-</div>
-
-<!-- Chart Container for Week -->
-<div class="picker-chart-container container">
-    <div class="picker-container">
-        <h3>Week</h3>
-    </div>
-    <div id="rotateMessageWeek" style="display: none; color: black; text-align: center; text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;">
-        Please rotate your device and refresh the page to view the chart.
-    </div>
-    <div id="chartContainerWeek">
-        <canvas id="salesChartWeek"></canvas>
-    </div>
-</div>
-
-<!-- Chart Container for Month -->
-<div class="picker-chart-container container">
-    <div class="picker-container">
-        <h3>Month</h3>
-    </div>
-    <div id="rotateMessageMonth" style="display: none; color: black; text-align: center; text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;">
-        Please rotate your device and refresh the page to view the chart.
-    </div>
-    <div id="chartContainerMonth">
-        <canvas id="salesChartMonth"></canvas>
-    </div>
-</div>
+        <div class="picker-chart-container container" id="chartContainerDay">
+            <!-- Day chart content -->
+            <canvas id="salesChartDay"></canvas>
+        </div>
+        
+        <div class="picker-chart-container container" id="chartContainerWeek" style="display: none;">
+            <!-- Week chart content -->
+            <canvas id="salesChartWeek"></canvas>
+        </div>
+        
+        <div class="picker-chart-container container" id="chartContainerMonth" style="display: none;">
+            <!-- Month chart content -->
+            <canvas id="salesChartMonth"></canvas>
+        </div>
+        
        
     </div>
 
@@ -131,11 +108,12 @@
                 
     <footer class="footer">
         <div class="footer-container">
-            <button onclick="scrollToChart('salesChartDay')" class="footer-button">Day Chart</button>
-            <button onclick="scrollToChart('salesChartWeek')" class="footer-button">Week Chart</button>
-            <button onclick="scrollToChart('salesChartMonth')" class="footer-button">Month Chart</button>
+            <button onclick="changeChart('day')" class="footer-button">Day Chart</button>
+            <button onclick="changeChart('week')" class="footer-button">Week Chart</button>
+            <button onclick="changeChart('month')" class="footer-button">Month Chart</button>
         </div>
     </footer>
+    
      
     
     
