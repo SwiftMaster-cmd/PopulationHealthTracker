@@ -43,11 +43,12 @@ function checkAndSetUserName(userId) {
 }
 
 
+
 async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
+
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
-    const lastResetRef = database.ref('lastReset'); // Reference to store the last reset date
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -57,7 +58,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     salesCountsRef.off('value');
 
-    salesCountsRef.on('value', async salesSnapshot => {
+    salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         if (!salesData) {
             console.error('No sales data found');
@@ -66,93 +67,65 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
         const users = [];
 
-        firebase.auth().onAuthStateChanged(async user => {
+        firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                // Check if daily reset is needed
-                const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-                const lastResetSnapshot = await lastResetRef.once('value');
-                const lastResetDate = lastResetSnapshot.val();
+                usersRef.once('value', usersSnapshot => {
+                    const usersData = usersSnapshot.val();
+                    const currentUserId = user.uid;
 
-                if (lastResetDate !== today) {
-                    // Reset sales counts for the day
                     for (const userId in salesData) {
-                        salesCountsRef.child(`${userId}/day`).set({
-                            selectRX: 0, // Reset specific sale types here as needed
-                            // Add other sale types to reset if necessary
-                        });
-                    }
+                        const userData = salesData[userId];
+                        let count = 0; 
 
-                    // Update the last reset date
-                    lastResetRef.set(today);
-                    console.log('Daily sales counts reset');
-                }
-
-                // Proceed with loading the leaderboard
-                const usersSnapshot = await usersRef.once('value');
-                const usersData = usersSnapshot.val();
-                const currentUserId = user.uid;
-
-                for (const userId in salesData) {
-                    const userData = salesData[userId];
-                    let count = 0;
-
-                    if (period === 'day') {
-                        if (userData.day && userData.day[saleType] !== undefined) {
-                            count = userData.day[saleType]; // Access the count directly
+                        if (period === 'day') {
+                            count = userData.day && userData.day[saleType] ? userData.day[saleType] : 0;
+                        } else if (period === 'week') {
+                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                        } else if (period === 'month') {
+                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
                         }
-                    } else if (period === 'week') {
-                        count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                    } else if (period === 'month') {
-                        count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
-                    }
 
-                    // Only include users with non-zero sales counts
-                    if (count > 0) {
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                        if (name.length > 10) {
+                            name = name.substring(0, 8); // Truncate name to 8 characters
+                        }
                         users.push({ userId, name, count });
                     }
-                }
 
-                users.sort((a, b) => b.count - a.count);
+                    users.sort((a, b) => b.count - a.count);
 
-                leaderboardSection.innerHTML = ''; // Clear the section before adding new items
+                    const currentUserIndex = users.findIndex(u => u.userId === currentUserId);
+                    let start = 0, end = 5;
 
-                users.forEach((user, index) => {
-                    // Create the leaderboard item container
-                    const leaderboardItem = document.createElement('div');
-                    leaderboardItem.classList.add('leaderboard-item');
-
-                    // Add the appropriate class based on rank
-                    if (index === 0) {
-                        leaderboardItem.classList.add('first-place');
-                    } else if (index === 1) {
-                        leaderboardItem.classList.add('second-place');
-                    } else if (index === 2) {
-                        leaderboardItem.classList.add('third-place');
+                    if (currentUserIndex === 0) {
+                        // If current user is in the first place
+                        start = 0;
+                        end = Math.min(5, users.length);
+                    } else if (currentUserIndex === users.length - 1) {
+                        // If current user is in the last place
+                        start = Math.max(users.length - 5, 0);
+                        end = users.length;
+                    } else {
+                        // If current user is in the middle
+                        start = Math.max(0, currentUserIndex - 2);
+                        end = Math.min(users.length, currentUserIndex + 3);
+                        if (end - start < 5) {
+                            start = Math.max(0, end - 5);
+                        }
                     }
 
-                    // Create the position container
-                    const positionContainer = document.createElement('div');
-                    positionContainer.classList.add('leaderboard-position');
-                    positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
+                    leaderboardSection.innerHTML = '';
 
-                    // Create the name container
-                    const nameContainer = document.createElement('div');
-                    nameContainer.classList.add('leaderboard-name');
-                    nameContainer.textContent = user.name;
-
-                    // Create the score container
-                    const scoreContainer = document.createElement('div');
-                    scoreContainer.classList.add('leaderboard-score');
-                    scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
-
-                    // Append the containers to the leaderboard item
-                    leaderboardItem.appendChild(positionContainer);
-                    leaderboardItem.appendChild(nameContainer);
-                    leaderboardItem.appendChild(scoreContainer);
-
-                    // Append the leaderboard item to the section
-                    leaderboardSection.appendChild(leaderboardItem);
+                    for (let i = start; i < end; i++) {
+                        const user = users[i];
+                        const userElement = document.createElement('div');
+                        userElement.classList.add('leaderboard-item');
+                        if (user.userId === currentUserId) {
+                            userElement.style.color = 'var(--color-quinary)'; // Highlight current user
+                        }
+                        userElement.innerHTML = `<strong>${i + 1}. ${user.name}: ${user.count}</strong>`;
+                        leaderboardSection.appendChild(userElement);
+                    }
                 });
             } else {
                 console.error('No user is signed in.');
@@ -165,65 +138,18 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
-
-
-
-
-let currentSales = [];
-let batchSize = 10; // Number of sales to load at a time
-let lastRenderedIndex = 0;
-
-const sellableTypes = ['Select RX', 'SPM Scheduled Call', 'Transfer', 'Billable HRA']; // Use readable titles
-let hideNonSellable = false; // Track the toggle state for non-sellable
-let hideSelfSales = false; // Track the toggle state for self-sales
-
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleSellableButton = document.getElementById('toggleSellableButton');
-    const toggleSelfSalesButton = document.getElementById('toggleSelfSalesButton');
-    const currentUser = firebase.auth().currentUser; // Get the current user ID
-
-    toggleSellableButton.addEventListener('click', () => {
-        hideNonSellable = !hideNonSellable; // Toggle the state
-        toggleSellableButton.classList.toggle('clicked', hideNonSellable);
-        toggleSellableButton.textContent = hideNonSellable ? 'Show Non-sellable' : 'Hide Non-sellable';
-
-        lastRenderedIndex = 0; // Reset the index to start rendering from the top
-        document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
-        renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
-    });
-
-    toggleSelfSalesButton.addEventListener('click', () => {
-        hideSelfSales = !hideSelfSales; // Toggle the state
-        toggleSelfSalesButton.classList.toggle('clicked', hideSelfSales);
-        toggleSelfSalesButton.textContent = hideSelfSales ? 'Show Self Sales' : 'Hide Self Sales';
-
-        lastRenderedIndex = 0; // Reset the index to start rendering from the top
-        document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
-        renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
-    });
-
-    loadLiveActivities();
-});
-
-
-
-
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off('value'); // Clear previous listeners
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
@@ -232,101 +158,18 @@ async function loadLiveActivities() {
                 return;
             }
 
-            const today = new Date();
-            currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => {
-                const saleDate = new Date(sale.saleTime);
-                return saleDate.getDate() === today.getDate() &&
-                       saleDate.getMonth() === today.getMonth() &&
-                       saleDate.getFullYear() === today.getFullYear();
-            });
+            console.log('Sales data:', salesData);
+            const sales = await processSalesData(salesData);
+            const latestSales = sales.slice(0, 5); // Get the latest 5 sales
 
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            console.log('Processed sales data:', latestSales);
+            await addUserNames(latestSales, usersRef);
+            renderSales(latestSales, liveActivitiesSection, likesRef, usersRef);
         });
-
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-            }
-        });
-
     } catch (error) {
         console.error('Error loading live activities:', error);
     }
 }
-
-function renderMoreSales(container, likesRef, usersRef) {
-    const currentUser = firebase.auth().currentUser; // Get the current user ID
-    
-    if (lastRenderedIndex >= currentSales.length) {
-        console.log("All sales have been loaded");
-        return; // Exit if all sales have been rendered
-    }
-
-    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
-        .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
-                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
-
-    lastRenderedIndex += salesToRender.length;
-
-    salesToRender.forEach((sale) => {
-        const saleDate = new Date(sale.saleTime);
-        const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        const saleElement = document.createElement('div');
-        saleElement.classList.add('activity-item');
-
-        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
-
-        saleElement.innerHTML = `
-            <button class="like-button" data-like-path="${likePath}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-            </button>
-            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${formattedTime}
-            <div class="like-info" id="like-info-${likePath}"></div>
-        `;
-        container.appendChild(saleElement);
-
-        const likeButton = saleElement.querySelector('.like-button');
-        const likeInfoDiv = saleElement.querySelector('.like-info');
-
-        initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
-
-        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
-
-        likesRef.child(likePath).on('value', snapshot => {
-            updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
-        });
-    });
-
-    // Automatically load more sales if the last rendered sale is visible and there are more to load
-    const lastSaleElement = container.lastElementChild;
-    if (lastSaleElement && lastRenderedIndex < currentSales.length) {
-        renderMoreSales(container, likesRef, usersRef);
-    }
-}
-
-
-
-
-
-
-
-
-
-function isToday(dateString) {
-    const date = new Date(dateString);
-    const today = new Date();
-    return date.getDate() === today.getDate() &&
-           date.getMonth() === today.getMonth() &&
-           date.getFullYear() === today.getFullYear();
-}
-
-
-
 
 async function processSalesData(salesData) {
     const sales = [];
@@ -386,12 +229,13 @@ async function addUserNames(sales, usersRef) {
 }
 
 function renderSales(sales, container, likesRef, usersRef) {
-    container.innerHTML = ''; // Clear the container but don't add the title
+    container.innerHTML = '<h4>Live Activities</h4>';
 
     sales.forEach(sale => {
         const saleElement = document.createElement('div');
         saleElement.classList.add('activity-item');
 
+        // Use a sanitized path for the like button
         const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
         saleElement.innerHTML = `
@@ -412,12 +256,12 @@ function renderSales(sales, container, likesRef, usersRef) {
 
         likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
 
+        // Listen for changes to likes in real-time
         likesRef.child(likePath).on('value', snapshot => {
             updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
     });
 }
-
 
 function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     const likes = snapshot.val() || {};
@@ -444,14 +288,6 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
         likeButton.classList.remove('liked');
     }
 }
-
-
-
-
-
-
-
-
 
 async function initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef) {
     try {
@@ -494,5 +330,3 @@ function getReadableTitle(saleType) {
             return saleType;
     }
 }
-
-

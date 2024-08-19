@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Totals</title>
+    <title>Sales History</title>
     <link rel="stylesheet" href="css/charts.css">
     <link rel="stylesheet" href="css/outcomes.css">
     <link rel="stylesheet" href="css/buttons.css">
@@ -16,6 +16,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="tracker.js" defer></script>
@@ -27,6 +28,7 @@
     <script src="leaderboard.js" defer></script>
     <script src="liveActivities.js" defer></script>
     <script src="CSsearch.js" defer></script>
+    <script src="progressBars.js" defer></script>
 
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
@@ -38,23 +40,17 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-RVBYB0RR06');
     </script>
-
-
-  
 </head>
 <body>
-
-
-    
-    
     <div class="header-container">
-        <h1>Sales Totals</h1>
+        <h1>Sales History</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-        <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
 
+         <button onclick="window.location.href='Donate.html'" class="button">Donate</button>
+
+        <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
         <button onclick="window.location.href='history.html'" class="button">Sales History</button>
         <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
         <button onclick="window.location.href='totals.html'" class="button">Monthly Totals</button>
@@ -71,74 +67,42 @@
         <button id="signOut" class="button">Sign Out</button>
         <button id="googleSignInButton">Link with Google</button>
         <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-        
-        <!-- Navigation Buttons -->
-
     </div>
 
     <div class="main-container">
-
-
-      
-
-    <!-- Monthly Sales Totals Container -->
-<div class="monthly-sales-totals-container container">
-    <h2>Monthly Sales Totals</h2>
-    <div class="sales-container">
-        <div class="sales-item">
-            <p class="sales-label">SRX</p>
-            <p class="sales-value" id="srx-value">$0</p>
-            <p class="sales-trend" id="srx-trend">Trend: $0</p>
-            <p class="sales-push" id="srx-push">Push: $0</p>
-            <p class="sales-count" id="srx-count">0</p>
-        </div>
-        <div class="sales-item">
-            <p class="sales-label">Transfer</p>
-            <p class="sales-value" id="transfer-value">$0</p>
-            <p class="sales-trend" id="transfer-trend">Trend: $0</p>
-            <p class="sales-push" id="transfer-push">Push: $0</p>
-            <p class="sales-count" id="transfer-count">0</p>
-        </div>
-        <div class="sales-item">
-            <p class="sales-label">HRA</p>
-            <p class="sales-value" id="hra-value">$0</p>
-            <p class="sales-trend" id="hra-trend">Trend: $0</p>
-            <p class="sales-push" id="hra-push">Push: $0</p>
-            <p class="sales-count" id="hra-count">0</p>
-        </div>
-        <div class="sales-item">
-            <p class="sales-label">SPM</p>
-            <p class="sales-value" id="spm-value">$0</p>
-            <p class="sales-trend" id="spm-trend">Trend: $0</p>
-            <p class="sales-push" id="spm-push">Push: $0</p>
-            <p class="sales-count" id="spm-count">0</p>
-        </div>
-    </div>
-    <div class="summary-container">
-        <div class="summary-item">
-            <p class="summary-label">Last Month</p>
-            <p class="summary-value" id="last-month-value">$0</p>
-        </div>
-        <div class="summary-item">
-            <p class="summary-label">TOTAL</p>
-            <p class="summary-value" id="total-value">$0</p>
-        </div>
-        <div class="summary-item">
-            <p class="summary-label">Average</p>
-            <p class="summary-value" id="average-value">$0</p>
-        </div>
-    </div>
-</div>
-
-       
-
-        
+              
+        <div class="sales-history-container container">
+            <div class="header-section">
+                <h2>Sales History</h2>
+                <div class="search-container">
+                    <input type="text" id="searchById" placeholder="Search by lead ID">
+                    <button id="clearSearch" style="display: none;">&times;</button>
+                </div>
+            </div>
+            <div class="lead-id-container container" id="lead-id-container">
+                <!-- Lead ID will be dynamically added here -->
+            </div>
+            <div class="sales-history-content container" id="sales-outcomes-container">
+                <!-- Sales outcomes will be dynamically added here -->
+            </div>
+            <div class="customer-info-container container" id="customer-info-container">
+                <!-- Customer info will be dynamically added here -->
+            </div>
+            <div class="navigation-container">
+                <button id="prev" class="button">Prev</button>
+                <span id="counter">1 of 3</span>
+                <button id="next" class="button">Next</button>
+                <button id="screenshotButton" class="button">Take Screenshot</button>
+                <button id="copyToClipboardButton" class="button">Copy to Clipboard</button>
+            </div>
+            <div class="bottom-right-buttons" style="display: none;">
+                <button id="exportSalesData" class="button">Export Sales Data</button>
+                <input type="file" id="importSalesData" class="button" style="display: none;" />
+                <button id="importSalesDataButton" class="button">Import Sales Data</button>
+            </div>
+        </div>      
     </div>
 
-
-
-
-    
     <!-- Event Tracking for dynamically added elements -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -187,9 +151,36 @@
 
             // Call the function to add event listeners
             addDynamicEventListeners();
+
+           // Screenshot button functionality
+    document.getElementById('screenshotButton').addEventListener('click', function() {
+        const container = document.querySelector('.main-container');
+        html2canvas(container).then(canvas => {
+            const img = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            link.href = img;
+            link.download = 'screenshot.png';
+            link.click();
+        }).catch(error => {
+            console.error('Screenshot error:', error);
+        });
+    });  // Copy to clipboard functionality
+    document.getElementById('copyToClipboardButton').addEventListener('click', function() {
+        const container = document.querySelector('.main-container');
+        html2canvas(container).then(canvas => {
+            canvas.toBlob(blob => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                    console.log('Screenshot copied to clipboard.');
+                }).catch(error => {
+                    console.error('Clipboard error:', error);
+                });
+            });
+        }).catch(error => {
+            console.error('Screenshot error:', error);
+        });
+    });
         });
     </script>
-
-    
 </body>
 </html>

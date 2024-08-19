@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Charts</title>
     <link rel="stylesheet" href="css/charts.css">
     <link rel="stylesheet" href="css/outcomes.css">
     <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/footer.css">
+
     <link rel="stylesheet" href="css/leaderboard.css">
     <link rel="stylesheet" href="css/monthlyTotals.css">
     <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
@@ -50,8 +52,11 @@
 
     
     <div class="header-container">
-        <h1>Dashboard</h1>
+        <h1>Charts</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
+
+         <button onclick="window.location.href='Donate.html'" class="button">Donate</button>
+
         <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
 
         <button onclick="window.location.href='history.html'" class="button">Sales History</button>
@@ -78,9 +83,43 @@
     <div class="main-container">
 
 
-            
+     
+
+        <div class="picker-chart-container container" id="chartContainerDay">
+            <!-- Day chart content -->
+            <canvas id="salesChartDay"></canvas>
+        </div>
+        
+        <div class="picker-chart-container container" id="chartContainerWeek" style="display: none;">
+            <!-- Week chart content -->
+            <canvas id="salesChartWeek"></canvas>
+        </div>
+        
+        <div class="picker-chart-container container" id="chartContainerMonth" style="display: none;">
+            <!-- Month chart content -->
+            <canvas id="salesChartMonth"></canvas>
+        </div>
+        
+       
+    </div>
 
 
+   
+                
+    <footer class="footer">
+        <div class="footer-container">
+            <button onclick="changeChart('day')" class="footer-button">Day Chart</button>
+            <button onclick="changeChart('week')" class="footer-button">Week Chart</button>
+            <button onclick="changeChart('month')" class="footer-button">Month Chart</button>
+            <button id="prevButton" class="footer-button">Previous</button>
+            <button id="nextButton" class="footer-button">Next</button>
+        </div>
+    </footer>
+    
+    
+     
+    
+    
 
     
     <!-- Event Tracking for dynamically added elements -->
