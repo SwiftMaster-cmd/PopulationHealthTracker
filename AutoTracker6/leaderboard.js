@@ -47,7 +47,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
-    const lastResetRef = database.ref('lastReset'); // Reference to store the last reset date
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -57,7 +56,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     salesCountsRef.off('value');
 
-    salesCountsRef.on('value', async salesSnapshot => {
+    salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         if (!salesData) {
             console.error('No sales data found');
@@ -66,93 +65,71 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
         const users = [];
 
-        firebase.auth().onAuthStateChanged(async user => {
+        firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                // Check if daily reset is needed
-                const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-                const lastResetSnapshot = await lastResetRef.once('value');
-                const lastResetDate = lastResetSnapshot.val();
+                usersRef.once('value', usersSnapshot => {
+                    const usersData = usersSnapshot.val();
+                    const currentUserId = user.uid;
 
-                if (lastResetDate !== today) {
-                    // Reset sales counts for the day
                     for (const userId in salesData) {
-                        salesCountsRef.child(`${userId}/day`).set({
-                            selectRX: 0, // Reset specific sale types here as needed
-                            // Add other sale types to reset if necessary
-                        });
-                    }
+                        const userData = salesData[userId];
+                        let count = 0;
 
-                    // Update the last reset date
-                    lastResetRef.set(today);
-                    console.log('Daily sales counts reset');
-                }
-
-                // Proceed with loading the leaderboard
-                const usersSnapshot = await usersRef.once('value');
-                const usersData = usersSnapshot.val();
-                const currentUserId = user.uid;
-
-                for (const userId in salesData) {
-                    const userData = salesData[userId];
-                    let count = 0;
-
-                    if (period === 'day') {
-                        if (userData.day && userData.day[saleType] !== undefined) {
-                            count = userData.day[saleType]; // Access the count directly
+                        if (period === 'day') {
+                            if (userData.day && userData.day[saleType] !== undefined) {
+                                count = userData.day[saleType]; // Access the count directly
+                            }
+                        } else if (period === 'week') {
+                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                        } else if (period === 'month') {
+                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
                         }
-                    } else if (period === 'week') {
-                        count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                    } else if (period === 'month') {
-                        count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
-                    }
 
-                    // Only include users with non-zero sales counts
-                    if (count > 0) {
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
                         users.push({ userId, name, count });
                     }
-                }
 
-                users.sort((a, b) => b.count - a.count);
+                    users.sort((a, b) => b.count - a.count);
 
-                leaderboardSection.innerHTML = ''; // Clear the section before adding new items
+                    leaderboardSection.innerHTML = ''; // Clear the section before adding new items
 
-                users.forEach((user, index) => {
-                    // Create the leaderboard item container
-                    const leaderboardItem = document.createElement('div');
-                    leaderboardItem.classList.add('leaderboard-item');
+                    users.forEach((user, index) => {
+                        // Create the leaderboard item container
+                        const leaderboardItem = document.createElement('div');
+                        leaderboardItem.classList.add('leaderboard-item');
 
-                    // Add the appropriate class based on rank
-                    if (index === 0) {
-                        leaderboardItem.classList.add('first-place');
-                    } else if (index === 1) {
-                        leaderboardItem.classList.add('second-place');
-                    } else if (index === 2) {
-                        leaderboardItem.classList.add('third-place');
-                    }
+                        // Add the appropriate class based on rank
+                        if (index === 0) {
+                            leaderboardItem.classList.add('first-place');
+                        } else if (index === 1) {
+                            leaderboardItem.classList.add('second-place');
+                        } else if (index === 2) {
+                            leaderboardItem.classList.add('third-place');
+                        }
 
-                    // Create the position container
-                    const positionContainer = document.createElement('div');
-                    positionContainer.classList.add('leaderboard-position');
-                    positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
+                        // Create the position container
+                        const positionContainer = document.createElement('div');
+                        positionContainer.classList.add('leaderboard-position');
+                        positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
 
-                    // Create the name container
-                    const nameContainer = document.createElement('div');
-                    nameContainer.classList.add('leaderboard-name');
-                    nameContainer.textContent = user.name;
+                        // Create the name container
+                        const nameContainer = document.createElement('div');
+                        nameContainer.classList.add('leaderboard-name');
+                        nameContainer.textContent = user.name;
 
-                    // Create the score container
-                    const scoreContainer = document.createElement('div');
-                    scoreContainer.classList.add('leaderboard-score');
-                    scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
+                        // Create the score container
+                        const scoreContainer = document.createElement('div');
+                        scoreContainer.classList.add('leaderboard-score');
+                        scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
 
-                    // Append the containers to the leaderboard item
-                    leaderboardItem.appendChild(positionContainer);
-                    leaderboardItem.appendChild(nameContainer);
-                    leaderboardItem.appendChild(scoreContainer);
+                        // Append the containers to the leaderboard item
+                        leaderboardItem.appendChild(positionContainer);
+                        leaderboardItem.appendChild(nameContainer);
+                        leaderboardItem.appendChild(scoreContainer);
 
-                    // Append the leaderboard item to the section
-                    leaderboardSection.appendChild(leaderboardItem);
+                        // Append the leaderboard item to the section
+                        leaderboardSection.appendChild(leaderboardItem);
+                    });
                 });
             } else {
                 console.error('No user is signed in.');
@@ -162,7 +139,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
-
 
 
 
@@ -206,10 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadLiveActivities();
 });
 
-
-
-
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
@@ -232,15 +204,7 @@ async function loadLiveActivities() {
                 return;
             }
 
-            const today = new Date();
             currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => {
-                const saleDate = new Date(sale.saleTime);
-                return saleDate.getDate() === today.getDate() &&
-                       saleDate.getMonth() === today.getMonth() &&
-                       saleDate.getFullYear() === today.getFullYear();
-            });
-
             await addUserNames(currentSales, usersRef);
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
@@ -272,7 +236,14 @@ function renderMoreSales(container, likesRef, usersRef) {
 
     salesToRender.forEach((sale) => {
         const saleDate = new Date(sale.saleTime);
+        const today = new Date();
+        const isToday = saleDate.getDate() === today.getDate() &&
+                        saleDate.getMonth() === today.getMonth() &&
+                        saleDate.getFullYear() === today.getFullYear();
+
         const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const formattedDate = `${saleDate.getMonth() + 1}/${saleDate.getDate()}`;
+        const displayTime = isToday ? formattedTime : `on ${formattedDate} - ${formattedTime}`;
 
         const saleElement = document.createElement('div');
         saleElement.classList.add('activity-item');
@@ -285,7 +256,7 @@ function renderMoreSales(container, likesRef, usersRef) {
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
             </button>
-            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${formattedTime}
+            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${displayTime}
             <div class="like-info" id="like-info-${likePath}"></div>
         `;
         container.appendChild(saleElement);
@@ -308,7 +279,6 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
-
 
 
 
@@ -445,14 +415,6 @@ function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
     }
 }
 
-
-
-
-
-
-
-
-
 async function initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef) {
     try {
         const snapshot = await likesRef.child(likePath).once('value');
@@ -494,5 +456,3 @@ function getReadableTitle(saleType) {
             return saleType;
     }
 }
-
-

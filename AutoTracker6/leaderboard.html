@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Leaderboard</title>
     <link rel="stylesheet" href="css/charts.css">
     <link rel="stylesheet" href="css/outcomes.css">
     <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/footer.css">
-
     <link rel="stylesheet" href="css/leaderboard.css">
     <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/progressBars.css"> <!-- New CSS file for the main styles -->
-
     <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -24,8 +20,6 @@
     <script src="auth.js" defer></script>
     <script src="tracker.js" defer></script>
     <script src="points.js" defer></script>
-    <script src="stripe-handler.js" defer></script>
-    <script src="progressBars.js" defer></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -37,7 +31,7 @@
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
     <script src="profilePopup.js" defer></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
     <script>
@@ -54,13 +48,11 @@
 <body>
 
 
-
+    
     
     <div class="header-container">
-        <h1>Dashboard</h1>
+        <h1>Leaderboard</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-        <button onclick="window.location.href='Dash2.html'" class="button">donate</button>
-
         <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
 
         <button onclick="window.location.href='history.html'" class="button">Sales History</button>
@@ -69,13 +61,9 @@
         <button onclick="window.location.href='chart.html'" class="button">Chart</button>
         <div class="profile-button">P</div>
     </div>
-
-
+    
     <!-- Color Picker and Name Change Container -->
     <div class="color-picker-container" id="colorPickerContainer">
-
-       
-
         <input type="color" id="colorPicker" />
         <button id="applyColor" class="button">Apply Color Palette</button>
         <input type="text" id="nameInput" placeholder="Enter new name" />
@@ -87,90 +75,38 @@
         <!-- Navigation Buttons -->
 
     </div>
-
     <div class="main-container">
 
 
-       
-
-               
+        
         <div class="picker-leaderboard-container container">
-            
             <div class="leaderboard-container">
-                <div class="leaderboard-header">
-                    <h3 id="leaderboard-title">Leaderboard: Select RX</h3>
-                    <div class="picker-header">
-                        <select id="periodPicker" class="picker">
-                            <option value="day">Day</option>
-                            <option value="week">Week</option>
-                            <option value="month">Month</option>
-                        </select>
-                        <select id="saleTypePicker" class="picker">
-                            <option value="selectRX">S.R.X.</option>
-                            <option value="billableHRA">H.R.A.</option>
-                            <option value="transfer">Partner</option>
-                            <option value="selectPatientManagement">S.P.M.</option>
-                        </select>
-                    </div>
+                <h3 id="leaderboard-title">Leaderboard: Select RX</h3>
+                <div class="picker-header">
+                    <select id="periodPicker" class="picker">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                    </select>
+                    <select id="saleTypePicker" class="picker">
+                        <option value="selectRX">S.R.X.</option>
+                        <option value="billableHRA">H.R.A.</option>
+                        <option value="transfer">Partner</option>
+                        <option value="selectPatientManagement">S.P.M.</option>
+                    </select>
                 </div>
-                <div id="leaderboard-section">
-                    <div class="leaderboard-item">
-                        <!-- Leaderboard items here -->
-                    </div>
-                </div>
+                <div id="leaderboard-section"></div>
             </div>
-            
-                
-                
-            
-            <div class="live-activities-container">
-                <h4 class="live-activities-title">Live Activities</h4>
-            
-                <!-- Toggle buttons for Show/Hide Non-sellable and Self Sales -->
-                <div class="toggle-buttons">
-                    <button id="toggleSellableButton" class="toggle-button">Hide Non-sellable</button>
-                    <button id="toggleSelfSalesButton" class="toggle-button">Hide Self Sales</button>
-                </div>
-            
-                <div id="live-activities-section"></div>
-            </div>
-            
-            
-        
-        
+            <div id="live-activities-section"></div>
         </div>
-        
 
- 
-
-        <div class="picker-chart-container container" id="chartContainerDay">
-            <!-- Day chart content -->
-            <canvas id="salesChartDay"></canvas>
-        </div>
-        
-        <div class="picker-chart-container container" id="chartContainerWeek" style="display: none;">
-            <!-- Week chart content -->
-            <canvas id="salesChartWeek"></canvas>
-        </div>
-        
-        <div class="picker-chart-container container" id="chartContainerMonth" style="display: none;">
-            <!-- Month chart content -->
-            <canvas id="salesChartMonth"></canvas>
-        </div>
-        
     </div>
-                
-    <footer class="footer">
-        <div class="footer-container">
-            <button onclick="changeChart('day')" class="footer-button">Day Chart</button>
-            <button onclick="changeChart('week')" class="footer-button">Week Chart</button>
-            <button onclick="changeChart('month')" class="footer-button">Month Chart</button>
-            <button id="prevButton" class="footer-button">Previous</button>
-            <button id="nextButton" class="footer-button">Next</button>
-        </div>
-    </footer>
-    
-      
+
+     
+
+
+
+
     
     <!-- Event Tracking for dynamically added elements -->
     <script>

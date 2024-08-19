@@ -42,7 +42,7 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--margin-l) var(--margin-m); /* Increased vertical padding */
+    padding: 0 var(--margin-m);
     background-color: var(--color-secondary);
     color: var(--text-white);
     position: fixed;
@@ -50,7 +50,6 @@ body, html {
     width: 100%;
     z-index: 1000;
 }
-
 
 .header-container h1 {
     margin: var(--margin-s) 0;
@@ -187,8 +186,6 @@ button:active {
 }
 
 .button {
-    font-size: 1.3em;
-
     padding: var(--margin-s) var(--margin-m);
     border: none;
     border-radius: var(--margin-s);
@@ -316,6 +313,3 @@ button:active {
 .bottom-right-buttons .button:hover {
     background-color: #0056b3;
 }
-
-
-
