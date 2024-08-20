@@ -185,12 +185,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadLiveActivities();
 });
+
+
+
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
+        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
@@ -206,13 +210,8 @@ async function loadLiveActivities() {
                 return;
             }
 
-            // Process sales data and fetch user names before slicing
             currentSales = await processSalesData(salesData);
-            await addUserNames(currentSales, usersRef);
-
-            // Now render only the first 10 activities
-            lastRenderedIndex = 0;
-            liveActivitiesSection.innerHTML = ''; // Clear current content
+            await addUserNames(currentSales, usersRef); // Ensure names are added before rendering
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
 
@@ -226,6 +225,7 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
+
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
@@ -351,24 +351,32 @@ async function processSalesData(salesData) {
 }
 
 async function addUserNames(sales, usersRef) {
-    const namePromises = sales.map(async sale => {
-        try {
-            const snapshot = await usersRef.child(sale.userId).once('value');
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                sale.userName = userData.name || 'Unknown User';
-            } else {
-                sale.userName = 'Unknown User';
-            }
-            sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
-        } catch (error) {
-            console.error(`Error fetching user data for userId ${sale.userId}:`, error);
-            sale.userName = 'Unknown User';
-        }
-    });
+    const userIds = Array.from(new Set(sales.map(sale => sale.userId))); // Get unique user IDs from sales
 
-    await Promise.all(namePromises);
+    const usersData = {};
+
+    // Fetch all user names in a single batch to minimize database calls
+    await Promise.all(userIds.map(async userId => {
+        try {
+            const snapshot = await usersRef.child(userId).once('value');
+            if (snapshot.exists()) {
+                usersData[userId] = snapshot.val().name || 'Unknown User';
+            } else {
+                usersData[userId] = 'Unknown User';
+            }
+        } catch (error) {
+            console.error(`Error fetching user data for userId ${userId}:`, error);
+            usersData[userId] = 'Unknown User';
+        }
+    }));
+
+    // Assign user names to each sale
+    sales.forEach(sale => {
+        sale.userName = usersData[sale.userId];
+        sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
+    });
 }
+
 
 function renderSales(sales, container, likesRef, usersRef) {
     container.innerHTML = ''; // Clear the container but don't add the title
