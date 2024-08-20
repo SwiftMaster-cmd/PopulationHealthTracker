@@ -338,8 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    
-
     // Event listeners for prev and next buttons
     document.getElementById('prev').addEventListener('click', function() {
         const salesToDisplay = filteredSalesData.length ? filteredSalesData : salesData;
@@ -383,88 +381,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-    // Helper functions
- // Function to calculate daily averages from last week's sales and save them to salesCounts
- async function calculateAndSaveWeeklyDailyAverages(user) {
-    const database = firebase.database();
-    const salesOutcomesRef = database.ref('salesOutcomes/' + user.uid);
-    const salesCountsRef = database.ref('salesCounts/' + user.uid);
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    const startDate = oneWeekAgo.toISOString().split('T')[0]; // Start date in YYYY-MM-DD format
-    const now = new Date();
-
-    try {
-        const snapshot = await salesOutcomesRef.once('value');
-        const salesData = snapshot.val();
-        if (!salesData) {
-            console.error('No sales data found in salesOutcomes for calculating weekly daily averages.');
-            return;
-        }
-
-        const weeklyTotals = {
-            selectRX: 0,
-            selectPatientManagement: 0,
-            billableHRA: 0,
-            transfer: 0
-        };
-        let daysCounted = 0;
-
-        for (const key in salesData) {
-            const outcome = salesData[key];
-            const outcomeTime = new Date(outcome.outcomeTime);
-
-            if (outcomeTime >= oneWeekAgo && outcomeTime <= now) {
-                const saleType = getSaleType(outcome.assignAction, outcome.notesValue);
-
-                if (saleType === 'Select RX') {
-                    weeklyTotals.selectRX++;
-                } else if (saleType === 'Select Patient Management') {
-                    weeklyTotals.selectPatientManagement++;
-                } else if (saleType === 'Billable HRA') {
-                    weeklyTotals.billableHRA++;
-                } else if (saleType === 'Transfer') {
-                    weeklyTotals.transfer++;
-                }
-
-                daysCounted++;
-            }
-        }
-
-        if (daysCounted > 0) {
-            // Calculate the average daily sales for each sale type over the past week
-            const dailyAverages = {
-                selectRX: weeklyTotals.selectRX / 7,
-                selectPatientManagement: weeklyTotals.selectPatientManagement / 7,
-                billableHRA: weeklyTotals.billableHRA / 7,
-                transfer: weeklyTotals.transfer / 7
-            };
-
-            // Save the daily averages to the salesCounts node
-            await salesCountsRef.child('dailyAverages').set(dailyAverages);
-            console.log('Daily averages for the past week calculated and saved to salesCounts.');
-        } else {
-            console.log(`No sales data for the user in the past week.`);
-        }
-    } catch (error) {
-        console.error('Error fetching sales data from salesOutcomes for calculating daily averages:', error);
-    }
-}
-
-
 
 document.addEventListener('DOMContentLoaded', function() {
     // Helper functions
 
-    // Function to remove duplicates for a specific user's sales outcomes
-    function removeDuplicatesForUser(userId, outcomes) {
+    // Function to remove duplicates
+    function removeDuplicates(user) {
         const database = firebase.database();
-        const outcomesRef = database.ref('salesOutcomes/' + userId);
-        const seenOutcomes = {};
+        const outcomesRef = database.ref('salesOutcomes/' + user.uid);
 
-        for (const outcomeKey in outcomes) {
-            if (outcomes.hasOwnProperty(outcomeKey)) {
-                const outcome = outcomes[outcomeKey];
+        outcomesRef.once('value', (snapshot) => {
+            const outcomes = snapshot.val();
+            const seenOutcomes = {};
+
+            snapshot.forEach(childSnapshot => {
+                const outcome = childSnapshot.val();
                 const action = outcome.assignAction;
                 const accountNumber = outcome.accountNumber;
                 const firstName = outcome.customerInfo.firstName;
@@ -480,31 +411,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Remove the older record
                         outcomesRef.child(seenOutcomes[key].key).remove();
                         // Update the seenOutcomes with the latest record
-                        seenOutcomes[key] = { key: outcomeKey, outcomeTime: outcome.outcomeTime };
+                        seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
                     } else {
                         // Remove the current record as it is older
-                        outcomesRef.child(outcomeKey).remove();
+                        outcomesRef.child(childSnapshot.key).remove();
                     }
                 } else {
                     // Add the record to seenOutcomes
-                    seenOutcomes[key] = { key: outcomeKey, outcomeTime: outcome.outcomeTime };
-                }
-            }
-        }
-    }
-
-    // Function to remove duplicates for all users
-    function removeDuplicatesForAllUsers() {
-        const database = firebase.database();
-        const salesOutcomesRef = database.ref('salesOutcomes');
-
-        salesOutcomesRef.on('value', (snapshot) => { // Listen for real-time updates
-            snapshot.forEach(userSnapshot => {
-                const userId = userSnapshot.key;
-                const userOutcomes = userSnapshot.val();
-
-                if (userOutcomes) {
-                    removeDuplicatesForUser(userId, userOutcomes);
+                    seenOutcomes[key] = { key: childSnapshot.key, outcomeTime: outcome.outcomeTime };
                 }
             });
         }, (error) => {
@@ -512,11 +426,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Authenticate and call removeDuplicatesForAllUsers
+    // Authenticate and call removeDuplicates
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             console.log('Authenticated user:', user.displayName);
-            removeDuplicatesForAllUsers();
+            removeDuplicates(user);
         } else {
             console.error('User not authenticated');
         }

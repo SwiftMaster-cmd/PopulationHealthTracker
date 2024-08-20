@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize all charts with different periods
-    loadChart('day', 'salesChartDay');
-    loadChart('week', 'salesChartWeek');
-    loadChart('month', 'salesChartMonth');
+let salesCharts = {};
+let currentDate = new Date(); // Keeps track of the current date displayed
 
+document.addEventListener('DOMContentLoaded', () => {
+    changeChart('day'); // Load the default chart (day)
+    
     // Load color palette from local storage if available
     const savedColor = localStorage.getItem('baseColor');
     if (savedColor) {
@@ -12,9 +12,64 @@ document.addEventListener('DOMContentLoaded', () => {
         const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
         applyColorPalette(defaultColor);
     }
+   // Add event listeners for the previous and next buttons
+   const prevButton = document.getElementById('prevButton');
+   const nextButton = document.getElementById('nextButton');
+
+   if (prevButton && nextButton) {
+       prevButton.addEventListener('click', () => {
+           console.log("Previous button clicked");
+           navigateDate(-1);
+       });
+
+       nextButton.addEventListener('click', () => {
+           console.log("Next button clicked");
+           navigateDate(1);
+       });
+   } else {
+       console.error("Previous or Next button not found in the DOM.");
+   }
 });
 
-let salesCharts = {};
+function changeChart(period) {
+    const chartIds = ['Day', 'Week', 'Month'];
+    const selectedChartId = `chartContainer${period.charAt(0).toUpperCase() + period.slice(1)}`;
+
+    chartIds.forEach(id => {
+        const container = document.getElementById(`chartContainer${id}`);
+        if (container) {
+            if (`chartContainer${id}` === selectedChartId) {
+                container.style.display = 'flex'; // Show the selected chart
+            } else {
+                container.style.display = 'none'; // Hide the others
+            }
+        }
+    });
+
+    const canvasId = `salesChart${period.charAt(0).toUpperCase() + period.slice(1)}`;
+    loadChart(period, canvasId); // Load the selected chart data
+}
+
+// Adjusts the date and reloads the chart based on the current period
+function navigateDate(direction) {
+    const activeChart = document.querySelector('.picker-chart-container.container[style*="display: flex;"]');
+
+    if (activeChart) {
+        if (activeChart.id.includes('Day')) {
+            currentDate.setDate(currentDate.getDate() + direction);
+            loadChart('day', 'salesChartDay');
+        } else if (activeChart.id.includes('Week')) {
+            currentDate.setDate(currentDate.getDate() + (direction * 7));
+            loadChart('week', 'salesChartWeek');
+        } else if (activeChart.id.includes('Month')) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            loadChart('month', 'salesChartMonth');
+        }
+    } else {
+        console.error("No active chart found.");
+    }
+}
+
 
 function loadChart(period, canvasId) {
     const database = firebase.database();
@@ -32,11 +87,11 @@ function loadChart(period, canvasId) {
                 };
 
                 if (period === 'day') {
-                    chartData = getDailyChartData(salesData);
+                    chartData = getDailyChartData(salesData, currentDate);
                 } else if (period === 'week') {
-                    chartData = getWeeklyChartData(salesData);
+                    chartData = getWeeklyChartData(salesData, currentDate);
                 } else if (period === 'month') {
-                    chartData = getMonthlyChartData(salesData);
+                    chartData = getMonthlyChartData(salesData, currentDate);
                 }
 
                 const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
@@ -127,9 +182,35 @@ function loadChart(period, canvasId) {
     });
 }
 
-function getDailyChartData(salesData) {
-    const hours = Array.from({ length: 15 }, (_, i) => `${i + 7}:00`);
-    const currentDayData = getCurrentDayData(salesData);
+function getDailyChartData(salesData, date) {
+    const now = date || new Date();
+    const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+    let earliestTime = 24; // Start with the latest possible hour
+    let latestTime = 0; // Start with the earliest possible hour
+
+    // Find the earliest and latest sale times in the last 30 days
+    for (const account in salesData) {
+        for (const saleType in salesData[account]) {
+            salesData[account][saleType].forEach(saleTime => {
+                const saleDate = new Date(saleTime);
+                if (saleDate >= thirtyDaysAgo && saleDate <= now) {
+                    const saleHour = saleDate.getHours();
+                    if (saleHour < earliestTime) earliestTime = saleHour;
+                    if (saleHour > latestTime) latestTime = saleHour;
+                }
+            });
+        }
+    }
+
+    // Generate time labels based on the earliest and latest times in 12-hour format
+    const hours = Array.from({ length: (latestTime - earliestTime + 1) }, (_, i) => {
+        let hour = i + earliestTime;
+        let period = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12; // Convert to 12-hour format, with 12 instead of 0
+        return `${hour} ${period}`;
+    });
+
+    const currentDayData = getCurrentDayData(salesData, now);
 
     const data = {
         labels: hours,
@@ -138,31 +219,62 @@ function getDailyChartData(salesData) {
     return data;
 }
 
-function getWeeklyChartData(salesData) {
+function getWeeklyChartData(salesData, date) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const currentWeekData = getCurrentWeekData(salesData);
+    const now = date || new Date();
+    const firstDayOfWeek = now.getDate() - now.getDay(); // Get the first day of the current week (Sunday)
+    const startOfWeek = new Date(now.setDate(firstDayOfWeek)).setHours(0, 0, 0, 0);
+    const endOfWeek = new Date(now.setDate(firstDayOfWeek + 6)).setHours(23, 59, 59, 999);
+
+    const currentWeekSales = {};
+
+    for (const account in salesData) {
+        currentWeekSales[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentWeekSales[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime).getTime();
+                return saleDate >= startOfWeek && saleDate <= endOfWeek;
+            });
+        }
+    }
 
     const data = {
         labels: days,
-        datasets: createDatasets(days, currentWeekData, 'week')
+        datasets: createDatasets(days, currentWeekSales, 'week')
     };
     return data;
 }
 
-function getMonthlyChartData(salesData) {
-    const today = new Date().getDate();
-    const daysInMonth = Array.from({ length: today }, (_, i) => (i + 1).toString());
+function getMonthlyChartData(salesData, date) {
+    const now = date || new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).setHours(0, 0, 0, 0);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).setHours(23, 59, 59, 999);
+    
+    const daysInMonth = Array.from({ length: now.getDate() }, (_, i) => (i + 1).toString());
+    const currentMonthData = {};
+
+    for (const account in salesData) {
+        currentMonthData[account] = {};
+
+        for (const saleType in salesData[account]) {
+            currentMonthData[account][saleType] = salesData[account][saleType].filter(saleTime => {
+                const saleDate = new Date(saleTime).getTime();
+                return saleDate >= startOfMonth && saleDate <= endOfMonth;
+            });
+        }
+    }
+
     const data = {
         labels: daysInMonth,
-        datasets: createDatasets(daysInMonth, salesData, 'month')
+        datasets: createDatasets(daysInMonth, currentMonthData, 'month')
     };
     return data;
 }
 
-
-function getCurrentDayData(salesData) {
+function getCurrentDayData(salesData, date) {
     const currentDaySales = {};
-    const now = new Date();
+    const now = date || new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     const endOfDay = startOfDay + 24 * 60 * 60 * 1000;
 
@@ -180,9 +292,9 @@ function getCurrentDayData(salesData) {
     return currentDaySales;
 }
 
-function getCurrentWeekData(salesData) {
+function getCurrentWeekData(salesData, date) {
     const currentWeekSales = {};
-    const now = new Date();
+    const now = date || new Date();
     const firstDayOfWeek = now.getDate() - now.getDay(); // Sunday
 
     for (const account in salesData) {
@@ -199,8 +311,6 @@ function getCurrentWeekData(salesData) {
 
     return currentWeekSales;
 }
-
-
 
 function createDatasets(labels, salesData, period) {
     const datasets = [
@@ -326,16 +436,18 @@ window.addEventListener('resize', () => {
 });
 
 function checkChartHeight() {
-    const chartContainer = document.getElementById('chartContainer');
-    const rotateMessage = document.getElementById('rotateMessage');
+    const chartContainers = document.querySelectorAll('.chart-container');
+    chartContainers.forEach(chartContainer => {
+        const rotateMessage = chartContainer.querySelector('#rotateMessage');
 
-    if (chartContainer.clientHeight < 300) {
-        chartContainer.style.display = 'none';
-        rotateMessage.style.display = 'block';
-    } else {
-        chartContainer.style.display = 'flex';
-        rotateMessage.style.display = 'none';
-    }
+        if (chartContainer.clientHeight < 300) {
+            chartContainer.style.display = 'none';
+            rotateMessage.style.display = 'block';
+        } else {
+            chartContainer.style.display = 'flex';
+            rotateMessage.style.display = 'none';
+        }
+    });
 }
 
 window.addEventListener('resize', () => {
@@ -349,4 +461,3 @@ document.addEventListener('DOMContentLoaded', () => {
     checkChartHeight();
     // Your existing code...
 });
-
