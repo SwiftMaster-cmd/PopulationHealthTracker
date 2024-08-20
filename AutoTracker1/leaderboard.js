@@ -230,6 +230,11 @@ async function loadLiveActivities() {
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
     
+    if (lastRenderedIndex >= currentSales.length) {
+        console.log("All sales have been loaded");
+        return; // Exit if all sales have been rendered
+    }
+
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
         .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
                         (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
@@ -237,8 +242,9 @@ function renderMoreSales(container, likesRef, usersRef) {
     lastRenderedIndex += salesToRender.length;
 
     salesToRender.forEach((sale) => {
+        // Remove the oldest activity if there are already 10 displayed
         if (container.childElementCount >= 10) {
-            container.removeChild(container.firstChild); // Remove the oldest activity if there are already 10
+            container.removeChild(container.firstChild);
         }
 
         const saleDate = new Date(sale.saleTime);
@@ -285,6 +291,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
