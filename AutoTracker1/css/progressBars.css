@@ -1,0 +1,104 @@
+:root {
+    --color-primary: rgba(75, 0, 130, 0.9); /* Indigo */
+    --color-secondary: rgba(138, 43, 226, 0.9); /* BlueViolet */
+    --color-tertiary: rgba(0, 191, 255, 0.9); /* DeepSkyBlue */
+    --color-quaternary: rgba(50, 205, 50, 0.9); /* LimeGreen */
+    --color-quinary: rgba(255, 215, 0, 0.9); /* Gold */
+    --text-white: rgba(255, 255, 255, 1);
+    --background-color: rgba(20, 20, 20, 1); /* Dark Background */
+    --font-size: 20px;
+    --margin-xxs: 0.25rem;
+    --margin-xs: 0.5rem;
+    --margin-s: 0.75rem;
+    --margin-m: 1rem;
+    --margin-l: 1.25rem;
+    --margin-xl: 1.75rem;
+    --margin-xxl: 2.5rem;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--background-color);
+    color: var(--text-white);
+    overflow-x: hidden;
+}
+
+.progress-wrapper {
+    margin-bottom: var(--margin-m);
+}
+
+.progress-title {
+    font-weight: bold;
+    color: var(--text-white);
+    margin-bottom: var(--margin-xs);
+    font-size: 1rem;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--margin-s);
+    overflow: hidden;
+    padding: 0.25rem;
+}
+
+.bar-container {
+    flex: 1;
+    width: 80%;
+    background-color: rgba(255, 255, 255, 0.2); /* Background of the bar container */
+    border-radius: var(--margin-s);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--color-quinary); /* Initial color */
+    border-radius: var(--margin-s);
+    width: 0%;
+    transition: width 0.5s ease, background-color 0.3s ease;
+}
+
+.goal-container {
+    width: 20%;
+    text-align: center;
+    color: var(--text-white);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.progress-container[data-type="selectRX"] .progress-bar {
+    background-color: var(--color-primary);
+}
+
+.progress-container[data-type="selectPatientManagement"] .progress-bar {
+    background-color: var(--color-secondary);
+}
+
+.progress-container[data-type="billableHRA"] .progress-bar {
+    background-color: var(--color-tertiary);
+}
+
+.progress-container[data-type="transfer"] .progress-bar {
+    background-color: var(--color-quaternary);
+}
+
+/* For small screens */
+@media (max-width: 768px) {
+    .progress-wrapper {
+        margin-bottom: var(--margin-s);
+    }
+
+    .progress-title {
+        font-size: 0.85rem;
+    }
+
+    .goal-container {
+        font-size: 0.85rem;
+    }
+}

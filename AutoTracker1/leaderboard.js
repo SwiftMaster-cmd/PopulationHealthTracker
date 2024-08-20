@@ -157,26 +157,20 @@ let hideSelfSales = false; // Track the toggle state for self-sales
 document.addEventListener('DOMContentLoaded', () => {
     const toggleSellableButton = document.getElementById('toggleSellableButton');
     const toggleSelfSalesButton = document.getElementById('toggleSelfSalesButton');
-    const currentUser = firebase.auth().currentUser; // Get the current user ID
+    const liveActivitiesSection = document.getElementById('live-activities-section');
 
     toggleSellableButton.addEventListener('click', () => {
-        hideNonSellable = !hideNonSellable; // Toggle the state
+        hideNonSellable = !hideNonSellable;
         toggleSellableButton.classList.toggle('clicked', hideNonSellable);
         toggleSellableButton.textContent = hideNonSellable ? 'Show Non-sellable' : 'Hide Non-sellable';
-
-        lastRenderedIndex = 0; // Reset the index to start rendering from the top
-        document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
-        renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
+        resetLiveActivities();
     });
 
     toggleSelfSalesButton.addEventListener('click', () => {
-        hideSelfSales = !hideSelfSales; // Toggle the state
+        hideSelfSales = !hideSelfSales;
         toggleSelfSalesButton.classList.toggle('clicked', hideSelfSales);
         toggleSelfSalesButton.textContent = hideSelfSales ? 'Show Self Sales' : 'Hide Self Sales';
-
-        lastRenderedIndex = 0; // Reset the index to start rendering from the top
-        document.getElementById('live-activities-section').innerHTML = ''; // Clear current content
-        renderMoreSales(document.getElementById('live-activities-section'), firebase.database().ref('likes'), firebase.database().ref('users'));
+        resetLiveActivities();
     });
 
     loadLiveActivities();
@@ -188,14 +182,9 @@ async function loadLiveActivities() {
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser; // Get the current user ID
-
-        const liveActivitiesSection = document.getElementById('live-activities-section');
-        if (!liveActivitiesSection) {
-            throw new Error('Live activities section element not found');
-        }
 
         salesTimeFramesRef.off('value'); // Clear previous listeners
+
         salesTimeFramesRef.on('value', async salesSnapshot => {
             const salesData = salesSnapshot.val();
             if (!salesData) {
@@ -204,8 +193,15 @@ async function loadLiveActivities() {
                 return;
             }
 
+            // Clear previous sales data and reset index
+            currentSales = [];
+            lastRenderedIndex = 0;
+
             currentSales = await processSalesData(salesData);
             await addUserNames(currentSales, usersRef);
+
+            // Re-render the sales with updated data
+            liveActivitiesSection.innerHTML = ''; // Clear current content
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
 
@@ -219,6 +215,13 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
+
+function resetLiveActivities() {
+    const liveActivitiesSection = document.getElementById('live-activities-section');
+    liveActivitiesSection.innerHTML = ''; // Clear the section
+    loadLiveActivities(); // Reload activities with new filters applied
+}
+
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
