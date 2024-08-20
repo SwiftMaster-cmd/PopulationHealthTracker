@@ -185,14 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadLiveActivities();
 });
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
         const salesTimeFramesRef = database.ref('salesTimeFrames');
         const usersRef = database.ref('users');
         const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
         const liveActivitiesSection = document.getElementById('live-activities-section');
         if (!liveActivitiesSection) {
@@ -208,8 +206,13 @@ async function loadLiveActivities() {
                 return;
             }
 
+            // Process sales data and fetch user names before slicing
             currentSales = await processSalesData(salesData);
             await addUserNames(currentSales, usersRef);
+
+            // Now render only the first 10 activities
+            lastRenderedIndex = 0;
+            liveActivitiesSection.innerHTML = ''; // Clear current content
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
 
@@ -227,11 +230,6 @@ async function loadLiveActivities() {
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
     
-    if (lastRenderedIndex >= currentSales.length) {
-        console.log("All sales have been loaded");
-        return; // Exit if all sales have been rendered
-    }
-
     const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
         .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
                         (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
@@ -296,6 +294,7 @@ function renderMoreSales(container, likesRef, usersRef) {
 
 
 
+
 function isToday(dateString) {
     const date = new Date(dateString);
     const today = new Date();
@@ -345,7 +344,7 @@ async function processSalesData(salesData) {
 }
 
 async function addUserNames(sales, usersRef) {
-    const userPromises = sales.map(async sale => {
+    const namePromises = sales.map(async sale => {
         try {
             const snapshot = await usersRef.child(sale.userId).once('value');
             if (snapshot.exists()) {
@@ -361,10 +360,8 @@ async function addUserNames(sales, usersRef) {
         }
     });
 
-    // Wait for all user names to be fetched before proceeding
-    await Promise.all(userPromises);
+    await Promise.all(namePromises);
 }
-
 
 function renderSales(sales, container, likesRef, usersRef) {
     container.innerHTML = ''; // Clear the container but don't add the title
