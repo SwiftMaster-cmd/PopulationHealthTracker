@@ -235,6 +235,11 @@ function renderMoreSales(container, likesRef, usersRef) {
     lastRenderedIndex += salesToRender.length;
 
     salesToRender.forEach((sale) => {
+        // Remove the oldest activity if there are already 10 displayed
+        if (container.childElementCount >= 10) {
+            container.removeChild(container.firstChild);
+        }
+
         const saleDate = new Date(sale.saleTime);
         const today = new Date();
         const isToday = saleDate.getDate() === today.getDate() &&
@@ -279,6 +284,7 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
+
 
 
 
