@@ -28,7 +28,6 @@
     <script src="leaderboard.js" defer></script>
     <script src="liveActivities.js" defer></script>
     <script src="CSsearch.js" defer></script>
-    <script src="progressBars.js" defer></script>
 
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
@@ -47,9 +46,6 @@
     <div class="header-container">
         <h1>Sales History</h1>
         <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-
-         <button onclick="window.location.href='Donate.html'" class="button">Donate</button>
-
         <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
         <button onclick="window.location.href='history.html'" class="button">Sales History</button>
         <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
@@ -70,7 +66,6 @@
     </div>
 
     <div class="main-container">
-              
         <div class="sales-history-container container">
             <div class="header-section">
                 <h2>Sales History</h2>
@@ -95,12 +90,12 @@
                 <button id="screenshotButton" class="button">Take Screenshot</button>
                 <button id="copyToClipboardButton" class="button">Copy to Clipboard</button>
             </div>
-            <div class="bottom-right-buttons" style="display: none;">
+            <div class="bottom-right-buttons">
                 <button id="exportSalesData" class="button">Export Sales Data</button>
                 <input type="file" id="importSalesData" class="button" style="display: none;" />
                 <button id="importSalesDataButton" class="button">Import Sales Data</button>
             </div>
-        </div>      
+        </div>
     </div>
 
     <!-- Event Tracking for dynamically added elements -->
