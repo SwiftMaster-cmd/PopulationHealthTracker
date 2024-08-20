@@ -345,7 +345,7 @@ async function processSalesData(salesData) {
 }
 
 async function addUserNames(sales, usersRef) {
-    const namePromises = sales.map(async sale => {
+    const userPromises = sales.map(async sale => {
         try {
             const snapshot = await usersRef.child(sale.userId).once('value');
             if (snapshot.exists()) {
@@ -361,8 +361,10 @@ async function addUserNames(sales, usersRef) {
         }
     });
 
-    await Promise.all(namePromises);
+    // Wait for all user names to be fetched before proceeding
+    await Promise.all(userPromises);
 }
+
 
 function renderSales(sales, container, likesRef, usersRef) {
     container.innerHTML = ''; // Clear the container but don't add the title
