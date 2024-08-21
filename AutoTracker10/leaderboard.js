@@ -202,8 +202,7 @@ async function loadLiveActivities() {
             const saleData = snapshot.val();
             if (isToday(saleData.saleTime)) {
                 await addUserNames([saleData], usersRef);
-                currentSales.push(saleData); // Add the new sale to the list
-                renderSales([saleData], liveActivitiesSection, likesRef, usersRef); // Render the new sale
+                renderSales([saleData], liveActivitiesSection, likesRef, usersRef); // Directly render new sale
             }
         });
 
@@ -214,9 +213,11 @@ async function loadLiveActivities() {
                 const existingSaleIndex = currentSales.findIndex(sale => sale.saleId === saleData.saleId);
                 if (existingSaleIndex !== -1) {
                     currentSales[existingSaleIndex] = saleData; // Update the sale data
-                    await addUserNames([saleData], usersRef);
-                    renderSales([saleData], liveActivitiesSection, likesRef, usersRef); // Re-render the updated sale
+                } else {
+                    currentSales.push(saleData); // Add if not already present
                 }
+                await addUserNames([saleData], usersRef);
+                renderSales([saleData], liveActivitiesSection, likesRef, usersRef); // Directly render updated sale
             }
         });
 
@@ -231,13 +232,6 @@ async function loadLiveActivities() {
         } else {
             liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
         }
-
-        // Infinite scroll listener
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-            }
-        });
 
     } catch (error) {
         console.error('Error loading live activities:', error);
@@ -283,78 +277,6 @@ function renderSales(sales, container, likesRef, usersRef) {
     });
 }
 
-
-function isToday(saleTime) {
-    const saleDate = new Date(saleTime);
-    const today = new Date();
-    return saleDate.getDate() === today.getDate() &&
-           saleDate.getMonth() === today.getMonth() &&
-           saleDate.getFullYear() === today.getFullYear();
-}
-
-
-
-
-
-function renderMoreSales(container, likesRef, usersRef) {
-    const currentUser = firebase.auth().currentUser; // Get the current user ID
-    
-    if (lastRenderedIndex >= currentSales.length) {
-        console.log("All sales have been loaded");
-        return; // Exit if all sales have been rendered
-    }
-
-    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
-        .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
-                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
-
-    lastRenderedIndex += salesToRender.length;
-
-    salesToRender.forEach((sale) => {
-        const saleDate = new Date(sale.saleTime);
-        const today = new Date();
-        const isToday = saleDate.getDate() === today.getDate() &&
-                        saleDate.getMonth() === today.getMonth() &&
-                        saleDate.getFullYear() === today.getFullYear();
-
-        const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const formattedDate = `${saleDate.getMonth() + 1}/${saleDate.getDate()}`;
-        const displayTime = isToday ? formattedTime : `on ${formattedDate} - ${formattedTime}`;
-
-        const saleElement = document.createElement('div');
-        saleElement.classList.add('activity-item');
-
-        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
-
-        saleElement.innerHTML = `
-            <button class="like-button" data-like-path="${likePath}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-            </button>
-            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${displayTime}
-            <div class="like-info" id="like-info-${likePath}"></div>
-        `;
-        container.appendChild(saleElement);
-
-        const likeButton = saleElement.querySelector('.like-button');
-        const likeInfoDiv = saleElement.querySelector('.like-info');
-
-        initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
-
-        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
-
-        likesRef.child(likePath).on('value', snapshot => {
-            updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
-        });
-    });
-
-    // Automatically load more sales if the last rendered sale is visible and there are more to load
-    const lastSaleElement = container.lastElementChild;
-    if (lastSaleElement && lastRenderedIndex < currentSales.length) {
-        renderMoreSales(container, likesRef, usersRef);
-    }
-}
 
 
 
