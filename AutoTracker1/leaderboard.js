@@ -85,11 +85,8 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
                             count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
                         }
 
-                        // Only include users with sales
-                        if (count > 0) {
-                            let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
-                            users.push({ userId, name, count });
-                        }
+                        let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
+                        users.push({ userId, name, count });
                     }
 
                     users.sort((a, b) => b.count - a.count);
@@ -149,7 +146,6 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
 
 
-
 let currentSales = [];
 let batchSize = 10; // Number of sales to load at a time
 let lastRenderedIndex = 0;
@@ -186,8 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadLiveActivities();
 });
 
-
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
@@ -211,7 +205,7 @@ async function loadLiveActivities() {
             }
 
             currentSales = await processSalesData(salesData);
-            await addUserNames(currentSales, usersRef); // Ensure names are added before rendering
+            await addUserNames(currentSales, usersRef);
             renderMoreSales(liveActivitiesSection, likesRef, usersRef);
         });
 
@@ -225,7 +219,6 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
-
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
@@ -242,11 +235,6 @@ function renderMoreSales(container, likesRef, usersRef) {
     lastRenderedIndex += salesToRender.length;
 
     salesToRender.forEach((sale) => {
-        // Remove the oldest activity if there are already 10 displayed
-        if (container.childElementCount >= 10) {
-            container.removeChild(container.firstChild);
-        }
-
         const saleDate = new Date(sale.saleTime);
         const today = new Date();
         const isToday = saleDate.getDate() === today.getDate() &&
@@ -291,9 +279,6 @@ function renderMoreSales(container, likesRef, usersRef) {
         renderMoreSales(container, likesRef, usersRef);
     }
 }
-
-
-
 
 
 
@@ -351,32 +336,24 @@ async function processSalesData(salesData) {
 }
 
 async function addUserNames(sales, usersRef) {
-    const userIds = Array.from(new Set(sales.map(sale => sale.userId))); // Get unique user IDs from sales
-
-    const usersData = {};
-
-    // Fetch all user names in a single batch to minimize database calls
-    await Promise.all(userIds.map(async userId => {
+    const namePromises = sales.map(async sale => {
         try {
-            const snapshot = await usersRef.child(userId).once('value');
+            const snapshot = await usersRef.child(sale.userId).once('value');
             if (snapshot.exists()) {
-                usersData[userId] = snapshot.val().name || 'Unknown User';
+                const userData = snapshot.val();
+                sale.userName = userData.name || 'Unknown User';
             } else {
-                usersData[userId] = 'Unknown User';
+                sale.userName = 'Unknown User';
             }
+            sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
         } catch (error) {
-            console.error(`Error fetching user data for userId ${userId}:`, error);
-            usersData[userId] = 'Unknown User';
+            console.error(`Error fetching user data for userId ${sale.userId}:`, error);
+            sale.userName = 'Unknown User';
         }
-    }));
-
-    // Assign user names to each sale
-    sales.forEach(sale => {
-        sale.userName = usersData[sale.userId];
-        sale.saleType = getReadableTitle(sale.saleType); // Ensure sale type is readable
     });
-}
 
+    await Promise.all(namePromises);
+}
 
 function renderSales(sales, container, likesRef, usersRef) {
     container.innerHTML = ''; // Clear the container but don't add the title
