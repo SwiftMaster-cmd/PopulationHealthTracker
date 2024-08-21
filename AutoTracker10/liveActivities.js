@@ -20,12 +20,12 @@ async function loadLiveActivities() {
 
             if (isToday(saleData.saleTime)) {
                 console.log("Sale is today:", saleData);
-                currentSales.push(saleData); // Add new sale data if it belongs to today
                 await addUserNames([saleData], usersRef); // Add the user name for the new sale
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef); // Render the new sale
+                renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the new sale with filtering
             }
         });
 
+        // Real-time listener for updated sales
         salesTimeFramesRef.on('child_changed', async (snapshot) => {
             const saleData = snapshot.val();
             console.log("Sale data changed:", saleData);
@@ -39,33 +39,25 @@ async function loadLiveActivities() {
                     currentSales.push(saleData); // Add if it doesn't exist yet
                 }
                 await addUserNames([saleData], usersRef);
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+                renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the updated sale with filtering
             }
         });
 
         // Initially load today's sales
-        salesTimeFramesRef.once('value', async (salesSnapshot) => {
-            if (salesSnapshot.exists()) {
-                const salesData = salesSnapshot.val();
-                console.log("Initial sales data:", salesData);
+        const salesSnapshot = await salesTimeFramesRef.once('value');
+        if (salesSnapshot.exists()) {
+            const salesData = salesSnapshot.val();
+            console.log("Initial sales data:", salesData);
 
-                currentSales = await processSalesData(salesData);
-                currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
-                console.log("Filtered today's sales:", currentSales);
+            currentSales = await processSalesData(salesData);
+            currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
+            console.log("Filtered today's sales:", currentSales);
 
-                await addUserNames(currentSales, usersRef);
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-            } else {
-                liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
-            }
-        });
-
-        // Infinite scroll listener
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-            }
-        });
+            await addUserNames(currentSales, usersRef);
+            currentSales.forEach(sale => renderFilteredSale(sale, liveActivitiesSection, likesRef, usersRef)); // Render all filtered sales
+        } else {
+            liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
+        }
 
     } catch (error) {
         console.error('Error loading live activities:', error);
