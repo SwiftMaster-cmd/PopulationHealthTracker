@@ -182,43 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadLiveActivities();
 });
 
-async function loadLiveActivities() {
-    try {
-        const database = firebase.database();
-        const salesTimeFramesRef = database.ref('salesTimeFrames');
-        const usersRef = database.ref('users');
-        const likesRef = database.ref('likes');
-        const currentUser = firebase.auth().currentUser; // Get the current user ID
 
-        const liveActivitiesSection = document.getElementById('live-activities-section');
-        if (!liveActivitiesSection) {
-            throw new Error('Live activities section element not found');
-        }
-
-        salesTimeFramesRef.off('value'); // Clear previous listeners
-        salesTimeFramesRef.on('value', async salesSnapshot => {
-            const salesData = salesSnapshot.val();
-            if (!salesData) {
-                console.error('No sales data found');
-                liveActivitiesSection.innerHTML = '<p>No sales data found.</p>';
-                return;
-            }
-
-            currentSales = await processSalesData(salesData);
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-        });
-
-        liveActivitiesSection.addEventListener('scroll', () => {
-            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-            }
-        });
-
-    } catch (error) {
-        console.error('Error loading live activities:', error);
-    }
-}
 
 function renderMoreSales(container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser; // Get the current user ID
@@ -287,12 +251,12 @@ function renderMoreSales(container, likesRef, usersRef) {
 
 
 
-function isToday(dateString) {
-    const date = new Date(dateString);
+function isToday(saleTime) {
+    const saleDate = new Date(saleTime);
     const today = new Date();
-    return date.getDate() === today.getDate() &&
-           date.getMonth() === today.getMonth() &&
-           date.getFullYear() === today.getFullYear();
+    return saleDate.getDate() === today.getDate() &&
+           saleDate.getMonth() === today.getMonth() &&
+           saleDate.getFullYear() === today.getFullYear();
 }
 
 
