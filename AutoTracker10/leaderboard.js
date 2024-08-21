@@ -302,13 +302,7 @@ function isToday(saleTime) {
 }
 
 
-function isToday(saleTime) {
-    const saleDate = new Date(saleTime);
-    const today = new Date();
-    return saleDate.getDate() === today.getDate() &&
-           saleDate.getMonth() === today.getMonth() &&
-           saleDate.getFullYear() === today.getFullYear();
-}
+
 
 
 
