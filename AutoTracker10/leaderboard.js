@@ -200,38 +200,56 @@ async function loadLiveActivities() {
         // Real-time listener for new sales
         salesTimeFramesRef.on('child_added', async (snapshot) => {
             const saleData = snapshot.val();
+            console.log("New sale added:", saleData);
+
             if (isToday(saleData.saleTime)) {
-                await addUserNames([saleData], usersRef);
-                renderSales([saleData], liveActivitiesSection, likesRef, usersRef); // Directly render new sale
+                console.log("Sale is today:", saleData);
+                currentSales.push(saleData); // Add new sale data if it belongs to today
+                await addUserNames([saleData], usersRef); // Add the user name for the new sale
+                renderFilteredSales(liveActivitiesSection, likesRef, usersRef); // Render the new sale with filtering
             }
         });
 
-        // Real-time listener for updated sales
         salesTimeFramesRef.on('child_changed', async (snapshot) => {
             const saleData = snapshot.val();
+            console.log("Sale data changed:", saleData);
+
             if (isToday(saleData.saleTime)) {
+                console.log("Updated sale is today:", saleData);
                 const existingSaleIndex = currentSales.findIndex(sale => sale.saleId === saleData.saleId);
                 if (existingSaleIndex !== -1) {
                     currentSales[existingSaleIndex] = saleData; // Update the sale data
                 } else {
-                    currentSales.push(saleData); // Add if not already present
+                    currentSales.push(saleData); // Add if it doesn't exist yet
                 }
                 await addUserNames([saleData], usersRef);
-                renderSales([saleData], liveActivitiesSection, likesRef, usersRef); // Directly render updated sale
+                renderFilteredSales(liveActivitiesSection, likesRef, usersRef); // Re-render with updated data
             }
         });
 
         // Initially load today's sales
-        const salesSnapshot = await salesTimeFramesRef.once('value');
-        if (salesSnapshot.exists()) {
-            const salesData = salesSnapshot.val();
-            currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
-            await addUserNames(currentSales, usersRef);
-            renderSales(currentSales, liveActivitiesSection, likesRef, usersRef); // Render all today's sales
-        } else {
-            liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
-        }
+        salesTimeFramesRef.once('value', async (salesSnapshot) => {
+            if (salesSnapshot.exists()) {
+                const salesData = salesSnapshot.val();
+                console.log("Initial sales data:", salesData);
+
+                currentSales = await processSalesData(salesData);
+                currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
+                console.log("Filtered today's sales:", currentSales);
+
+                await addUserNames(currentSales, usersRef);
+                renderFilteredSales(liveActivitiesSection, likesRef, usersRef); // Render the filtered sales
+            } else {
+                liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
+            }
+        });
+
+        // Infinite scroll listener
+        liveActivitiesSection.addEventListener('scroll', () => {
+            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            }
+        });
 
     } catch (error) {
         console.error('Error loading live activities:', error);
@@ -246,8 +264,34 @@ function isToday(saleTime) {
            saleDate.getFullYear() === today.getFullYear();
 }
 
-function renderSales(sales, container, likesRef, usersRef) {
-    sales.forEach(sale => {
+
+
+
+function renderMoreSales(container, likesRef, usersRef) {
+    const currentUser = firebase.auth().currentUser; // Get the current user ID
+    
+    if (lastRenderedIndex >= currentSales.length) {
+        console.log("All sales have been loaded");
+        return; // Exit if all sales have been rendered
+    }
+
+    const salesToRender = currentSales.slice(lastRenderedIndex, lastRenderedIndex + batchSize)
+        .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
+                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on both toggle states
+
+    lastRenderedIndex += salesToRender.length;
+
+    salesToRender.forEach((sale) => {
+        const saleDate = new Date(sale.saleTime);
+        const today = new Date();
+        const isToday = saleDate.getDate() === today.getDate() &&
+                        saleDate.getMonth() === today.getMonth() &&
+                        saleDate.getFullYear() === today.getFullYear();
+
+        const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const formattedDate = `${saleDate.getMonth() + 1}/${saleDate.getDate()}`;
+        const displayTime = isToday ? formattedTime : `on ${formattedDate} - ${formattedTime}`;
+
         const saleElement = document.createElement('div');
         saleElement.classList.add('activity-item');
 
@@ -259,7 +303,7 @@ function renderSales(sales, container, likesRef, usersRef) {
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
             </button>
-            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${sale.formattedTime}
+            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${displayTime}
             <div class="like-info" id="like-info-${likePath}"></div>
         `;
         container.appendChild(saleElement);
@@ -275,11 +319,19 @@ function renderSales(sales, container, likesRef, usersRef) {
             updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
         });
     });
+
+    // Automatically load more sales if the last rendered sale is visible and there are more to load
+    const lastSaleElement = container.lastElementChild;
+    if (lastSaleElement && lastRenderedIndex < currentSales.length) {
+        renderMoreSales(container, likesRef, usersRef);
+    }
 }
 
-
-
-
+function renderFilteredSales(container, likesRef, usersRef) {
+    lastRenderedIndex = 0; // Reset the index to start rendering from the top
+    container.innerHTML = ''; // Clear the container
+    renderMoreSales(container, likesRef, usersRef); // Render with the current filters
+}
 
 
 
