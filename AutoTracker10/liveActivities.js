@@ -19,9 +19,9 @@ async function loadLiveActivities() {
             console.log("New sale added:", saleData);
 
             if (isToday(saleData.saleTime)) {
-                await addUserNames([saleData], usersRef); // Add user name for the new sale
-                addSaleToCurrentSales(saleData); // Add sale to the global currentSales array
-                refreshLiveActivities(); // Refresh the displayed activities with the latest filters
+                console.log("Sale is today:", saleData);
+                await addUserNames([saleData], usersRef); // Add the user name for the new sale
+                renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the new sale with filtering
             }
         });
 
@@ -31,14 +31,15 @@ async function loadLiveActivities() {
             console.log("Sale data changed:", saleData);
 
             if (isToday(saleData.saleTime)) {
+                console.log("Updated sale is today:", saleData);
                 const existingSaleIndex = currentSales.findIndex(sale => sale.saleId === saleData.saleId);
                 if (existingSaleIndex !== -1) {
-                    currentSales[existingSaleIndex] = saleData; // Update the sale data in global array
+                    currentSales[existingSaleIndex] = saleData; // Update the sale data
                 } else {
                     currentSales.push(saleData); // Add if it doesn't exist yet
                 }
                 await addUserNames([saleData], usersRef);
-                refreshLiveActivities(); // Refresh the displayed activities with the latest filters
+                renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the updated sale with filtering
             }
         });
 
@@ -46,11 +47,14 @@ async function loadLiveActivities() {
         const salesSnapshot = await salesTimeFramesRef.once('value');
         if (salesSnapshot.exists()) {
             const salesData = salesSnapshot.val();
+            console.log("Initial sales data:", salesData);
+
             currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => isToday(sale.saleTime));
+            currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
+            console.log("Filtered today's sales:", currentSales);
 
             await addUserNames(currentSales, usersRef);
-            refreshLiveActivities(); // Render all filtered sales initially
+            currentSales.forEach(sale => renderFilteredSale(sale, liveActivitiesSection, likesRef, usersRef)); // Render all filtered sales
         } else {
             liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
         }
@@ -60,36 +64,21 @@ async function loadLiveActivities() {
     }
 }
 
-// Add new sale to the global currentSales array
-function addSaleToCurrentSales(saleData) {
-    const existingSaleIndex = currentSales.findIndex(sale => sale.saleId === saleData.saleId);
-    if (existingSaleIndex === -1) {
-        currentSales.push(saleData);
-    }
-}
-
-// Refresh live activities with the current filters applied
-function refreshLiveActivities() {
-    const liveActivitiesSection = document.getElementById('live-activities-section');
-    liveActivitiesSection.innerHTML = ''; // Clear the existing activities
-
-    currentSales.forEach(sale => {
-        renderFilteredSale(sale, liveActivitiesSection, firebase.database().ref('likes'), firebase.database().ref('users'));
-    });
-}
-
 function renderFilteredSale(sale, container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser;
 
-    // Debugging: Check what sale data is being passed
-    console.log("Attempting to render sale:", sale);
+    // Debugging: Log the current filter settings
+    console.log("Rendering sale with filters:", { hideNonSellable, hideSelfSales, sellableTypes });
 
-    // Check if the sale should be filtered out based on the current settings
+    // Debugging: Log the sale details
+    console.log("Sale details:", sale);
+
     if (!sale) {
         console.log("Sale is undefined or null, skipping render.");
         return;
     }
 
+    // Check if the sale should be filtered out based on the current settings
     if (hideNonSellable && !sellableTypes.includes(sale.saleType)) {
         console.log(`Sale type "${sale.saleType}" is non-sellable and filtering is enabled, skipping render.`);
         return;
