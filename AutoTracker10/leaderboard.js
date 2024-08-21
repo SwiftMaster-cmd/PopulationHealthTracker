@@ -194,7 +194,8 @@ async function loadLiveActivities() {
             throw new Error('Live activities section element not found');
         }
 
-        salesTimeFramesRef.off('value'); // Clear previous listeners
+        // Clear previous listeners
+        salesTimeFramesRef.off();
 
         // Real-time listener for new sales
         salesTimeFramesRef.on('child_added', async (snapshot) => {
@@ -226,21 +227,22 @@ async function loadLiveActivities() {
             }
         });
 
-        // Load today's sales initially
-        const salesSnapshot = await salesTimeFramesRef.once('value');
-        if (salesSnapshot.exists()) {
-            const salesData = salesSnapshot.val();
-            console.log("Initial sales data:", salesData);
+        // Initially load today's sales
+        salesTimeFramesRef.once('value', async (salesSnapshot) => {
+            if (salesSnapshot.exists()) {
+                const salesData = salesSnapshot.val();
+                console.log("Initial sales data:", salesData);
 
-            currentSales = await processSalesData(salesData);
-            currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
-            console.log("Filtered today's sales:", currentSales);
+                currentSales = await processSalesData(salesData);
+                currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
+                console.log("Filtered today's sales:", currentSales);
 
-            await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
-        } else {
-            liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
-        }
+                await addUserNames(currentSales, usersRef);
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            } else {
+                liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
+            }
+        });
 
         // Infinite scroll listener
         liveActivitiesSection.addEventListener('scroll', () => {
@@ -253,6 +255,15 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
+
+function isToday(saleTime) {
+    const saleDate = new Date(saleTime);
+    const today = new Date();
+    return saleDate.getDate() === today.getDate() &&
+           saleDate.getMonth() === today.getMonth() &&
+           saleDate.getFullYear() === today.getFullYear();
+}
+
 
 
 
@@ -322,14 +333,6 @@ function renderMoreSales(container, likesRef, usersRef) {
 
 
 
-
-function isToday(saleTime) {
-    const saleDate = new Date(saleTime);
-    const today = new Date();
-    return saleDate.getDate() === today.getDate() &&
-           saleDate.getMonth() === today.getMonth() &&
-           saleDate.getFullYear() === today.getFullYear();
-}
 
 
 async function processSalesData(salesData) {
