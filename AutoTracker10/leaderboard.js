@@ -206,7 +206,7 @@ async function loadLiveActivities() {
                 console.log("Sale is today:", saleData);
                 currentSales.push(saleData); // Add new sale data if it belongs to today
                 await addUserNames([saleData], usersRef); // Add the user name for the new sale
-                renderFilteredSales(liveActivitiesSection, likesRef, usersRef); // Render the new sale with filtering
+                renderSale(saleData, liveActivitiesSection, likesRef, usersRef); // Directly render the new sale
             }
         });
 
@@ -223,7 +223,7 @@ async function loadLiveActivities() {
                     currentSales.push(saleData); // Add if it doesn't exist yet
                 }
                 await addUserNames([saleData], usersRef);
-                renderFilteredSales(liveActivitiesSection, likesRef, usersRef); // Re-render with updated data
+                renderSale(saleData, liveActivitiesSection, likesRef, usersRef); // Directly render the updated sale
             }
         });
 
@@ -238,7 +238,7 @@ async function loadLiveActivities() {
                 console.log("Filtered today's sales:", currentSales);
 
                 await addUserNames(currentSales, usersRef);
-                renderFilteredSales(liveActivitiesSection, likesRef, usersRef); // Render the filtered sales
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef); // Render the filtered sales initially
             } else {
                 liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
             }
@@ -255,6 +255,52 @@ async function loadLiveActivities() {
         console.error('Error loading live activities:', error);
     }
 }
+
+function renderSale(sale, container, likesRef, usersRef) {
+    const currentUser = firebase.auth().currentUser;
+    if (!sale || (hideNonSellable && !sellableTypes.includes(sale.saleType)) ||
+        (hideSelfSales && sale.userId === currentUser.uid)) {
+        return; // Skip rendering if the sale doesn't meet the criteria
+    }
+
+    const saleDate = new Date(sale.saleTime);
+    const today = new Date();
+    const isToday = saleDate.getDate() === today.getDate() &&
+                    saleDate.getMonth() === today.getMonth() &&
+                    saleDate.getFullYear() === today.getFullYear();
+
+    const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = `${saleDate.getMonth() + 1}/${saleDate.getDate()}`;
+    const displayTime = isToday ? formattedTime : `on ${formattedDate} - ${formattedTime}`;
+
+    const saleElement = document.createElement('div');
+    saleElement.classList.add('activity-item');
+
+    const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+
+    saleElement.innerHTML = `
+        <button class="like-button" data-like-path="${likePath}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </button>
+        <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${displayTime}
+        <div class="like-info" id="like-info-${likePath}"></div>
+    `;
+    container.appendChild(saleElement);
+
+    const likeButton = saleElement.querySelector('.like-button');
+    const likeInfoDiv = saleElement.querySelector('.like-info');
+
+    initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+
+    likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+
+    likesRef.child(likePath).on('value', snapshot => {
+        updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
+    });
+}
+
 
 function isToday(saleTime) {
     const saleDate = new Date(saleTime);
