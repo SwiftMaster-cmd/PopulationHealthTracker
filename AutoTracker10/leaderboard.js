@@ -182,6 +182,79 @@ document.addEventListener('DOMContentLoaded', () => {
     loadLiveActivities();
 });
 
+async function loadLiveActivities() {
+    try {
+        const database = firebase.database();
+        const salesTimeFramesRef = database.ref('salesTimeFrames');
+        const usersRef = database.ref('users');
+        const likesRef = database.ref('likes');
+        const liveActivitiesSection = document.getElementById('live-activities-section');
+
+        if (!liveActivitiesSection) {
+            throw new Error('Live activities section element not found');
+        }
+
+        salesTimeFramesRef.off('value'); // Clear previous listeners
+
+        // Real-time listener for new sales
+        salesTimeFramesRef.on('child_added', async (snapshot) => {
+            const saleData = snapshot.val();
+            console.log("New sale added:", saleData);
+
+            if (isToday(saleData.saleTime)) {
+                console.log("Sale is today:", saleData);
+                currentSales.push(saleData); // Add new sale data if it belongs to today
+                await addUserNames([saleData], usersRef); // Add the user name for the new sale
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef); // Render the new sale
+            }
+        });
+
+        salesTimeFramesRef.on('child_changed', async (snapshot) => {
+            const saleData = snapshot.val();
+            console.log("Sale data changed:", saleData);
+
+            if (isToday(saleData.saleTime)) {
+                console.log("Updated sale is today:", saleData);
+                const existingSaleIndex = currentSales.findIndex(sale => sale.saleId === saleData.saleId);
+                if (existingSaleIndex !== -1) {
+                    currentSales[existingSaleIndex] = saleData; // Update the sale data
+                } else {
+                    currentSales.push(saleData); // Add if it doesn't exist yet
+                }
+                await addUserNames([saleData], usersRef);
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            }
+        });
+
+        // Load today's sales initially
+        const salesSnapshot = await salesTimeFramesRef.once('value');
+        if (salesSnapshot.exists()) {
+            const salesData = salesSnapshot.val();
+            console.log("Initial sales data:", salesData);
+
+            currentSales = await processSalesData(salesData);
+            currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
+            console.log("Filtered today's sales:", currentSales);
+
+            await addUserNames(currentSales, usersRef);
+            renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+        } else {
+            liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
+        }
+
+        // Infinite scroll listener
+        liveActivitiesSection.addEventListener('scroll', () => {
+            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            }
+        });
+
+    } catch (error) {
+        console.error('Error loading live activities:', error);
+    }
+}
+
+
 
 
 function renderMoreSales(container, likesRef, usersRef) {
@@ -250,7 +323,6 @@ function renderMoreSales(container, likesRef, usersRef) {
 
 
 
-
 function isToday(saleTime) {
     const saleDate = new Date(saleTime);
     const today = new Date();
@@ -258,8 +330,6 @@ function isToday(saleTime) {
            saleDate.getMonth() === today.getMonth() &&
            saleDate.getFullYear() === today.getFullYear();
 }
-
-
 
 
 async function processSalesData(salesData) {
