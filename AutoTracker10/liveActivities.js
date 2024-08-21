@@ -1,7 +1,3 @@
-// liveActivities.js
-
-let currentSales = []; // Array to hold sales data
-
 async function loadLiveActivities() {
     try {
         const database = firebase.database();
@@ -20,17 +16,22 @@ async function loadLiveActivities() {
         // Real-time listener for new sales
         salesTimeFramesRef.on('child_added', async (snapshot) => {
             const saleData = snapshot.val();
+            console.log("New sale added:", saleData);
+
             if (isToday(saleData.saleTime)) {
-                await addUserNames([saleData], usersRef);
-                currentSales.push(saleData); // Add new sale data
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef); // Re-render with updated sales
+                console.log("Sale is today:", saleData);
+                await addUserNames([saleData], usersRef); // Add the user name for the new sale
+                renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the new sale with filtering
             }
         });
 
         // Real-time listener for updated sales
         salesTimeFramesRef.on('child_changed', async (snapshot) => {
             const saleData = snapshot.val();
+            console.log("Sale data changed:", saleData);
+
             if (isToday(saleData.saleTime)) {
+                console.log("Updated sale is today:", saleData);
                 const existingSaleIndex = currentSales.findIndex(sale => sale.saleId === saleData.saleId);
                 if (existingSaleIndex !== -1) {
                     currentSales[existingSaleIndex] = saleData; // Update the sale data
@@ -38,7 +39,7 @@ async function loadLiveActivities() {
                     currentSales.push(saleData); // Add if it doesn't exist yet
                 }
                 await addUserNames([saleData], usersRef);
-                renderMoreSales(liveActivitiesSection, likesRef, usersRef); // Re-render with updated sales
+                renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the updated sale with filtering
             }
         });
 
@@ -46,10 +47,14 @@ async function loadLiveActivities() {
         const salesSnapshot = await salesTimeFramesRef.once('value');
         if (salesSnapshot.exists()) {
             const salesData = salesSnapshot.val();
+            console.log("Initial sales data:", salesData);
+
             currentSales = await processSalesData(salesData);
             currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
+            console.log("Filtered today's sales:", currentSales);
+
             await addUserNames(currentSales, usersRef);
-            renderMoreSales(liveActivitiesSection, likesRef, usersRef); // Render all filtered sales
+            currentSales.forEach(sale => renderFilteredSale(sale, liveActivitiesSection, likesRef, usersRef)); // Render all filtered sales
         } else {
             liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
         }
@@ -59,54 +64,69 @@ async function loadLiveActivities() {
     }
 }
 
-// Function to render sales with filtering and batch loading
-function renderMoreSales(container, likesRef, usersRef) {
+function renderFilteredSale(sale, container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser;
 
-    container.innerHTML = ''; // Clear the container before rendering
+    // Debugging: Check what sale data is being passed
+    console.log("Attempting to render sale:", sale);
 
-    const salesToRender = currentSales
-        .filter(sale => (!hideNonSellable || sellableTypes.includes(sale.saleType)) &&
-                        (!hideSelfSales || sale.userId !== currentUser.uid)); // Filter based on the current settings
+    // Check if the sale should be filtered out based on the current settings
+    if (!sale) {
+        console.log("Sale is undefined or null, skipping render.");
+        return;
+    }
 
-    salesToRender.forEach(sale => {
-        const saleDate = new Date(sale.saleTime);
-        const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const formattedDate = `${saleDate.getMonth() + 1}/${saleDate.getDate()}`;
-        const displayTime = isToday(sale.saleTime) ? formattedTime : `on ${formattedDate} - ${formattedTime}`;
+    if (hideNonSellable && !sellableTypes.includes(sale.saleType)) {
+        console.log(`Sale type "${sale.saleType}" is non-sellable and filtering is enabled, skipping render.`);
+        return;
+    }
 
-        const saleElement = document.createElement('div');
-        saleElement.classList.add('activity-item');
+    if (hideSelfSales && sale.userId === currentUser.uid) {
+        console.log("Sale belongs to the current user and self-sales filtering is enabled, skipping render.");
+        return;
+    }
 
-        const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+    // If the sale passes all filters, render it
+    const saleDate = new Date(sale.saleTime);
+    const today = new Date();
+    const isToday = saleDate.getDate() === today.getDate() &&
+                    saleDate.getMonth() === today.getMonth() &&
+                    saleDate.getFullYear() === today.getFullYear();
 
-        saleElement.innerHTML = `
-            <button class="like-button" data-like-path="${likePath}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-            </button>
-            <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${displayTime}
-            <div class="like-info" id="like-info-${likePath}"></div>
-        `;
-        container.appendChild(saleElement);
+    const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = `${saleDate.getMonth() + 1}/${saleDate.getDate()}`;
+    const displayTime = isToday ? formattedTime : `on ${formattedDate} - ${formattedTime}`;
 
-        const likeButton = saleElement.querySelector('.like-button');
-        const likeInfoDiv = saleElement.querySelector('.like-info');
+    const saleElement = document.createElement('div');
+    saleElement.classList.add('activity-item');
 
-        initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+    const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
-        likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+    saleElement.innerHTML = `
+        <button class="like-button" data-like-path="${likePath}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </button>
+        <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${displayTime}
+        <div class="like-info" id="like-info-${likePath}"></div>
+    `;
+    container.appendChild(saleElement);
 
-        likesRef.child(likePath).on('value', snapshot => {
-            updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
-        });
+    const likeButton = saleElement.querySelector('.like-button');
+    const likeInfoDiv = saleElement.querySelector('.like-info');
+
+    initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+
+    likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+
+    likesRef.child(likePath).on('value', snapshot => {
+        updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
     });
 
-    console.log("Sales rendered successfully:", salesToRender);
+    console.log("Sale rendered successfully:", sale);
 }
 
-// Utility function to check if the sale happened today
 function isToday(saleTime) {
     const saleDate = new Date(saleTime);
     const today = new Date();
@@ -115,7 +135,6 @@ function isToday(saleTime) {
            saleDate.getFullYear() === today.getFullYear();
 }
 
-// Function to add user names to sales
 async function addUserNames(sales, usersRef) {
     const namePromises = sales.map(async sale => {
         try {
@@ -135,7 +154,6 @@ async function addUserNames(sales, usersRef) {
     await Promise.all(namePromises);
 }
 
-// Function to process sales data
 async function processSalesData(salesData) {
     const sales = [];
 
@@ -171,8 +189,3 @@ async function processSalesData(salesData) {
 
     return uniqueSales;
 }
-
-// Assuming Firebase has already been initialized elsewhere in your code
-document.addEventListener('DOMContentLoaded', () => {
-    loadLiveActivities();
-});
