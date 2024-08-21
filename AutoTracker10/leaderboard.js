@@ -250,11 +250,27 @@ async function loadLiveActivities() {
 
 function renderFilteredSale(sale, container, likesRef, usersRef) {
     const currentUser = firebase.auth().currentUser;
-    if (!sale || (hideNonSellable && !sellableTypes.includes(sale.saleType)) ||
-        (hideSelfSales && sale.userId === currentUser.uid)) {
-        return; // Skip rendering if the sale doesn't meet the criteria
+
+    // Debugging: Check what sale data is being passed
+    console.log("Attempting to render sale:", sale);
+
+    // Check if the sale should be filtered out based on the current settings
+    if (!sale) {
+        console.log("Sale is undefined or null, skipping render.");
+        return;
     }
 
+    if (hideNonSellable && !sellableTypes.includes(sale.saleType)) {
+        console.log(`Sale type "${sale.saleType}" is non-sellable and filtering is enabled, skipping render.`);
+        return;
+    }
+
+    if (hideSelfSales && sale.userId === currentUser.uid) {
+        console.log("Sale belongs to the current user and self-sales filtering is enabled, skipping render.");
+        return;
+    }
+
+    // If the sale passes all filters, render it
     const saleDate = new Date(sale.saleTime);
     const today = new Date();
     const isToday = saleDate.getDate() === today.getDate() &&
@@ -291,7 +307,10 @@ function renderFilteredSale(sale, container, likesRef, usersRef) {
     likesRef.child(likePath).on('value', snapshot => {
         updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
     });
+
+    console.log("Sale rendered successfully:", sale);
 }
+
 
 function isToday(saleTime) {
     const saleDate = new Date(saleTime);
