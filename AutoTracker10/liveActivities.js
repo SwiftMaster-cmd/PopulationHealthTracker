@@ -13,6 +13,9 @@ async function loadLiveActivities() {
         // Clear previous listeners
         salesTimeFramesRef.off();
 
+        // Array to keep track of the currently displayed sales
+        let displayedSales = [];
+
         // Real-time listener for new sales
         salesTimeFramesRef.on('child_added', async (snapshot) => {
             const saleData = snapshot.val();
@@ -22,6 +25,15 @@ async function loadLiveActivities() {
                 console.log("Sale is today:", saleData);
                 await addUserNames([saleData], usersRef); // Add the user name for the new sale
                 renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the new sale with filtering
+
+                // Add to the displayed sales array
+                displayedSales.push(saleData);
+
+                // Remove the oldest sale if more than 15 are displayed
+                if (displayedSales.length > 15) {
+                    const oldestSale = displayedSales.shift(); // Remove the oldest sale
+                    removeSaleFromUI(oldestSale.saleId); // Function to remove sale from the UI
+                }
             }
         });
 
@@ -32,11 +44,17 @@ async function loadLiveActivities() {
 
             if (isToday(saleData.saleTime)) {
                 console.log("Updated sale is today:", saleData);
-                const existingSaleIndex = currentSales.findIndex(sale => sale.saleId === saleData.saleId);
+                const existingSaleIndex = displayedSales.findIndex(sale => sale.saleId === saleData.saleId);
                 if (existingSaleIndex !== -1) {
-                    currentSales[existingSaleIndex] = saleData; // Update the sale data
+                    displayedSales[existingSaleIndex] = saleData; // Update the sale data
                 } else {
-                    currentSales.push(saleData); // Add if it doesn't exist yet
+                    displayedSales.push(saleData); // Add if it doesn't exist yet
+
+                    // If more than 15 sales, remove the oldest one
+                    if (displayedSales.length > 15) {
+                        const oldestSale = displayedSales.shift();
+                        removeSaleFromUI(oldestSale.saleId);
+                    }
                 }
                 await addUserNames([saleData], usersRef);
                 renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the updated sale with filtering
@@ -49,12 +67,15 @@ async function loadLiveActivities() {
             const salesData = salesSnapshot.val();
             console.log("Initial sales data:", salesData);
 
-            currentSales = await processSalesData(salesData);
+            let currentSales = await processSalesData(salesData);
             currentSales = currentSales.filter(sale => isToday(sale.saleTime)); // Filter to only today's sales
             console.log("Filtered today's sales:", currentSales);
 
             await addUserNames(currentSales, usersRef);
             currentSales.forEach(sale => renderFilteredSale(sale, liveActivitiesSection, likesRef, usersRef)); // Render all filtered sales
+
+            // Track displayed sales and ensure no more than 15 are shown
+            displayedSales = currentSales.slice(0, 15);
         } else {
             liveActivitiesSection.innerHTML = '<p>No sales data found for today.</p>';
         }
@@ -102,6 +123,7 @@ function renderFilteredSale(sale, container, likesRef, usersRef) {
 
     const saleElement = document.createElement('div');
     saleElement.classList.add('activity-item');
+    saleElement.setAttribute('data-sale-id', sale.saleId);
 
     const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
 
@@ -128,6 +150,13 @@ function renderFilteredSale(sale, container, likesRef, usersRef) {
     });
 
     console.log("Sale rendered successfully:", sale);
+}
+
+function removeSaleFromUI(saleId) {
+    const saleElement = document.querySelector(`.activity-item[data-sale-id="${saleId}"]`);
+    if (saleElement) {
+        saleElement.remove();
+    }
 }
 
 function isToday(saleTime) {
