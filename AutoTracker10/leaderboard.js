@@ -47,6 +47,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     const database = firebase.database();
     const salesCountsRef = database.ref('salesCounts');
     const usersRef = database.ref('users');
+    const lastResetRef = database.ref('lastReset'); // Reference to store the last reset date
 
     const leaderboardSection = document.getElementById('leaderboard-section');
     if (!leaderboardSection) {
@@ -56,7 +57,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
     salesCountsRef.off('value');
 
-    salesCountsRef.on('value', salesSnapshot => {
+    salesCountsRef.on('value', async salesSnapshot => {
         const salesData = salesSnapshot.val();
         if (!salesData) {
             console.error('No sales data found');
@@ -65,71 +66,93 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
 
         const users = [];
 
-        firebase.auth().onAuthStateChanged(user => {
+        firebase.auth().onAuthStateChanged(async user => {
             if (user) {
-                usersRef.once('value', usersSnapshot => {
-                    const usersData = usersSnapshot.val();
-                    const currentUserId = user.uid;
+                // Check if daily reset is needed
+                const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+                const lastResetSnapshot = await lastResetRef.once('value');
+                const lastResetDate = lastResetSnapshot.val();
 
+                if (lastResetDate !== today) {
+                    // Reset sales counts for the day
                     for (const userId in salesData) {
-                        const userData = salesData[userId];
-                        let count = 0;
+                        salesCountsRef.child(`${userId}/day`).set({
+                            selectRX: 0, // Reset specific sale types here as needed
+                            // Add other sale types to reset if necessary
+                        });
+                    }
 
-                        if (period === 'day') {
-                            if (userData.day && userData.day[saleType] !== undefined) {
-                                count = userData.day[saleType]; // Access the count directly
-                            }
-                        } else if (period === 'week') {
-                            count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
-                        } else if (period === 'month') {
-                            count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
+                    // Update the last reset date
+                    lastResetRef.set(today);
+                    console.log('Daily sales counts reset');
+                }
+
+                // Proceed with loading the leaderboard
+                const usersSnapshot = await usersRef.once('value');
+                const usersData = usersSnapshot.val();
+                const currentUserId = user.uid;
+
+                for (const userId in salesData) {
+                    const userData = salesData[userId];
+                    let count = 0;
+
+                    if (period === 'day') {
+                        if (userData.day && userData.day[saleType] !== undefined) {
+                            count = userData.day[saleType]; // Access the count directly
                         }
+                    } else if (period === 'week') {
+                        count = userData.week && userData.week[saleType] ? userData.week[saleType] : 0;
+                    } else if (period === 'month') {
+                        count = userData.month && userData.month[saleType] ? userData.month[saleType] : 0;
+                    }
 
+                    // Only include users with non-zero sales counts
+                    if (count > 0) {
                         let name = usersData && usersData[userId] && usersData[userId].name ? usersData[userId].name : 'Unknown User';
                         users.push({ userId, name, count });
                     }
+                }
 
-                    users.sort((a, b) => b.count - a.count);
+                users.sort((a, b) => b.count - a.count);
 
-                    leaderboardSection.innerHTML = ''; // Clear the section before adding new items
+                leaderboardSection.innerHTML = ''; // Clear the section before adding new items
 
-                    users.forEach((user, index) => {
-                        // Create the leaderboard item container
-                        const leaderboardItem = document.createElement('div');
-                        leaderboardItem.classList.add('leaderboard-item');
+                users.forEach((user, index) => {
+                    // Create the leaderboard item container
+                    const leaderboardItem = document.createElement('div');
+                    leaderboardItem.classList.add('leaderboard-item');
 
-                        // Add the appropriate class based on rank
-                        if (index === 0) {
-                            leaderboardItem.classList.add('first-place');
-                        } else if (index === 1) {
-                            leaderboardItem.classList.add('second-place');
-                        } else if (index === 2) {
-                            leaderboardItem.classList.add('third-place');
-                        }
+                    // Add the appropriate class based on rank
+                    if (index === 0) {
+                        leaderboardItem.classList.add('first-place');
+                    } else if (index === 1) {
+                        leaderboardItem.classList.add('second-place');
+                    } else if (index === 2) {
+                        leaderboardItem.classList.add('third-place');
+                    }
 
-                        // Create the position container
-                        const positionContainer = document.createElement('div');
-                        positionContainer.classList.add('leaderboard-position');
-                        positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
+                    // Create the position container
+                    const positionContainer = document.createElement('div');
+                    positionContainer.classList.add('leaderboard-position');
+                    positionContainer.innerHTML = `<span class="position-number">${index + 1}</span>`;
 
-                        // Create the name container
-                        const nameContainer = document.createElement('div');
-                        nameContainer.classList.add('leaderboard-name');
-                        nameContainer.textContent = user.name;
+                    // Create the name container
+                    const nameContainer = document.createElement('div');
+                    nameContainer.classList.add('leaderboard-name');
+                    nameContainer.textContent = user.name;
 
-                        // Create the score container
-                        const scoreContainer = document.createElement('div');
-                        scoreContainer.classList.add('leaderboard-score');
-                        scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
+                    // Create the score container
+                    const scoreContainer = document.createElement('div');
+                    scoreContainer.classList.add('leaderboard-score');
+                    scoreContainer.innerHTML = `<span class="score-number">${user.count}</span>`;
 
-                        // Append the containers to the leaderboard item
-                        leaderboardItem.appendChild(positionContainer);
-                        leaderboardItem.appendChild(nameContainer);
-                        leaderboardItem.appendChild(scoreContainer);
+                    // Append the containers to the leaderboard item
+                    leaderboardItem.appendChild(positionContainer);
+                    leaderboardItem.appendChild(nameContainer);
+                    leaderboardItem.appendChild(scoreContainer);
 
-                        // Append the leaderboard item to the section
-                        leaderboardSection.appendChild(leaderboardItem);
-                    });
+                    // Append the leaderboard item to the section
+                    leaderboardSection.appendChild(leaderboardItem);
                 });
             } else {
                 console.error('No user is signed in.');
@@ -139,6 +162,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 
@@ -184,6 +208,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+async function loadLiveActivities() {
+    try {
+        const database = firebase.database();
+        const salesTimeFramesRef = database.ref('salesTimeFrames');
+        const usersRef = database.ref('users');
+        const likesRef = database.ref('likes');
+        const currentUser = firebase.auth().currentUser; // Get the current user ID
+
+        const liveActivitiesSection = document.getElementById('live-activities-section');
+        if (!liveActivitiesSection) {
+            throw new Error('Live activities section element not found');
+        }
+
+        liveActivitiesSection.innerHTML = ''; // Clear previous content
+
+        // Listen for new sales in real-time
+        salesTimeFramesRef.on('child_added', async snapshot => {
+            const sale = snapshot.val();
+            if (isValidSale(sale)) {
+                await addUserNames([sale], usersRef);
+                renderSingleSale(liveActivitiesSection, sale, likesRef, usersRef);
+            }
+        });
+
+        // Handle infinite scroll for past sales
+        liveActivitiesSection.addEventListener('scroll', () => {
+            if (liveActivitiesSection.scrollTop + liveActivitiesSection.clientHeight >= liveActivitiesSection.scrollHeight) {
+                renderMoreSales(liveActivitiesSection, likesRef, usersRef);
+            }
+        });
+
+    } catch (error) {
+        console.error('Error loading live activities:', error);
+    }
+}
+
+function isValidSale(sale) {
+    const today = new Date();
+    const saleDate = new Date(sale.saleTime);
+    return saleDate.getDate() === today.getDate() &&
+           saleDate.getMonth() === today.getMonth() &&
+           saleDate.getFullYear() === today.getFullYear();
+}
+
+function renderSingleSale(container, sale, likesRef, usersRef) {
+    const currentUser = firebase.auth().currentUser; // Get the current user ID
+    const saleDate = new Date(sale.saleTime);
+    const formattedTime = saleDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const saleElement = document.createElement('div');
+    saleElement.classList.add('activity-item');
+
+    const likePath = `${sale.userId}_${sale.leadId}_${sale.saleType}_${sale.saleTime.replace(/[.\#$$begin:math:display$$end:math:display$]/g, '_')}`;
+
+    saleElement.innerHTML = `
+        <button class="like-button" data-like-path="${likePath}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </button>
+        <strong>${sale.userName}</strong> sold <strong>${sale.saleType}</strong> at ${formattedTime}
+        <div class="like-info" id="like-info-${likePath}"></div>
+    `;
+    container.appendChild(saleElement);
+
+    const likeButton = saleElement.querySelector('.like-button');
+    const likeInfoDiv = saleElement.querySelector('.like-info');
+
+    initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef);
+
+    likeButton.addEventListener('click', () => handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef));
+
+    likesRef.child(likePath).on('value', snapshot => {
+        updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
+    });
+}
+
+function renderMoreSales(container, likesRef, usersRef) {
+    // Your existing logic for rendering more sales, can be integrated with real-time updates as well
+}
+
+
+
+
+
+
+
+
+function isToday(dateString) {
+    const date = new Date(dateString);
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+}
 
 
 
@@ -279,7 +398,66 @@ function renderSales(sales, container, likesRef, usersRef) {
 }
 
 
+function updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef) {
+    const likes = snapshot.val() || {};
+    const likeCount = Object.values(likes).reduce((total, value) => total + value, 0);
+    const lastLikerId = Object.keys(likes).sort((a, b) => likes[b] - likes[a])[0];
+    let lastLikerName = 'Someone';
 
+    if (likeCount > 0 && lastLikerId) {
+        usersRef.child(lastLikerId).once('value').then(userSnapshot => {
+            if (userSnapshot.exists()) {
+                lastLikerName = userSnapshot.val().name || 'Someone';
+            }
+            likeInfoDiv.textContent = likeCount > 1
+                ? `Liked by ${lastLikerName} and ${likeCount - 1} others`
+                : `Liked by ${lastLikerName}`;
+        });
+    } else {
+        likeInfoDiv.textContent = ''; // Clear the like-info text if there are no likes
+    }
+
+    if (likes[firebase.auth().currentUser.uid]) {
+        likeButton.classList.add('liked');
+    } else {
+        likeButton.classList.remove('liked');
+    }
+}
+
+
+
+
+
+
+
+
+
+async function initializeLikeCount(likesRef, likePath, likeButton, likeInfoDiv, usersRef) {
+    try {
+        const snapshot = await likesRef.child(likePath).once('value');
+        updateLikeCount(snapshot, likeButton, likeInfoDiv, usersRef);
+    } catch (error) {
+        console.error('Error initializing like count:', error);
+    }
+}
+
+async function handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, usersRef) {
+    try {
+        const currentUserId = firebase.auth().currentUser.uid;
+        const userLikePath = `${likePath}/${currentUserId}`;
+
+        const result = await likesRef.child(userLikePath).transaction(currentValue => {
+            return currentValue ? 0 : 1;
+        });
+
+        if (result.committed) {
+            const likesSnapshot = await likesRef.child(likePath).once('value');
+            updateLikeCount(likesSnapshot, likeButton, likeInfoDiv, usersRef);
+        }
+    } catch (error) {
+        console.error('Error updating like count:', error);
+    }
+}
 
 function getReadableTitle(saleType) {
     switch (saleType) {
@@ -295,3 +473,5 @@ function getReadableTitle(saleType) {
             return saleType;
     }
 }
+
+
