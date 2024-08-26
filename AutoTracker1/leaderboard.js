@@ -234,7 +234,7 @@ function renderMoreSales(container, likesRef, usersRef) {
 
     lastRenderedIndex += salesToRender.length;
 
-    salesToRender.forEach((sale) => {
+    salesToRender.forEach((sale) => { 
         const saleDate = new Date(sale.saleTime);
         const today = new Date();
         const isToday = saleDate.getDate() === today.getDate() &&
