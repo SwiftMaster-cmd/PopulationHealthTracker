@@ -24,6 +24,7 @@ async function loadLiveActivities() {
             if (isToday(saleData.saleTime)) {
                 console.log("Sale is today:", saleData);
                 await addUserNames([saleData], usersRef); // Add the user name for the new sale
+                renderFilteredSale(saleData, liveActivitiesSection, likesRef, usersRef); // Render the new sale with filtering
 
                 // Add to the displayed sales array
                 displayedSales.push(saleData);
