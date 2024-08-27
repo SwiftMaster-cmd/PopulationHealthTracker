@@ -22,15 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'day-chart':
                 changeChart('day');
                 showChartFooter();
-                break;
+                return; // Exit function to prevent overwriting currentSection
             case 'week-chart':
                 changeChart('week');
                 showChartFooter();
-                break;
+                return; // Exit function to prevent overwriting currentSection
             case 'month-chart':
                 changeChart('month');
                 showChartFooter();
-                break;
+                return; // Exit function to prevent overwriting currentSection
             default:
                 document.querySelector('.leaderboard-container').style.display = 'block';
                 document.querySelector('.live-activities-container').style.display = 'block';
