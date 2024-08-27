@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'settings':
                 showSettingsFooter();
-                document.getElementById('colorPickerContainer').style.display = 'block';
                 break;
             default:
                 document.querySelector('.leaderboard-container').style.display = 'block';
@@ -68,13 +67,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function showSettingsFooter() {
         footerButtonsContainer.innerHTML = `
             <button id="backButton" class="footer-button">Back</button>
-            <!-- Add your settings-related buttons here -->
+            <button id="cheatSheetButton" class="footer-button">Cheat Sheet</button>
+            <button onclick="window.location.href='Dash2.html'" class="footer-button">Donate</button>
+            <input type="color" id="colorPicker" class="footer-input" />
+            <button id="applyColor" class="footer-button">Apply Color Palette</button>
+            <input type="text" id="nameInput" class="footer-input" placeholder="Enter new name" />
+            <button id="changeName" class="footer-button">Change Name</button>
+            <button id="signOut" class="footer-button">Sign Out</button>
+            <button id="googleSignInButton" class="footer-button">Link with Google</button>
+            <button id="copyBookmarkletButton" class="footer-button">Copy AutoTracker Script</button>
         `;
 
         document.getElementById('backButton').addEventListener('click', () => {
-            document.getElementById('colorPickerContainer').style.display = 'none';
             resetFooter(); // Reset the footer buttons back to the original state
         });
+
+        // Add your event listeners here for settings buttons if needed
     }
 
     function resetFooter() {
