@@ -319,40 +319,41 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching sales outcomes:', error);
         });
     }
+// Attach the function to the window object
+window.displaySalesOutcomes = displaySalesOutcomes;
 
-    function displayCustomerInfo(customerInfo) {
-        if (!customerInfo) {
-            return '<p>No customer information available.</p>';
-        }
-    
-        // Left column content
-        const leftColumn = `
-            <p><strong>Name:</strong> ${customerInfo.firstName || ''} ${customerInfo.lastName || ''}</p>
-            <p><strong>Email:</strong> ${customerInfo.email || 'N/A'}</p>
-            <p><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</p>
-        `;
-    
-        // Right column content
-        const rightColumn = `
-            <p><strong>Birthdate:</strong> ${customerInfo.birthdate || 'N/A'}</p>
-            <p><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</p>
-            <p><strong>State ID:</strong> ${customerInfo.stateId || 'N/A'}</p>
-            <p><strong>Zipcode:</strong> ${customerInfo.zipcode || 'N/A'}</p>
-        `;
-    
-        // Return the combined content
-        return `
-            <div class="customer-info-container">
-                <div class="customer-info-left">
-                    ${leftColumn}
-                </div>
-                <div class="customer-info-right">
-                    ${rightColumn}
-                </div>
-            </div>
-        `;
+function displayCustomerInfo(customerInfo) {
+    if (!customerInfo) {
+        return '<p>No customer information available.</p>';
     }
-    
+
+    // Left column content
+    const leftColumn = `
+        <p><strong>Name:</strong> ${customerInfo.firstName || ''} ${customerInfo.lastName || ''}</p>
+        <p><strong>Email:</strong> ${customerInfo.email || 'N/A'}</p>
+        <p><strong>Phone:</strong> ${customerInfo.phone || 'N/A'}</p>
+    `;
+
+    // Right column content
+    const rightColumn = `
+        <p><strong>Birthdate:</strong> ${customerInfo.birthdate || 'N/A'}</p>
+        <p><strong>Gender:</strong> ${customerInfo.gender || 'N/A'}</p>
+        <p><strong>State ID:</strong> ${customerInfo.stateId || 'N/A'}</p>
+        <p><strong>Zipcode:</strong> ${customerInfo.zipcode || 'N/A'}</p>
+    `;
+
+    return `
+        <div class="customer-info-container">
+            <div class="customer-info-left">
+                ${leftColumn}
+            </div>
+            <div class="customer-info-right">
+                ${rightColumn}
+            </div>
+        </div>
+    `;
+}
+
 
     
 
