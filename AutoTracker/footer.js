@@ -38,7 +38,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Show the settings section
+    function showChartFooter() {
+        footerButtonsContainer.innerHTML = `
+            <button id="backButton" class="footer-button">Back</button>
+            <button data-chart="day" class="footer-button">Day Chart</button>
+            <button data-chart="week" class="footer-button">Week Chart</button>
+            <button data-chart="month" class="footer-button">Month Chart</button>
+        `;
+
+        document.getElementById('backButton').addEventListener('click', () => {
+            resetFooter(); // Reset the footer buttons back to the original state
+        });
+
+        document.querySelectorAll('[data-chart]').forEach(button => {
+            button.addEventListener('click', function() {
+                const chartType = this.getAttribute('data-chart') + '-chart';
+                showSection(chartType);
+            });
+        });
+    }
+
     function showSettings() {
         const settingsContainer = document.getElementById('settingsContainer');
         hideAllSections();
@@ -50,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
         sections.forEach(sec => sec.style.display = 'none'); // Hide all sections
     }
 
-    // Initialize the footer with the default buttons and add the settings button event listener
     function resetFooter() {
         footerButtonsContainer.innerHTML = `
             <button data-section="leaderboard" class="footer-button">Leaderboard</button>
@@ -79,4 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize the footer with the default buttons
     resetFooter();
+
+    // Load the previously selected section or default to leaderboard
+    let currentSection = localStorage.getItem('currentSection') || 'leaderboard';
+    if (currentSection.startsWith('chart') || currentSection === 'settings') {
+        showSection(currentSection);
+    } else {
+        showSection('leaderboard');
+    }
 });
