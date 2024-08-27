@@ -7,7 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         switch (section) {
             case 'leaderboard':
-                document.getElementById('leaderboard-live-activities-container').style.display = 'block';
+                document.querySelector('.leaderboard-container').style.display = 'block';
+                break;
+            case 'live-activities':
+                document.querySelector('.live-activities-container').style.display = 'block';
                 break;
             case 'sales-history':
                 document.getElementById('salesHistoryContainer').style.display = 'block';
@@ -25,7 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('chartContainerMonth').style.display = 'block';
                 break;
             default:
-                document.getElementById('leaderboard-live-activities-container').style.display = 'block';
+                document.querySelector('.leaderboard-container').style.display = 'block';
+                document.querySelector('.live-activities-container').style.display = 'block';
         }
     }
 
