@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const footerButtonsContainer = document.getElementById('footer-buttons');
-    let currentSection = localStorage.getItem('currentSection') || 'leaderboard'; // Default to leaderboard if none saved
+    let currentSection = localStorage.getItem('currentSection') || 'leaderboard'; // Default to leaderboard
 
     function showSection(section) {
         const sections = document.querySelectorAll('.dynamic-content-container > div');
@@ -85,10 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the footer with the default buttons
     resetFooter();
 
-    // Load the previously selected section or default to leaderboard
-    if (currentSection.startsWith('chart')) {
+    // Always show the leaderboard on initial load unless a different section is actively selected and saved
+    if (localStorage.getItem('currentSection')) {
         showSection(currentSection);
     } else {
-        showSection('leaderboard');
+        showSection('leaderboard'); // Force leaderboard on initial load
     }
 });
