@@ -82,8 +82,14 @@
  
 }
 
-.customer-info-left, .customer-info-right {
- 
+.customer-info-left{
+    text-align: left; /* Align text to the left */
+
+}
+
+.customer-info-right {
+    text-align: right; /* Align text to the left */
+
 }
 
 .customer-info-left p, .customer-info-right p {
