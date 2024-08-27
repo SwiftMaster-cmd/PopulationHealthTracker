@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'month-chart':
                 document.getElementById('chartContainerMonth').style.display = 'block';
                 break;
+            case 'sales-history':
+                document.getElementById('salesHistoryContainer').style.display = 'block';
+                break;
+            case 'monthly-sales-totals':
+                document.getElementById('monthlySalesTotalsContainer').style.display = 'block';
+                break;
             default:
                 document.querySelector('.leaderboard-container').style.display = 'block';
                 document.querySelector('.live-activities-container').style.display = 'block';
