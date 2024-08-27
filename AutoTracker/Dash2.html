@@ -29,7 +29,7 @@
     <script src="progressBars.js" defer></script>
     <script src="notifications.js" defer></script>
     <script src="dynamicDash.js" defer></script>
-
+    <script src="footer.js" defer></script>
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="sales-outcomes.js" defer></script>
@@ -144,13 +144,16 @@
     
     <footer class="footer">
         <div class="footer-container">
-            <button onclick="showSection('leaderboard')" class="footer-button">Leaderboard</button>
-            <button onclick="showSection('live-activities')" class="footer-button">Live Activities</button>
-            <button onclick="showSection('day-chart')" class="footer-button">Day Chart</button>
-            <button onclick="showSection('week-chart')" class="footer-button">Week Chart</button>
-            <button onclick="showSection('month-chart')" class="footer-button">Month Chart</button>
+            <button data-section="leaderboard" class="footer-button">Leaderboard</button>
+            <button data-section="live-activities" class="footer-button">Live Activities</button>
+            <button data-section="day-chart" class="footer-button">Day Chart</button>
+            <button data-section="week-chart" class="footer-button">Week Chart</button>
+            <button data-section="month-chart" class="footer-button">Month Chart</button>
         </div>
     </footer>
+    
+
+    
     
       
     
