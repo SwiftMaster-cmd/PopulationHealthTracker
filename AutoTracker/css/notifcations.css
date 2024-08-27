@@ -1,0 +1,30 @@
+.custom-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--color-secondary); /* Matches your secondary color */
+    color: var(--text-white);
+    padding: var(--margin-s) var(--margin-m);
+    border-radius: var(--margin-s);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    font-size: 1rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.custom-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.custom-notification.hide {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.custom-notification:hover {
+    background-color: var(--color-quaternary); /* Adds hover effect similar to buttons */
+    transform: translateY(-3px);
+}
