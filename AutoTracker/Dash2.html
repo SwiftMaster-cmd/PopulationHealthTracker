@@ -28,6 +28,7 @@
     <script src="stripe-handler.js" defer></script>
     <script src="progressBars.js" defer></script>
     <script src="notifications.js" defer></script>
+    <script src="dynamicDash.js" defer></script>
 
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
@@ -91,13 +92,8 @@
     </div>
 
     <div class="main-container">
-
-
-       
-
-               
-        <div class="picker-leaderboard-container container">
-            
+        <div class="dynamic-content-container">
+            <!-- Leaderboard Section -->
             <div class="leaderboard-container">
                 <div class="leaderboard-header">
                     <h3 id="leaderboard-title">Leaderboard: Select RX</h3>
@@ -116,59 +112,43 @@
                     </div>
                 </div>
                 <div id="leaderboard-section">
-                    <div class="leaderboard-item">
-                        <!-- Leaderboard items here -->
-                    </div>
+                    <!-- Leaderboard items will be dynamically added here -->
                 </div>
             </div>
-            
-                
-                
-            
+    
+            <!-- Live Activities Section -->
             <div class="live-activities-container">
                 <h4 class="live-activities-title">Live Activities</h4>
-            
+    
                 <!-- Toggle buttons for Show/Hide Non-sellable and Self Sales -->
                 <div class="toggle-buttons">
                     <button id="toggleSellableButton" class="toggle-button">Hide Non-sellable</button>
                     <button id="toggleSelfSalesButton" class="toggle-button">Hide Self Sales</button>
                 </div>
-            
+    
                 <div id="live-activities-section"></div>
             </div>
-            
-            
-        
-        
+    
+            <!-- Chart Sections -->
+            <div class="picker-chart-container container" id="chartContainerDay" style="display: none;">
+                <canvas id="salesChartDay"></canvas>
+            </div>
+            <div class="picker-chart-container container" id="chartContainerWeek" style="display: none;">
+                <canvas id="salesChartWeek"></canvas>
+            </div>
+            <div class="picker-chart-container container" id="chartContainerMonth" style="display: none;">
+                <canvas id="salesChartMonth"></canvas>
+            </div>
         </div>
-        
-
- 
-
-        <div class="picker-chart-container container" id="chartContainerDay">
-            <!-- Day chart content -->
-            <canvas id="salesChartDay"></canvas>
-        </div>
-        
-        <div class="picker-chart-container container" id="chartContainerWeek" style="display: none;">
-            <!-- Week chart content -->
-            <canvas id="salesChartWeek"></canvas>
-        </div>
-        
-        <div class="picker-chart-container container" id="chartContainerMonth" style="display: none;">
-            <!-- Month chart content -->
-            <canvas id="salesChartMonth"></canvas>
-        </div>
-        
     </div>
-                
+    
     <footer class="footer">
         <div class="footer-container">
-            <button onclick="changeChart('day')" class="footer-button">Day Chart</button>
-            <button onclick="changeChart('week')" class="footer-button">Week Chart</button>
-            <button onclick="changeChart('month')" class="footer-button">Month Chart</button>
-            <button id="prevButton" class="footer-button">Previous</button>
-            <button id="nextButton" class="footer-button">Next</button>
+            <button onclick="showSection('leaderboard')" class="footer-button">Leaderboard</button>
+            <button onclick="showSection('live-activities')" class="footer-button">Live Activities</button>
+            <button onclick="showSection('day-chart')" class="footer-button">Day Chart</button>
+            <button onclick="showSection('week-chart')" class="footer-button">Week Chart</button>
+            <button onclick="showSection('month-chart')" class="footer-button">Month Chart</button>
         </div>
     </footer>
     
