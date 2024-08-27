@@ -42,6 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Show default sections (leaderboard and live activities)
+    // Ensure default sections are shown
     showSection('leaderboard');
 });
