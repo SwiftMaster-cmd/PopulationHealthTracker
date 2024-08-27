@@ -36,6 +36,7 @@
     <script src="leaderboard.js" defer></script>
     <script src="liveActivities.js" defer></script>
     <script src="CSsearch.js" defer></script>
+    <script src="settings.js" defer></script>
 
     <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
@@ -210,7 +211,22 @@
             <div class="picker-chart-container container" id="chartContainerMonth" style="display: none;">
                 <canvas id="salesChartMonth"></canvas>
             </div>
-            
+             <!-- Settings Section -->
+        <div class="settings-container" id="settingsContainer" style="display: none;">
+            <h2>Settings</h2>
+            <button id="backToMain" class="button">Back</button>
+            <div class="settings-options">
+                <button id="cheatSheetButton" class="button">Cheat Sheet</button>
+                <button onclick="window.location.href='Dash2.html'" class="button">Donate</button>
+                <input type="color" id="colorPicker" />
+                <button id="applyColor" class="button">Apply Color Palette</button>
+                <input type="text" id="nameInput" placeholder="Enter new name" />
+                <button id="changeName" class="button">Change Name</button>
+                <button id="signOut" class="button">Sign Out</button>
+                <button id="googleSignInButton" class="button">Link with Google</button>
+                <button id="copyBookmarkletButton" class="button">Copy AutoTracker Script</button>
+            </div>
+        </div>
         </div>
     </div>
     
@@ -226,21 +242,7 @@
             <button id="settingsButton" class="footer-button">Settings</button>
         </div>
     </footer>
-    
-    <div class="color-picker-container" id="colorPickerContainer" style="display:none;">
-        <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-        <button onclick="window.location.href='Dash2.html'" class="button">Donate</button>
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-        <input type="text" id="nameInput" placeholder="Enter new name" />
-        <button id="changeName" class="button">Change Name</button>
-        <button id="signOut" class="button">Sign Out</button>
-        <button id="googleSignInButton">Link with Google</button>
-        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-    </div>
-    
-    
-    
+
     
     
     
