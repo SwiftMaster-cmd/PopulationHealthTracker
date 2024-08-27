@@ -76,9 +76,28 @@
 }
 
 
+.customer-info-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #1c1c1c;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
 .customer-info-left, .customer-info-right {
     width: 48%;
+    background-color: #2b2b2b;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
+
+.customer-info-left p, .customer-info-right p {
+    margin: 0 0 10px;
+    color: #ffffff;
+}
+
 
 /* Style for live activities section */
 #live-activities-section {
