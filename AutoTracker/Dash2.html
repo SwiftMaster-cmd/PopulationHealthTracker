@@ -240,6 +240,27 @@
             <button data-section="sales-history" class="footer-button">Sales History</button>
             <button data-section="monthly-sales-totals" class="footer-button">Monthly Totals</button>
             <button id="chartsButton" class="footer-button">Charts</button>
+            <button id="settingsButton" class="footer-button">Settings</button>
+        </div>
+    
+        <div id="settingsPanel" class="settings-panel" style="display: none;">
+            <div class="footer-group">
+                <label for="colorPicker">Color:</label>
+                <input type="color" id="colorPicker" />
+                <button id="applyColor" class="button">Apply</button>
+            </div>
+            
+            <div class="footer-group">
+                <label for="nameInput">Name:</label>
+                <input type="text" id="nameInput" placeholder="Enter name" />
+                <button id="changeName" class="button">Change</button>
+            </div>
+            
+            <div class="footer-group">
+                <button id="signOut" class="button">Sign Out</button>
+                <button id="googleSignInButton" class="button">Link Google</button>
+                <button id="copyBookmarkletButton" class="button">Copy Bookmark</button>
+            </div>
         </div>
     </footer>
     

@@ -33,12 +33,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             default:
                 document.querySelector('.leaderboard-container').style.display = 'block';
+                section = 'leaderboard'; // Fallback to leaderboard if unknown section
         }
 
-        if (section !== 'leaderboard') {
-            currentSection = section; // Track the current section
-            localStorage.setItem('currentSection', section); // Save the current section to localStorage
-        }
+        currentSection = section; // Track the current section
+        localStorage.setItem('currentSection', section); // Save the current section to localStorage
     }
 
     function showChartFooter() {
@@ -49,9 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button data-chart="month" class="footer-button">Month Chart</button>
         `;
 
-        document.getElementById('backButton').addEventListener('click', () => {
-            resetFooter(); // Reset the footer buttons back to the original state
-        });
+        document.getElementById('backButton').addEventListener('click', resetFooter);
 
         document.querySelectorAll('[data-chart]').forEach(button => {
             button.addEventListener('click', function() {
@@ -70,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button id="chartsButton" class="footer-button">Charts</button>
         `;
 
-        document.getElementById('chartsButton').addEventListener('click', () => {
+        document.getElementById('chartsButton').addEventListener('click', function() {
             showSection('day-chart'); // Default to day chart when charts are selected
         });
 
@@ -85,10 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the footer with the default buttons
     resetFooter();
 
-    // Always show the leaderboard on initial load unless a different section is actively selected and saved
-    if (localStorage.getItem('currentSection')) {
-        showSection(currentSection);
-    } else {
-        showSection('leaderboard'); // Force leaderboard on initial load
-    }
+    // Show the saved section on load, or default to the leaderboard
+    showSection(currentSection);
 });
