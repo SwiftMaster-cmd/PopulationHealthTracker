@@ -1,30 +1,22 @@
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
 .custom-notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: var(--color-secondary); /* Matches your secondary color */
-    color: var(--text-white);
-    padding: var(--margin-s) var(--margin-m);
-    border-radius: var(--margin-s);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10000;
-    font-size: 1rem;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.custom-notification.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.custom-notification.hide {
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-.custom-notification:hover {
-    background-color: var(--color-quaternary); /* Adds hover effect similar to buttons */
-    transform: translateY(-3px);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 1000;
+    white-space: nowrap;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }

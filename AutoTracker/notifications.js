@@ -33,11 +33,12 @@ function showNotification(message) {
     } else {
         // Fallback to using a custom notification UI
         const notificationElement = createCustomNotification(message);
-        document.body.appendChild(notificationElement);
+        const headerContainer = document.querySelector('.header-container');
+        headerContainer.appendChild(notificationElement);
 
         // Automatically remove the notification after 5 seconds
         setTimeout(() => {
-            document.body.removeChild(notificationElement);
+            headerContainer.removeChild(notificationElement);
         }, 5000);
     }
 }
