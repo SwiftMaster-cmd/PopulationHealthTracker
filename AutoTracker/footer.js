@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const footerButtonsContainer = document.getElementById('footer-buttons');
+    let currentSection = 'leaderboard'; // Default to leaderboard
 
     function showSection(section) {
         const sections = document.querySelectorAll('.dynamic-content-container > div');
@@ -34,6 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelector('.leaderboard-container').style.display = 'block';
                 document.querySelector('.live-activities-container').style.display = 'block';
         }
+
+        currentSection = section; // Track the current section
     }
 
     function showChartFooter() {
@@ -46,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('backButton').addEventListener('click', () => {
             resetFooter();
-            showSection('leaderboard'); // Default back to the leaderboard when back is clicked
         });
 
         document.querySelectorAll('[data-chart]').forEach(button => {
@@ -76,6 +78,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 showSection(section);
             });
         });
+
+        // Keep the current section visible
+        showSection(currentSection);
     }
 
     // Initialize the footer with the default buttons
