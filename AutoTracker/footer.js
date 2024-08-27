@@ -19,15 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('monthlySalesTotalsContainer').style.display = 'block';
                 break;
             case 'day-chart':
-                document.getElementById('chartContainerDay').style.display = 'block';
+                changeChart('day');
                 showChartFooter();
                 break;
             case 'week-chart':
-                document.getElementById('chartContainerWeek').style.display = 'block';
+                changeChart('week');
                 showChartFooter();
                 break;
             case 'month-chart':
-                document.getElementById('chartContainerMonth').style.display = 'block';
+                changeChart('month');
                 showChartFooter();
                 break;
             default:
