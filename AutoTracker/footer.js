@@ -22,15 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'day-chart':
                 changeChart('day');
                 showChartFooter();
-                return; // Exit function to prevent overwriting currentSection
+                return;
             case 'week-chart':
                 changeChart('week');
                 showChartFooter();
-                return; // Exit function to prevent overwriting currentSection
+                return;
             case 'month-chart':
                 changeChart('month');
                 showChartFooter();
-                return; // Exit function to prevent overwriting currentSection
+                return;
             default:
                 document.querySelector('.leaderboard-container').style.display = 'block';
                 document.querySelector('.live-activities-container').style.display = 'block';
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
 
         document.getElementById('backButton').addEventListener('click', () => {
-            resetFooter();
+            resetFooter(); // Reset the footer buttons back to the original state
         });
 
         document.querySelectorAll('[data-chart]').forEach(button => {
@@ -79,8 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Keep the current section visible
-        showSection(currentSection);
+        // Do not change the current section; just update the footer
     }
 
     // Initialize the footer with the default buttons
