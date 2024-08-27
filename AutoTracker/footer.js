@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const footerButtons = document.querySelectorAll('.footer-button');
+    const footerButtonsContainer = document.getElementById('footer-buttons');
 
     function showSection(section) {
         const sections = document.querySelectorAll('.dynamic-content-container > div');
@@ -20,12 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'day-chart':
                 document.getElementById('chartContainerDay').style.display = 'block';
+                showChartFooter();
                 break;
             case 'week-chart':
                 document.getElementById('chartContainerWeek').style.display = 'block';
+                showChartFooter();
                 break;
             case 'month-chart':
                 document.getElementById('chartContainerMonth').style.display = 'block';
+                showChartFooter();
                 break;
             default:
                 document.querySelector('.leaderboard-container').style.display = 'block';
@@ -33,13 +36,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Add event listeners to footer buttons
-    footerButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const section = this.getAttribute('data-section');
-            showSection(section);
+    function showChartFooter() {
+        footerButtonsContainer.innerHTML = `
+            <button id="backButton" class="footer-button">Back</button>
+            <button data-chart="day" class="footer-button">Day Chart</button>
+            <button data-chart="week" class="footer-button">Week Chart</button>
+            <button data-chart="month" class="footer-button">Month Chart</button>
+        `;
+
+        document.getElementById('backButton').addEventListener('click', () => {
+            resetFooter();
+            showSection('leaderboard'); // Default back to the leaderboard when back is clicked
         });
-    });
+
+        document.querySelectorAll('[data-chart]').forEach(button => {
+            button.addEventListener('click', function() {
+                const chartType = this.getAttribute('data-chart') + '-chart';
+                showSection(chartType);
+            });
+        });
+    }
+
+    function resetFooter() {
+        footerButtonsContainer.innerHTML = `
+            <button data-section="leaderboard" class="footer-button">Leaderboard</button>
+            <button data-section="live-activities" class="footer-button">Live Activities</button>
+            <button data-section="sales-history" class="footer-button">Sales History</button>
+            <button data-section="monthly-sales-totals" class="footer-button">Monthly Totals</button>
+            <button id="chartsButton" class="footer-button">Charts</button>
+        `;
+
+        document.getElementById('chartsButton').addEventListener('click', () => {
+            showSection('day-chart'); // Default to day chart when charts are selected
+        });
+
+        document.querySelectorAll('[data-section]').forEach(button => {
+            button.addEventListener('click', function() {
+                const section = this.getAttribute('data-section');
+                showSection(section);
+            });
+        });
+    }
+
+    // Initialize the footer with the default buttons
+    resetFooter();
 
     // Show default sections (leaderboard and live activities)
     showSection('leaderboard');
