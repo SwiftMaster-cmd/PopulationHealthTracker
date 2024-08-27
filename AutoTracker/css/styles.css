@@ -152,10 +152,7 @@ button:active {
     color: var(--text-white);
 }
 
-.container:hover, .sales-item:hover, .summary-item:hover {
-    opacity: 0.9;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-}
+
 
 .picker, .chart-picker {
     padding: var(--margin-s);
