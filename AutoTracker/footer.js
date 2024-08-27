@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const footerButtonsContainer = document.getElementById('footer-buttons');
-    let currentSection = 'leaderboard'; // Default to leaderboard
+    let currentSection = localStorage.getItem('currentSection') || 'leaderboard'; // Default to leaderboard if none saved
 
     function showSection(section) {
         const sections = document.querySelectorAll('.dynamic-content-container > div');
@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         currentSection = section; // Track the current section
+        localStorage.setItem('currentSection', section); // Save the current section to localStorage
     }
 
     function showChartFooter() {
@@ -78,13 +79,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 showSection(section);
             });
         });
-
-        // Do not change the current section; just update the footer
     }
 
     // Initialize the footer with the default buttons
     resetFooter();
 
-    // Show default sections (leaderboard and live activities)
-    showSection('leaderboard');
+    // Show the saved or default section
+    if (currentSection !== 'leaderboard') {
+        showSection(currentSection);
+    } else {
+        document.querySelector('.leaderboard-container').style.display = 'block'; // Ensure leaderboard shows on initial load
+    }
 });
