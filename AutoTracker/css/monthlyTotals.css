@@ -76,7 +76,9 @@
 }
 
 
-
+.customer-info-left, .customer-info-right {
+    width: 48%;
+}
 
 /* Style for live activities section */
 #live-activities-section {
