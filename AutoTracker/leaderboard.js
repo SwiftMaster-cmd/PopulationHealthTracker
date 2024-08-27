@@ -59,7 +59,30 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
     salesCountsRef.on('value', salesSnapshot => {
         const salesData = salesSnapshot.val();
         if (!salesData) {
-            console.error('No sales data found');
+            console.log('No sales data found. Leaderboard will not be loaded.');
+            leaderboardSection.innerHTML = ''; // Clear the section if no sales data
+            return;
+        }
+
+        let hasSales = false;
+
+        for (const userId in salesData) {
+            const userData = salesData[userId];
+            if (period === 'day' && userData.day && userData.day[saleType] !== undefined) {
+                hasSales = true;
+                break;
+            } else if (period === 'week' && userData.week && userData.week[saleType]) {
+                hasSales = true;
+                break;
+            } else if (period === 'month' && userData.month && userData.month[saleType]) {
+                hasSales = true;
+                break;
+            }
+        }
+
+        if (!hasSales) {
+            console.log('No sales matching the criteria. Leaderboard will not be loaded.');
+            leaderboardSection.innerHTML = ''; // Clear the section if no matching sales
             return;
         }
 
@@ -139,6 +162,7 @@ async function loadLeaderboard(period = 'day', saleType = 'selectRX') {
         console.error('Error fetching sales data:', error);
     });
 }
+
 
 
 
@@ -445,7 +469,7 @@ async function handleLikeClick(likesRef, likePath, likeButton, likeInfoDiv, user
 function getReadableTitle(saleType) {
     switch (saleType) {
         case 'Notes':
-            return 'Notes';
+            return 'Notes';                                                                                                                                                                                                                                                                                                       
         case 'HRA Completed':
             return 'HRA Completed';
         case 'Select RX':
