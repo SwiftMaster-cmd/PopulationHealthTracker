@@ -10,7 +10,7 @@
 
 .leaderboard-container {
     flex: 1;
-    max-width: 80%;
+    max-width: 100%;
     box-sizing: border-box;
     padding: var(--margin-m);
     border-radius: var(--margin-s);
