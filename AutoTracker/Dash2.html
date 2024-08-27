@@ -242,27 +242,20 @@
             <button id="chartsButton" class="footer-button">Charts</button>
             <button id="settingsButton" class="footer-button">Settings</button>
         </div>
-    
-        <div id="settingsPanel" class="settings-panel" style="display: none;">
-            <div class="footer-group">
-                <label for="colorPicker">Color:</label>
-                <input type="color" id="colorPicker" />
-                <button id="applyColor" class="button">Apply</button>
-            </div>
-            
-            <div class="footer-group">
-                <label for="nameInput">Name:</label>
-                <input type="text" id="nameInput" placeholder="Enter name" />
-                <button id="changeName" class="button">Change</button>
-            </div>
-            
-            <div class="footer-group">
-                <button id="signOut" class="button">Sign Out</button>
-                <button id="googleSignInButton" class="button">Link Google</button>
-                <button id="copyBookmarkletButton" class="button">Copy Bookmark</button>
-            </div>
-        </div>
     </footer>
+    
+    <div class="color-picker-container" id="colorPickerContainer" style="display:none;">
+        <button id="cheatSheetButton" class="button">Cheat Sheet</button>
+        <button onclick="window.location.href='Dash2.html'" class="button">Donate</button>
+        <input type="color" id="colorPicker" />
+        <button id="applyColor" class="button">Apply Color Palette</button>
+        <input type="text" id="nameInput" placeholder="Enter new name" />
+        <button id="changeName" class="button">Change Name</button>
+        <button id="signOut" class="button">Sign Out</button>
+        <button id="googleSignInButton">Link with Google</button>
+        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
+    </div>
+    
     
     
     

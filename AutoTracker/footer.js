@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const footerButtonsContainer = document.getElementById('footer-buttons');
-    let currentSection = localStorage.getItem('currentSection') || 'leaderboard'; // Default to leaderboard
+    let currentSection = localStorage.getItem('currentSection') || 'leaderboard'; // Default to leaderboard if none saved
 
     function showSection(section) {
         const sections = document.querySelectorAll('.dynamic-content-container > div');
@@ -31,13 +31,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 changeChart('month');
                 showChartFooter();
                 break;
+            case 'settings':
+                showSettingsFooter();
+                document.getElementById('colorPickerContainer').style.display = 'block';
+                break;
             default:
                 document.querySelector('.leaderboard-container').style.display = 'block';
-                section = 'leaderboard'; // Fallback to leaderboard if unknown section
         }
 
-        currentSection = section; // Track the current section
-        localStorage.setItem('currentSection', section); // Save the current section to localStorage
+        if (section !== 'leaderboard') {
+            currentSection = section; // Track the current section
+            localStorage.setItem('currentSection', section); // Save the current section to localStorage
+        }
     }
 
     function showChartFooter() {
@@ -48,13 +53,27 @@ document.addEventListener('DOMContentLoaded', function() {
             <button data-chart="month" class="footer-button">Month Chart</button>
         `;
 
-        document.getElementById('backButton').addEventListener('click', resetFooter);
+        document.getElementById('backButton').addEventListener('click', () => {
+            resetFooter(); // Reset the footer buttons back to the original state
+        });
 
         document.querySelectorAll('[data-chart]').forEach(button => {
             button.addEventListener('click', function() {
                 const chartType = this.getAttribute('data-chart') + '-chart';
                 showSection(chartType);
             });
+        });
+    }
+
+    function showSettingsFooter() {
+        footerButtonsContainer.innerHTML = `
+            <button id="backButton" class="footer-button">Back</button>
+            <!-- Add your settings-related buttons here -->
+        `;
+
+        document.getElementById('backButton').addEventListener('click', () => {
+            document.getElementById('colorPickerContainer').style.display = 'none';
+            resetFooter(); // Reset the footer buttons back to the original state
         });
     }
 
@@ -65,10 +84,15 @@ document.addEventListener('DOMContentLoaded', function() {
             <button data-section="sales-history" class="footer-button">Sales History</button>
             <button data-section="monthly-sales-totals" class="footer-button">Monthly Totals</button>
             <button id="chartsButton" class="footer-button">Charts</button>
+            <button id="settingsButton" class="footer-button">Settings</button>
         `;
 
-        document.getElementById('chartsButton').addEventListener('click', function() {
+        document.getElementById('chartsButton').addEventListener('click', () => {
             showSection('day-chart'); // Default to day chart when charts are selected
+        });
+
+        document.getElementById('settingsButton').addEventListener('click', () => {
+            showSection('settings'); // Show settings when settings button is clicked
         });
 
         document.querySelectorAll('[data-section]').forEach(button => {
@@ -82,6 +106,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the footer with the default buttons
     resetFooter();
 
-    // Show the saved section on load, or default to the leaderboard
-    showSection(currentSection);
+    // Load the previously selected section or default to leaderboard
+    if (currentSection.startsWith('chart') || currentSection === 'settings') {
+        showSection(currentSection);
+    } else {
+        showSection('leaderboard');
+    }
 });
