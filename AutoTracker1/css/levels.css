@@ -3,17 +3,6 @@
     --margin-s: 10px;
     --margin-m: 20px;
     --color-tertiary: rgba(0, 191, 255, 0.9); /* DeepSkyBlue */
-    --background-color: #f5f5f5; /* Light grey background for the page */
-}
-
-/* Global styles */
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background-color: var(--background-color);
 }
 
 /* Main grid container styling */
@@ -60,7 +49,7 @@ body, html {
     background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
     border-radius: var(--margin-s); /* Rounded corners */
     text-align: center;
-    color: #000; /* Black text color for visibility */
+    color: var(--text-white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     transition: background-color 0.3s ease, opacity 0.3s;
     overflow: hidden; /* Prevent content from overflowing the grid item */
@@ -96,6 +85,7 @@ body, html {
     background-color: #FF6347; /* Slightly darker color on hover */
 }
 
+
 /* Layout selector dropdown */
 .layout-selector {
     display: none; /* Initially hidden */
@@ -109,28 +99,4 @@ body, html {
     overflow: hidden; /* Prevent the layout selector from overflowing */
     box-sizing: border-box; /* Include padding and border in width/height */
     z-index: 1000; /* Ensure it appears above other content */
-}
-
-/* Adjusting for full page responsiveness */
-@media (max-width: 1200px) {
-    .layout-2x2 {
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr; /* Stack items vertically */
-    }
-
-    .layout-2x1,
-    .layout-1x2 {
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr; /* Stack items vertically */
-    }
-}
-
-/* Scrollbars visibility adjustment */
-.grid-item::-webkit-scrollbar {
-    display: none; /* Hide scrollbars on grid items */
-}
-
-.grid-item {
-    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
