@@ -11,6 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
             <button data-layout="1x2">1x2</button>
         `;
 
+        // Create the toggle button
+        const toggleButton = document.createElement('button');
+        toggleButton.classList.add('toggle-customizer-btn');
+        toggleButton.innerHTML = '⚙️';
+
+        // Toggle the visibility of the layout selector
+        toggleButton.addEventListener('click', function() {
+            const isVisible = layoutSelector.style.display === 'block';
+            layoutSelector.style.display = isVisible ? 'none' : 'block';
+        });
+
+        container.appendChild(toggleButton);
         container.appendChild(layoutSelector);
 
         const mainContainer = document.createElement('div');
