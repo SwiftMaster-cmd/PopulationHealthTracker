@@ -65,8 +65,8 @@
 /* Tiny dot for customizing layout */
 .toggle-customizer-btn {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 10px;
+    right: 10px;
     background-color: #FF4500; /* OrangeRed color for visibility */
     border: none;
     border-radius: 50%; /* Make it a circle */
