@@ -75,7 +75,9 @@
     cursor: pointer;
     z-index: 100; /* Ensure it's above other content */
     overflow: hidden; /* Ensure the button doesn't overflow its container */
-    transition: background-color 0.3s ease; /* Smooth transition for hover */
+    background-image: none; /* Remove any background image */
+    padding: 0; /* Remove any padding */
+    margin: 0; /* Remove any margin */
 }
 
 /* Hover effect for the dot button */
