@@ -70,8 +70,8 @@
     background-color: #FF4500; /* OrangeRed color for visibility */
     border: none;
     border-radius: 50%; /* Make it a circle */
-    width: 10px; /* Smaller circle size */
-    height: 10px; /* Smaller circle size */
+    width: 15px; /* Smaller circle size */
+    height: 15px; /* Smaller circle size */
     cursor: pointer;
     z-index: 100; /* Ensure it's above other content */
     overflow: hidden; /* Ensure the button doesn't overflow its container */
