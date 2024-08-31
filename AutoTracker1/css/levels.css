@@ -1,64 +1,160 @@
-.dynamic-grid {
-    display: grid;
-    height: 100%;
-    width: 100%;
-    gap: var(--margin-m); /* Adjust as needed */
-    padding: var(--margin-m); /* Add padding around the edges of the grid */
-    box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
-    overflow: hidden; /* Prevent content from overflowing the container */
+/* Root Variables */
+:root {
+    --margin-s: 8px;
+    --margin-m: 16px;
+    --color-background: #1e1e1e;
+    --color-primary: #40E0D0; /* Turquoise Blue */
+    --color-primary-hover: #00CED1; /* Darker Turquoise on Hover */
+    --color-secondary: rgba(255, 255, 255, 0.1);
+    --color-tertiary: rgba(255, 255, 255, 0.2);
+    --color-text: #ffffff;
 }
 
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: var(--color-background);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-text);
+    overflow: hidden; /* Prevent scrolling */
+}
 
-.grid-item {
-    position: relative; /* Allows positioning the toggle button within the container */
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header and Footer (Optional) */
+.header, .footer {
+    padding: var(--margin-m);
+    background-color: #2c2c2c;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.main-container {
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.1);
+    padding: var(--margin-m);
+    overflow: hidden;
+}
+
+/* Dynamic Grid Styles */
+.dynamic-grid {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    gap: var(--margin-m);
+    padding: var(--margin-m);
+    background-color: var(--color-secondary);
     border-radius: var(--margin-s);
-    text-align: center;
-    color: var(--text-white);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, opacity 0.3s;
-    overflow: hidden; /* Prevent content from overflowing the grid item */
-    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Grid Layout Variations */
+.layout-1x1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+.layout-2x1 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.layout-2x2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.layout-1x2 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* Grid Item Styles */
+.grid-item {
+    background-color: var(--color-secondary);
+    border-radius: var(--margin-s);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
 }
 
 .grid-item:hover {
-    opacity: 0.9;
     background-color: var(--color-tertiary);
 }
-/* Turquoise blue circle toggle button styling */
+
+/* Turquoise Circle Toggle Button */
 .toggle-customizer-btn {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #40E0D0; /* Turquoise blue background for the circle */
+    top: var(--margin-s);
+    right: var(--margin-s);
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-primary);
     border: none;
-    border-radius: 50%; /* Make it a circle */
-    width: 10px; /* Adjust size as needed */
-    height: 10px; /* Adjust size as needed */
+    border-radius: 50%;
     cursor: pointer;
-    z-index: 100;
-    overflow: hidden; /* Ensure the button doesn't overflow its container */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    transition: background-color 0.3s ease;
+    z-index: 10;
 }
 
 .toggle-customizer-btn:hover {
-    background-color: #00CED1; /* Slightly darker turquoise on hover */
+    background-color: var(--color-primary-hover);
 }
 
+/* Layout Selector Dropdown */
 .layout-selector {
-    display: none; /* Initially hidden */
+    display: none;
     position: absolute;
-    top: 50px; /* Adjust as needed */
-    right: 10px; /* Adjust as needed */
-    background-color: rgba(0, 0, 0, 0.8);
+    top: 40px;
+    right: var(--margin-s);
+    background-color: #2c2c2c;
     padding: var(--margin-s);
     border-radius: var(--margin-s);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Prevent the layout selector from overflowing its container */
-    box-sizing: border-box;
-    z-index: 1000; /* Ensure it appears above other content */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.layout-selector button {
+    background-color: transparent;
+    border: 1px solid var(--color-primary);
+    color: var(--color-text);
+    padding: 6px 12px;
+    margin: 4px 0;
+    width: 100%;
+    border-radius: var(--margin-s);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.layout-selector button:hover {
+    background-color: var(--color-primary);
+    color: #000;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .toggle-customizer-btn {
+        width: 20px;
+        height: 20px;
+    }
+
+    .layout-selector button {
+        padding: 4px 8px;
+    }
 }
