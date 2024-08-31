@@ -14,7 +14,6 @@
     padding: var(--margin-m); /* Add padding around the edges of the grid */
     box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
     overflow: hidden; /* Prevent content from overflowing the container */
-    perspective: 1000px; /* Add perspective to create depth */
 }
 
 /* 1x1 grid layout */
@@ -52,18 +51,15 @@
     text-align: center;
     color: var(--text-white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    transition: background-color 0.3s ease, opacity 0.3s, transform 0.3s ease; /* Add transform transition */
+    transition: background-color 0.3s ease, opacity 0.3s;
     overflow: hidden; /* Prevent content from overflowing the grid item */
     box-sizing: border-box; /* Include padding and border in width/height */
-    transform-style: preserve-3d; /* Enables 3D transforms */
-    transform: rotateX(0deg) rotateY(0deg); /* Initial 3D transform */
 }
 
 /* Hover effect for grid items */
 .grid-item:hover {
     opacity: 0.9;
     background-color: var(--color-tertiary); /* Light blue background on hover */
-    transform: rotateX(15deg) rotateY(15deg) scale(1.05); /* Rotate and scale for 3D effect on hover */
 }
 
 /* Tiny dot for customizing layout */
@@ -88,6 +84,7 @@
 .toggle-customizer-btn:hover {
     background-color: #FF6347; /* Slightly darker color on hover */
 }
+
 
 /* Layout selector dropdown */
 .layout-selector {
