@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const layout = event.target.dataset.layout;
 
         // Remove any existing layout classes
-        mainContainer.classList.remove('layout-1x1', 'layout-2x1', 'layout-2x2', 'layout-1x2');
+        mainContainer.className = 'main-container dynamic-grid';
         
         // Add the selected layout class
         mainContainer.classList.add(`layout-${layout}`);
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 itemCount = 2;
                 break;
             case '2x2':
-                itemCount = 4;
+                itemCount = 4; // 2x2 grid has 4 items
                 break;
             case '1x2':
                 itemCount = 2;
