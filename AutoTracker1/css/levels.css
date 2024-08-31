@@ -1,55 +1,32 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #333; /* Example background color */
-    display: flex;
-    flex-direction: column;
-}
-
-.header, .footer {
-    background-color: #222; /* Example background color for header and footer */
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    flex-shrink: 0;
-}
-
-.header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.main-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1; /* Occupy available space between header and footer */
-    width: 100%;
-    padding-top: calc(1rem + 40px); /* Adjust to account for header height */
-    padding-bottom: calc(1rem + 40px); /* Adjust to account for footer height */
-    box-sizing: border-box;
-}
-
 .dynamic-grid {
     display: grid;
+    height: 100%;
+    width: 100%;
     gap: var(--margin-m); /* Adjust as needed */
-    width: 100%; /* Ensure it fills the container width */
-    height: 100%; /* Ensure it fills the container height */
+}
+
+.layout-1x1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+.layout-2x1 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.layout-2x2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.layout-1x2 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
 }
 
 .grid-item {
-    position: relative;
+    position: relative; /* Allows positioning the toggle button within the container */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -91,8 +68,8 @@ body, html {
 .layout-selector {
     display: none; /* Initially hidden */
     position: absolute;
-    top: 50px;
-    right: 10px;
+    top: 50px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
     background-color: rgba(0, 0, 0, 0.8);
     padding: var(--margin-s);
     border-radius: var(--margin-s);
