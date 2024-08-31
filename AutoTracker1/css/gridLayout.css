@@ -25,19 +25,4 @@
     grid-template-rows: 1fr 1fr; /* Two rows, each taking 50% height */
 }
 
-.grid-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: var(--margin-s);
-    text-align: center;
-    color: var(--text-white);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, opacity 0.3s;
-}
 
-.grid-item:hover {
-    opacity: 0.9;
-    background-color: var(--color-tertiary);
-}
