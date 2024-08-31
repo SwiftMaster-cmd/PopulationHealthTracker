@@ -4,6 +4,8 @@ body, html {
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: #333; /* Example background color */
+    display: flex;
+    flex-direction: column;
 }
 
 .header, .footer {
@@ -11,6 +13,7 @@ body, html {
     color: white;
     text-align: center;
     padding: 1rem;
+    flex-shrink: 0;
 }
 
 .header {
@@ -31,12 +34,10 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 75%; /* Level 1 container height */
-    max-height: 75vh; /* Ensure it doesn't exceed 75% of the viewport height */
+    flex-grow: 1; /* Occupy available space between header and footer */
     width: 100%;
-    margin: 0 auto;
-    padding-top: 5%; /* Adjust to add space for header */
-    padding-bottom: 5%; /* Adjust to add space for footer */
+    padding-top: calc(1rem + 40px); /* Adjust to account for header height */
+    padding-bottom: calc(1rem + 40px); /* Adjust to account for footer height */
     box-sizing: border-box;
 }
 
