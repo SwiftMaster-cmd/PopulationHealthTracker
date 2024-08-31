@@ -1,0 +1,42 @@
+.dynamic-grid {
+    display: grid;
+    gap: var(--margin-m);
+}
+
+.layout-1x1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+.layout-2x1 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.layout-2x2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.layout-1x2 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* Add more layout styles as needed */
+
+
+.grid-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--margin-s);
+    padding: var(--margin-m);
+    text-align: center;
+    color: var(--text-white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, opacity 0.3s;
+}
+
+.grid-item:hover {
+    opacity: 0.9;
+    background-color: var(--color-tertiary);
+}

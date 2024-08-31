@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         settingsContainer.style.display = 'block';
     }
 
+    
     function hideAllSections() {
         const sections = document.querySelectorAll('.dynamic-content-container > div');
         sections.forEach(sec => sec.style.display = 'none'); // Hide all sections
