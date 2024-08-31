@@ -96,20 +96,7 @@ body, html {
     background-color: #FF6347; /* Slightly darker color on hover */
 }
 
-/* Layout selector dropdown */
-.layout-selector {
-    display: none; /* Initially hidden */
-    position: absolute;
-    top: 50px; /* Position it below the button */
-    right: 10px; /* Align it to the right */
-    background-color: rgba(0, 0, 0, 0.8); /* Dark background */
-    padding: var(--margin-s); /* Padding inside the layout selector */
-    border-radius: var(--margin-s); /* Rounded corners */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    overflow: hidden; /* Prevent the layout selector from overflowing */
-    box-sizing: border-box; /* Include padding and border in width/height */
-    z-index: 1000; /* Ensure it appears above other content */
-}
+
 
 /* Adjusting for full page responsiveness */
 @media (max-width: 1200px) {
