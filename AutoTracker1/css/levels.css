@@ -62,7 +62,7 @@
     background-color: var(--color-tertiary); /* Light blue background on hover */
 }
 
-/* Turquoise blue circle toggle button styling */
+/* Turquoise blue circle without any icon */
 .toggle-customizer-btn {
     position: absolute;
     top: 10px;
@@ -74,7 +74,7 @@
     height: 20px; /* Circle size */
     cursor: pointer;
     z-index: 100; /* Ensure it's above other content */
-    overflow: hidden;
+    overflow: hidden; /* Ensure the button doesn't overflow its container */
     transition: background-color 0.3s ease; /* Smooth transition for hover */
 }
 
