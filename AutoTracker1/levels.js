@@ -32,10 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
         layoutSelector.addEventListener('click', function(event) {
             const layout = event.target.dataset.layout;
 
-            // Remove any existing layout classes
+            // Clear the container and remove any nested grids
+            mainContainer.innerHTML = '';
+
+            // Apply the selected layout class
             mainContainer.className = 'dynamic-grid';
-            
-            // Add the selected layout class
             mainContainer.classList.add(`layout-${layout}`);
 
             // Dynamically inject grid items based on the layout
@@ -44,8 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateGridItems(container, layout, level) {
-        container.innerHTML = ''; // Clear existing items
-
         let itemCount;
         switch (layout) {
             case '1x1':
@@ -71,7 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
             container.appendChild(item);
 
             // Recursively create nested grids within each item
-            createNestedGrid(item, level + 1);
+            if (level < 3) { // Allow nesting only up to 3 levels
+                createNestedGrid(item, level + 1);
+            }
         }
     }
 
