@@ -54,16 +54,30 @@
 
 
 
+<div class="layout-selector">
+    <button data-layout="1x1">1x1</button>
+    <button data-layout="2x1">2x1</button>
+    <button data-layout="2x2">2x2</button>
+    <button data-layout="1x2">1x2</button>
+    <!-- Add more layouts as needed -->
+</div>
 
-    <!-- Color Picker and Name Change Container -->
+<div class="main-container dynamic-grid">
+    <!-- Dynamic grid items will be injected here -->
+</div>
 
-    
-    <div class="main-container dynamic-grid">
-        <!-- Dynamic grid items will be injected here -->
-    </div>
-    
                 
-
+    <footer class="footer">
+        <div class="footer-container">
+            <button onclick="changeChart('day')" class="footer-button">Day Chart</button>
+            <button onclick="changeChart('week')" class="footer-button">Week Chart</button>
+            <button onclick="changeChart('month')" class="footer-button">Month Chart</button>
+            <button id="prevButton" class="footer-button">Previous</button>
+            <button id="nextButton" class="footer-button">Next</button>
+        </div>
+    </footer>
+    
+      
     
     <!-- Event Tracking for dynamically added elements -->
     <script>
