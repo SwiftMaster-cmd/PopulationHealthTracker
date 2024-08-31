@@ -32,15 +32,21 @@ document.addEventListener('DOMContentLoaded', function() {
         layoutSelector.addEventListener('click', function(event) {
             const layout = event.target.dataset.layout;
 
-            // Clear the container and remove any nested grids
-            mainContainer.innerHTML = '';
+            // Remove the entire container content to replace it
+            container.innerHTML = '';
 
-            // Apply the selected layout class
-            mainContainer.className = 'dynamic-grid';
-            mainContainer.classList.add(`layout-${layout}`);
+            // Create a new main container
+            const newMainContainer = document.createElement('div');
+            newMainContainer.classList.add('dynamic-grid');
+            newMainContainer.classList.add(`layout-${layout}`);
+            container.appendChild(newMainContainer);
+
+            // Re-add the toggle and layout selector
+            container.appendChild(toggleButton);
+            container.appendChild(layoutSelector);
 
             // Dynamically inject grid items based on the layout
-            updateGridItems(mainContainer, layout, level);
+            updateGridItems(newMainContainer, layout, level);
         });
     }
 
