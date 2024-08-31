@@ -11,12 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
             <button data-layout="1x2">1x2</button>
         `;
 
-        // Create the toggle button
+        // Create the toggle button for the current level
         const toggleButton = document.createElement('button');
         toggleButton.classList.add('toggle-customizer-btn');
-        toggleButton.innerHTML = '⚙️';
+        toggleButton.innerHTML = `⚙️ L${level}`;
 
-        // Toggle the visibility of the layout selector
+        // Toggle the visibility of the layout selector for this level
         toggleButton.addEventListener('click', function(event) {
             event.stopPropagation(); // Prevent clicks from affecting other elements
             const isVisible = layoutSelector.style.display === 'block';
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         layoutSelector.addEventListener('click', function(event) {
             const layout = event.target.dataset.layout;
 
-            // Remove the entire container content to replace it
+            // Clear the container to replace the layout
             container.innerHTML = '';
 
             // Create a new main container
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             newMainContainer.classList.add(`layout-${layout}`);
             container.appendChild(newMainContainer);
 
-            // Re-add the toggle and layout selector
+            // Re-add the toggle button and layout selector for this level
             container.appendChild(toggleButton);
             container.appendChild(layoutSelector);
 
@@ -76,47 +76,51 @@ document.addEventListener('DOMContentLoaded', function() {
             item.textContent = `Level ${level} - Container ${i + 1}`;
             container.appendChild(item);
 
-            // Only show the settings icon for the top-level containers
-            if (level === 1) {
-                const nestedToggleButton = document.createElement('button');
-                nestedToggleButton.classList.add('toggle-customizer-btn');
-                nestedToggleButton.innerHTML = '⚙️';
-                item.appendChild(nestedToggleButton);
+            // Show settings icon for this level
+            if (level <= 2) {
+                createNestedGrid(item, level); // Create nested grids
 
-                // Toggle visibility of the nested grid customizer
-                const nestedLayoutSelector = document.createElement('div');
-                nestedLayoutSelector.classList.add('layout-selector');
-                nestedLayoutSelector.innerHTML = `
-                    <button data-layout="1x1">1x1</button>
-                    <button data-layout="2x1">2x1</button>
-                    <button data-layout="2x2">2x2</button>
-                    <button data-layout="1x2">1x2</button>
-                `;
-                nestedToggleButton.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    const isVisible = nestedLayoutSelector.style.display === 'block';
-                    nestedLayoutSelector.style.display = isVisible ? 'none' : 'block';
-                });
-                item.appendChild(nestedLayoutSelector);
+                // Create another toggle button for the lower level, if any
+                if (level === 2) {
+                    const nestedToggleButton = document.createElement('button');
+                    nestedToggleButton.classList.add('toggle-customizer-btn');
+                    nestedToggleButton.innerHTML = '⚙️ L2';
 
-                nestedLayoutSelector.addEventListener('click', function(event) {
-                    const layout = event.target.dataset.layout;
-                    item.innerHTML = ''; // Clear current content
-                    const newMainContainer = document.createElement('div');
-                    newMainContainer.classList.add('dynamic-grid');
-                    newMainContainer.classList.add(`layout-${layout}`);
-                    item.appendChild(newMainContainer);
-
-                    // Re-add nested toggles and customizer
+                    // Toggle visibility of the nested grid customizer
+                    const nestedLayoutSelector = document.createElement('div');
+                    nestedLayoutSelector.classList.add('layout-selector');
+                    nestedLayoutSelector.innerHTML = `
+                        <button data-layout="1x1">1x1</button>
+                        <button data-layout="2x1">2x1</button>
+                        <button data-layout="2x2">2x2</button>
+                        <button data-layout="1x2">1x2</button>
+                    `;
+                    nestedToggleButton.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        const isVisible = nestedLayoutSelector.style.display === 'block';
+                        nestedLayoutSelector.style.display = isVisible ? 'none' : 'block';
+                    });
                     item.appendChild(nestedToggleButton);
                     item.appendChild(nestedLayoutSelector);
 
-                    // Dynamically inject grid items based on the layout
-                    updateGridItems(newMainContainer, layout, level + 1);
-                });
+                    nestedLayoutSelector.addEventListener('click', function(event) {
+                        const layout = event.target.dataset.layout;
+                        item.innerHTML = ''; // Clear current content
+                        const newMainContainer = document.createElement('div');
+                        newMainContainer.classList.add('dynamic-grid');
+                        newMainContainer.classList.add(`layout-${layout}`);
+                        item.appendChild(newMainContainer);
+
+                        // Re-add nested toggles and customizer
+                        item.appendChild(nestedToggleButton);
+                        item.appendChild(nestedLayoutSelector);
+
+                        // Dynamically inject grid items based on the layout
+                        updateGridItems(newMainContainer, layout, level + 1);
+                    });
+                }
             } else {
-                // Only add nested grids, no settings icon for lower levels unless clicked
-                createNestedGrid(item, level);
+                createNestedGrid(item, level); // Create nested grids without additional settings icons
             }
         }
     }
