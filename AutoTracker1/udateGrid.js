@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < itemCount; i++) {
             const item = document.createElement('div');
             item.classList.add('grid-item');
-            item.textContent = `Item ${i + 1}`;
+            item.textContent = `Container ${i + 1}`;
             mainContainer.appendChild(item);
         }
     }

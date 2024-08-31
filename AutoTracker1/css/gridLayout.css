@@ -1,5 +1,7 @@
 .dynamic-grid {
     display: grid;
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
     gap: var(--margin-m);
 }
 
@@ -23,13 +25,12 @@
     grid-template-rows: 1fr 1fr;
 }
 
-/* Add more layout styles as needed */
-
-
 .grid-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: var(--margin-s);
-    padding: var(--margin-m);
     text-align: center;
     color: var(--text-white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
