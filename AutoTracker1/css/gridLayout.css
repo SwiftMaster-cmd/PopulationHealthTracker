@@ -1,0 +1,28 @@
+.dynamic-grid {
+    display: grid;
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+    gap: var(--margin-m);
+}
+
+.layout-1x1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+.layout-2x1 {
+    grid-template-columns: 1fr 1fr; /* Two columns taking 50% each */
+    grid-template-rows: 1fr; /* Single row taking 100% height */
+}
+
+.layout-2x2 {
+    grid-template-columns: 1fr 1fr; /* Two columns taking 50% each */
+    grid-template-rows: 1fr 1fr; /* Two rows, each taking 50% height */
+}
+
+.layout-1x2 {
+    grid-template-columns: 1fr; /* Single column taking 100% width */
+    grid-template-rows: 1fr 1fr; /* Two rows, each taking 50% height */
+}
+
+
