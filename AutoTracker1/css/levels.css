@@ -47,13 +47,12 @@
     opacity: 0.9;
     background-color: var(--color-tertiary);
 }
-
-/* Blue circle toggle button styling */
+/* Turquoise blue circle toggle button styling */
 .toggle-customizer-btn {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: blue; /* Blue background for the circle */
+    background-color: #40E0D0; /* Turquoise blue background for the circle */
     border: none;
     border-radius: 50%; /* Make it a circle */
     width: 20px; /* Adjust size as needed */
@@ -61,10 +60,11 @@
     cursor: pointer;
     z-index: 100;
     overflow: hidden; /* Ensure the button doesn't overflow its container */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .toggle-customizer-btn:hover {
-    background-color: darkblue; /* Darker blue on hover */
+    background-color: #00CED1; /* Slightly darker turquoise on hover */
 }
 
 .layout-selector {
