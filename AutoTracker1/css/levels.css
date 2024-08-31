@@ -62,26 +62,27 @@
     background-color: var(--color-tertiary); /* Light blue background on hover */
 }
 
-/* Turquoise blue circle without any icon */
+/* Tiny dot for customizing layout */
 .toggle-customizer-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #40E0D0; /* Turquoise blue */
+    top: 5px;
+    right: 5px;
+    background-color: #FF4500; /* OrangeRed color for visibility */
     border: none;
     border-radius: 50%; /* Make it a circle */
-    width: 20px; /* Circle size */
-    height: 20px; /* Circle size */
+    width: 10px; /* Smaller circle size */
+    height: 10px; /* Smaller circle size */
     cursor: pointer;
     z-index: 100; /* Ensure it's above other content */
     overflow: hidden; /* Ensure the button doesn't overflow its container */
     transition: background-color 0.3s ease; /* Smooth transition for hover */
 }
 
-/* Hover effect for the blue circle button */
+/* Hover effect for the dot button */
 .toggle-customizer-btn:hover {
-    background-color: #00CED1; /* Slightly darker turquoise on hover */
+    background-color: #FF6347; /* Slightly darker color on hover */
 }
+
 
 /* Layout selector dropdown */
 .layout-selector {
