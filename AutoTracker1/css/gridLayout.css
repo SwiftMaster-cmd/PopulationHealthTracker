@@ -11,18 +11,18 @@
 }
 
 .layout-2x1 {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+    grid-template-rows: 1fr; /* Single row */
 }
 
 .layout-2x2 {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+    grid-template-rows: 1fr 1fr; /* Two equal-height rows */
 }
 
 .layout-1x2 {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr; /* Single column */
+    grid-template-rows: 1fr 1fr; /* Two equal-height rows */
 }
 
 .grid-item {
