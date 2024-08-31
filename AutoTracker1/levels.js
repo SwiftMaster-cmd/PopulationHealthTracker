@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleButton.innerHTML = '⚙️';
 
         // Toggle the visibility of the layout selector
-        toggleButton.addEventListener('click', function() {
+        toggleButton.addEventListener('click', function(event) {
+            event.stopPropagation(); // Prevent clicks from affecting other elements
             const isVisible = layoutSelector.style.display === 'block';
             layoutSelector.style.display = isVisible ? 'none' : 'block';
         });
@@ -46,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             container.appendChild(layoutSelector);
 
             // Dynamically inject grid items based on the layout
-            updateGridItems(newMainContainer, layout, level);
+            updateGridItems(newMainContainer, layout, level + 1);
         });
     }
 
@@ -75,9 +76,47 @@ document.addEventListener('DOMContentLoaded', function() {
             item.textContent = `Level ${level} - Container ${i + 1}`;
             container.appendChild(item);
 
-            // Recursively create nested grids within each item
-            if (level < 3) { // Allow nesting only up to 3 levels
-                createNestedGrid(item, level + 1);
+            // Only show the settings icon for the top-level containers
+            if (level === 1) {
+                const nestedToggleButton = document.createElement('button');
+                nestedToggleButton.classList.add('toggle-customizer-btn');
+                nestedToggleButton.innerHTML = '⚙️';
+                item.appendChild(nestedToggleButton);
+
+                // Toggle visibility of the nested grid customizer
+                const nestedLayoutSelector = document.createElement('div');
+                nestedLayoutSelector.classList.add('layout-selector');
+                nestedLayoutSelector.innerHTML = `
+                    <button data-layout="1x1">1x1</button>
+                    <button data-layout="2x1">2x1</button>
+                    <button data-layout="2x2">2x2</button>
+                    <button data-layout="1x2">1x2</button>
+                `;
+                nestedToggleButton.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    const isVisible = nestedLayoutSelector.style.display === 'block';
+                    nestedLayoutSelector.style.display = isVisible ? 'none' : 'block';
+                });
+                item.appendChild(nestedLayoutSelector);
+
+                nestedLayoutSelector.addEventListener('click', function(event) {
+                    const layout = event.target.dataset.layout;
+                    item.innerHTML = ''; // Clear current content
+                    const newMainContainer = document.createElement('div');
+                    newMainContainer.classList.add('dynamic-grid');
+                    newMainContainer.classList.add(`layout-${layout}`);
+                    item.appendChild(newMainContainer);
+
+                    // Re-add nested toggles and customizer
+                    item.appendChild(nestedToggleButton);
+                    item.appendChild(nestedLayoutSelector);
+
+                    // Dynamically inject grid items based on the layout
+                    updateGridItems(newMainContainer, layout, level + 1);
+                });
+            } else {
+                // Only add nested grids, no settings icon for lower levels unless clicked
+                createNestedGrid(item, level);
             }
         }
     }
