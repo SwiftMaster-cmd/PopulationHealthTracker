@@ -1,0 +1,203 @@
+/* Container for leaderboard and live activities */
+.picker-leaderboard-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--margin-m); /* Optional: add space between the sections */
+    width: 100%; /* Ensure the container takes up the full width */
+    overflow-x: hidden; /* Prevent sideways scrolling */
+}
+
+.leaderboard-container {
+    flex: 1;
+    max-width: 50%;
+    box-sizing: border-box;
+    padding: var(--margin-m);
+    border-radius: var(--margin-s);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Hide overflowing content */
+    background: none !important;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.live-activities-container {
+    flex: 1;
+    width: 100%; /* Ensure live activities take up full available width */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent sideways scrolling within the leaderboard */
+}
+
+/* Stack the sections vertically on screens narrower than 400px */
+@media (max-width: 400px) {
+    .picker-leaderboard-container {
+        flex-direction: column;
+        align-items: center; /* Center the containers */
+    }
+
+    .leaderboard-container,
+    .live-activities-container {
+        max-width: 100%; /* Full width when stacked */
+    }
+}
+
+/* Styles for the leaderboard and live activities titles */
+#leaderboard-title,
+.live-activities-title {
+    text-align: center;
+    font-size: 2.5rem; /* Same size for both titles */
+    margin-bottom: var(--margin-s);
+    white-space: pre-line; /* Forces the type to a new line */
+    max-height: 600px; /* Full width when stacked */
+
+}
+
+/* Header and Picker styles (30% smaller) */
+.picker-header {
+    display: flex;
+    justify-content: center; /* Center the pickers */
+    gap: var(--margin-s);
+    margin-bottom: var(--margin-m);
+    font-size: 1.26rem; /* Reduced by 30% from 1.8rem */
+}
+
+.picker-header select {
+    padding: calc(var(--margin-s) * 0.7) calc(var(--margin-m) * 0.7); /* 30% smaller padding */
+    font-size: inherit;
+}
+
+/* 2x bigger text size for leaderboard items */
+#leaderboard-section .leaderboard-item {
+    font-size: 3rem; /* 2x bigger for leaderboard items */
+    text-align: center; /* Center the text within each item */
+    padding: var(--margin-s) var(--margin-m);
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
+}
+
+
+
+
+/* Style for live activities section */
+#live-activities-section {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem; /* 1.5x bigger for live activities info */
+    max-height: 400px; /* Adjust this value based on your design needs */
+    overflow-y: auto;
+    padding: 0; /* Remove padding to ensure it reaches the edge */
+    box-sizing: border-box; /* Make sure padding doesn't reduce content width */
+    width: 100%; /* Ensure full width */
+    max-width: 100%; /* Ensure it doesn't go beyond container width */
+    flex: 1; /* Ensure it takes up available space */
+}
+
+#live-activities-section .activity-item {
+    text-align: left; /* Align text to the left */
+    padding: 0; /* Remove padding to allow text to flow to the edges */
+    margin: 0; /* Remove margin for full-width text */
+}
+
+/* Additional styles for the live activities (30% smaller) */
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--margin-s);
+    margin-bottom: var(--margin-m);
+    font-size: 1.26rem; /* Reduced by 30% from 1.8rem */
+}
+
+.toggle-button {
+    padding: calc(var(--margin-s) * 0.7) calc(var(--margin-m) * 0.7); /* 30% smaller padding */
+    font-size: inherit; /* Inherit the slightly smaller font size */
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-button.clicked {
+    background-color: var(--color-quaternary); /* Different color when clicked */
+}
+
+.toggle-button:hover {
+    transform: translateY(-3px);
+}
+
+.toggle-button:active {
+    transform: translateY(0);
+}
+
+/* Hide scrollbar for WebKit browsers */
+#leaderboard-section::-webkit-scrollbar,
+#live-activities-section::-webkit-scrollbar {
+    display: none;
+}
+#leaderboard-section {
+    overflow-y: auto; /* Allow vertical scrolling for leaderboard items */
+    max-height: 400px; /* Set maximum height for the leaderboard section */
+    flex-grow: 1; /* Take up the remaining space */
+    margin-top: var(--margin-s);
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+#leaderboard-section,
+#live-activities-section {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Leaderboard item container */
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 90%;
+
+    max-width: 90%; /* Make sure it doesn't exceed the container width */
+    margin-bottom: var(--margin-s);
+    padding: var(--margin-s);
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
+}
+
+/* Position container */
+.leaderboard-position {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* Square size */
+    height: 60px; /* Square size */
+    background-color: var(--color-primary);
+    border-radius: 12px; /* Rounded square */
+    color: var(--text-white);
+    font-size: 2rem; /* Adjust for size */
+    margin-right: var(--margin-s);
+}
+
+/* Name container */
+.leaderboard-name {
+    flex-grow: 1; /* Takes up remaining space */
+    font-size: 2rem; /* Adjust for size */
+    color: var(--text-white); /* No background */
+    text-align: left; /* Align text to the left */
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
+    white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+}
+
+/* Score container */
+.leaderboard-score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* Square size */
+    height: 60px; /* Square size */
+    background-color: var(--color-primary);
+    border-radius: 12px; /* Rounded square */
+    color: var(--text-white);
+    font-size: 2rem; /* Adjust for size */
+    margin-left: var(--margin-s);
+    overflow-x: hidden; /* Ensure no horizontal scrolling for items */
+}
