@@ -3,7 +3,8 @@
     height: 100%;
     width: 100%;
     gap: var(--margin-m); /* Adjust as needed */
-    box-sizing: border-box; /* Ensure padding and borders are included in the element's total width and height */
+    padding: var(--margin-m); /* Add padding around the edges of the grid */
+    box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
     overflow: hidden; /* Prevent content from overflowing the container */
 }
 
