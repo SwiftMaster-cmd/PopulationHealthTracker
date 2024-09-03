@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to change the layout at the current level
     function changeLayoutAtCurrentLevel(gridItem, columns, rows) {
         const level = parseInt(gridItem.dataset.level);
-        const parent = gridItem.parentElement;
+        const parent = gridItem.closest('.custom-grid').parentElement;
         parent.innerHTML = ''; // Clear the current grid items
 
         const newGrid = createGrid(level, columns, rows); // Create a new grid at the same level
