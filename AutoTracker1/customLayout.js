@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <button data-layout="2x2">2x2</button>
             <button data-layout="1x2">1x2</button>
         `;
-        layoutSelector.style.display = 'none'; // Ensure it's hidden initially
 
         // Create the toggle button for the current level
         const toggleButton = document.createElement('button');
@@ -96,8 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button data-layout="2x2">2x2</button>
                         <button data-layout="1x2">1x2</button>
                     `;
-                    nestedLayoutSelector.style.display = 'none'; // Ensure it's hidden initially
-
                     nestedToggleButton.addEventListener('click', function(event) {
                         event.stopPropagation();
                         const isVisible = nestedLayoutSelector.style.display === 'block';
