@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const gridItem = document.createElement('div');
         gridItem.classList.add('grid-item');
 
-        if (level < 3) {
+        if (level <= 3) {
             // Add button group to change layout or add a new level
             const buttonGroup = createButtonGroup(gridItem, level);
             gridItem.appendChild(buttonGroup);
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         gridItem.appendChild(newGrid);
     }
 
-    // Function to create a button group for changing layouts
+    // Function to create a button group for changing layouts and adding levels
     function createButtonGroup(gridItem, level) {
         const buttonGroup = document.createElement('div');
         buttonGroup.classList.add('button-group');
@@ -87,14 +87,15 @@ document.addEventListener('DOMContentLoaded', function () {
         changeLayoutButton.textContent = '🔄 Change Layout';
         changeLayoutButton.addEventListener('click', () => showChangeLayoutOptions(gridItem));
 
-        // Button to add a new level
-        const addNewLevelButton = document.createElement('button');
-        addNewLevelButton.textContent = '➕ Add New Level';
-        addNewLevelButton.addEventListener('click', () => showNewLevelLayoutOptions(gridItem));
-
-        // Add both buttons to the button group
         buttonGroup.appendChild(changeLayoutButton);
-        buttonGroup.appendChild(addNewLevelButton);
+
+        if (level < 3) {
+            // Button to add a new level, only if the current level is less than 3
+            const addNewLevelButton = document.createElement('button');
+            addNewLevelButton.textContent = '➕ Add New Level';
+            addNewLevelButton.addEventListener('click', () => showNewLevelLayoutOptions(gridItem));
+            buttonGroup.appendChild(addNewLevelButton);
+        }
 
         // Add a toggle button to show/hide the button group
         const toggleButton = document.createElement('button');
