@@ -26,10 +26,6 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-}
 
 .sub-box {
     background: linear-gradient(135deg, #ffffff, #e0e0e0);
