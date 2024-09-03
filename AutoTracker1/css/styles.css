@@ -1,0 +1,318 @@
+@import url('https://fonts.googleapis.com/css2?family=Apple+System+UI:ital,wght@0,700;1,700&display=swap');
+
+:root {
+    --color-primary: rgba(75, 0, 130, 0.9); /* Indigo */
+    --color-secondary: rgba(138, 43, 226, 0.9); /* BlueViolet */
+    --color-tertiary: rgba(0, 191, 255, 0.9); /* DeepSkyBlue */
+    --color-quaternary: rgba(50, 205, 50, 0.9); /* LimeGreen */
+    --color-quinary: rgba(255, 215, 0, 0.9); /* Gold */
+    --text-white: rgba(255, 255, 255, 1);
+    --background-color: rgba(20, 20, 20, 1); /* Dark Background */
+    --font-size: 20px;
+    --margin-xxs: 0.25rem;
+    --margin-xs: 0.5rem;
+    --margin-s: 0.75rem;
+    --margin-m: 1rem;
+    --margin-l: 1.25rem;
+    --margin-xl: 1.75rem;
+    --margin-xxl: 2.5rem;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--background-color) linear-gradient(135deg, rgba(173, 216, 230, 0.1) 25%, transparent 25%),
+                linear-gradient(135deg, transparent 75%, rgba(0, 128, 128, 0.1) 75%);
+    background-size: 40px 40px;
+    animation: moveBackground 1s linear infinite;
+    color: var(--text-white);
+    overflow-x: hidden;
+}
+
+@keyframes moveBackground {
+    to {
+        background-position: 0 40px;
+    }
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--margin-l) var(--margin-m); /* Increased vertical padding */
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+
+.header-container h1 {
+    margin: var(--margin-s) 0;
+    font-size: 1.5rem;
+}
+
+.profile-button {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: var(--margin-l);
+}
+
+.color-picker-container {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: var(--margin-m);
+    border-radius: var(--margin-s);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--margin-m);
+    padding: var(--margin-m);
+    max-width: 85%;
+    margin: var(--margin-xxl) auto 0;
+}
+
+button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: var(--margin-xs);
+}
+
+.search-container input {
+    width: 100%;
+    max-width: 300px;
+    padding: var(--margin-s);
+    border-radius: var(--margin-s);
+    border: 1px solid var(--color-quaternary);
+    background-color: var(--color-secondary);
+    color: var(--text-white);
+    font-weight: 700;
+}
+
+.search-container button {
+    background: var(--color-tertiary);
+    border: none;
+    color: var(--text-white);
+    font-size: 18px;
+    cursor: pointer;
+    padding: var(--margin-s) var(--margin-m);
+    border-radius: var(--margin-s);
+}
+
+.header-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-section h2 {
+    margin: 0;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.container, .sales-item, .summary-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--margin-s);
+    padding: var(--margin-m);
+    transition: background-color 0.3s ease, opacity 0.3s;
+    color: var(--text-white);
+}
+
+
+
+.picker, .chart-picker {
+    padding: var(--margin-s);
+    font-size: 16px;
+    border-radius: var(--margin-s);
+    border: 1px solid #ccc;
+    background-color: var(--color-primary);
+    color: var(--text-white);
+    cursor: pointer;
+    width: 45%;
+    max-width: 400px;
+}
+
+.picker:hover, .chart-picker:hover {
+    background-color: var(--color-tertiary);
+}
+
+.sales-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--margin-m);
+    margin-bottom: var(--margin-m);
+}
+
+.summary-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--margin-m);
+}
+
+.button {
+    font-size: 1.3em;
+
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-tertiary);
+    color: var(--text-white);
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--color-quaternary);
+}
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    padding: 0;
+}
+
+.like-button svg {
+    fill: black;
+}
+
+.like-button.liked svg {
+    fill: red;
+}
+
+.like-info {
+    font-size: 0.8em;
+    color: var(--text-white);
+    margin-top: var(--margin-xs);
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        grid-template-columns: 1fr;
+    }
+
+    .picker-container, .chart-picker-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .navigation-container {
+        justify-content: center;
+    }
+}
+
+.leaderboard-container {
+    background: none !important;
+}
+
+#totalPoints {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-tertiary);
+    margin-right: var(--margin-m);
+}
+
+
+.button {
+    padding: var(--margin-s) var(--margin-m);
+    border: none;
+    border-radius: var(--margin-s);
+    background-color: var(--color-tertiary);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: var(--color-quaternary);
+    transform: translateY(-3px);
+}
+
+.button:active {
+    background-color: var(--color-primary);
+    transform: translateY(0);
+}
+
+.copy-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 8px; /* Adjust as needed */
+    vertical-align: middle;
+    color: #007bff; /* Bootstrap primary color */
+    font-size: 24px; /* Adjust size as needed */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+    transition: transform 0.2s; /* Add transition for hover effect */
+}
+
+.copy-button:hover {
+    transform: scale(1.1); /* Slightly enlarge the button on hover */
+}
+
+.copy-button i {
+    font-size: inherit; /* Inherit font size from parent */
+}
+
+
+
+
+
+.bottom-right-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bottom-right-buttons .button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.bottom-right-buttons .button:hover {
+    background-color: #0056b3;
+}
+
+
+

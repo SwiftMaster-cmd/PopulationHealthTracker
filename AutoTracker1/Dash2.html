@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +8,12 @@
     <link rel="stylesheet" href="css/outcomes.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/gridlayout.css">
-    <link rel="stylesheet" href="css/levels.css">
-    <link rel="stylesheet" href="css/outcomes.css">
+    <link rel="stylesheet" href="css/notifcations.css">
+
+    <link rel="stylesheet" href="css/customGrid.css">
 
     <link rel="stylesheet" href="css/leaderboard.css">
-    <link rel="stylesheet" href="css/monthlytotals.css">
+    <link rel="stylesheet" href="css/monthlyTotals.css">
     <link rel="stylesheet" href="css/progressBars.css"> <!-- New CSS file for the main styles -->
 
     <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
@@ -28,15 +25,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
+    <script src="tracker.js" defer></script>
     <script src="points.js" defer></script>
+    <script src="stripe-handler.js" defer></script>
+    <script src="progressBars.js" defer></script>
+    <script src="notifications.js" defer></script>
+    <script src="dynamicDash.js" defer></script>
+    <script src="footer.js" defer></script>
     <script src="customer-info.js" defer></script>
     <script src="color-palette.js" defer></script>
     <script src="sales-outcomes.js" defer></script>
-    <script src="udategrid.js" defer></script>
-    <script src="levels.js" defer></script>
-
     <script src="leaderboard.js" defer></script>
+    <script src="liveActivities.js" defer></script>
     <script src="CSsearch.js" defer></script>
+    <script src="settings.js" defer></script>
+
+    <script src="monthlyTotals.js" defer></script>
     <script src="charts.js" defer></script>
     <script src="profilePopup.js" defer></script>
 
@@ -57,83 +61,10 @@
 
 
 
-
-
-<div class="layout-selector">
-    <button data-layout="1x1">1x1</button>
-    <button data-layout="2x1">2x1</button>
-    <button data-layout="2x2">2x2</button>
-    <button data-layout="1x2">1x2</button>
-    <!-- Add more layouts as needed -->
-</div>
-
-<div class="main-container dynamic-grid">
-    <!-- Dynamic grid items will be injected here -->
-</div>
-
-                
-    <footer class="footer">
-        <div class="footer-container">
-            <button onclick="changeChart('day')" class="footer-button">Day Chart</button>
-            <button onclick="changeChart('week')" class="footer-button">Week Chart</button>
-            <button onclick="changeChart('month')" class="footer-button">Month Chart</button>
-            <button id="prevButton" class="footer-button">Previous</button>
-            <button id="nextButton" class="footer-button">Next</button>
-        </div>
-    </footer>
+    
+    
     
       
-    
-    <!-- Event Tracking for dynamically added elements -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Function to add event listeners to dynamically added elements
-            function addDynamicEventListeners() {
-                const leadIdContainer = document.getElementById('lead-id-container');
-                const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
-                const customerInfoContainer = document.getElementById('customer-info-container');
-
-                // Example for lead ID container
-                if (leadIdContainer) {
-                    leadIdContainer.addEventListener('click', function(event) {
-                        if (event.target && event.target.matches('.lead-id-item')) {
-                            gtag('event', 'click', {
-                                'event_category': 'Lead ID',
-                                'event_label': event.target.dataset.leadId
-                            });
-                        }
-                    });
-                }
-
-                // Example for sales outcomes container
-                if (salesOutcomesContainer) {
-                    salesOutcomesContainer.addEventListener('click', function(event) {
-                        if (event.target && event.target.matches('.sales-outcome-item')) {
-                            gtag('event', 'click', {
-                                'event_category': 'Sales Outcome',
-                                'event_label': event.target.dataset.outcomeId
-                            });
-                        }
-                    });
-                }
-
-                // Example for customer info container
-                if (customerInfoContainer) {
-                    customerInfoContainer.addEventListener('click', function(event) {
-                        if (event.target && event.target.matches('.customer-info-item')) {
-                            gtag('event', 'click', {
-                                'event_category': 'Customer Info',
-                                'event_label': event.target.dataset.customerId
-                            });
-                        }
-                    });
-                }
-            }
-
-            // Call the function to add event listeners
-            addDynamicEventListeners();
-        });
-    </script>
 
     
 </body>

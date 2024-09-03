@@ -10,7 +10,7 @@
 
 .leaderboard-container {
     flex: 1;
-    max-width: 50%;
+    max-width: 100%;
     box-sizing: border-box;
     padding: var(--margin-m);
     border-radius: var(--margin-s);
@@ -76,6 +76,27 @@
 }
 
 
+.customer-info-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+ 
+}
+
+.customer-info-left{
+    text-align: left; /* Align text to the left */
+
+}
+
+.customer-info-right {
+    text-align: right; /* Align text to the left */
+
+}
+
+.customer-info-left p, .customer-info-right p {
+    margin: 0 0 10px;
+    color: #ffffff;
+}
 
 
 /* Style for live activities section */
