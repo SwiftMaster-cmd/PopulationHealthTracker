@@ -4,8 +4,8 @@
     background-color: #1b1f3b; /* Dark outer square background */
     border-radius: 20px;
     box-shadow: 
-      -10px -10px 20px rgba(255, 255, 255, 0.2), /* Highlight on top left */
-      10px 10px 20px rgba(0, 0, 0, 0.6); /* Shadow on bottom right */
+      5px 5px 10px rgba(200, 200, 200, 0.4), /* Light outer shadow similar to inner shadow */
+      -5px -5px 10px rgba(0, 0, 0, 0.2); /* Slightly darker highlight */
     display: flex;
     justify-content: center;
     align-items: center;
