@@ -36,9 +36,20 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = ''; // Clear the container
         const newGrid = createGrid(1, columns, rows); // Start with level 1 grid
         container.appendChild(newGrid);
+        addEditButton(); // Re-add the Edit button after layout change
     }
 
-    // Function to show layout options immediately on page load
+    // Function to add the "Edit" button to the top left
+    function addEditButton() {
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit-button');
+        editButton.addEventListener('click', showLayoutOptions);
+
+        container.appendChild(editButton);
+    }
+
+    // Function to show layout options when "Edit" is clicked
     function showLayoutOptions() {
         container.innerHTML = ''; // Clear the container
 
@@ -68,9 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         container.appendChild(layoutSelectionGroup); // Show layout options in the container
     }
-
-    // Call the function to show layout options immediately
-    showLayoutOptions();
 
     // Function to create a button group for changing layouts inside containers
     function createButtonGroup(gridItem, level) {
@@ -123,4 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const newGrid = createGrid(parseInt(gridItem.dataset.level) + 1, columns, rows); // Create new grid at the next level
         gridItem.appendChild(newGrid);
     }
+
+    // Create the initial 1x1 grid layout
+    changeLayout(1, 1);
 });
