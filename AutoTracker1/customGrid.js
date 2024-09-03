@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         gridItem.classList.add('grid-item');
 
         if (level < 3) {
-            // Add button to change layout
+            // Add button group to change layout or add new level
             const buttonGroup = createButtonGroup(gridItem, level);
             gridItem.appendChild(buttonGroup);
         }
@@ -31,8 +31,18 @@ document.addEventListener('DOMContentLoaded', function () {
         return grid;
     }
 
-    // Function to handle layout change
-    function changeLayout(gridItem, columns, rows) {
+    // Function to change the layout at the current level
+    function changeLayoutAtCurrentLevel(gridItem, columns, rows) {
+        const level = parseInt(gridItem.dataset.level);
+        const parent = gridItem.parentElement;
+        parent.innerHTML = ''; // Clear the current grid items
+
+        const newGrid = createGrid(level, columns, rows); // Create a new grid at the same level
+        parent.appendChild(newGrid); // Append the new grid to the parent element
+    }
+
+    // Function to add a new level with the selected layout
+    function addNewLevel(gridItem, columns, rows) {
         gridItem.innerHTML = ''; // Clear the grid item
         const newGrid = createGrid(parseInt(gridItem.dataset.level) + 1, columns, rows); // Create new grid at the next level
         gridItem.appendChild(newGrid);
@@ -43,27 +53,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const buttonGroup = document.createElement('div');
         buttonGroup.classList.add('button-group');
 
-        // Layout buttons
-        const layout1x1 = document.createElement('button');
-        layout1x1.textContent = '1x1';
-        layout1x1.addEventListener('click', () => changeLayout(gridItem, 1, 1));
+        // Button to change layout at the current level
+        const changeLayoutButton = document.createElement('button');
+        changeLayoutButton.textContent = '🔄 Change Layout';
+        changeLayoutButton.addEventListener('click', () => changeLayoutAtCurrentLevel(gridItem, 2, 2));
 
-        const layout2x1 = document.createElement('button');
-        layout2x1.textContent = '2x1';
-        layout2x1.addEventListener('click', () => changeLayout(gridItem, 2, 1));
+        // Button to add a new level
+        const addNewLevelButton = document.createElement('button');
+        addNewLevelButton.textContent = '➕ Add New Level';
+        addNewLevelButton.addEventListener('click', () => addNewLevel(gridItem, 2, 2));
 
-        const layout1x2 = document.createElement('button');
-        layout1x2.textContent = '1x2';
-        layout1x2.addEventListener('click', () => changeLayout(gridItem, 1, 2));
-
-        const layout2x2 = document.createElement('button');
-        layout2x2.textContent = '2x2';
-        layout2x2.addEventListener('click', () => changeLayout(gridItem, 2, 2));
-
-        buttonGroup.appendChild(layout1x1);
-        buttonGroup.appendChild(layout2x1);
-        buttonGroup.appendChild(layout1x2);
-        buttonGroup.appendChild(layout2x2);
+        // Add both buttons to the button group
+        buttonGroup.appendChild(changeLayoutButton);
+        buttonGroup.appendChild(addNewLevelButton);
 
         // Add a toggle button to show/hide the button group
         const toggleButton = document.createElement('button');
