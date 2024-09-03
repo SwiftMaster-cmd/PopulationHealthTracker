@@ -38,32 +38,44 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(newGrid);
     }
 
-    // Create initial button group to select the starting layout
-    const initialButtonGroup = document.createElement('div');
-    initialButtonGroup.classList.add('button-group');
+    // Create initial button to select the level 1 structure
+    const initialSelectButton = document.createElement('button');
+    initialSelectButton.textContent = 'Select Layout';
+    initialSelectButton.classList.add('initial-select-button');
+    initialSelectButton.addEventListener('click', () => showLayoutOptions());
 
-    const layout1x1 = document.createElement('button');
-    layout1x1.textContent = '1x1';
-    layout1x1.addEventListener('click', () => changeLayout(1, 1));
+    container.appendChild(initialSelectButton); // Add the initial button to the container
 
-    const layout2x1 = document.createElement('button');
-    layout2x1.textContent = '2x1';
-    layout2x1.addEventListener('click', () => changeLayout(2, 1));
+    // Function to show layout options
+    function showLayoutOptions() {
+        container.innerHTML = ''; // Clear the container
 
-    const layout1x2 = document.createElement('button');
-    layout1x2.textContent = '1x2';
-    layout1x2.addEventListener('click', () => changeLayout(1, 2));
+        const layoutSelectionGroup = document.createElement('div');
+        layoutSelectionGroup.classList.add('button-group');
 
-    const layout2x2 = document.createElement('button');
-    layout2x2.textContent = '2x2';
-    layout2x2.addEventListener('click', () => changeLayout(2, 2));
+        const layout1x1 = document.createElement('button');
+        layout1x1.textContent = '1x1';
+        layout1x1.addEventListener('click', () => changeLayout(1, 1));
 
-    initialButtonGroup.appendChild(layout1x1);
-    initialButtonGroup.appendChild(layout2x1);
-    initialButtonGroup.appendChild(layout1x2);
-    initialButtonGroup.appendChild(layout2x2);
+        const layout2x1 = document.createElement('button');
+        layout2x1.textContent = '2x1';
+        layout2x1.addEventListener('click', () => changeLayout(2, 1));
 
-    container.appendChild(initialButtonGroup); // Add the initial button group to the container
+        const layout1x2 = document.createElement('button');
+        layout1x2.textContent = '1x2';
+        layout1x2.addEventListener('click', () => changeLayout(1, 2));
+
+        const layout2x2 = document.createElement('button');
+        layout2x2.textContent = '2x2';
+        layout2x2.addEventListener('click', () => changeLayout(2, 2));
+
+        layoutSelectionGroup.appendChild(layout1x1);
+        layoutSelectionGroup.appendChild(layout2x1);
+        layoutSelectionGroup.appendChild(layout1x2);
+        layoutSelectionGroup.appendChild(layout2x2);
+
+        container.appendChild(layoutSelectionGroup); // Show layout options in the container
+    }
 
     // Function to create a button group for changing layouts inside containers
     function createButtonGroup(gridItem, level) {
