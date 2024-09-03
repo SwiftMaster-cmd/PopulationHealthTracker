@@ -1,17 +1,44 @@
-.outer-square {
-    width: 170px;
-    height: 170px;
-    background-color: #455a96; /* Light blue background */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    width: 80%;
+    max-width: 1200px;
+}
+
+.box {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    background: linear-gradient(135deg, #ececec, #ffffff);
     border-radius: 15px;
-    box-shadow: 
-      5px 5px 10px rgba(255, 255, 255, 0.3) inset, /* Light inset shadow for inward effect */
-  }
-  
-  .inner-square {
-    width: 150px;
-    height: 150px;
-    background-color: #6272a4; /* Light blue background */
-    border-radius: 15px;
-    box-shadow: 
-      5px 5px 10px rgba(255, 255, 255, 0.3) inset, /* Light inset shadow for inward effect */
-  }
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sub-box {
+    background: linear-gradient(135deg, #ffffff, #e0e0e0);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    transition: box-shadow 0.3s ease;
+}
+
+.sub-box:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
