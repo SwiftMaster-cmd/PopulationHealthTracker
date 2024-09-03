@@ -12,11 +12,14 @@
   }
   
   .inner-square {
-    width: 150px;
-    height: 150px;
-    background-color: #6272a4; /* Light blue background */
-    border-radius: 15px;
+    width: 200px;
+    height: 200px;
+    background-color: #151937; /* Dark outer square background */
+    border-radius: 20px;
     box-shadow: 
-      5px 5px 10px rgba(255, 255, 255, 0.3) inset, /* Light inset shadow for inward effect */
-      -5px -5px 10px rgba(0, 0, 0, 0.1) inset; /* Darker inset highlight for depth */
+      5px 5px 10px rgba(200, 200, 200, 0.4), /* Light outer shadow similar to inner shadow */
+      -5px -5px 10px rgba(0, 0, 0, 0.2); /* Slightly darker highlight */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
