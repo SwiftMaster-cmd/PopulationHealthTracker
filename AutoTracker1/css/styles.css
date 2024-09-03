@@ -1,13 +1,11 @@
 .outer-square {
     width: 200px;
     height: 200px;
-    background-color: #1b1f3b; /* Black background */
+    background-color: #1b1f3b; /* Dark outer square background */
     border-radius: 20px;
     box-shadow: 
-      10px 10px 20px rgba(0, 0, 0, 0.6), /* Deep outer shadow */
-      -10px -10px 20px rgba(255, 255, 255, 0.2), /* Highlight on top left */
-      inset 5px 5px 10px rgba(0, 0, 0, 0.7), /* Inner shadow for depth */
-      inset -5px -5px 10px rgba(255, 255, 255, 0.1); /* Inner highlight */
+      10px 10px 20px rgba(0, 0, 0, 0.6), /* Outer shadow for depth */
+      -10px -10px 20px rgba(255, 255, 255, 0.2); /* Highlight on top left */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,11 +14,9 @@
   .inner-square {
     width: 150px;
     height: 150px;
-    background-color: #6272a4; /* Blue background */
+    background-color: #6272a4; /* Light blue background */
     border-radius: 15px;
     box-shadow: 
-      10px 10px 20px rgba(0, 0, 0, 0.6), /* Outer shadow for depth */
-      -10px -10px 20px rgba(255, 255, 255, 0.2), /* Highlight on top left */
-      inset 5px 5px 10px rgba(0, 0, 0, 0.7), /* Inner shadow for depth */
-      inset -5px -5px 10px rgba(255, 255, 255, 0.1); /* Inner highlight */
+      -5px -5px 10px rgba(0, 0, 0, 0.7), /* Inner shadow to create a beveled effect */
+      5px 5px 10px rgba(255, 255, 255, 0.1); /* Inner highlight to enhance the beveled effect */
   }
