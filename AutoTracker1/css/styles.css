@@ -37,18 +37,24 @@ body, html {
 .layout-2x1 {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
+    justify-items: stretch; /* Make sure items stretch to fill grid cells */
+    align-items: stretch; /* Ensure items take up full height of grid cells */
 }
 
 /* 2x2 grid layout */
 .layout-2x2 {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    justify-items: stretch; /* Make sure items stretch to fill grid cells */
+    align-items: stretch; /* Ensure items take up full height of grid cells */
 }
 
 /* 1x2 grid layout */
 .layout-1x2 {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
+    justify-items: stretch; /* Make sure items stretch to fill grid cells */
+    align-items: stretch; /* Ensure items take up full height of grid cells */
 }
 
 /* Styling for individual grid items */
