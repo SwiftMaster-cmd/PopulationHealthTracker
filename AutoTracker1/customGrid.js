@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.grid-container');
+    let currentOpenButtonGroup = null;
 
     // Function to create a grid item
     function createGridItem(level) {
         const gridItem = document.createElement('div');
         gridItem.classList.add('grid-item');
-        gridItem.textContent = `Level ${level} Item`;
 
         if (level < 3) {
             // Add button to change layout
@@ -20,22 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function createGrid(level, columns, rows) {
         const grid = document.createElement('div');
         grid.classList.add('custom-grid');
+        grid.classList.add(`grid-${columns}x${rows}`);
 
-        if (level < 3) { // Limit to 3 levels deep
-            grid.classList.add(`grid-${columns}x${rows}`);
-            for (let i = 0; i < columns * rows; i++) {
-                const nestedGridItem = createGridItem(level);
-                if (i % 2 === 0 && level < 3) {
-                    // Recursive call to add another level of grid inside even index items
-                    const nestedGrid = createGrid(level + 1, columns, rows);
-                    nestedGridItem.appendChild(nestedGrid);
-                }
-                grid.appendChild(nestedGridItem);
-            }
-        } else {
-            // When max depth is reached, just fill with grid items
-            grid.classList.add('grid-1x1');
-            grid.appendChild(createGridItem(level));
+        for (let i = 0; i < columns * rows; i++) {
+            const gridItem = createGridItem(level);
+            gridItem.dataset.level = level;
+            grid.appendChild(gridItem);
         }
 
         return grid;
@@ -44,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to handle layout change
     function changeLayout(gridItem, columns, rows) {
         gridItem.innerHTML = ''; // Clear the grid item
-        const newGrid = createGrid(parseInt(gridItem.dataset.level), columns, rows); // Create new grid at the current level
+        const newGrid = createGrid(parseInt(gridItem.dataset.level) + 1, columns, rows); // Create new grid at the next level
         gridItem.appendChild(newGrid);
     }
 
@@ -80,7 +70,11 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleButton.classList.add('toggle-button');
         toggleButton.textContent = '⚙️';
         toggleButton.addEventListener('click', () => {
+            if (currentOpenButtonGroup && currentOpenButtonGroup !== buttonGroup) {
+                currentOpenButtonGroup.classList.remove('visible');
+            }
             buttonGroup.classList.toggle('visible');
+            currentOpenButtonGroup = buttonGroup.classList.contains('visible') ? buttonGroup : null;
         });
 
         const wrapper = document.createElement('div');
@@ -91,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return wrapper;
     }
 
-    // Start with a 1x1 grid on page load
-    const initialGrid = createGrid(1, 1, 1);
+    // Start with a 2x2 grid on page load
+    const initialGrid = createGrid(1, 2, 2);
     container.appendChild(initialGrid);
 });
