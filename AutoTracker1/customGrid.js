@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Add button to change layout
             const buttonGroup = createButtonGroup(gridItem, level);
             gridItem.appendChild(buttonGroup);
+
+            // Add button on top left to change current level layout
+            const layoutButton = createLayoutButton(gridItem);
+            gridItem.appendChild(layoutButton);
         }
 
         return gridItem;
@@ -36,48 +40,50 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = ''; // Clear the container
         const newGrid = createGrid(1, columns, rows); // Start with level 1 grid
         container.appendChild(newGrid);
-        addEditButton(); // Re-add the Edit button after layout change
     }
 
-    // Function to add the "Edit" button to the top left
-    function addEditButton() {
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.classList.add('edit-button');
-        editButton.addEventListener('click', showLayoutOptions);
+    // Function to create the layout change button (top left)
+    function createLayoutButton(gridItem) {
+        const layoutButton = document.createElement('button');
+        layoutButton.textContent = '⚙️';
+        layoutButton.classList.add('layout-button');
+        layoutButton.addEventListener('click', () => showLayoutOptions(gridItem));
 
-        container.appendChild(editButton);
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('layout-button-wrapper');
+        wrapper.appendChild(layoutButton);
+
+        return wrapper;
     }
 
-    // Function to show layout options when "Edit" is clicked
-    function showLayoutOptions() {
-        container.innerHTML = ''; // Clear the container
-
+    // Function to show layout options for the current level
+    function showLayoutOptions(gridItem) {
         const layoutSelectionGroup = document.createElement('div');
         layoutSelectionGroup.classList.add('button-group');
+        layoutSelectionGroup.classList.add('visible');
 
         const layout1x1 = document.createElement('button');
         layout1x1.textContent = '1x1';
-        layout1x1.addEventListener('click', () => changeLayout(1, 1));
+        layout1x1.addEventListener('click', () => changeLayoutInGridItem(gridItem, 1, 1));
 
         const layout2x1 = document.createElement('button');
         layout2x1.textContent = '2x1';
-        layout2x1.addEventListener('click', () => changeLayout(2, 1));
+        layout2x1.addEventListener('click', () => changeLayoutInGridItem(gridItem, 2, 1));
 
         const layout1x2 = document.createElement('button');
         layout1x2.textContent = '1x2';
-        layout1x2.addEventListener('click', () => changeLayout(1, 2));
+        layout1x2.addEventListener('click', () => changeLayoutInGridItem(gridItem, 1, 2));
 
         const layout2x2 = document.createElement('button');
         layout2x2.textContent = '2x2';
-        layout2x2.addEventListener('click', () => changeLayout(2, 2));
+        layout2x2.addEventListener('click', () => changeLayoutInGridItem(gridItem, 2, 2));
 
         layoutSelectionGroup.appendChild(layout1x1);
         layoutSelectionGroup.appendChild(layout2x1);
         layoutSelectionGroup.appendChild(layout1x2);
         layoutSelectionGroup.appendChild(layout2x2);
 
-        container.appendChild(layoutSelectionGroup); // Show layout options in the container
+        gridItem.appendChild(layoutSelectionGroup); // Show layout options in the grid item
     }
 
     // Function to create a button group for changing layouts inside containers
