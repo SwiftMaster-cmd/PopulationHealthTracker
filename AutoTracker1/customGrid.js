@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const gridItem = document.createElement('div');
         gridItem.classList.add('grid-item');
 
-        if (level <= 3) {
+        if (level <= 2) {
             // Add button group to change layout or add a new level
             const buttonGroup = createButtonGroup(gridItem, level);
             gridItem.appendChild(buttonGroup);
@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         buttonGroup.appendChild(changeLayoutButton);
 
-        if (level < 3) {
-            // Button to add a new level, only if the current level is less than 3
+        if (level < 2) {
+            // Button to add a new level, only if the current level is less than 2
             const addNewLevelButton = document.createElement('button');
             addNewLevelButton.textContent = '➕ Add New Level';
             addNewLevelButton.addEventListener('click', () => showNewLevelLayoutOptions(gridItem));
