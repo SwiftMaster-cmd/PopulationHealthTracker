@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         gridItem.classList.add('grid-item');
         gridItem.dataset.level = level;
 
-        // Always add the button group (settings) to each level
+        // Add the button group (settings) to each level
         const buttonGroup = createButtonGroup(gridItem, level);
         gridItem.appendChild(buttonGroup);
 
@@ -70,9 +70,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to add a new level with the selected layout
     function addNewLevel(gridItem, columns, rows) {
-        gridItem.innerHTML = ''; // Clear the grid item, except for the button group
-        const newGrid = createGrid(parseInt(gridItem.dataset.level) + 1, columns, rows); // Create new grid at the next level
-        gridItem.appendChild(newGrid);
+        const level = parseInt(gridItem.dataset.level);
+
+        const newGridContainer = document.createElement('div');
+        newGridContainer.classList.add('new-grid-container');
+        newGridContainer.dataset.level = level + 1;
+
+        const newGrid = createGrid(level + 1, columns, rows);
+        newGridContainer.appendChild(newGrid);
+
+        gridItem.appendChild(newGridContainer); // Add the new grid as a child of the existing grid item
     }
 
     // Function to create a button group for changing layouts and adding levels
