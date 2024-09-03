@@ -17,6 +17,6 @@
     background-color: #6272a4; /* Light blue background */
     border-radius: 15px;
     box-shadow: 
-      5px 5px 10px rgba(0, 0, 0, 0.7) inset, /* Inset shadow for inward effect */
-      -5px -5px 10px rgba(255, 255, 255, 0.1) inset; /* Inset highlight for inward effect */
+      5px 5px 10px rgba(255, 255, 255, 0.3) inset, /* Light inset shadow for inward effect */
+      -5px -5px 10px rgba(0, 0, 0, 0.1) inset; /* Darker inset highlight for depth */
   }
