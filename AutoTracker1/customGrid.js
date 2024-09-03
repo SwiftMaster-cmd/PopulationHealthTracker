@@ -38,15 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(newGrid);
     }
 
-    // Create initial button to select the level 1 structure
-    const initialSelectButton = document.createElement('button');
-    initialSelectButton.textContent = 'Select Layout';
-    initialSelectButton.classList.add('initial-select-button');
-    initialSelectButton.addEventListener('click', () => showLayoutOptions());
-
-    container.appendChild(initialSelectButton); // Add the initial button to the container
-
-    // Function to show layout options
+    // Function to show layout options immediately on page load
     function showLayoutOptions() {
         container.innerHTML = ''; // Clear the container
 
@@ -76,6 +68,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         container.appendChild(layoutSelectionGroup); // Show layout options in the container
     }
+
+    // Call the function to show layout options immediately
+    showLayoutOptions();
 
     // Function to create a button group for changing layouts inside containers
     function createButtonGroup(gridItem, level) {
