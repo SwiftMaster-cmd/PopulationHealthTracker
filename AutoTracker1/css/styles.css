@@ -4,7 +4,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: #2c3e50;
     font-family: Arial, sans-serif;
 }
 
@@ -19,22 +19,26 @@ body {
 .box {
     display: grid;
     grid-template-rows: 1fr 1fr;
-    background: linear-gradient(135deg, #ececec, #ffffff);
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+    border-radius: 20px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     padding: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
 
 .sub-box {
-    background: linear-gradient(135deg, #ffffff, #e0e0e0);
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #8e44ad, #c0392b);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin: 10px 0;
     transition: box-shadow 0.3s ease;
 }
 
 .sub-box:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
 }
