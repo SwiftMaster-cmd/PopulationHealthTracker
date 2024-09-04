@@ -68,19 +68,26 @@ document.addEventListener('DOMContentLoaded', function () {
         layoutSelectionGroup.appendChild(layout2x2);
     }
 
-    // Function to add a new level with the selected layout
     function addNewLevel(gridItem, columns, rows) {
+        // Check if the grid-item already contains a new level
+        if (gridItem.querySelector('.new-grid-container')) {
+            console.log("A new level has already been added to this grid item.");
+            return; // Exit the function if a new level is already present
+        }
+    
         const level = parseInt(gridItem.dataset.level);
-
+    
         const newGridContainer = document.createElement('div');
-        newGridContainer.classList.add('new-grid-container');
+        newGridContainer.classList.add('new-grid-container'); // Ensure it has the correct class
         newGridContainer.dataset.level = level + 1;
-
+    
         const newGrid = createGrid(level + 1, columns, rows);
         newGridContainer.appendChild(newGrid);
-
+    
         gridItem.appendChild(newGridContainer); // Add the new grid as a child of the existing grid item
+        newGridContainer.style.height = "100%"; // Ensures full height in JavaScript
     }
+    
 
     // Function to create a button group for changing layouts and adding levels
     function createButtonGroup(gridItem, level) {
