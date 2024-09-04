@@ -86,7 +86,14 @@ document.addEventListener('DOMContentLoaded', function () {
     
         gridItem.appendChild(newGridContainer); // Add the new grid as a child of the existing grid item
         newGridContainer.style.height = "100%"; // Ensures full height in JavaScript
+    
+        // Remove the "Add New Level" button from this grid item
+        const addNewLevelButton = gridItem.querySelector('button:contains("➕ Add New Level")');
+        if (addNewLevelButton) {
+            addNewLevelButton.remove(); // Remove the button if it exists
+        }
     }
+    
     
 
     // Function to create a button group for changing layouts and adding levels
