@@ -73,7 +73,7 @@ html, body {
 
 .toggle-button {
     background-color: rgba(148, 138, 138, 0.7);
-    color: transparent; /* Remove the icon/text */
+    color: rgba(148, 138, 138, 0.7); /* Remove the icon/text */
     border: none;
     padding: 0; /* Remove extra padding */
     border-radius: 50%;
