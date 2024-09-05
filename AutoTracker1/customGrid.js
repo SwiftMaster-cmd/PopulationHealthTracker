@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.grid-container');
-    let currentOpenButtonGroup = null;
+    let currentOpenGridSelector = null; // Keep track of the currently open grid selector
 
     // Function to create a grid item
     function createGridItem(level) {
@@ -41,25 +41,52 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to show layout options for adding a new level
     function showNewLevelLayoutOptions(gridItem) {
+        // Check if another grid selector is already open and hide it
+        if (currentOpenGridSelector && currentOpenGridSelector !== gridItem) {
+            const visibleSelector = currentOpenGridSelector.querySelector('.button-group');
+            if (visibleSelector) {
+                visibleSelector.classList.remove('visible'); // Hide the previously open selector
+            }
+        }
+
+        // Now, set the current grid item as the open selector
+        currentOpenGridSelector = gridItem;
+
         const layoutSelectionGroup = document.createElement('div');
         layoutSelectionGroup.classList.add('button-group');
         layoutSelectionGroup.classList.add('visible');
 
         const layout1x1 = document.createElement('button');
         layout1x1.textContent = '1x1';
-        layout1x1.addEventListener('click', () => addNewLevel(gridItem, 1, 1));
+        layout1x1.addEventListener('click', () => {
+            addNewLevel(gridItem, 1, 1);
+            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
+            currentOpenGridSelector = null; // Reset after selection
+        });
 
         const layout2x1 = document.createElement('button');
         layout2x1.textContent = '2x1';
-        layout2x1.addEventListener('click', () => addNewLevel(gridItem, 2, 1));
+        layout2x1.addEventListener('click', () => {
+            addNewLevel(gridItem, 2, 1);
+            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
+            currentOpenGridSelector = null; // Reset after selection
+        });
 
         const layout1x2 = document.createElement('button');
         layout1x2.textContent = '1x2';
-        layout1x2.addEventListener('click', () => addNewLevel(gridItem, 1, 2));
+        layout1x2.addEventListener('click', () => {
+            addNewLevel(gridItem, 1, 2);
+            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
+            currentOpenGridSelector = null; // Reset after selection
+        });
 
         const layout2x2 = document.createElement('button');
         layout2x2.textContent = '2x2';
-        layout2x2.addEventListener('click', () => addNewLevel(gridItem, 2, 2));
+        layout2x2.addEventListener('click', () => {
+            addNewLevel(gridItem, 2, 2);
+            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
+            currentOpenGridSelector = null; // Reset after selection
+        });
 
         gridItem.appendChild(layoutSelectionGroup); // Show layout options in the grid item
         layoutSelectionGroup.appendChild(layout1x1);
@@ -68,33 +95,32 @@ document.addEventListener('DOMContentLoaded', function () {
         layoutSelectionGroup.appendChild(layout2x2);
     }
 
+    // Function to add a new level with the selected layout
     function addNewLevel(gridItem, columns, rows) {
         // Check if the grid-item already contains a new level
         if (gridItem.querySelector('.new-grid-container')) {
             console.log("A new level has already been added to this grid item.");
             return; // Exit the function if a new level is already present
         }
-    
+
         const level = parseInt(gridItem.dataset.level);
-    
+
         const newGridContainer = document.createElement('div');
         newGridContainer.classList.add('new-grid-container'); // Ensure it has the correct class
         newGridContainer.dataset.level = level + 1;
-    
+
         const newGrid = createGrid(level + 1, columns, rows);
         newGridContainer.appendChild(newGrid);
-    
+
         gridItem.appendChild(newGridContainer); // Add the new grid as a child of the existing grid item
         newGridContainer.style.height = "100%"; // Ensures full height in JavaScript
-    
+
         // Remove the "Add New Level" button from this grid item
         const addNewLevelButton = gridItem.querySelector('button:contains("➕ Add New Level")');
         if (addNewLevelButton) {
             addNewLevelButton.remove(); // Remove the button if it exists
         }
     }
-    
-    
 
     // Function to create a button group for changing layouts and adding levels
     function createButtonGroup(gridItem, level) {
@@ -120,11 +146,11 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleButton.classList.add('toggle-button');
         toggleButton.textContent = '⚙️';
         toggleButton.addEventListener('click', () => {
-            if (currentOpenButtonGroup && currentOpenButtonGroup !== buttonGroup) {
-                currentOpenButtonGroup.classList.remove('visible');
+            if (currentOpenGridSelector && currentOpenGridSelector !== buttonGroup) {
+                currentOpenGridSelector.classList.remove('visible');
             }
             buttonGroup.classList.toggle('visible');
-            currentOpenButtonGroup = buttonGroup.classList.contains('visible') ? buttonGroup : null;
+            currentOpenGridSelector = buttonGroup.classList.contains('visible') ? buttonGroup : null;
         });
 
         const wrapper = document.createElement('div');
@@ -135,64 +161,34 @@ document.addEventListener('DOMContentLoaded', function () {
         return wrapper;
     }
 
-    let currentOpenGridSelector = null; // Keep track of the currently open grid selector
-
-    // Function to show layout options for adding a new level
-    function showNewLevelLayoutOptions(gridItem) {
-        // Check if another grid selector is already open and hide it
-        if (currentOpenGridSelector && currentOpenGridSelector !== gridItem) {
-            const visibleSelector = currentOpenGridSelector.querySelector('.button-group');
-            if (visibleSelector) {
-                visibleSelector.classList.remove('visible'); // Hide the previously open selector
-            }
-        }
-    
-        // Now, set the current grid item as the open selector
-        currentOpenGridSelector = gridItem;
-    
+    // Function to show layout options for changing the current level
+    function showChangeLayoutOptions(gridItem) {
         const layoutSelectionGroup = document.createElement('div');
         layoutSelectionGroup.classList.add('button-group');
         layoutSelectionGroup.classList.add('visible');
-    
+
         const layout1x1 = document.createElement('button');
         layout1x1.textContent = '1x1';
-        layout1x1.addEventListener('click', () => {
-            addNewLevel(gridItem, 1, 1);
-            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
-            currentOpenGridSelector = null; // Reset after selection
-        });
-    
+        layout1x1.addEventListener('click', () => changeLayoutAtCurrentLevel(gridItem, 1, 1));
+
         const layout2x1 = document.createElement('button');
         layout2x1.textContent = '2x1';
-        layout2x1.addEventListener('click', () => {
-            addNewLevel(gridItem, 2, 1);
-            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
-            currentOpenGridSelector = null; // Reset after selection
-        });
-    
+        layout2x1.addEventListener('click', () => changeLayoutAtCurrentLevel(gridItem, 2, 1));
+
         const layout1x2 = document.createElement('button');
         layout1x2.textContent = '1x2';
-        layout1x2.addEventListener('click', () => {
-            addNewLevel(gridItem, 1, 2);
-            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
-            currentOpenGridSelector = null; // Reset after selection
-        });
-    
+        layout1x2.addEventListener('click', () => changeLayoutAtCurrentLevel(gridItem, 1, 2));
+
         const layout2x2 = document.createElement('button');
         layout2x2.textContent = '2x2';
-        layout2x2.addEventListener('click', () => {
-            addNewLevel(gridItem, 2, 2);
-            layoutSelectionGroup.classList.remove('visible'); // Hide after selection
-            currentOpenGridSelector = null; // Reset after selection
-        });
-    
+        layout2x2.addEventListener('click', () => changeLayoutAtCurrentLevel(gridItem, 2, 2));
+
         gridItem.appendChild(layoutSelectionGroup); // Show layout options in the grid item
         layoutSelectionGroup.appendChild(layout1x1);
         layoutSelectionGroup.appendChild(layout2x1);
         layoutSelectionGroup.appendChild(layout1x2);
         layoutSelectionGroup.appendChild(layout2x2);
     }
-    
 
     // Start with a 2x2 grid on page load
     const initialGrid = createGrid(1, 2, 2);
