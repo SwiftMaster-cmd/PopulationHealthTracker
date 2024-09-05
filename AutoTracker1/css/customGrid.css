@@ -105,20 +105,3 @@ html, body {
     background-color: var(--color-quaternary);
 }
 
-
-.new-grid-container {
-    height: 100%;
-    width: 100%;
-    display: grid;
-    gap: var(--margin-m);
-}
-
-.grid-item .new-grid-container {
-    height: 100%;
-    width: 100%;
-}
-
-.grid-item .custom-grid {
-    height: 100%;
-    width: 100%;
-}
