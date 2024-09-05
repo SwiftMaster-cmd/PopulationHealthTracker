@@ -194,3 +194,96 @@ document.addEventListener('DOMContentLoaded', function () {
     const initialGrid = createGrid(1, 2, 2);
     container.appendChild(initialGrid);
 });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.grid-container');
+
+    // Function to create a list of items to select from
+    function showSelectItemOptions(gridItem) {
+        // Remove any previous selection list if it exists
+        const existingSelectionList = gridItem.querySelector('.selection-list');
+        if (existingSelectionList) {
+            existingSelectionList.remove();
+        }
+
+        // Create a dropdown menu or list for selection
+        const selectionList = document.createElement('div');
+        selectionList.classList.add('selection-list');
+
+        // First option: Show Live Activities
+        const liveActivitiesOption = document.createElement('button');
+        liveActivitiesOption.textContent = 'Show Live Activities';
+        liveActivitiesOption.addEventListener('click', () => {
+            insertLiveActivities(gridItem);  // Insert Live Activities into the container
+            selectionList.remove(); // Remove the list after selection
+        });
+        selectionList.appendChild(liveActivitiesOption);
+
+        // Add the selection list to the grid item
+        gridItem.appendChild(selectionList);
+    }
+
+    // Function to insert Live Activities into the selected grid item
+    function insertLiveActivities(gridItem) {
+        const liveActivitiesContainer = document.createElement('div');
+        liveActivitiesContainer.classList.add('live-activities-container');
+        liveActivitiesContainer.innerHTML = `
+            <h4 class="live-activities-title">Live Activities</h4>
+            <div class="toggle-buttons">
+                <button id="toggleSellableButton" class="toggle-button">Hide Non-sellable</button>
+                <button id="toggleSelfSalesButton" class="toggle-button">Hide Self Sales</button>
+            </div>
+            <div id="live-activities-section"></div>
+        `;
+        
+        // Clear the previous content of the grid item and add the Live Activities
+        gridItem.innerHTML = '';
+        gridItem.appendChild(liveActivitiesContainer);
+    }
+
+    // Function to create a button group for changing layouts and adding levels
+    function createButtonGroup(gridItem, level) {
+        const buttonGroup = document.createElement('div');
+        buttonGroup.classList.add('button-group');
+
+        // Add the "Select Item" button
+        const selectItemButton = document.createElement('button');
+        selectItemButton.textContent = 'Select Item';
+        selectItemButton.addEventListener('click', () => showSelectItemOptions(gridItem));
+        buttonGroup.appendChild(selectItemButton);
+
+        // Add the button group to the grid item
+        gridItem.appendChild(buttonGroup);
+    }
+
+    // Create the initial grid structure
+    function createGridItem(level) {
+        const gridItem = document.createElement('div');
+        gridItem.classList.add('grid-item');
+        gridItem.dataset.level = level;
+
+        // Add button group (for example, with the "Select Item" button)
+        const buttonGroup = createButtonGroup(gridItem, level);
+        gridItem.appendChild(buttonGroup);
+
+        return gridItem;
+    }
+
+    function createGrid(level, columns, rows) {
+        const grid = document.createElement('div');
+        grid.classList.add('custom-grid');
+        grid.classList.add(`grid-${columns}x${rows}`);
+
+        for (let i = 0; i < columns * rows; i++) {
+            const gridItem = createGridItem(level);
+            grid.appendChild(gridItem);
+        }
+
+        return grid;
+    }
+
+    // Start with a 2x2 grid on page load
+    const initialGrid = createGrid(1, 2, 2);
+    container.appendChild(initialGrid);
+});

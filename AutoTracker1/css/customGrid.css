@@ -142,3 +142,30 @@ html, body {
     height: 100%;
     width: 100%;
 }
+
+
+.selection-list {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.selection-list button {
+    margin-bottom: 5px;
+    background-color: var(--color-tertiary);
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.selection-list button:hover {
+    background-color: var(--color-quaternary);
+}
