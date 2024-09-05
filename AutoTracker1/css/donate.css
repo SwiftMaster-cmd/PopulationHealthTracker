@@ -6,7 +6,7 @@
     flex-wrap: nowrap; /* Keep the buttons side by side */
 }
 
-.donation-button {
+.donation-button { l
     width: 420px; /* Increased width */
     background-color: var(--color-secondary);
     border: 2px solid var(--color-primary);
