@@ -8,14 +8,18 @@ html, body {
     display: grid;
     height: 100vh; /* Fill the viewport height */
     width: 100vw;  /* Fill the viewport width */
-    gap: var(--margin-m);
+    gap: var(--margin-m); /* Ensure even gaps between items */
+    padding: var(--margin-m); /* Add padding around the container */
+    box-sizing: border-box; /* Ensure padding is included in the container size */
 }
 
 .custom-grid {
     display: grid;
     gap: var(--margin-m);
-    height: 95%;
-    width: 95%;
+    height: 100%;
+    width: 100%;
+    padding: var(--margin-m); /* Add padding inside the grid */
+    box-sizing: border-box; /* Include padding in the total grid size */
 }
 
 .grid-1x1 {
@@ -42,12 +46,9 @@ html, body {
     position: relative;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: var(--margin-s);
-    padding: var(--margin-m);
     color: var(--text-white);
     transition: background-color 0.3s ease, opacity 0.3s;
     display: flex;
-    height: 95%;
-    width: 95%;
     justify-content: center;
     align-items: center;
     box-shadow: 
@@ -56,6 +57,10 @@ html, body {
         6px 6px 12px rgba(0, 0, 0, 0.5); /* Outer shadow to make it pop out */
     border: 1px solid rgba(255, 255, 255, 0.2);
     background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+    padding: var(--margin-m); /* Add padding inside the grid items */
+    box-sizing: border-box; /* Include padding in the total item size */
+    width: 100%; /* Ensure it takes full width of its grid cell */
+    height: 100%; /* Ensure it takes full height of its grid cell */
 }
 
 
@@ -107,18 +112,20 @@ html, body {
 
 
 .new-grid-container {
-    height: 95%;
-    width: 95%;
+    height: 100%;
+    width: 100%;
     display: grid;
     gap: var(--margin-m);
+    padding: var(--margin-m);
+    box-sizing: border-box;
 }
 
 .grid-item .new-grid-container {
-    height: 95%;
-    width: 95%;
+    height: 100%;
+    width: 100%;
 }
 
 .grid-item .custom-grid {
-    height: 95%;
-    width: 95%;
+    height: 100%;
+    width: 100%;
 }
