@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add a toggle button to show/hide the button group
         const toggleButton = document.createElement('button');
         toggleButton.classList.add('toggle-button');
-        toggleButton.textContent = '⚙️';
+        toggleButton.textContent = 'X';
         toggleButton.addEventListener('click', () => {
             if (currentOpenGridSelector && currentOpenGridSelector !== buttonGroup) {
                 currentOpenGridSelector.classList.remove('visible');
