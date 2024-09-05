@@ -86,7 +86,7 @@ html, body {
 .button-group {
     display: none;
     flex-direction: column;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(87, 43, 43, 0.8);
     padding: 10px;
     border-radius: 5px;
     position: absolute;
