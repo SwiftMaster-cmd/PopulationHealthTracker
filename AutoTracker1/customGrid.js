@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
         buttonGroup.appendChild(changeLayoutButton);
 
         // Button to add a new level (only available at level 1)
-        if (level < 2) {
+        if (level < 3) {
             const addNewLevelButton = document.createElement('button');
             addNewLevelButton.textContent = 'Add New Level';
             addNewLevelButton.classList.add('add-new-level-button');
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (visibleSelector) {
                 visibleSelector.remove();
             }
-        } 
+        }
 
         currentOpenGridSelector = gridItem;
 
