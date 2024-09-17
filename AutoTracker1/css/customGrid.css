@@ -8,18 +8,18 @@ html, body {
     display: grid;
     height: 100vh; /* Fill the viewport height */
     width: 100vw;  /* Fill the viewport width */
-    gap: var(--margin-m); /* Ensure even gaps between items */
-    padding: var(--margin-m); /* Add padding around the container */
+    gap: 16px; /* Replace var(--margin-m) with actual value */
+    padding: 16px; /* Replace var(--margin-m) with actual value */
     box-sizing: border-box; /* Ensure padding is included in the container size */
 }
 
 .custom-grid {
     display: grid;
-    gap: var(--margin-m);
+    gap: 16px;
     height: 100%;
     width: 100%;
-    padding: var(--margin-m); /* Add padding inside the grid */
-    box-sizing: border-box; /* Include padding in the total grid size */
+    padding: 16px;
+    box-sizing: border-box;
 }
 
 .grid-1x1 {
@@ -45,22 +45,22 @@ html, body {
 .grid-item {
     position: relative;
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: var(--margin-s);
-    color: var(--text-white);
+    border-radius: 8px; /* Replace var(--margin-s) with actual value */
+    color: #fff; /* Replace var(--text-white) with actual value */
     transition: background-color 0.3s ease, opacity 0.3s;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow:
-        inset -3px -3px 6px rgba(0, 0, 0, 0.4), /* Darker inner shadow for depth */
-        inset 3px 3px 8px rgba(255, 255, 255, 0.2), /* Lighter inner shadow for highlight */
-        6px 6px 12px rgba(0, 0, 0, 0.5); /* Outer shadow to make it pop out */
+        inset -3px -3px 6px rgba(0, 0, 0, 0.4),
+        inset 3px 3px 8px rgba(255, 255, 255, 0.2),
+        6px 6px 12px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
     background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
-    padding: var(--margin-m); /* Add padding inside the grid items */
-    box-sizing: border-box; /* Include padding in the total item size */
-    width: 100%; /* Ensure it takes full width of its grid cell */
-    height: 100%; /* Ensure it takes full height of its grid cell */
+    padding: 16px; /* Replace var(--margin-m) with actual value */
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 .button-group-wrapper {
@@ -78,7 +78,7 @@ html, body {
 }
 
 .toggle-button {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5)); /* Gradient for 3D effect */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5));
     border: none;
     padding: 5px;
     border-radius: 50%;
@@ -86,89 +86,67 @@ html, body {
     width: 20px;
     height: 20px;
     box-shadow:
-        inset 2px 2px 4px rgba(0, 0, 0, 0.6),  /* Inner shadow for pressed effect */
-        2px 2px 6px rgba(0, 0, 0, 0.5),  /* Outer shadow to give a raised 3D look */
-        -2px -2px 6px rgba(255, 255, 255, 0.2); /* Highlight on top for the 3D effect */
+        inset 2px 2px 4px rgba(0, 0, 0, 0.6),
+        2px 2px 6px rgba(0, 0, 0, 0.5),
+        -2px -2px 6px rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
 }
 
 .toggle-button:hover {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.7)); /* Slight color change on hover */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.7));
     box-shadow:
-        inset 2px 2px 4px rgba(0, 0, 0, 0.8),  /* Darker inner shadow on hover */
+        inset 2px 2px 4px rgba(0, 0, 0, 0.8),
         2px 2px 6px rgba(0, 0, 0, 0.6),
-        -2px -2px 6px rgba(255, 255, 255, 0.4); /* Stronger highlight on hover */
+        -2px -2px 6px rgba(255, 255, 255, 0.4);
 }
 
-.button-group {
-    display: none;
-    flex-direction: column;
-    background-color: rgba(87, 43, 43, 0.8);
-    padding: 10px;
-    border-radius: 5px;
+/* Options container */
+.options-container {
     position: absolute;
     top: 40px;
-    right: 0;
-    z-index: 10;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 20;
+    min-width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
-.button-group.visible {
-    display: flex;
-}
-
-.button-group button {
-    margin-bottom: 5px;
-    background-color: var(--color-tertiary);
-    color: white;
+.options-container button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: #333; /* Replace var(--color-primary) with actual value */
+    color: #fff; /* Replace var(--text-white) with actual value */
     border: none;
-    padding: 5px;
+    padding: 8px;
     border-radius: 3px;
     cursor: pointer;
+    text-align: left;
 }
 
-.button-group button:hover {
-    background-color: var(--color-quaternary);
+.options-container button:hover {
+    background-color: #444; /* Replace var(--color-secondary) with actual value */
 }
 
-.new-grid-container {
-    height: 100%;
-    width: 100%;
-    display: grid;
-    box-sizing: border-box;
+.back-button {
+    margin-bottom: 15px;
+    background-color: #444; /* Replace var(--color-secondary) with actual value */
 }
 
-.grid-item .new-grid-container {
-    height: 100%;
-    width: 100%;
-}
-
-.grid-item .custom-grid {
-    height: 100%;
-    width: 100%;
-}
-
+.layout-selection-group,
 .selection-list {
-    position: absolute;
-    top: 40px;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 10px;
-    border-radius: 5px;
     display: flex;
     flex-direction: column;
-    z-index: 10;
 }
 
+.layout-selection-group button,
 .selection-list button {
-    margin-bottom: 5px;
-    background-color: var(--color-tertiary);
-    color: white;
-    border: none;
-    padding: 5px;
-    border-radius: 3px;
-    cursor: pointer;
+    margin-bottom: 10px;
 }
 
-.selection-list button:hover {
-    background-color: var(--color-quaternary);
+.live-activities-container {
+    /* Style for live activities content */
+    /* Add your styles here */
 }
