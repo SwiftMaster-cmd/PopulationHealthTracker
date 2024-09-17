@@ -1,17 +1,74 @@
+/* General full viewport adjustment */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow: hidden; /* Prevent page scrolling */
 }
 
+/* Ensuring the grid fits iPad resolutions */
 .grid-container {
     display: grid;
-    height: 100vh; /* Fill the viewport height */
-    width: 100vw;  /* Fill the viewport width */
-    gap: var(--margin-m); /* Ensure even gaps between items */
-    padding: var(--margin-m); /* Add padding around the container */
-    box-sizing: border-box; /* Ensure padding is included in the container size */
+    height: 100vh;
+    width: 100vw;
+    gap: var(--margin-m);
+    padding: var(--margin-m);
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent container overflow and scrolling */
 }
+
+/* General grid item adjustments */
+.grid-item {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--margin-s);
+    color: var(--text-white);
+    transition: background-color 0.3s ease, opacity 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 
+        inset -3px -3px 6px rgba(0, 0, 0, 0.4), 
+        inset 3px 3px 8px rgba(255, 255, 255, 0.2), 
+        6px 6px 12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+    padding: var(--margin-m);
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    max-width: 100vw; /* Restrict width to viewport width */
+    max-height: 100vh; /* Restrict height to viewport height */
+}
+
+/* Media queries to handle iPad-specific sizes and prevent scrolling */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr); /* Adjust for iPad's screen size */
+        grid-template-rows: 1fr 1fr; /* Evenly distribute rows */
+        padding: var(--margin-xs); /* Reduce padding on smaller screens */
+    }
+
+    .grid-item {
+        padding: var(--margin-xs);
+        box-shadow: none; /* Reduce shadows for cleaner layout */
+    }
+}
+
+/* Landscape adjustments */
+@media (orientation: landscape) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr); /* More columns in landscape */
+    }
+}
+
+/* Portrait adjustments */
+@media (orientation: portrait) {
+    .grid-container {
+        grid-template-columns: 1fr; /* One column in portrait mode */
+    }
+}
+
 
 .custom-grid {
     display: grid;
@@ -42,26 +99,6 @@ html, body {
     grid-template-rows: repeat(2, 1fr);
 }
 
-.grid-item {
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: var(--margin-s);
-    color: var(--text-white);
-    transition: background-color 0.3s ease, opacity 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 
-        inset -3px -3px 6px rgba(0, 0, 0, 0.4), /* Darker inner shadow for depth */
-        inset 3px 3px 8px rgba(255, 255, 255, 0.2), /* Lighter inner shadow for highlight */
-        6px 6px 12px rgba(0, 0, 0, 0.5); /* Outer shadow to make it pop out */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
-    padding: var(--margin-m); /* Add padding inside the grid items */
-    box-sizing: border-box; /* Include padding in the total item size */
-    width: 100%; /* Ensure it takes full width of its grid cell */
-    height: 100%; /* Ensure it takes full height of its grid cell */
-}
 
 
 .button-group-wrapper {
