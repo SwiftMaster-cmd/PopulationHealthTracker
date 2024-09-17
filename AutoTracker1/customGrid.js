@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.grid-container');
-    let currentOpenButtonGroup = null;
     let currentOpenGridSelector = null; // Keep track of the currently open selector
 
     // Function to create a grid item
@@ -129,15 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleButton.classList.add('toggle-button');
         // No icon or text as per your request
 
-        toggleButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent event from bubbling up to document
-            if (currentOpenButtonGroup && currentOpenButtonGroup !== buttonGroup) {
-                currentOpenButtonGroup.classList.remove('visible');
-            }
-            buttonGroup.classList.toggle('visible');
-            currentOpenButtonGroup = buttonGroup.classList.contains('visible') ? buttonGroup : null;
-        });
-
         const buttonGroup = document.createElement('div');
         buttonGroup.classList.add('button-group');
 
@@ -173,6 +163,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
         buttonGroupWrapper.appendChild(toggleButton);
         buttonGroupWrapper.appendChild(buttonGroup);
+
+        // Hide the button group when clicking outside
+        function outsideClickListener(event) {
+            if (!buttonGroupWrapper.contains(event.target)) {
+                buttonGroup.classList.remove('visible');
+                document.removeEventListener('click', outsideClickListener, { capture: true });
+            }
+        }
+
+        // Show the button group when toggle button is clicked
+        toggleButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            buttonGroup.classList.toggle('visible');
+            if (buttonGroup.classList.contains('visible')) {
+                document.addEventListener('click', outsideClickListener, { capture: true });
+            } else {
+                document.removeEventListener('click', outsideClickListener, { capture: true });
+            }
+        });
+
+        // Hide the button group when the container isn't hovered
+        buttonGroupWrapper.addEventListener('mouseleave', () => {
+            buttonGroup.classList.remove('visible');
+            document.removeEventListener('click', outsideClickListener, { capture: true });
+        });
 
         return buttonGroupWrapper;
     }
