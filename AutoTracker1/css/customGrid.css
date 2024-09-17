@@ -6,11 +6,11 @@ html, body {
 
 .grid-container {
     display: grid;
-    height: 100vh; /* Fill the viewport height */
-    width: 100vw;  /* Fill the viewport width */
-    gap: 16px; /* Replace var(--margin-m) with actual value */
-    padding: 16px; /* Replace var(--margin-m) with actual value */
-    box-sizing: border-box; /* Ensure padding is included in the container size */
+    height: 100vh;
+    width: 100vw;
+    gap: 16px;
+    padding: 16px;
+    box-sizing: border-box;
 }
 
 .custom-grid {
@@ -45,8 +45,8 @@ html, body {
 .grid-item {
     position: relative;
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px; /* Replace var(--margin-s) with actual value */
-    color: #fff; /* Replace var(--text-white) with actual value */
+    border-radius: 8px;
+    color: #fff;
     transition: background-color 0.3s ease, opacity 0.3s;
     display: flex;
     justify-content: center;
@@ -57,7 +57,7 @@ html, body {
         6px 6px 12px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
     background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
-    padding: 16px; /* Replace var(--margin-m) with actual value */
+    padding: 16px;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -117,8 +117,8 @@ html, body {
     display: block;
     width: 100%;
     margin-bottom: 10px;
-    background-color: #333; /* Replace var(--color-primary) with actual value */
-    color: #fff; /* Replace var(--text-white) with actual value */
+    background-color: #333;
+    color: #fff;
     border: none;
     padding: 8px;
     border-radius: 3px;
@@ -127,12 +127,12 @@ html, body {
 }
 
 .options-container button:hover {
-    background-color: #444; /* Replace var(--color-secondary) with actual value */
+    background-color: #444;
 }
 
 .back-button {
     margin-bottom: 15px;
-    background-color: #444; /* Replace var(--color-secondary) with actual value */
+    background-color: #444;
 }
 
 .layout-selection-group,
