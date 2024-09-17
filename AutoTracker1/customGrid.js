@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return grid;
     }
-    
 
     // Function to change the layout at the current level
     function changeLayoutAtCurrentLevel(gridItem, columns, rows) {
