@@ -5,10 +5,9 @@ html, body {
 }
 
 .grid-container {
-    display: grid;
+    display: flex;
     height: 100vh;
     width: 100vw;
-    gap: 16px;
     padding: 16px;
     box-sizing: border-box;
 }
@@ -18,7 +17,6 @@ html, body {
     gap: 16px;
     height: 100%;
     width: 100%;
-    padding: 16px;
     box-sizing: border-box;
 }
 
@@ -48,9 +46,6 @@ html, body {
     border-radius: 8px;
     color: #fff;
     transition: background-color 0.3s ease, opacity 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     box-shadow:
         inset -3px -3px 6px rgba(0, 0, 0, 0.4),
         inset 3px 3px 8px rgba(255, 255, 255, 0.2),
@@ -61,6 +56,8 @@ html, body {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .button-group-wrapper {
@@ -149,4 +146,18 @@ html, body {
 .live-activities-container {
     /* Style for live activities content */
     /* Add your styles here */
+}
+
+/* Ensure new grids fill the available space */
+.new-grid-container {
+    flex: 1;
+    display: flex;
+}
+
+.new-grid-container .custom-grid {
+    flex: 1;
+}
+
+.new-grid-container .grid-item {
+    flex: 1;
 }
