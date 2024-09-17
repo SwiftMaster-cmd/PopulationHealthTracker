@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const grid = document.createElement('div');
         grid.classList.add('custom-grid');
         grid.classList.add(`grid-${columns}x${rows}`);
+        grid.dataset.level = level; // Store the level in the grid
 
         for (let i = 0; i < columns * rows; i++) {
             const gridItem = createGridItem(level);
@@ -32,11 +33,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to change the layout at the current level
     function changeLayoutAtCurrentLevel(gridItem, columns, rows) {
         const level = parseInt(gridItem.dataset.level);
-        const parentGrid = gridItem.closest('.custom-grid').parentElement;
-        parentGrid.innerHTML = ''; // Clear current grid items
+        const parentGrid = gridItem.closest('.custom-grid');
+        const grandParent = parentGrid.parentElement;
 
-        const newGrid = createGrid(level, columns, rows); // Create new grid at same level
-        parentGrid.appendChild(newGrid); // Append new grid to parent element
+        // Remove the existing grid
+        grandParent.removeChild(parentGrid);
+
+        // Create a new grid with the selected layout
+        const newGrid = createGrid(level, columns, rows);
+        grandParent.appendChild(newGrid);
     }
 
     // Function to show the main options container
