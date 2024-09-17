@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         parentGrid.appendChild(newGrid); // Append new grid to parent element
     }
 
+    // Function to show layout options for adding a new level
     function showNewLevelLayoutOptions(gridItem) {
         // Hide any open selectors
         if (currentOpenGridSelector && currentOpenGridSelector !== gridItem) {
@@ -48,48 +49,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 visibleSelector.remove(); // Remove the previously open selector
             }
         }
-    
+
         currentOpenGridSelector = gridItem;
-    
+
         const layoutSelectionGroup = document.createElement('div');
         layoutSelectionGroup.classList.add('layout-selection-group');
-    
+
         const layouts = [
             { columns: 1, rows: 1, label: '1x1' },
             { columns: 2, rows: 1, label: '2x1' },
             { columns: 1, rows: 2, label: '1x2' },
             { columns: 2, rows: 2, label: '2x2' },
         ];
-    
+
         layouts.forEach(layout => {
             const button = document.createElement('button');
             button.textContent = layout.label;
-            button.addEventListener('click', () => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation(); // Stop propagation to prevent triggering outsideClickListener
                 addNewLevel(gridItem, layout.columns, layout.rows);
                 layoutSelectionGroup.remove(); // Hide after selection
                 currentOpenGridSelector = null; // Reset after selection
-                document.removeEventListener('click', outsideClickListener); // Remove the event listener
+                document.removeEventListener('click', outsideClickListener, { capture: true }); // Remove the event listener
             });
             layoutSelectionGroup.appendChild(button);
         });
-    
+
         // Prevent click events inside the layoutSelectionGroup from propagating
         layoutSelectionGroup.addEventListener('click', (event) => {
             event.stopPropagation();
         });
-    
+
         gridItem.appendChild(layoutSelectionGroup); // Show layout options in the grid item
-    
+
         // Add event listener to close the layoutSelectionGroup when clicking outside
         function outsideClickListener(event) {
             if (!layoutSelectionGroup.contains(event.target)) {
                 layoutSelectionGroup.remove();
                 currentOpenGridSelector = null;
-                document.removeEventListener('click', outsideClickListener);
+                document.removeEventListener('click', outsideClickListener, { capture: true });
             }
         }
-    
-        document.addEventListener('click', outsideClickListener);
+
+        document.addEventListener('click', outsideClickListener, { capture: true });
     }
 
     // Function to add a new level with the selected layout
@@ -127,7 +129,8 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleButton.classList.add('toggle-button');
         // No icon or text as per your request
 
-        toggleButton.addEventListener('click', () => {
+        toggleButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent event from bubbling up to document
             if (currentOpenButtonGroup && currentOpenButtonGroup !== buttonGroup) {
                 currentOpenButtonGroup.classList.remove('visible');
             }
@@ -141,21 +144,30 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add the "Select Item" button
         const selectItemButton = document.createElement('button');
         selectItemButton.textContent = 'Select Item';
-        selectItemButton.addEventListener('click', () => showSelectItemOptions(gridItem));
+        selectItemButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent event from bubbling up to document
+            showSelectItemOptions(gridItem);
+        });
         buttonGroup.appendChild(selectItemButton);
 
         // Button to change layout at the current level
         const changeLayoutButton = document.createElement('button');
         changeLayoutButton.textContent = 'Change Layout';
-        changeLayoutButton.addEventListener('click', () => showChangeLayoutOptions(gridItem));
+        changeLayoutButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent event from bubbling up to document
+            showChangeLayoutOptions(gridItem);
+        });
         buttonGroup.appendChild(changeLayoutButton);
 
-        // Button to add a new level (only available at level 1)
+        // Button to add a new level (only available at level less than 3)
         if (level < 3) {
             const addNewLevelButton = document.createElement('button');
             addNewLevelButton.textContent = 'Add New Level';
             addNewLevelButton.classList.add('add-new-level-button');
-            addNewLevelButton.addEventListener('click', () => showNewLevelLayoutOptions(gridItem));
+            addNewLevelButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent event from bubbling up to document
+                showNewLevelLayoutOptions(gridItem);
+            });
             buttonGroup.appendChild(addNewLevelButton);
         }
 
@@ -165,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return buttonGroupWrapper;
     }
 
+    // Function to show layout options for changing the current level
     function showChangeLayoutOptions(gridItem) {
         // Hide any open selectors
         if (currentOpenGridSelector && currentOpenGridSelector !== gridItem) {
@@ -173,48 +186,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 visibleSelector.remove();
             }
         }
-    
+
         currentOpenGridSelector = gridItem;
-    
+
         const layoutSelectionGroup = document.createElement('div');
         layoutSelectionGroup.classList.add('layout-selection-group');
-    
+
         const layouts = [
             { columns: 1, rows: 1, label: '1x1' },
             { columns: 2, rows: 1, label: '2x1' },
             { columns: 1, rows: 2, label: '1x2' },
             { columns: 2, rows: 2, label: '2x2' },
         ];
-    
+
         layouts.forEach(layout => {
             const button = document.createElement('button');
             button.textContent = layout.label;
-            button.addEventListener('click', () => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation(); // Stop propagation to prevent triggering outsideClickListener
                 changeLayoutAtCurrentLevel(gridItem, layout.columns, layout.rows);
                 layoutSelectionGroup.remove();
                 currentOpenGridSelector = null;
-                document.removeEventListener('click', outsideClickListener); // Remove the event listener
+                document.removeEventListener('click', outsideClickListener, { capture: true });
             });
             layoutSelectionGroup.appendChild(button);
         });
-    
+
         // Prevent click events inside the layoutSelectionGroup from propagating
         layoutSelectionGroup.addEventListener('click', (event) => {
             event.stopPropagation();
         });
-    
+
         gridItem.appendChild(layoutSelectionGroup);
-    
+
         // Add event listener to close the layoutSelectionGroup when clicking outside
         function outsideClickListener(event) {
             if (!layoutSelectionGroup.contains(event.target)) {
                 layoutSelectionGroup.remove();
                 currentOpenGridSelector = null;
-                document.removeEventListener('click', outsideClickListener);
+                document.removeEventListener('click', outsideClickListener, { capture: true });
             }
         }
-    
-        document.addEventListener('click', outsideClickListener);
+
+        document.addEventListener('click', outsideClickListener, { capture: true });
     }
 
     // Function to show the "Select Item" options
@@ -226,49 +240,50 @@ document.addEventListener('DOMContentLoaded', function () {
                 visibleSelector.remove();
             }
         }
-    
+
         currentOpenGridSelector = gridItem;
-    
+
         // Remove any existing selection list
         const existingSelectionList = gridItem.querySelector('.selection-list');
         if (existingSelectionList) {
             existingSelectionList.remove();
         }
-    
+
         // Create a list for selection
         const selectionList = document.createElement('div');
         selectionList.classList.add('selection-list');
-    
+
         // Option: Show Live Activities
         const liveActivitiesOption = document.createElement('button');
         liveActivitiesOption.textContent = 'Show Live Activities';
-        liveActivitiesOption.addEventListener('click', () => {
+        liveActivitiesOption.addEventListener('click', (event) => {
+            event.stopPropagation(); // Stop propagation to prevent triggering outsideClickListener
             insertLiveActivities(gridItem);  // Insert Live Activities into the container
             selectionList.remove();
             currentOpenGridSelector = null;
-            document.removeEventListener('click', outsideClickListener); // Remove the event listener
+            document.removeEventListener('click', outsideClickListener, { capture: true }); // Remove the event listener
         });
         selectionList.appendChild(liveActivitiesOption);
-    
+
         // Additional options can be added here
-    
+
         // Prevent click events inside the selectionList from propagating
         selectionList.addEventListener('click', (event) => {
             event.stopPropagation();
         });
-    
+
         gridItem.appendChild(selectionList);
-    
+
         // Add event listener to close the selectionList when clicking outside
         function outsideClickListener(event) {
             if (!selectionList.contains(event.target)) {
                 selectionList.remove();
                 currentOpenGridSelector = null;
-                document.removeEventListener('click', outsideClickListener);
+                document.removeEventListener('click', outsideClickListener, { capture: true });
             }
         }
-    
-        document.addEventListener('click', outsideClickListener);
+
+        document.addEventListener('click', outsideClickListener, { capture: true });
     }
 
     // Function to insert Live Activities into the selected grid item
