@@ -183,11 +183,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Hide the button group when the container isn't hovered
-        buttonGroupWrapper.addEventListener('mouseleave', () => {
-            buttonGroup.classList.remove('visible');
-            document.removeEventListener('click', outsideClickListener, { capture: true });
-        });
+        // Remove the mouseleave event listener since we want the button group to stay open until clicking elsewhere
+        // No changes needed here
 
         return buttonGroupWrapper;
     }
