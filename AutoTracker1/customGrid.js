@@ -93,58 +93,25 @@ document.addEventListener('DOMContentLoaded', function () {
     
         optionsContainer.appendChild(optionsList);
     
-        // Variables to track mouse over gridItem or optionsContainer
-        let mouseOverGridItem = false;
-        let mouseOverOptionsContainer = false;
-    
-        function checkMouseLeave() {
-            if (!mouseOverGridItem && !mouseOverOptionsContainer) {
+        // Event listener for mouse leaving the grid item
+        function onGridItemMouseLeave(event) {
+            // If the mouse leaves the grid item (not to a child element)
+            if (!gridItem.contains(event.relatedTarget)) {
                 optionsContainer.remove();
-                // Remove event listeners
-                gridItem.removeEventListener('mouseenter', onGridItemMouseEnter);
                 gridItem.removeEventListener('mouseleave', onGridItemMouseLeave);
-                optionsContainer.removeEventListener('mouseenter', onOptionsContainerMouseEnter);
-                optionsContainer.removeEventListener('mouseleave', onOptionsContainerMouseLeave);
             }
         }
     
-        function onGridItemMouseEnter() {
-            mouseOverGridItem = true;
-            if (gridItem.optionsContainerEnabled && !gridItem.contains(optionsContainer)) {
-                gridItem.appendChild(optionsContainer);
-            }
-        }
-    
-        function onGridItemMouseLeave() {
-            mouseOverGridItem = false;
-            setTimeout(checkMouseLeave, 0);
-        }
-    
-        function onOptionsContainerMouseEnter() {
-            mouseOverOptionsContainer = true;
-        }
-    
-        function onOptionsContainerMouseLeave() {
-            mouseOverOptionsContainer = false;
-            setTimeout(checkMouseLeave, 0);
-        }
-    
-        gridItem.addEventListener('mouseenter', onGridItemMouseEnter);
         gridItem.addEventListener('mouseleave', onGridItemMouseLeave);
-        optionsContainer.addEventListener('mouseenter', onOptionsContainerMouseEnter);
-        optionsContainer.addEventListener('mouseleave', onOptionsContainerMouseLeave);
     
         // Event listener for clicks outside
         function onDocumentClick(event) {
-            if (!gridItem.contains(event.target) && !optionsContainer.contains(event.target)) {
+            if (!gridItem.contains(event.target)) {
                 gridItem.optionsContainerEnabled = false; // Disable re-showing on hover
                 optionsContainer.remove();
                 currentOpenOptionsContainer = null;
-                // Remove all event listeners
-                gridItem.removeEventListener('mouseenter', onGridItemMouseEnter);
+                // Remove event listener
                 gridItem.removeEventListener('mouseleave', onGridItemMouseLeave);
-                optionsContainer.removeEventListener('mouseenter', onOptionsContainerMouseEnter);
-                optionsContainer.removeEventListener('mouseleave', onOptionsContainerMouseLeave);
                 document.removeEventListener('click', onDocumentClick);
             }
         }
