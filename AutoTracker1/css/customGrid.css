@@ -58,13 +58,48 @@ html, body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* To handle overflow of options container */
 }
 
+.button-group-wrapper {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    opacity: 0; /* Hide by default */
+    transition: opacity 0.3s ease;
+}
+
+/* Show the toggle button when the grid item is hovered */
+.grid-item:hover .button-group-wrapper {
+    opacity: 1;
+}
+
+.toggle-button {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5));
+    border: none;
+    padding: 0; /* Remove padding */
+    border-radius: 20%;
+    cursor: pointer;
+    width: 5px; /* Adjusted width */
+    height: 5px; /* Adjusted height */
+    box-shadow:
+        inset 1px 1px 2px rgba(0, 0, 0, 0.6),  /* Adjusted for smaller size */
+        1px 1px 3px rgba(0, 0, 0, 0.5),
+        -1px -1px 3px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.7));
+    box-shadow:
+        inset 1px 1px 2px rgba(0, 0, 0, 0.8),
+        1px 1px 3px rgba(0, 0, 0, 0.6),
+        -1px -1px 3px rgba(255, 255, 255, 0.4);
+}
 /* Options container */
 .options-container {
     position: absolute;
-    top: 10px;
+    top: 40px;
     right: 10px;
     background-color: rgba(0, 0, 0, 0.85);
     padding: 15px;
@@ -72,18 +107,6 @@ html, body {
     z-index: 20;
     min-width: 150px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.3s ease;
-    pointer-events: none; /* Prevent interaction when hidden */
-}
-
-.options-container.visible {
-    opacity: 1;
-    pointer-events: auto; /* Allow interaction when visible */
-}
-
-.options-container.hidden {
-    display: none; /* Ensure it doesn't take up space when hidden */
 }
 
 .options-container button {
@@ -121,85 +144,19 @@ html, body {
 
 .live-activities-container {
     /* Style for live activities content */
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
+    /* Add your styles here */
 }
 
-.leaderboard-container {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-}
-
-.leaderboard-section {
-    margin-top: 20px;
-}
-
-.leaderboard-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.leaderboard-item.first-place {
-    background-color: gold;
-}
-
-.leaderboard-item.second-place {
-    background-color: silver;
-}
-
-.leaderboard-item.third-place {
-    background-color: #cd7f32; /* Bronze */
-}
-
-/* Additional styles for leaderboard */
-.leaderboard-position {
-    width: 30px;
-}
-
-.leaderboard-name {
+/* Ensure new grids fill the available space */
+.new-grid-container {
     flex: 1;
-    text-align: left;
-    padding-left: 10px;
+    display: flex;
 }
 
-.leaderboard-score {
-    width: 50px;
-    text-align: right;
+.new-grid-container .custom-grid {
+    flex: 1;
 }
 
-.activity-item {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
+.new-grid-container .grid-item {
+    flex: 1;
 }
-
-.activity-item strong {
-    font-weight: bold;
-}
-
-.like-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    margin-right: 10px;
-}
-
-.like-button svg {
-    fill: gray;
-}
-
-.like-button.liked svg {
-    fill: red;
-}
-
-.like-info {
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-}
-
-/* Remove styles related to the toggle button */
