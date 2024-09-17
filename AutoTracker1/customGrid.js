@@ -53,16 +53,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 visibleOptionsContainer.remove();
             }
         }
-
+    
         currentOpenOptionsContainer = gridItem;
-
+    
         const optionsContainer = document.createElement('div');
         optionsContainer.classList.add('options-container');
-
+    
         // Main options
         const optionsList = document.createElement('div');
         optionsList.classList.add('options-list');
-
+    
         // Option buttons
         const selectItemButton = document.createElement('button');
         selectItemButton.textContent = 'Select Item';
@@ -70,14 +70,14 @@ document.addEventListener('DOMContentLoaded', function () {
             showSelectItemOptions(optionsContainer, gridItem);
         });
         optionsList.appendChild(selectItemButton);
-
+    
         const changeLayoutButton = document.createElement('button');
         changeLayoutButton.textContent = 'Change Layout';
         changeLayoutButton.addEventListener('click', () => {
             showChangeLayoutOptions(optionsContainer, gridItem);
         });
         optionsList.appendChild(changeLayoutButton);
-
+    
         if (parseInt(gridItem.dataset.level) < 3) {
             const addNewLevelButton = document.createElement('button');
             addNewLevelButton.textContent = 'Add New Level';
@@ -86,25 +86,48 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             optionsList.appendChild(addNewLevelButton);
         }
-
+    
         optionsContainer.appendChild(optionsList);
-
-        // Prevent click events inside the optionsContainer from propagating
-        optionsContainer.addEventListener('click', (event) => {
-            event.stopPropagation();
-        });
-
-        // Close the options container when clicking outside
-        function outsideClickListener(event) {
-            if (!optionsContainer.contains(event.target)) {
+    
+        // Variables to track mouse over gridItem or optionsContainer
+        let mouseOverGridItem = false;
+        let mouseOverOptionsContainer = false;
+    
+        function checkMouseLeave() {
+            if (!mouseOverGridItem && !mouseOverOptionsContainer) {
                 optionsContainer.remove();
                 currentOpenOptionsContainer = null;
-                document.removeEventListener('click', outsideClickListener);
+                // Remove event listeners
+                gridItem.removeEventListener('mouseenter', onGridItemMouseEnter);
+                gridItem.removeEventListener('mouseleave', onGridItemMouseLeave);
+                optionsContainer.removeEventListener('mouseenter', onOptionsContainerMouseEnter);
+                optionsContainer.removeEventListener('mouseleave', onOptionsContainerMouseLeave);
             }
         }
-
-        document.addEventListener('click', outsideClickListener);
-
+    
+        function onGridItemMouseEnter() {
+            mouseOverGridItem = true;
+        }
+    
+        function onGridItemMouseLeave() {
+            mouseOverGridItem = false;
+            setTimeout(checkMouseLeave, 0);
+        }
+    
+        function onOptionsContainerMouseEnter() {
+            mouseOverOptionsContainer = true;
+        }
+    
+        function onOptionsContainerMouseLeave() {
+            mouseOverOptionsContainer = false;
+            setTimeout(checkMouseLeave, 0);
+        }
+    
+        gridItem.addEventListener('mouseenter', onGridItemMouseEnter);
+        gridItem.addEventListener('mouseleave', onGridItemMouseLeave);
+        optionsContainer.addEventListener('mouseenter', onOptionsContainerMouseEnter);
+        optionsContainer.addEventListener('mouseleave', onOptionsContainerMouseLeave);
+    
         gridItem.appendChild(optionsContainer);
     }
 
