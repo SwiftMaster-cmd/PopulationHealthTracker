@@ -39,6 +39,8 @@ html, body {
     height: 100%;
     max-width: 100vw; /* Restrict width to viewport width */
     max-height: 100vh; /* Restrict height to viewport height */
+    overflow: hidden; /* Prevent scrolling on the body */
+
 }
 
 /* Media queries to handle iPad-specific sizes and prevent scrolling */
