@@ -29,6 +29,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return grid;
     }
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.querySelector('.grid-container');
+    
+        // Function to ensure grid fits into available space without scrolling
+        function adjustGridSize() {
+            const viewportHeight = window.innerHeight;
+            const viewportWidth = window.innerWidth;
+    
+            container.style.height = viewportHeight + 'px';
+            container.style.width = viewportWidth + 'px';
+    
+            // Adjust all grid items to fit into the available space
+            const gridItems = container.querySelectorAll('.grid-item');
+            gridItems.forEach(item => {
+                item.style.maxHeight = (viewportHeight / container.rows) + 'px';
+                item.style.maxWidth = (viewportWidth / container.columns) + 'px';
+            });
+        }
+    
+        window.addEventListener('resize', adjustGridSize); // Adjust on window resize
+        adjustGridSize(); // Initial adjustment on load
+    
+        // Your existing grid creation code...
+        const initialGrid = createGrid(1, 2, 2);
+        container.appendChild(initialGrid);
+    });
 
     // Function to change the layout at the current level
     function changeLayoutAtCurrentLevel(gridItem, columns, rows) {
