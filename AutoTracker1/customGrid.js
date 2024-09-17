@@ -263,24 +263,24 @@ document.addEventListener('DOMContentLoaded', function () {
         gridItem.appendChild(liveActivitiesContainer);
     }
 
-    // Function to create a button group for settings
-    function createButtonGroup(gridItem, level) {
-        const buttonGroupWrapper = document.createElement('div');
-        buttonGroupWrapper.classList.add('button-group-wrapper');
+// Function to create a button group for settings
+function createButtonGroup(gridItem, level) {
+    const buttonGroupWrapper = document.createElement('div');
+    buttonGroupWrapper.classList.add('button-group-wrapper');
 
-        const toggleButton = document.createElement('button');
-        toggleButton.classList.add('toggle-button');
-        // No icon or text as per your request
+    const toggleButton = document.createElement('button');
+    toggleButton.classList.add('toggle-button');
+    toggleButton.textContent = ''; // Ensure no text content
 
-        toggleButton.addEventListener('click', (event) => {
-            event.stopPropagation();
-            showOptionsContainer(gridItem);
-        });
+    toggleButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        showOptionsContainer(gridItem);
+    });
 
-        buttonGroupWrapper.appendChild(toggleButton);
+    buttonGroupWrapper.appendChild(toggleButton);
 
-        return buttonGroupWrapper;
-    }
+    return buttonGroupWrapper;
+}
 
     // Start with a 2x2 grid on page load
     const initialGrid = createGrid(1, 2, 2);
