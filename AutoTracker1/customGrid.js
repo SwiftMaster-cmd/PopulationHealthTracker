@@ -53,16 +53,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 visibleOptionsContainer.remove();
             }
         }
-    
+
         currentOpenOptionsContainer = gridItem;
-    
+
         const optionsContainer = document.createElement('div');
         optionsContainer.classList.add('options-container');
-    
+
         // Main options
         const optionsList = document.createElement('div');
         optionsList.classList.add('options-list');
-    
+
         // Option buttons
         const selectItemButton = document.createElement('button');
         selectItemButton.textContent = 'Select Item';
@@ -70,14 +70,14 @@ document.addEventListener('DOMContentLoaded', function () {
             showSelectItemOptions(optionsContainer, gridItem);
         });
         optionsList.appendChild(selectItemButton);
-    
+
         const changeLayoutButton = document.createElement('button');
         changeLayoutButton.textContent = 'Change Layout';
         changeLayoutButton.addEventListener('click', () => {
             showChangeLayoutOptions(optionsContainer, gridItem);
         });
         optionsList.appendChild(changeLayoutButton);
-    
+
         if (parseInt(gridItem.dataset.level) < 3) {
             const addNewLevelButton = document.createElement('button');
             addNewLevelButton.textContent = 'Add New Level';
@@ -86,48 +86,25 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             optionsList.appendChild(addNewLevelButton);
         }
-    
+
         optionsContainer.appendChild(optionsList);
-    
-        // Variables to track mouse over gridItem or optionsContainer
-        let mouseOverGridItem = false;
-        let mouseOverOptionsContainer = false;
-    
-        function checkMouseLeave() {
-            if (!mouseOverGridItem && !mouseOverOptionsContainer) {
+
+        // Prevent click events inside the optionsContainer from propagating
+        optionsContainer.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        // Close the options container when clicking outside
+        function outsideClickListener(event) {
+            if (!optionsContainer.contains(event.target)) {
                 optionsContainer.remove();
                 currentOpenOptionsContainer = null;
-                // Remove event listeners
-                gridItem.removeEventListener('mouseenter', onGridItemMouseEnter);
-                gridItem.removeEventListener('mouseleave', onGridItemMouseLeave);
-                optionsContainer.removeEventListener('mouseenter', onOptionsContainerMouseEnter);
-                optionsContainer.removeEventListener('mouseleave', onOptionsContainerMouseLeave);
+                document.removeEventListener('click', outsideClickListener);
             }
         }
-    
-        function onGridItemMouseEnter() {
-            mouseOverGridItem = true;
-        }
-    
-        function onGridItemMouseLeave() {
-            mouseOverGridItem = false;
-            setTimeout(checkMouseLeave, 0);
-        }
-    
-        function onOptionsContainerMouseEnter() {
-            mouseOverOptionsContainer = true;
-        }
-    
-        function onOptionsContainerMouseLeave() {
-            mouseOverOptionsContainer = false;
-            setTimeout(checkMouseLeave, 0);
-        }
-    
-        gridItem.addEventListener('mouseenter', onGridItemMouseEnter);
-        gridItem.addEventListener('mouseleave', onGridItemMouseLeave);
-        optionsContainer.addEventListener('mouseenter', onOptionsContainerMouseEnter);
-        optionsContainer.addEventListener('mouseleave', onOptionsContainerMouseLeave);
-    
+
+        document.addEventListener('click', outsideClickListener);
+
         gridItem.appendChild(optionsContainer);
     }
 
@@ -286,24 +263,24 @@ document.addEventListener('DOMContentLoaded', function () {
         gridItem.appendChild(liveActivitiesContainer);
     }
 
-// Function to create a button group for settings
-function createButtonGroup(gridItem, level) {
-    const buttonGroupWrapper = document.createElement('div');
-    buttonGroupWrapper.classList.add('button-group-wrapper');
+    // Function to create a button group for settings
+    function createButtonGroup(gridItem, level) {
+        const buttonGroupWrapper = document.createElement('div');
+        buttonGroupWrapper.classList.add('button-group-wrapper');
 
-    const toggleButton = document.createElement('button');
-    toggleButton.classList.add('toggle-button');
-    toggleButton.textContent = ''; // Ensure no text content
+        const toggleButton = document.createElement('button');
+        toggleButton.classList.add('toggle-button');
+        // No icon or text as per your request
 
-    toggleButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        showOptionsContainer(gridItem);
-    });
+        toggleButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            showOptionsContainer(gridItem);
+        });
 
-    buttonGroupWrapper.appendChild(toggleButton);
+        buttonGroupWrapper.appendChild(toggleButton);
 
-    return buttonGroupWrapper;
-}
+        return buttonGroupWrapper;
+    }
 
     // Start with a 2x2 grid on page load
     const initialGrid = createGrid(1, 2, 2);
