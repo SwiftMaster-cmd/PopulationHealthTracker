@@ -51,7 +51,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 
+    box-shadow:
         inset -3px -3px 6px rgba(0, 0, 0, 0.4), /* Darker inner shadow for depth */
         inset 3px 3px 8px rgba(255, 255, 255, 0.2), /* Lighter inner shadow for highlight */
         6px 6px 12px rgba(0, 0, 0, 0.5); /* Outer shadow to make it pop out */
@@ -68,9 +68,6 @@ html, body {
     top: 10px;
     right: 10px;
     z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
     opacity: 0; /* Hide by default */
     transition: opacity 0.3s ease;
 }
@@ -88,7 +85,7 @@ html, body {
     cursor: pointer;
     width: 20px;
     height: 20px;
-    box-shadow: 
+    box-shadow:
         inset 2px 2px 4px rgba(0, 0, 0, 0.6),  /* Inner shadow for pressed effect */
         2px 2px 6px rgba(0, 0, 0, 0.5),  /* Outer shadow to give a raised 3D look */
         -2px -2px 6px rgba(255, 255, 255, 0.2); /* Highlight on top for the 3D effect */
@@ -97,9 +94,9 @@ html, body {
 
 .toggle-button:hover {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.7)); /* Slight color change on hover */
-    box-shadow: 
+    box-shadow:
         inset 2px 2px 4px rgba(0, 0, 0, 0.8),  /* Darker inner shadow on hover */
-        2px 2px 6px rgba(0, 0, 0, 0.6),  
+        2px 2px 6px rgba(0, 0, 0, 0.6),
         -2px -2px 6px rgba(255, 255, 255, 0.4); /* Stronger highlight on hover */
 }
 
