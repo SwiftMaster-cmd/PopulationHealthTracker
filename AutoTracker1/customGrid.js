@@ -285,4 +285,4 @@ document.addEventListener('DOMContentLoaded', function () {
     // Start with a 2x2 grid on page load
     const initialGrid = createGrid(1, 2, 2);
     container.appendChild(initialGrid);
-}); 
+});
