@@ -63,22 +63,31 @@ html, body {
     height: 100%; /* Ensure it takes full height of its grid cell */
 }
 
-
 .button-group-wrapper {
     position: absolute;
     top: 10px;
     right: 10px;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    opacity: 0; /* Hide by default */
+    transition: opacity 0.3s ease;
+}
+
+/* Show the toggle button when the grid item is hovered */
+.grid-item:hover .button-group-wrapper {
+    opacity: 1;
 }
 
 .toggle-button {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5)); /* Gradient for 3D effect */
     border: none;
-    padding: 0;
+    padding: 5px;
     border-radius: 50%;
     cursor: pointer;
-    width: 5px;
-    height: 5px;
+    width: 20px;
+    height: 20px;
     box-shadow: 
         inset 2px 2px 4px rgba(0, 0, 0, 0.6),  /* Inner shadow for pressed effect */
         2px 2px 6px rgba(0, 0, 0, 0.5),  /* Outer shadow to give a raised 3D look */
@@ -93,7 +102,6 @@ html, body {
         2px 2px 6px rgba(0, 0, 0, 0.6),  
         -2px -2px 6px rgba(255, 255, 255, 0.4); /* Stronger highlight on hover */
 }
-
 
 .button-group {
     display: none;
@@ -125,7 +133,6 @@ html, body {
     background-color: var(--color-quaternary);
 }
 
-
 .new-grid-container {
     height: 100%;
     width: 100%;
@@ -142,7 +149,6 @@ html, body {
     height: 100%;
     width: 100%;
 }
-
 
 .selection-list {
     position: absolute;
