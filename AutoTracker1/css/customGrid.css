@@ -1,27 +1,34 @@
+/* Reset for full viewport usage and preventing body scroll */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow: hidden; /* Prevent scrolling on the body */
 }
 
+/* Container that spans the full viewport */
 .grid-container {
     display: grid;
-    height: 100vh; /* Fill the viewport height */
-    width: 100vw;  /* Fill the viewport width */
-    gap: var(--margin-m); /* Ensure even gaps between items */
-    padding: var(--margin-m); /* Add padding around the container */
-    box-sizing: border-box; /* Ensure padding is included in the container size */
+    height: 100vh; /* Fill the entire viewport height */
+    width: 100vw;  /* Fill the entire viewport width */
+    gap: var(--margin-m); /* Gap between grid items */
+    padding: var(--margin-m); /* Padding around the grid */
+    box-sizing: border-box; /* Include padding in the container size */
+    overflow: hidden; /* Prevent scrolling within the container */
 }
 
+/* Custom grid configuration for 1x1, 2x1, 1x2, and 2x2 layouts */
 .custom-grid {
     display: grid;
     gap: var(--margin-m);
     height: 100%;
     width: 100%;
-    padding: var(--margin-m); /* Add padding inside the grid */
-    box-sizing: border-box; /* Include padding in the total grid size */
+    padding: var(--margin-m); /* Padding inside the grid */
+    box-sizing: border-box; /* Include padding in the grid size */
+    overflow: hidden; /* Prevent internal scrolling */
 }
 
+/* Specific grid layouts */
 .grid-1x1 {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
@@ -42,6 +49,7 @@ html, body {
     grid-template-rows: repeat(2, 1fr);
 }
 
+/* Grid item styles */
 .grid-item {
     position: relative;
     background-color: rgba(255, 255, 255, 0.1);
@@ -52,18 +60,20 @@ html, body {
     justify-content: center;
     align-items: center;
     box-shadow: 
-        inset -3px -3px 6px rgba(0, 0, 0, 0.4), /* Darker inner shadow for depth */
-        inset 3px 3px 8px rgba(255, 255, 255, 0.2), /* Lighter inner shadow for highlight */
-        6px 6px 12px rgba(0, 0, 0, 0.5); /* Outer shadow to make it pop out */
+        inset -3px -3px 6px rgba(0, 0, 0, 0.4), /* Inner shadow */
+        inset 3px 3px 8px rgba(255, 255, 255, 0.2), /* Highlight inner shadow */
+        6px 6px 12px rgba(0, 0, 0, 0.5); /* Outer shadow for 3D effect */
     border: 1px solid rgba(255, 255, 255, 0.2);
     background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
-    padding: var(--margin-m); /* Add padding inside the grid items */
-    box-sizing: border-box; /* Include padding in the total item size */
-    width: 100%; /* Ensure it takes full width of its grid cell */
-    height: 100%; /* Ensure it takes full height of its grid cell */
+    box-sizing: border-box; /* Include padding in size calculation */
+    width: 100%; /* Full width of its grid cell */
+    height: 100%; /* Full height of its grid cell */
+    max-width: 100%; /* Constrain to available width */
+    max-height: 100%; /* Constrain to available height */
+    overflow: hidden; /* Prevent internal overflow */
 }
 
-
+/* Button and selection list styling */
 .button-group-wrapper {
     position: absolute;
     top: 10px;
@@ -72,7 +82,7 @@ html, body {
 }
 
 .toggle-button {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5)); /* Gradient for 3D effect */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5));
     border: none;
     padding: 0;
     border-radius: 50%;
@@ -80,20 +90,19 @@ html, body {
     width: 5px;
     height: 5px;
     box-shadow: 
-        inset 2px 2px 4px rgba(0, 0, 0, 0.6),  /* Inner shadow for pressed effect */
-        2px 2px 6px rgba(0, 0, 0, 0.5),  /* Outer shadow to give a raised 3D look */
-        -2px -2px 6px rgba(255, 255, 255, 0.2); /* Highlight on top for the 3D effect */
+        inset 2px 2px 4px rgba(0, 0, 0, 0.6),  
+        2px 2px 6px rgba(0, 0, 0, 0.5),  
+        -2px -2px 6px rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
 }
 
 .toggle-button:hover {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.7)); /* Slight color change on hover */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.7));
     box-shadow: 
-        inset 2px 2px 4px rgba(0, 0, 0, 0.8),  /* Darker inner shadow on hover */
+        inset 2px 2px 4px rgba(0, 0, 0, 0.8),  
         2px 2px 6px rgba(0, 0, 0, 0.6),  
-        -2px -2px 6px rgba(255, 255, 255, 0.4); /* Stronger highlight on hover */
+        -2px -2px 6px rgba(255, 255, 255, 0.4);
 }
-
 
 .button-group {
     display: none;
@@ -125,7 +134,6 @@ html, body {
     background-color: var(--color-quaternary);
 }
 
-
 .new-grid-container {
     height: 100%;
     width: 100%;
@@ -142,7 +150,6 @@ html, body {
     height: 100%;
     width: 100%;
 }
-
 
 .selection-list {
     position: absolute;
@@ -168,4 +175,32 @@ html, body {
 
 .selection-list button:hover {
     background-color: var(--color-quaternary);
+}
+
+/* iPad-specific adjustments to ensure proper fitting */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr); /* Adjust layout for iPad */
+        grid-template-rows: repeat(2, 1fr);
+        padding: var(--margin-xs); /* Reduce padding on iPad */
+    }
+
+    .grid-item {
+        padding: var(--margin-xs); /* Reduce padding inside items */
+        box-shadow: none; /* Simplify shadows for performance */
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr); /* More columns in landscape */
+    }
+}
+
+/* Portrait orientation adjustments */
+@media (orientation: portrait) {
+    .grid-container {
+        grid-template-columns: 1fr; /* Single column in portrait mode */
+    }
 }
