@@ -69,19 +69,25 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 5000);
         }
 
-        grid.addEventListener('mouseenter', () => {
-            showToggleButtons();
-            resetInactivityTimer();
-        });
-
-        grid.addEventListener('mouseleave', () => {
-            hideToggleButtons();
-            if (inactivityTimer) {
-                clearTimeout(inactivityTimer);
+        grid.addEventListener('mouseenter', (event) => {
+            // Check if the mouse entered from outside the grid
+            if (!grid.contains(event.relatedTarget)) {
+                showToggleButtons();
+                resetInactivityTimer();
             }
         });
 
-        grid.addEventListener('mousemove', () => {
+        grid.addEventListener('mouseleave', (event) => {
+            // Check if the mouse left to an element outside the grid
+            if (!grid.contains(event.relatedTarget)) {
+                hideToggleButtons();
+                if (inactivityTimer) {
+                    clearTimeout(inactivityTimer);
+                }
+            }
+        });
+
+        grid.addEventListener('mousemove', (event) => {
             resetInactivityTimer();
         });
     }
