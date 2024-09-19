@@ -21,10 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
         grid.classList.add('custom-grid');
         grid.classList.add(`grid-${columns}x${rows}`);
         grid.dataset.level = level; // Store the level in the grid
-        grid.classList.add(`grid-level-${level}`); // Add class for level
-
-        // Set up hover behavior for this grid
-        setupGridHoverBehavior(grid, level);
 
         for (let i = 0; i < columns * rows; i++) {
             const gridItem = createGridItem(level);
@@ -32,64 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         return grid;
-    }
-
-    // Function to set up hover behavior for grids
-    function setupGridHoverBehavior(grid, level) {
-        let inactivityTimer;
-
-        function showToggleButtons() {
-            // Show the toggle buttons of grid items at this level
-            const gridItems = grid.querySelectorAll('.grid-item');
-            gridItems.forEach(gridItem => {
-                const buttonGroupWrapper = gridItem.querySelector('.button-group-wrapper');
-                if (buttonGroupWrapper) {
-                    buttonGroupWrapper.style.opacity = '1';
-                }
-            });
-        }
-
-        function hideToggleButtons() {
-            // Hide the toggle buttons of grid items at this level
-            const gridItems = grid.querySelectorAll('.grid-item');
-            gridItems.forEach(gridItem => {
-                const buttonGroupWrapper = gridItem.querySelector('.button-group-wrapper');
-                if (buttonGroupWrapper) {
-                    buttonGroupWrapper.style.opacity = '0';
-                }
-            });
-        }
-
-        function resetInactivityTimer() {
-            if (inactivityTimer) {
-                clearTimeout(inactivityTimer);
-            }
-            inactivityTimer = setTimeout(() => {
-                hideToggleButtons();
-            }, 5000);
-        }
-
-        grid.addEventListener('mouseenter', (event) => {
-            // Check if the mouse entered from outside the grid
-            if (!grid.contains(event.relatedTarget)) {
-                showToggleButtons();
-                resetInactivityTimer();
-            }
-        });
-
-        grid.addEventListener('mouseleave', (event) => {
-            // Check if the mouse left to an element outside the grid
-            if (!grid.contains(event.relatedTarget)) {
-                hideToggleButtons();
-                if (inactivityTimer) {
-                    clearTimeout(inactivityTimer);
-                }
-            }
-        });
-
-        grid.addEventListener('mousemove', (event) => {
-            resetInactivityTimer();
-        });
     }
 
     // Function to change the layout at the current level
