@@ -60,18 +60,20 @@ html, body {
     flex-direction: column;
 }
 
+
+/* Show the toggle button when the grid item is hovered */
+.grid-item:hover .button-group-wrapper {
+    opacity: 1;
+}
+
 .button-group-wrapper {
     position: absolute;
     top: 10px;
     right: 10px;
     z-index: 10;
-    opacity: 0; /* Hide by default */
+    opacity: 0; /* Initially hidden */
     transition: opacity 0.3s ease;
-}
-
-/* Show the toggle button when the grid item is hovered */
-.grid-item:hover .button-group-wrapper {
-    opacity: 1;
+    pointer-events: none; /* Allow mouse events to pass through */
 }
 
 .toggle-button {
@@ -81,13 +83,19 @@ html, body {
     border-radius: 20%;
     cursor: pointer;
     width: 5px; /* Adjusted width */
-    height: px; /* Adjusted height */
+    height: 5px; /* Adjusted height */
     box-shadow:
         inset 1px 1px 2px rgba(0, 0, 0, 0.6),  /* Adjusted for smaller size */
         1px 1px 3px rgba(0, 0, 0, 0.5),
         -1px -1px 3px rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
+    pointer-events: auto; /* Enable interaction with the button */
 }
+
+/* Remove this rule since we're controlling visibility via JavaScript */
+/* .grid-item:hover .button-group-wrapper {
+    opacity: 1;
+} */
 
 .toggle-button:hover {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.7));
