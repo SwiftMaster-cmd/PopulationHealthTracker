@@ -1,3 +1,5 @@
+
+// firebase-init.js
 document.addEventListener('DOMContentLoaded', function() {
     const firebaseConfig = {
         apiKey: "AIzaSyBhSqBwrg8GYyaqpYHOZS8HtFlcXZ09OJA",
@@ -10,19 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
         measurementId: "G-RVBYB0RR06"
     };
 
-    // Check if Firebase has been initialized
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
-    } else {
-        firebase.app();
     }
 
-
-    document.addEventListener('DOMContentLoaded', function() {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        document.dispatchEvent(new Event('firebaseInitialized'));
-    });
+    document.dispatchEvent(new Event('firebaseInitialized'));
 });
 

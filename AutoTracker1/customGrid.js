@@ -1,3 +1,4 @@
+// custom-grid.js
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.grid-container');
     let currentOpenOptionsContainer = null; // Keep track of the currently open options container
@@ -300,25 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
         gridItem.appendChild(newGridContainer);
     }
 
-    // Function to insert Live Activities into the selected grid item
-    function insertLiveActivities(gridItem) {
-        const liveActivitiesContainer = document.createElement('div');
-        liveActivitiesContainer.classList.add('live-activities-container');
-        liveActivitiesContainer.innerHTML = `
-            <h4 class="live-activities-title">Live Activities</h4>
-            <!-- Toggle buttons for Show/Hide Non-sellable and Self Sales -->
-            <div class="toggle-buttons">
-                <button id="toggleSellableButton" class="toggle-button">Hide Non-sellable</button>
-                <button id="toggleSelfSalesButton" class="toggle-button">Hide Self Sales</button>
-            </div>
-            <div id="live-activities-section"></div>
-        `;
-
-        // Clear the previous content of the grid item and add Live Activities
-        gridItem.innerHTML = '';
-        gridItem.appendChild(liveActivitiesContainer);
-    }
-
     // Function to create a button group for settings
     function createButtonGroup(gridItem, level) {
         const buttonGroupWrapper = document.createElement('div');
@@ -336,6 +318,94 @@ document.addEventListener('DOMContentLoaded', function () {
         buttonGroupWrapper.appendChild(toggleButton);
 
         return buttonGroupWrapper;
+    }
+
+    // Function to insert live activities into a grid item
+    function insertLiveActivities(gridItem) {
+        // Check if Firebase is initialized
+        if (!firebase.apps.length) {
+            console.error('Firebase is not initialized');
+            return;
+        }
+
+        // Remove existing content from the grid item
+        gridItem.innerHTML = '';
+
+        // Create a container for the live activities
+        const liveActivitiesContainer = document.createElement('div');
+        liveActivitiesContainer.classList.add('live-activities-container');
+
+        // Append the container to the grid item
+        gridItem.appendChild(liveActivitiesContainer);
+
+        // Check if user is authenticated
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in.
+                fetchSalesData();
+            } else {
+                // No user is signed in, sign in anonymously
+                firebase.auth().signInAnonymously().catch(function(error) {
+                    console.error('Authentication error:', error);
+                });
+            }
+        });
+
+        function fetchSalesData() {
+            // Get a reference to the 'salesOutcomes' in Firebase
+            const salesOutcomesRef = firebase.database().ref('salesOutcomes');
+
+            // Listen for data changes
+            salesOutcomesRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+
+                // Process data to compute 'sales per day'
+                const salesPerDay = computeSalesPerDay(data);
+
+                // Display the sales per day in the liveActivitiesContainer
+                liveActivitiesContainer.innerHTML = '';
+
+                const salesPerDayElement = document.createElement('div');
+                salesPerDayElement.classList.add('sales-per-day');
+                salesPerDayElement.textContent = `Sales Today: ${salesPerDay}`;
+
+                liveActivitiesContainer.appendChild(salesPerDayElement);
+            }, (error) => {
+                console.error('Error fetching salesOutcomes:', error);
+            });
+        }
+    }
+
+    // Function to compute sales per day from salesOutcomes data
+    function computeSalesPerDay(data) {
+        const salesByDay = {};
+
+        for (const userId in data) {
+            const userSales = data[userId];
+
+            for (const saleId in userSales) {
+                const sale = userSales[saleId];
+
+                // Check if sale.outcomeTime exists
+                if (sale.outcomeTime) {
+                    // Parse the date and get the day in YYYY-MM-DD format
+                    const date = new Date(sale.outcomeTime);
+                    const day = date.toISOString().substring(0, 10);
+
+                    if (!salesByDay[day]) {
+                        salesByDay[day] = 0;
+                    }
+                    salesByDay[day] += 1; // Assuming each sale counts as 1
+                }
+            }
+        }
+
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().substring(0, 10);
+
+        const salesToday = salesByDay[today] || 0;
+
+        return salesToday;
     }
 
     // Start with a 2x2 grid on page load
