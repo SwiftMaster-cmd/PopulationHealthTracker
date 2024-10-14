@@ -205,7 +205,11 @@ document.addEventListener('firebaseInitialized', function() {
         });
 
         // Sort dates
-        const sortedDates = Object.keys(dateCounts).sort((a, b) => new Date(a) - new Date(b));
+        const sortedDates = Object.keys(dateCounts).sort((a, b) => {
+            const dateA = new Date(a);
+            const dateB = new Date(b);
+            return dateA - dateB;
+        });
 
         return {
             labels: sortedDates,
@@ -226,6 +230,7 @@ document.addEventListener('firebaseInitialized', function() {
         // Generate colors based on data values
         const colors = generateValueBasedColors(chartData.data);
 
+        // Create the chart
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
@@ -233,12 +238,10 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    backgroundColor: colors,
+                    pointBackgroundColor: colors,
                     borderColor: colors,
                     borderWidth: 2,
-                    hoverBackgroundColor: colors,
-                    hoverBorderColor: colors,
-                    fill: chartType === 'line', // Fill area under the line for line charts
+                    fill: true, // Enable fill for line charts
                 }]
             },
             options: {
@@ -267,10 +270,9 @@ document.addEventListener('firebaseInitialized', function() {
                                 family: 'Inter',
                                 size: 14,
                             },
-                            autoSkip: dataPointCount > 15, // Enable autoSkip when data points exceed 15
+                            autoSkip: dataPointCount > 15,
                             maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
                             callback: function(value, index, values) {
-                                // Show every other label when data points exceed 15
                                 if (dataPointCount > 15 && index % 2 !== 0) {
                                     return null;
                                 }
@@ -351,19 +353,71 @@ document.addEventListener('firebaseInitialized', function() {
                 custom: {
                     timeFrame: timeFrame,
                     actionType: actionType
+                },
+                // Add custom plugin for gradient fill
+                plugins: {
+                    gradientFillPlugin: true
                 }
             },
+            plugins: [gradientFillPlugin], // Register the plugin
         });
 
         return chart;
     }
+
+    // Custom plugin to create gradient fill for line charts
+    const gradientFillPlugin = {
+        id: 'gradientFillPlugin',
+        beforeDatasetsDraw(chart, args, options) {
+            if (chart.config.type !== 'line') {
+                return;
+            }
+
+            const ctx = chart.ctx;
+            const dataset = chart.data.datasets[0];
+            const yScale = chart.scales.y;
+            const xScale = chart.scales.x;
+            const meta = chart.getDatasetMeta(0);
+            const points = meta.data;
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(
+                0, yScale.getPixelForValue(yScale.min),
+                0, yScale.getPixelForValue(yScale.max)
+            );
+
+            // Get min and max values
+            const minValue = Math.min(...dataset.data);
+            const maxValue = Math.max(...dataset.data);
+
+            // Build color stops
+            dataset.data.forEach((value, index) => {
+                const ratio = (value - minValue) / (maxValue - minValue || 1);
+                const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
+                const stopPosition = 1 - ratio; // Invert ratio for vertical gradient
+                gradient.addColorStop(stopPosition, color);
+            });
+
+            // Save the current fill
+            const originalFill = dataset.backgroundColor;
+
+            // Set the gradient as the fill style
+            dataset.backgroundColor = gradient;
+
+            // Proceed with the default drawing
+            chart.update();
+
+            // Restore the original fill
+            dataset.backgroundColor = originalFill;
+        }
+    };
 
     function generateValueBasedColors(data) {
         const maxValue = Math.max(...data);
         const minValue = Math.min(...data);
 
         return data.map(value => {
-            const ratio = (value - minValue) / (maxValue - minValue || 1); // Avoid division by zero
+            const ratio = (value - minValue) / (maxValue - minValue || 1);
             // Create a gradient from red to green
             const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
             return color;
@@ -439,8 +493,10 @@ document.addEventListener('firebaseInitialized', function() {
             // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
-            chartInstance.data.datasets[0].backgroundColor = colors;
+            chartInstance.data.datasets[0].pointBackgroundColor = colors;
             chartInstance.data.datasets[0].borderColor = colors;
+
+            // Trigger an update
             chartInstance.update();
         });
     }
