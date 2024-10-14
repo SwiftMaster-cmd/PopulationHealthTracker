@@ -1,48 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- (Existing head content) -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Sales Dashboard</title>
 
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
 
-    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
-
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- Chart.js and Chroma.js are already included -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+
+    <!-- Your JavaScript Files -->
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
-
     <script src="display-sales.js" defer></script>
+    <script src="dashboard.js" defer></script> <!-- New script for dashboard -->
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-RVBYB0RR06');
-    </script>
-
-
-  
+    <!-- Google Analytics -->
+    <!-- (Your existing Google Analytics code) -->
 </head>
 <body>
+    <!-- Filter Section -->
+    <div class="filter-container">
+        <label for="timeFrame">Time Frame:</label>
+        <select id="timeFrame">
+            <option value="today">Today</option>
+            <option value="currentWeek">Current Week</option>
+            <option value="previousWeek">Previous Week</option>
+            <option value="currentMonth">Current Month</option>
+            <option value="previousMonth">Previous Month</option>
+            <option value="90days">Last 90 Days</option>
+            <option value="quarter">Quarter</option>
+            <option value="yearToDate">Year to Date</option>
+        </select>
 
+        <label for="actionType">Action Type:</label>
+        <select id="actionType">
+            <!-- Options will be populated dynamically -->
+        </select>
 
+        <label for="chartType">Chart Type:</label>
+        <select id="chartType">
+            <option value="bar">Bar Chart</option>
+            <option value="line">Line Chart</option>
+            <option value="pie">Pie Chart</option>
+        </select>
 
-    
+        <button id="addChartButton">Add Chart</button>
+    </div>
 
+    <!-- Container for charts -->
+    <div class="charts-container">
+        <!-- Charts will be dynamically added here -->
+    </div>
 
-    <div class="grid-container"></div> <!-- Container for dynamic grid layout -->
-
-    
-      
-
-    
+    <!-- Existing grid container -->
+    <div class="grid-container">
+        <!-- Existing content (e.g., sales data table) -->
+    </div>
 </body>
 </html>
