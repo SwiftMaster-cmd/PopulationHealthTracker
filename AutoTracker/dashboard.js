@@ -104,7 +104,7 @@ document.addEventListener('firebaseInitialized', function() {
 
         // Add a remove button
         const removeButton = document.createElement('button');
-        removeButton.textContent = '×';
+        removeButton.innerHTML = '&times;';
         removeButton.classList.add('remove-chart-button');
         removeButton.addEventListener('click', () => {
             chartContainer.remove();
@@ -118,9 +118,15 @@ document.addEventListener('firebaseInitialized', function() {
         totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: ${totalCount}`;
         chartContainer.appendChild(totalCountDisplay);
 
+        // Create chart content container for scrolling
+        const chartContent = document.createElement('div');
+        chartContent.classList.add('chart-content');
+
         // Create canvas for Chart.js
         const canvas = document.createElement('canvas');
-        chartContainer.appendChild(canvas);
+        chartContent.appendChild(canvas);
+
+        chartContainer.appendChild(chartContent);
 
         // Add chart container to the page
         document.querySelector('.charts-container').appendChild(chartContainer);
@@ -211,7 +217,8 @@ document.addEventListener('firebaseInitialized', function() {
         const dataPointCount = chartData.labels.length;
 
         // Set canvas width dynamically
-        canvas.style.width = dataPointCount > 8 ? `${dataPointCount * 60}px` : '100%';
+        const canvasWidth = dataPointCount > 8 ? dataPointCount * 60 : '100%';
+        canvas.style.width = typeof canvasWidth === 'number' ? `${canvasWidth}px` : canvasWidth;
         canvas.style.height = '400px'; // Fixed height
 
         const ctx = canvas.getContext('2d');
@@ -246,7 +253,7 @@ document.addEventListener('firebaseInitialized', function() {
                             text: 'Date',
                             color: '#ffffff',
                             font: {
-                                family: 'Roboto',
+                                family: 'Inter',
                                 size: 16,
                                 weight: '500',
                             },
@@ -254,7 +261,7 @@ document.addEventListener('firebaseInitialized', function() {
                         ticks: {
                             color: '#ffffff',
                             font: {
-                                family: 'Roboto',
+                                family: 'Inter',
                                 size: 14,
                             },
                             autoSkip: false,
@@ -271,7 +278,7 @@ document.addEventListener('firebaseInitialized', function() {
                             text: 'Count',
                             color: '#ffffff',
                             font: {
-                                family: 'Roboto',
+                                family: 'Inter',
                                 size: 16,
                                 weight: '500',
                             },
@@ -279,7 +286,7 @@ document.addEventListener('firebaseInitialized', function() {
                         ticks: {
                             color: '#ffffff',
                             font: {
-                                family: 'Roboto',
+                                family: 'Inter',
                                 size: 14,
                             },
                             beginAtZero: true,
@@ -296,7 +303,7 @@ document.addEventListener('firebaseInitialized', function() {
                         labels: {
                             color: '#ffffff',
                             font: {
-                                family: 'Roboto',
+                                family: 'Inter',
                                 size: 14,
                             },
                         },
@@ -308,12 +315,12 @@ document.addEventListener('firebaseInitialized', function() {
                         borderColor: '#444444',
                         borderWidth: 1,
                         titleFont: {
-                            family: 'Roboto',
+                            family: 'Inter',
                             size: 14,
                             weight: '500',
                         },
                         bodyFont: {
-                            family: 'Roboto',
+                            family: 'Inter',
                             size: 12,
                         },
                         callbacks: {
@@ -341,6 +348,7 @@ document.addEventListener('firebaseInitialized', function() {
 
         return chart;
     }
+
 
 
     function generateColors(count) {

@@ -14,13 +14,11 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: #121212;
     color: #E0E0E0;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-/* Container */
 .container {
     width: 100%;
-    max-width: 1280px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -99,19 +97,7 @@ select:focus {
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 30px;
-}
-
-.filter-container label {
-    font-size: 16px;
-    font-weight: 500;
-    color: #E0E0E0;
-    margin-right: 10px;
-    margin-bottom: 10px;
-}
-
-.filter-container select,
-.filter-container input[type="text"] {
-    margin-right: 20px;
+    overflow-x: auto; /* Allow horizontal scrolling if necessary */
 }
 
 /* Charts Container */
@@ -121,6 +107,7 @@ select:focus {
     gap: 20px;
     justify-content: center;
     margin-bottom: 40px;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .chart-wrapper {
@@ -131,15 +118,19 @@ select:focus {
     flex: 1 1 48%;
     max-width: 48%;
     height: 450px;
-    overflow: auto;
+    overflow: hidden; /* Hide overflow to prevent affecting main view */
 }
 
-.chart-wrapper canvas {
-    display: block;
-    width: 100%;
+.chart-content {
+    overflow-x: auto; /* Allow horizontal scrolling within chart */
     height: 100%;
 }
 
+.chart-content canvas {
+    display: block;
+}
+
+/* Remove Chart Button */
 .remove-chart-button {
     position: absolute;
     top: 15px;
@@ -167,13 +158,6 @@ select:focus {
     width: 100%;
 }
 
-.sales-data-section .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
 #toggleTableButton {
     margin-bottom: 20px;
 }
@@ -186,22 +170,9 @@ select:focus {
     padding: 15px 20px;
     border-radius: 8px;
     margin-bottom: 20px;
+    overflow-x: auto; /* Allow horizontal scrolling if necessary */
 }
 
-.sales-filters label {
-    font-size: 16px;
-    font-weight: 500;
-    color: #E0E0E0;
-    margin-right: 10px;
-    margin-bottom: 10px;
-}
-
-.sales-filters select,
-.sales-filters input[type="text"] {
-    margin-right: 20px;
-}
-
-/* Sales Table Container */
 .sales-table-container {
     width: 100%;
     overflow-x: auto;
