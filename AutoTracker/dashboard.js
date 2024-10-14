@@ -238,10 +238,10 @@ document.addEventListener('firebaseInitialized', function() {
         };
 
         if (chartType === 'line') {
-            datasets.borderColor = colors;
-            datasets.pointBackgroundColor = colors;
+            datasets.borderColor = '#FFFFFF'; // Line color
+            datasets.pointBackgroundColor = colors; // Colors for data points
             datasets.fill = true; // Enable fill for line charts
-            datasets.backgroundColor = 'transparent'; // Will be set by the plugin
+            datasets.backgroundColor = createVerticalGradient(ctx, canvas); // Gradient fill
         } else {
             datasets.backgroundColor = colors;
             datasets.borderColor = colors;
@@ -362,12 +362,6 @@ document.addEventListener('firebaseInitialized', function() {
             }
         };
 
-        // Include the gradient fill plugin for line charts
-        const plugins = [];
-        if (chartType === 'line') {
-            plugins.push(gradientFillPlugin);
-        }
-
         // Create the chart
         const chart = new Chart(ctx, {
             type: chartType,
@@ -376,46 +370,18 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [datasets]
             },
             options: chartOptions,
-            plugins: plugins,
         });
 
         return chart;
     }
 
-    // Custom plugin to create gradient fill for line charts
-    const gradientFillPlugin = {
-        id: 'gradientFillPlugin',
-        beforeDatasetsDraw(chart, args, options) {
-            if (chart.config.type !== 'line') {
-                return;
-            }
-
-            const ctx = chart.ctx;
-            const dataset = chart.data.datasets[0];
-            const yScale = chart.scales.y;
-
-            // Create gradient
-            const gradient = ctx.createLinearGradient(
-                0, yScale.getPixelForValue(yScale.max),
-                0, yScale.getPixelForValue(yScale.min)
-            );
-
-            // Get min and max values
-            const minValue = Math.min(...dataset.data);
-            const maxValue = Math.max(...dataset.data);
-
-            // Build color stops
-            dataset.data.forEach((value, index) => {
-                const ratio = (value - minValue) / (maxValue - minValue || 1);
-                const color = dataset.borderColor[index];
-                const stopPosition = ratio; // Since gradient from top (0) to bottom (1)
-                gradient.addColorStop(stopPosition, color);
-            });
-
-            // Set the gradient as the fill style
-            dataset.backgroundColor = gradient;
-        }
-    };
+    function createVerticalGradient(ctx, canvas) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, 'green');   // Top
+        gradient.addColorStop(0.5, 'orange'); // Middle
+        gradient.addColorStop(1, 'red');     // Bottom
+        return gradient;
+    }
 
     function generateValueBasedColors(data) {
         const maxValue = Math.max(...data);
@@ -500,8 +466,10 @@ document.addEventListener('firebaseInitialized', function() {
             chartInstance.data.datasets[0].data = chartData.data;
 
             if (chartConfig.chartType === 'line') {
-                chartInstance.data.datasets[0].borderColor = colors;
                 chartInstance.data.datasets[0].pointBackgroundColor = colors;
+                // Update gradient fill
+                const ctx = chartInstance.ctx;
+                chartInstance.data.datasets[0].backgroundColor = createVerticalGradient(ctx, canvas);
             } else {
                 chartInstance.data.datasets[0].backgroundColor = colors;
                 chartInstance.data.datasets[0].borderColor = colors;
