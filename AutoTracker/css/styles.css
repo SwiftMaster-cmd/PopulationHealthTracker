@@ -14,7 +14,8 @@ body {
 
 /* Container Styles */
 .container {
-    max-width: 1200px;
+    /* Remove the max-width to allow full-width content */
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
 }
@@ -120,6 +121,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center; /* Center the content horizontally */
+    width: 100%; /* Ensure it takes full width */
 }
 
 #toggleTableButton {
@@ -144,8 +146,7 @@ body {
     background-color: #1e1e1e;
     padding: 15px;
     border-radius: 8px;
-    max-width: 85%; /* Limit width */
-    width: 100%;
+    width: 100%; /* Full width */
 }
 
 .sales-filters label {
@@ -187,10 +188,9 @@ body {
     overflow-x: auto;
     background-color: #1e1e1e;
     padding: 20px;
-    margin: 20px auto; /* Center the container */
+    margin: 20px 0; /* Remove auto to align with full width */
     border-radius: 8px;
-    max-width: 85%; /* Limit width to 85% of the screen */
-    width: 100%;
+    width: 100%; /* Full width */
 }
 
 /* Sales Table */
@@ -207,6 +207,7 @@ body {
     text-align: left;
     color: #ffffff;
     vertical-align: top;
+    font-size: 14px;
 }
 
 .sales-table th {
@@ -248,7 +249,7 @@ h1, h2, h3, h4, h5, h6 {
     .sales-filters {
         flex-direction: column;
         align-items: flex-start;
-        max-width: 100%;
+        width: 100%; /* Ensure full width on smaller screens */
     }
 
     .filter-container label,
@@ -268,6 +269,11 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     .sales-table-container {
-        max-width: 100%; /* Allow full width on smaller screens */
+        width: 100%; /* Full width on smaller screens */
+        margin: 20px 0;
+    }
+
+    .sales-data-section {
+        width: 100%;
     }
 }
