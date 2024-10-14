@@ -273,3 +273,61 @@ select:focus {
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555555;
 }
+/* Header Container */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+/* Chart Controls Container */
+.chart-controls-container {
+    display: flex;
+    align-items: center;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+}
+
+.chart-controls select,
+.chart-controls button {
+    margin-right: 10px;
+}
+
+/* Commission Container */
+.commission-container {
+    cursor: pointer;
+}
+
+.commission-container p {
+    margin: 0;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Commission Details Popup */
+.commission-details-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.popup-content p {
+    margin: 10px 0;
+}

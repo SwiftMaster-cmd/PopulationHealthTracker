@@ -21,6 +21,14 @@ document.addEventListener('firebaseInitialized', function() {
             const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
             populateActionTypes(actionTypes);
 
+            // Populate time frames
+            const timeFrames = ['today', 'currentWeek', 'previousWeek', 'currentMonth', '90days', 'quarter', 'yearToDate', 'allTime'];
+            populateTimeFrames(timeFrames);
+
+            // Populate chart types
+            const chartTypes = ['bar', 'line', 'pie'];
+            populateChartTypes(chartTypes);
+
             // Set up event listeners
             setupEventListeners(salesData);
 
@@ -35,6 +43,42 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
+    function populateActionTypes(actionTypes) {
+        const actionTypeSelect = document.getElementById('actionType');
+        actionTypeSelect.innerHTML = ''; // Clear existing options
+
+        actionTypes.forEach(actionType => {
+            const option = document.createElement('option');
+            option.value = actionType;
+            option.textContent = actionType;
+            actionTypeSelect.appendChild(option);
+        });
+    }
+
+    function populateTimeFrames(timeFrames) {
+        const timeFrameSelect = document.getElementById('timeFrame');
+        timeFrameSelect.innerHTML = ''; // Clear existing options
+
+        timeFrames.forEach(timeFrame => {
+            const option = document.createElement('option');
+            option.value = timeFrame;
+            option.textContent = timeFrame;
+            timeFrameSelect.appendChild(option);
+        });
+    }
+
+    function populateChartTypes(chartTypes) {
+        const chartTypeSelect = document.getElementById('chartType');
+        chartTypeSelect.innerHTML = ''; // Clear existing options
+
+        chartTypes.forEach(chartType => {
+            const option = document.createElement('option');
+            option.value = chartType;
+            option.textContent = chartType;
+            chartTypeSelect.appendChild(option);
+        });
+    }
+
     function setupEventListeners(salesData) {
         const addChartButton = document.getElementById('addChartButton');
         const showChartControlsButton = document.getElementById('showChartControlsButton');
@@ -45,13 +89,19 @@ document.addEventListener('firebaseInitialized', function() {
         });
 
         showChartControlsButton.addEventListener('click', () => {
-            document.querySelector('.chart-controls').style.display = 'block';
+            document.querySelector('.chart-controls').style.display = 'flex';
             showChartControlsButton.style.display = 'none';
         });
 
         hideChartControlsButton.addEventListener('click', () => {
             document.querySelector('.chart-controls').style.display = 'none';
             showChartControlsButton.style.display = 'inline-block';
+        });
+
+        // Commission container click event for popup
+        const commissionContainer = document.getElementById('commissionContainer');
+        commissionContainer.addEventListener('click', () => {
+            showCommissionDetailsPopup();
         });
     }
 
@@ -82,18 +132,6 @@ document.addEventListener('firebaseInitialized', function() {
             // Exclude other options
             return null;
         }
-    }
-
-    function populateActionTypes(actionTypes) {
-        const actionTypeSelect = document.getElementById('actionType');
-        actionTypeSelect.innerHTML = ''; // Clear existing options
-
-        actionTypes.forEach(actionType => {
-            const option = document.createElement('option');
-            option.value = actionType;
-            option.textContent = actionType;
-            actionTypeSelect.appendChild(option);
-        });
     }
 
     function addChart(salesData, chartConfig = null) {
@@ -479,7 +517,7 @@ document.addEventListener('firebaseInitialized', function() {
     // Commission Calculation Functions
 
     function calculateAndDisplayCommission(salesData) {
-        // Calculate sales totals
+        // Calculate sales totals for current month
         const salesTotals = calculateSalesTotals(salesData);
 
         // Assuming level is provided or determined elsewhere
@@ -500,10 +538,18 @@ document.addEventListener('firebaseInitialized', function() {
             spm: 0
         };
 
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startTime = startOfMonth.getTime();
+        const endTime = now.getTime();
+
         salesData.forEach(sale => {
-            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-            if (saleType && saleType in salesTotals) {
-                salesTotals[saleType]++;
+            const saleTime = new Date(sale.outcomeTime).getTime();
+            if (saleTime >= startTime && saleTime <= endTime) {
+                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                if (saleType && saleType in salesTotals) {
+                    salesTotals[saleType]++;
+                }
             }
         });
 
@@ -608,11 +654,19 @@ document.addEventListener('firebaseInitialized', function() {
         const commissionContainer = document.getElementById('commissionContainer');
         commissionContainer.innerHTML = `
             <p>Total Commission: $${commission.totalCommission.toFixed(2)}</p>
-            <p>Select RX (${salesTotals.selectRX} sales): $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)}</p>
-            <p>Transfer (${salesTotals.transfer} sales): $${(salesTotals.transfer * commission.transferPayout).toFixed(2)}</p>
-            <p>Billable HRA (${salesTotals.billableHRA} sales): $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)}</p>
-            <p>SPM (${salesTotals.spm} sales): $${(salesTotals.spm * commission.spmPayout).toFixed(2)}</p>
         `;
+    }
+
+    function showCommissionDetailsPopup() {
+        const commissionDetailsPopup = document.getElementById('commissionDetailsPopup');
+        commissionDetailsPopup.style.display = 'block';
+
+        // Close the popup when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === commissionDetailsPopup) {
+                commissionDetailsPopup.style.display = 'none';
+            }
+        });
     }
 
     function getUserLevel() {
