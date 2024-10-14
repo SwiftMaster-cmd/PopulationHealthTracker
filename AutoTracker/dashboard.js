@@ -12,8 +12,8 @@ document.addEventListener('firebaseInitialized', function() {
 
     function initializeDashboard(user) {
         fetchSalesData(user).then(salesData => {
-            // Populate action types using sale types
-            const actionTypes = getUniqueActionTypes(salesData);
+            // Populate action types using predefined options
+            const actionTypes = ['Select Patient Management', 'Transfer', 'HRA'];
             populateActionTypes(actionTypes);
 
             // Set up event listeners
@@ -48,30 +48,23 @@ document.addEventListener('firebaseInitialized', function() {
         const normalizedAction = action.toLowerCase();
         const normalizedNotes = notes.toLowerCase();
 
-        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
-            return 'Select RX';
-        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(normalizedNotes)) {
-            return 'Billable HRA';
+        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
+            return 'HRA';
         } else if (
-            /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh|spm|select patient management)/i.test(normalizedNotes)
+            /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
         ) {
-            return 'Transfer/Partner';
-        } else if (/dental/i.test(normalizedNotes)) {
-            return 'Dental';
+            return 'Transfer';
+        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
+            return 'Select Patient Management';
+        } else {
+            // Exclude other options
+            return null;
         }
-        // Include other specific notes as needed
-        return action;
     }
 
     function getUniqueActionTypes(salesData) {
-        const actionTypes = new Set();
-        salesData.forEach(sale => {
-            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-            if (saleType) {
-                actionTypes.add(saleType);
-            }
-        });
-        return Array.from(actionTypes);
+        // We already have predefined action types
+        return ['Select Patient Management', 'Transfer', 'HRA'];
     }
 
     function populateActionTypes(actionTypes) {
