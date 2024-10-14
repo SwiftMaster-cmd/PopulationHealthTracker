@@ -16,18 +16,13 @@ document.addEventListener('firebaseInitialized', function() {
             const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
             populateActionTypes(actionTypes);
 
-            // Load saved charts and preferences
-            loadSavedCharts(salesData);
-
             // Set up event listeners
             document.getElementById('addChartButton').addEventListener('click', () => {
                 addChart(salesData);
             });
 
-            document.getElementById('sortBy').addEventListener('change', () => {
-                sortCharts();
-                saveChartsToLocalStorage();
-            });
+            // Load saved charts after sales data is fetched
+            loadSavedCharts(salesData);
         }).catch(error => {
             console.error('Error fetching sales data:', error);
         });
@@ -124,8 +119,6 @@ document.addEventListener('firebaseInitialized', function() {
         // Create chart container
         const chartContainer = document.createElement('div');
         chartContainer.classList.add('chart-wrapper');
-        chartContainer.dataset.chartType = chartType;
-        chartContainer.dataset.timeFrame = timeFrame;
 
         // Add a remove button
         const removeButton = document.createElement('button');
@@ -318,59 +311,22 @@ document.addEventListener('firebaseInitialized', function() {
 
         charts.forEach(chart => {
             const chartConfig = {
-                timeFrame: chart.dataset.timeFrame,
+                timeFrame: chart.querySelector('.chart-canvas').dataset.timeFrame,
                 actionType: chart.querySelector('.total-count-display').textContent.split(':')[0].trim(),
-                chartType: chart.dataset.chartType
+                chartType: chart.querySelector('.chart-canvas').dataset.chartType
             };
             savedCharts.push(chartConfig);
         });
 
         localStorage.setItem('savedCharts', JSON.stringify(savedCharts));
-
-        // Save sorting preference
-        const sortBy = document.getElementById('sortBy').value;
-        localStorage.setItem('sortBy', sortBy);
     }
 
     function loadSavedCharts(salesData) {
         const savedCharts = JSON.parse(localStorage.getItem('savedCharts')) || [];
-        const sortBy = localStorage.getItem('sortBy') || 'none';
-
-        // Set sorting preference
-        document.getElementById('sortBy').value = sortBy;
 
         // Add saved charts
         savedCharts.forEach(chartConfig => {
             addChart(salesData, chartConfig);
-        });
-
-        // Apply sorting
-        sortCharts();
-    }
-
-    function sortCharts() {
-        const sortBy = document.getElementById('sortBy').value;
-        const chartsContainer = document.querySelector('.charts-container');
-        const charts = Array.from(chartsContainer.children);
-
-        if (sortBy === 'none') {
-            // Do nothing
-            return;
-        }
-
-        charts.sort((a, b) => {
-            if (sortBy === 'chartType') {
-                return a.dataset.chartType.localeCompare(b.dataset.chartType);
-            } else if (sortBy === 'timeFrame') {
-                return a.dataset.timeFrame.localeCompare(b.dataset.timeFrame);
-            } else {
-                return 0;
-            }
-        });
-
-        // Re-append charts in sorted order
-        charts.forEach(chart => {
-            chartsContainer.appendChild(chart);
         });
     }
 });
