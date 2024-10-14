@@ -205,11 +205,7 @@ document.addEventListener('firebaseInitialized', function() {
         });
 
         // Sort dates
-        const sortedDates = Object.keys(dateCounts).sort((a, b) => {
-            const dateA = new Date(a);
-            const dateB = new Date(b);
-            return dateA - dateB;
-        });
+        const sortedDates = Object.keys(dateCounts).sort((a, b) => new Date(a) - new Date(b));
 
         return {
             labels: sortedDates,
@@ -228,9 +224,8 @@ document.addEventListener('firebaseInitialized', function() {
         const ctx = canvas.getContext('2d');
 
         // Generate colors based on data values
-        const colors = generateValueBasedColors(chartData.data, chartType);
+        const colors = generateValueBasedColors(chartData.data);
 
-        // Create the chart
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
@@ -238,11 +233,12 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    backgroundColor: chartType === 'bar' ? colors : undefined,
-                    pointBackgroundColor: chartType === 'line' ? colors : undefined,
-                    borderColor: chartType === 'line' ? colors : 'rgba(0, 188, 212, 1)',
+                    backgroundColor: colors,
+                    borderColor: colors,
                     borderWidth: 2,
-                    fill: chartType === 'line', // Enable fill for line charts
+                    hoverBackgroundColor: colors,
+                    hoverBorderColor: colors,
+                    fill: chartType === 'line', // Fill area under the line for line charts
                 }]
             },
             options: {
@@ -271,9 +267,10 @@ document.addEventListener('firebaseInitialized', function() {
                                 family: 'Inter',
                                 size: 14,
                             },
-                            autoSkip: dataPointCount > 15,
+                            autoSkip: dataPointCount > 15, // Enable autoSkip when data points exceed 15
                             maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
                             callback: function(value, index, values) {
+                                // Show every other label when data points exceed 15
                                 if (dataPointCount > 15 && index % 2 !== 0) {
                                     return null;
                                 }
@@ -354,67 +351,21 @@ document.addEventListener('firebaseInitialized', function() {
                 custom: {
                     timeFrame: timeFrame,
                     actionType: actionType
-                },
-                // Add custom plugin for gradient fill
-                plugins: chartType === 'line' ? [gradientFillPlugin] : []
+                }
             },
         });
 
         return chart;
     }
 
-    // Custom plugin to create gradient fill for line charts
-    const gradientFillPlugin = {
-        id: 'gradientFillPlugin',
-        beforeDatasetsDraw(chart, args, options) {
-            if (chart.config.type !== 'line') {
-                return;
-            }
-
-            const ctx = chart.ctx;
-            const dataset = chart.data.datasets[0];
-            const yScale = chart.scales.y;
-
-            // Create gradient
-            const gradient = ctx.createLinearGradient(
-                0, yScale.getPixelForValue(yScale.min),
-                0, yScale.getPixelForValue(yScale.max)
-            );
-
-            // Get min and max values
-            const minValue = Math.min(...dataset.data);
-            const maxValue = Math.max(...dataset.data);
-
-            // Build color stops (Flipped: green at highest, red at lowest)
-            dataset.data.forEach((value, index) => {
-                const ratio = (value - minValue) / (maxValue - minValue || 1);
-                const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
-                const stopPosition = ratio; // Use ratio directly for vertical gradient
-                gradient.addColorStop(stopPosition, color);
-            });
-
-            // Set the gradient as the fill style
-            const originalBackgroundColor = dataset.backgroundColor;
-            dataset.backgroundColor = gradient;
-
-            // Proceed with the default drawing
-            chart.update();
-
-            // Restore the original background color
-            dataset.backgroundColor = originalBackgroundColor;
-        }
-    };
-
-    function generateValueBasedColors(data, chartType) {
+    function generateValueBasedColors(data) {
         const maxValue = Math.max(...data);
         const minValue = Math.min(...data);
 
         return data.map(value => {
-            const ratio = (value - minValue) / (maxValue - minValue || 1);
-            // Flip the ratio for line charts to have green at highest and red at lowest
-            const adjustedRatio = chartType === 'line' ? ratio : 1 - ratio;
+            const ratio = (value - minValue) / (maxValue - minValue || 1); // Avoid division by zero
             // Create a gradient from red to green
-            const color = chroma.scale(['red', 'orange', 'green'])(adjustedRatio).hex();
+            const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
             return color;
         });
     }
@@ -483,20 +434,13 @@ document.addEventListener('firebaseInitialized', function() {
             totalCountDisplay.textContent = `${chartConfig.actionType} (${chartConfig.timeFrame}) - Total Count: ${totalCount}`;
 
             // Generate new colors based on updated data
-            const colors = generateValueBasedColors(chartData.data, chartConfig.chartType);
+            const colors = generateValueBasedColors(chartData.data);
 
             // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
-
-            if (chartConfig.chartType === 'bar') {
-                chartInstance.data.datasets[0].backgroundColor = colors;
-            } else if (chartConfig.chartType === 'line') {
-                chartInstance.data.datasets[0].pointBackgroundColor = colors;
-                chartInstance.data.datasets[0].borderColor = colors;
-            }
-
-            // Trigger an update
+            chartInstance.data.datasets[0].backgroundColor = colors;
+            chartInstance.data.datasets[0].borderColor = colors;
             chartInstance.update();
         });
     }
