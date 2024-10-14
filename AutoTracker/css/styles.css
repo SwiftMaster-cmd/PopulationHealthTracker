@@ -8,8 +8,8 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    color: #333;
-    background: linear-gradient(to right, #e0eafc, #cfdef3); /* Gradient background */
+    color: #ffffff;
+    background-color: #121212;
 }
 
 /* Container Styles */
@@ -25,39 +25,43 @@ body {
     flex-wrap: wrap;
     align-items: center;
     padding: 20px;
-    background-color: #ffffffcc;
+    background-color: #1e1e1e;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
 .filter-container label {
     margin-right: 10px;
     font-weight: 500;
-    color: #555;
+    color: #ffffff;
+    font-size: 16px;
 }
 
 .filter-container select,
-.filter-container button {
+.filter-container button,
+.filter-container input {
     margin-right: 20px;
     margin-bottom: 10px;
     padding: 8px 12px;
     font-size: 14px;
-    border: 1px solid #bbb;
+    border: 1px solid #444444;
     border-radius: 4px;
-    background-color: #f7f7f7;
+    background-color: #2e2e2e;
+    color: #ffffff;
 }
 
 .filter-container button {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #3f51b5;
+    color: #ffffff;
     border: none;
     cursor: pointer;
 }
 
 .filter-container button:hover {
-    background-color: #0056b3;
+    background-color: #5c6bc0;
 }
 
+/* Charts Container */
 .charts-container {
     display: flex;
     flex-wrap: wrap;
@@ -66,7 +70,6 @@ body {
     gap: 20px; /* Add gap between charts */
 }
 
-
 /* Chart Wrapper */
 .chart-wrapper {
     position: relative;
@@ -74,11 +77,11 @@ body {
     flex: 1 1 48%;
     box-sizing: border-box;
     margin-bottom: 20px;
-    background-color: #ffffffcc;
+    background-color: #1e1e1e;
     border-radius: 8px;
     padding: 20px;
     overflow: hidden; /* Prevent overflow */
-    height: 650px; /* Fixed height for the chart wrapper */
+    height: 450px; /* Fixed height for the chart wrapper */
 }
 
 .chart-wrapper canvas {
@@ -92,79 +95,146 @@ body {
     top: 15px;
     right: 15px;
     padding: 5px 8px;
-    font-size: 12px;
-    background-color: #e74c3c;
-    color: #fff;
+    font-size: 16px;
+    background-color: #e53935;
+    color: #ffffff;
     border: none;
     border-radius: 50%;
     cursor: pointer;
 }
 
 .remove-chart-button:hover {
-    background-color: #c0392b;
+    background-color: #d32f2f;
 }
 
 .total-count-display {
     font-weight: 500;
     margin-bottom: 10px;
-    color: #007bff;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+/* Sales Data Section */
+.sales-data-section {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+}
+
+#toggleTableButton {
+    padding: 10px 20px;
     font-size: 16px;
+    background-color: #43a047;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#toggleTableButton:hover {
+    background-color: #66bb6a;
+}
+
+.sales-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #1e1e1e;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 85%; /* Limit width */
+    width: 100%;
+}
+
+.sales-filters label {
+    margin-right: 10px;
+    font-weight: 500;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.sales-filters select,
+.sales-filters input {
+    margin-right: 20px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #444444;
+    border-radius: 4px;
+    background-color: #2e2e2e;
+    color: #ffffff;
+}
+
+#showMoreButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #3f51b5;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#showMoreButton:hover {
+    background-color: #5c6bc0;
 }
 
 /* Sales Table Container */
 .sales-table-container {
     overflow-x: auto;
-    background-color: #ffffffcc;
-    justify-content: center; /* Center the charts */
-
+    background-color: #1e1e1e;
     padding: 20px;
-    margin: 20px 0;
+    margin: 20px auto; /* Center the container */
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 85%; /* Limit width to 85% of the screen */
+    width: 100%;
 }
 
 /* Sales Table */
 .sales-table {
-    width: auto; /* Allow table to be as wide as needed */
+    width: 100%;
     border-collapse: collapse;
     table-layout: auto; /* Columns adjust to content */
 }
 
 .sales-table th,
 .sales-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #444444;
     padding: 12px 15px;
     text-align: left;
-    color: #333;
-    vertical-align: top; /* Align cells to the top */
+    color: #ffffff;
+    vertical-align: top;
 }
 
 .sales-table th {
-    background-color: #f2f2f2;
+    background-color: #2e2e2e;
     font-weight: 600;
-    color: #555;
+    color: #ffffff;
+    font-size: 16px;
 }
 
 .sales-table tr:nth-child(even) {
-    background-color: #fafafa;
+    background-color: #2a2a2a;
 }
 
 .sales-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #333333;
 }
 
 /* Set maximum width for the "Notes" column */
-.sales-table td:nth-child(3), /* Notes column */
+.sales-table td:nth-child(3),
 .sales-table th:nth-child(3) {
-    max-width: 200px; /* Adjust as needed */
+    max-width: 300px; /* Adjust as needed */
     word-wrap: break-word;
     white-space: pre-wrap;
 }
 
-
-/* Grid Container */
-.grid-container {
-    padding: 20px 0;
+/* Titles */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
 }
 
 /* Media Queries */
@@ -174,14 +244,20 @@ body {
         flex: 1 1 100%;
     }
 
-    .filter-container {
+    .filter-container,
+    .sales-filters {
         flex-direction: column;
         align-items: flex-start;
+        max-width: 100%;
     }
 
     .filter-container label,
     .filter-container select,
-    .filter-container button {
+    .filter-container button,
+    .filter-container input,
+    .sales-filters label,
+    .sales-filters select,
+    .sales-filters input {
         margin-right: 0;
         margin-bottom: 15px;
     }
@@ -189,5 +265,9 @@ body {
     .remove-chart-button {
         top: 10px;
         right: 10px;
+    }
+
+    .sales-table-container {
+        max-width: 100%; /* Allow full width on smaller screens */
     }
 }

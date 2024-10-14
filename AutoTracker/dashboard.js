@@ -221,11 +221,11 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#007bff',
-                    borderColor: '#0056b3',
+                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : 'rgba(0, 188, 212, 0.7)',
+                    borderColor: 'rgba(0, 188, 212, 1)',
                     borderWidth: 2,
-                    hoverBackgroundColor: '#0056b3',
-                    hoverBorderColor: '#003f7f',
+                    hoverBackgroundColor: 'rgba(0, 188, 212, 0.9)',
+                    hoverBorderColor: 'rgba(0, 188, 212, 1)',
                     fill: chartType === 'line', // Fill area under the line for line charts
                 }]
             },
@@ -242,18 +242,18 @@ document.addEventListener('firebaseInitialized', function() {
                         title: {
                             display: true,
                             text: 'Date',
-                            color: '#555',
+                            color: '#ffffff',
                             font: {
                                 family: 'Roboto',
-                                size: 14,
+                                size: 16,
                                 weight: '500',
                             },
                         },
                         ticks: {
-                            color: '#555',
+                            color: '#ffffff',
                             font: {
                                 family: 'Roboto',
-                                size: 12,
+                                size: 14,
                             },
                             autoSkip: false,
                             maxRotation: 45,
@@ -267,24 +267,24 @@ document.addEventListener('firebaseInitialized', function() {
                         title: {
                             display: true,
                             text: 'Count',
-                            color: '#555',
+                            color: '#ffffff',
                             font: {
                                 family: 'Roboto',
-                                size: 14,
+                                size: 16,
                                 weight: '500',
                             },
                         },
                         ticks: {
-                            color: '#555',
+                            color: '#ffffff',
                             font: {
                                 family: 'Roboto',
-                                size: 12,
+                                size: 14,
                             },
                             beginAtZero: true,
                             precision: 0,
                         },
                         grid: {
-                            color: '#e0e0e0',
+                            color: '#444444',
                         },
                     },
                 } : {},
@@ -292,7 +292,7 @@ document.addEventListener('firebaseInitialized', function() {
                     legend: {
                         display: chartType !== 'pie',
                         labels: {
-                            color: '#555',
+                            color: '#ffffff',
                             font: {
                                 family: 'Roboto',
                                 size: 14,
@@ -300,10 +300,10 @@ document.addEventListener('firebaseInitialized', function() {
                         },
                     },
                     tooltip: {
-                        backgroundColor: '#fff',
-                        titleColor: '#333',
-                        bodyColor: '#555',
-                        borderColor: '#ccc',
+                        backgroundColor: '#2e2e2e',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#444444',
                         borderWidth: 1,
                         titleFont: {
                             family: 'Roboto',
@@ -342,8 +342,8 @@ document.addEventListener('firebaseInitialized', function() {
 
     function generateColors(count) {
         const colors = [];
-        const scale = chroma.scale(['#007bff', '#00c851', '#ff4444']).mode('lch').colors(count);
-        return scale;
+        const scale = chroma.scale(['#ff4081', '#7c4dff', '#448aff', '#00e676']).mode('lch').colors(count);
+        return scale.map(color => chroma(color).brighten(1).css());
     }
 
     // Persistence Functions
