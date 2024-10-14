@@ -276,3 +276,51 @@ select:focus {
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555555;
 }
+
+
+/* Style the select dropdowns to match the site design */
+select {
+    background-color: #1E1E1E; /* Black background */
+    color: #E0E0E0; /* White text */
+    border: 1px solid #333333; /* Subtle border */
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    width: 100%; /* Ensures the select fills its grid cell */
+    transition: border-color 0.3s ease;
+}
+
+/* On hover and focus, change the border color for better UX */
+select:hover,
+select:focus {
+    outline: none;
+    border-color: #1E88E5; /* Light blue border on hover/focus */
+}
+
+/* Ensure the select dropdown's arrow is visible and styled properly */
+select::-ms-expand {
+    display: none; /* For Internet Explorer and Edge */
+}
+
+select option {
+    background-color: #1E1E1E; /* Black background for dropdown items */
+    color: #E0E0E0; /* White text for dropdown items */
+}
+
+#addChartButton {
+    background-color: #1E1E1E; /* Black background */
+    color: #E0E0E0; /* White text */
+    border: 1px solid #333333; /* Subtle border */
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Full width to span the grid */
+}
+
+#addChartButton:hover {
+    background-color: #333333; /* Slightly lighter black on hover */
+    border-color: #1E88E5; /* Light blue border on hover */
+}
