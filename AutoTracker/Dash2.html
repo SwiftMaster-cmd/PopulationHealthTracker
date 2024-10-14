@@ -39,39 +39,38 @@
     </script>
 </head>
 <body>
-<!-- Header Container -->
-<div class="header-container">
-  <!-- Left Side: Chart Controls -->
-  <div class="chart-controls-container">
-      <button id="showChartControlsButton">Add A Chart</button>
-      <div class="chart-controls" style="display: none;">
-          <select id="timeFrame"></select>
-          <select id="actionType"></select>
-          <select id="chartType"></select>
-          <button id="addChartButton">Add Chart</button>
-          <button id="hideChartControlsButton">Hide Chart Controller</button>
-      </div>
-  </div>
+   <!-- Header Container -->
+   <div class="header-container">
+    <!-- Left Side: Chart Controls -->
+    <div class="chart-controls-container">
+        <button id="showChartControlsButton">Add A Chart</button>
+        <div class="chart-controls" style="display: none;">
+            <select id="timeFrame"></select>
+            <select id="actionType"></select>
+            <select id="chartType"></select>
+            <button id="addChartButton">Add Chart</button>
+            <button id="hideChartControlsButton">Hide Chart Controller</button>
+        </div>
+    </div>
 
-  <!-- Right Side: Commission Display -->
-  <div id="commissionContainer" class="commission-container">
-      <!-- Total commission will be displayed here -->
-  </div>
+    <!-- Right Side: Commission Display -->
+    <div id="commissionContainer" class="commission-container">
+        <!-- Total commission will be displayed here -->
+    </div>
+</div>
+
+<!-- Charts Container -->
+<div class="charts-container">
+    <!-- Charts will be dynamically added here -->
 </div>
 
 <!-- Commission Details Popup -->
-<div id="commissionDetailsPopup" class="commission-details-popup" style="display: none;">
-  <div class="popup-content">
-      <!-- Commission details will be populated here dynamically -->
-  </div>
+<div id="commissionDetailsPopup" class="commission-details-popup">
+    <div class="popup-content">
+        <!-- Commission details will be populated here dynamically -->
+    </div>
 </div>
 
-
-
-        <!-- Container for charts -->
-        <div class="charts-container">
-            <!-- Charts will be dynamically added here -->
-        </div>
 
         <!-- Sales Data Section -->
         <div class="sales-data-section">
