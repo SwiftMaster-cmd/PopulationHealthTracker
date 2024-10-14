@@ -197,8 +197,8 @@ document.addEventListener('firebaseInitialized', function() {
         filteredData.forEach(sale => {
             const date = new Date(sale.outcomeTime);
 
-            // Format the date to be more readable
-            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            // Format the date to exclude the year
+            const options = { month: 'short', day: 'numeric' };
             const dateKey = date.toLocaleDateString(undefined, options);
 
             dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
@@ -223,6 +223,9 @@ document.addEventListener('firebaseInitialized', function() {
 
         const ctx = canvas.getContext('2d');
 
+        // Generate colors based on data values
+        const colors = generateValueBasedColors(chartData.data);
+
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
@@ -230,11 +233,11 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : 'rgba(0, 188, 212, 0.7)',
-                    borderColor: 'rgba(0, 188, 212, 1)',
+                    backgroundColor: colors,
+                    borderColor: colors,
                     borderWidth: 2,
-                    hoverBackgroundColor: 'rgba(0, 188, 212, 0.9)',
-                    hoverBorderColor: 'rgba(0, 188, 212, 1)',
+                    hoverBackgroundColor: colors,
+                    hoverBorderColor: colors,
                     fill: chartType === 'line', // Fill area under the line for line charts
                 }]
             },
@@ -264,9 +267,15 @@ document.addEventListener('firebaseInitialized', function() {
                                 family: 'Inter',
                                 size: 14,
                             },
-                            autoSkip: false,
-                            maxRotation: 45,
-                            minRotation: 45,
+                            autoSkip: dataPointCount > 15, // Enable autoSkip when data points exceed 15
+                            maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
+                            callback: function(value, index, values) {
+                                // Show every other label when data points exceed 15
+                                if (dataPointCount > 15 && index % 2 !== 0) {
+                                    return null;
+                                }
+                                return this.getLabelForValue(value);
+                            },
                         },
                         grid: {
                             display: false,
@@ -349,12 +358,16 @@ document.addEventListener('firebaseInitialized', function() {
         return chart;
     }
 
+    function generateValueBasedColors(data) {
+        const maxValue = Math.max(...data);
+        const minValue = Math.min(...data);
 
-
-    function generateColors(count) {
-        const colors = [];
-        const scale = chroma.scale(['#ff4081', '#7c4dff', '#448aff', '#00e676']).mode('lch').colors(count);
-        return scale.map(color => chroma(color).brighten(1).css());
+        return data.map(value => {
+            const ratio = (value - minValue) / (maxValue - minValue || 1); // Avoid division by zero
+            // Create a gradient from red to green
+            const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
+            return color;
+        });
     }
 
     // Persistence Functions
@@ -420,9 +433,14 @@ document.addEventListener('firebaseInitialized', function() {
             const totalCount = filteredData.length;
             totalCountDisplay.textContent = `${chartConfig.actionType} (${chartConfig.timeFrame}) - Total Count: ${totalCount}`;
 
+            // Generate new colors based on updated data
+            const colors = generateValueBasedColors(chartData.data);
+
             // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
+            chartInstance.data.datasets[0].backgroundColor = colors;
+            chartInstance.data.datasets[0].borderColor = colors;
             chartInstance.update();
         });
     }
