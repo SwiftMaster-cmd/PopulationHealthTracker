@@ -77,7 +77,7 @@ body {
     border-radius: 8px;
     padding: 20px;
     overflow: hidden; /* Prevent overflow */
-    max-height: 50%; /* Fixed height for the chart wrapper */
+    height: 650px; /* Fixed height for the chart wrapper */
 }
 
 .chart-wrapper canvas {
