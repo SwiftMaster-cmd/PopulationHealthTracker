@@ -100,10 +100,7 @@ select:focus {
     margin-bottom: 30px;
 }
 
-/* Make the buttons span the full width of a column */
-#addChartButton {
-    grid-column: span 2;
-}
+
 
 
 /* Charts Container */
