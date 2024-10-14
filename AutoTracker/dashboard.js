@@ -13,7 +13,7 @@ document.addEventListener('firebaseInitialized', function() {
     function initializeDashboard(user) {
         fetchSalesData(user).then(salesData => {
             // Populate action types using predefined options
-            const actionTypes = ['Select Patient Management', 'Transfer', 'HRA'];
+            const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
             populateActionTypes(actionTypes);
 
             // Set up event listeners
@@ -56,6 +56,13 @@ document.addEventListener('firebaseInitialized', function() {
             return 'Transfer';
         } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
             return 'Select Patient Management';
+        } else if (
+            normalizedAction.includes('srx: enrolled - rx history received') ||
+            normalizedAction.includes('srx: enrolled - rx history not available') ||
+            /select rx/i.test(normalizedAction) ||
+            /select rx/i.test(normalizedNotes)
+        ) {
+            return 'Select RX';
         } else {
             // Exclude other options
             return null;
@@ -64,7 +71,7 @@ document.addEventListener('firebaseInitialized', function() {
 
     function getUniqueActionTypes(salesData) {
         // We already have predefined action types
-        return ['Select Patient Management', 'Transfer', 'HRA'];
+        return ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
     }
 
     function populateActionTypes(actionTypes) {
