@@ -228,7 +228,7 @@ document.addEventListener('firebaseInitialized', function() {
         const ctx = canvas.getContext('2d');
 
         // Generate colors based on data values
-        const colors = generateValueBasedColors(chartData.data);
+        const colors = generateValueBasedColors(chartData.data, chartType);
 
         // Create the chart
         const chart = new Chart(ctx, {
@@ -238,10 +238,11 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    pointBackgroundColor: colors,
-                    borderColor: colors,
+                    backgroundColor: chartType === 'bar' ? colors : undefined,
+                    pointBackgroundColor: chartType === 'line' ? colors : undefined,
+                    borderColor: chartType === 'line' ? colors : 'rgba(0, 188, 212, 1)',
                     borderWidth: 2,
-                    fill: true, // Enable fill for line charts
+                    fill: chartType === 'line', // Enable fill for line charts
                 }]
             },
             options: {
@@ -355,11 +356,8 @@ document.addEventListener('firebaseInitialized', function() {
                     actionType: actionType
                 },
                 // Add custom plugin for gradient fill
-                plugins: {
-                    gradientFillPlugin: true
-                }
+                plugins: chartType === 'line' ? [gradientFillPlugin] : []
             },
-            plugins: [gradientFillPlugin], // Register the plugin
         });
 
         return chart;
@@ -376,9 +374,6 @@ document.addEventListener('firebaseInitialized', function() {
             const ctx = chart.ctx;
             const dataset = chart.data.datasets[0];
             const yScale = chart.scales.y;
-            const xScale = chart.scales.x;
-            const meta = chart.getDatasetMeta(0);
-            const points = meta.data;
 
             // Create gradient
             const gradient = ctx.createLinearGradient(
@@ -390,36 +385,36 @@ document.addEventListener('firebaseInitialized', function() {
             const minValue = Math.min(...dataset.data);
             const maxValue = Math.max(...dataset.data);
 
-            // Build color stops
+            // Build color stops (Flipped: green at highest, red at lowest)
             dataset.data.forEach((value, index) => {
                 const ratio = (value - minValue) / (maxValue - minValue || 1);
                 const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
-                const stopPosition = 1 - ratio; // Invert ratio for vertical gradient
+                const stopPosition = ratio; // Use ratio directly for vertical gradient
                 gradient.addColorStop(stopPosition, color);
             });
 
-            // Save the current fill
-            const originalFill = dataset.backgroundColor;
-
             // Set the gradient as the fill style
+            const originalBackgroundColor = dataset.backgroundColor;
             dataset.backgroundColor = gradient;
 
             // Proceed with the default drawing
             chart.update();
 
-            // Restore the original fill
-            dataset.backgroundColor = originalFill;
+            // Restore the original background color
+            dataset.backgroundColor = originalBackgroundColor;
         }
     };
 
-    function generateValueBasedColors(data) {
+    function generateValueBasedColors(data, chartType) {
         const maxValue = Math.max(...data);
         const minValue = Math.min(...data);
 
         return data.map(value => {
             const ratio = (value - minValue) / (maxValue - minValue || 1);
+            // Flip the ratio for line charts to have green at highest and red at lowest
+            const adjustedRatio = chartType === 'line' ? ratio : 1 - ratio;
             // Create a gradient from red to green
-            const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
+            const color = chroma.scale(['red', 'orange', 'green'])(adjustedRatio).hex();
             return color;
         });
     }
@@ -488,13 +483,18 @@ document.addEventListener('firebaseInitialized', function() {
             totalCountDisplay.textContent = `${chartConfig.actionType} (${chartConfig.timeFrame}) - Total Count: ${totalCount}`;
 
             // Generate new colors based on updated data
-            const colors = generateValueBasedColors(chartData.data);
+            const colors = generateValueBasedColors(chartData.data, chartConfig.chartType);
 
             // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
-            chartInstance.data.datasets[0].pointBackgroundColor = colors;
-            chartInstance.data.datasets[0].borderColor = colors;
+
+            if (chartConfig.chartType === 'bar') {
+                chartInstance.data.datasets[0].backgroundColor = colors;
+            } else if (chartConfig.chartType === 'line') {
+                chartInstance.data.datasets[0].pointBackgroundColor = colors;
+                chartInstance.data.datasets[0].borderColor = colors;
+            }
 
             // Trigger an update
             chartInstance.update();
