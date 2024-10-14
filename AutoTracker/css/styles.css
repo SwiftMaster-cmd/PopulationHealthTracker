@@ -195,12 +195,14 @@ select:focus {
 .chart-content {
     overflow-x: auto; /* Allow horizontal scrolling within chart */
     overflow-y: hidden;
+    width: 48% !important; /* Ensure canvas takes full width */
+
     height: 400px; /* Fixed height */
 }
 
 .chart-content canvas {
     background-color: #1E1E1E;
-    width: 48% !important; /* Ensure canvas takes full width */
+    width: 100% !important; /* Ensure canvas takes full width */
     height: 100% !important; /* Ensure canvas takes full height */
 }
 
