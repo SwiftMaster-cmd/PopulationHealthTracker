@@ -659,7 +659,18 @@ document.addEventListener('firebaseInitialized', function() {
 
     function showCommissionDetailsPopup() {
         const commissionDetailsPopup = document.getElementById('commissionDetailsPopup');
-        commissionDetailsPopup.style.display = 'block';
+        const popupContent = commissionDetailsPopup.querySelector('.popup-content');
+
+        // Populate popupContent with commission details
+        popupContent.innerHTML = `
+            <h2>Commission Breakdown</h2>
+            <p>Select RX (${salesTotals.selectRX} sales): $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)}</p>
+            <p>Transfer (${salesTotals.transfer} sales): $${(salesTotals.transfer * commission.transferPayout).toFixed(2)}</p>
+            <p>Billable HRA (${salesTotals.billableHRA} sales): $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)}</p>
+            <p>SPM (${salesTotals.spm} sales): $${(salesTotals.spm * commission.spmPayout).toFixed(2)}</p>
+        `;
+
+        commissionDetailsPopup.style.display = 'flex';
 
         // Close the popup when clicking outside
         window.addEventListener('click', function(event) {
