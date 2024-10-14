@@ -76,13 +76,14 @@ body {
     background-color: #ffffffcc;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Prevent overflow */
+    height: 450px; /* Fixed height for the chart wrapper */
 }
 
 .chart-wrapper canvas {
     display: block;
     width: 100% !important;
-    height: auto !important;
+    height: 100% !important; /* Ensure the canvas fills the parent */
 }
 
 .remove-chart-button {
