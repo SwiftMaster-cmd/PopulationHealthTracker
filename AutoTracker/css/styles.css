@@ -1,279 +1,304 @@
 /* styles.css */
 
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Global Styles */
-body {
-    font-family: 'Roboto', sans-serif;
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    color: #ffffff;
-    background-color: #121212;
 }
 
-/* Container Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #121212;
+    color: #E0E0E0;
+    overflow-x: hidden;
+}
+
+/* Container */
 .container {
-    /* Remove the max-width to allow full-width content */
     width: 100%;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Filter Section */
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: #FFFFFF;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Buttons */
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+button:focus {
+    outline: none;
+}
+
+button.primary {
+    background-color: #1E88E5;
+    color: #FFFFFF;
+}
+
+button.primary:hover {
+    background-color: #1565C0;
+}
+
+button.secondary {
+    background-color: #43A047;
+    color: #FFFFFF;
+}
+
+button.secondary:hover {
+    background-color: #2E7D32;
+}
+
+/* Inputs and Selects */
+input[type="text"],
+select {
+    background-color: #1E1E1E;
+    color: #E0E0E0;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: #1E88E5;
+}
+
+/* Filter Container */
 .filter-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    background-color: #1E1E1E;
     padding: 20px;
-    background-color: #1e1e1e;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .filter-container label {
-    margin-right: 10px;
-    font-weight: 500;
-    color: #ffffff;
     font-size: 16px;
+    font-weight: 500;
+    color: #E0E0E0;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .filter-container select,
-.filter-container button,
-.filter-container input {
+.filter-container input[type="text"] {
     margin-right: 20px;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    font-size: 14px;
-    border: 1px solid #444444;
-    border-radius: 4px;
-    background-color: #2e2e2e;
-    color: #ffffff;
-}
-
-.filter-container button {
-    background-color: #3f51b5;
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
-}
-
-.filter-container button:hover {
-    background-color: #5c6bc0;
 }
 
 /* Charts Container */
 .charts-container {
     display: flex;
     flex-wrap: wrap;
-    padding: 20px 0;
-    justify-content: center; /* Center the charts */
-    gap: 20px; /* Add gap between charts */
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 40px;
 }
 
-/* Chart Wrapper */
 .chart-wrapper {
     position: relative;
-    max-width: 48%;
-    flex: 1 1 48%;
-    box-sizing: border-box;
-    margin-bottom: 20px;
-    background-color: #1e1e1e;
+    background-color: #1E1E1E;
     border-radius: 8px;
     padding: 20px;
-    overflow: hidden; /* Prevent overflow */
-    height: 450px; /* Fixed height for the chart wrapper */
+    flex: 1 1 48%;
+    max-width: 48%;
+    height: 450px;
+    overflow: auto;
 }
 
 .chart-wrapper canvas {
     display: block;
-    width: 100% !important;
-    height: 100% !important; /* Ensure the canvas fills the parent */
+    width: 100%;
+    height: 100%;
 }
 
 .remove-chart-button {
     position: absolute;
     top: 15px;
     right: 15px;
-    padding: 5px 8px;
-    font-size: 16px;
-    background-color: #e53935;
-    color: #ffffff;
+    background-color: transparent;
+    color: #E0E0E0;
+    font-size: 24px;
     border: none;
-    border-radius: 50%;
     cursor: pointer;
 }
 
 .remove-chart-button:hover {
-    background-color: #d32f2f;
+    color: #E53935;
 }
 
 .total-count-display {
-    font-weight: 500;
-    margin-bottom: 10px;
-    color: #ffffff;
     font-size: 18px;
+    font-weight: 500;
+    color: #FFFFFF;
+    margin-bottom: 10px;
 }
 
 /* Sales Data Section */
 .sales-data-section {
-    margin-top: 20px;
+    width: 100%;
+}
+
+.sales-data-section .section-header {
     display: flex;
-    flex-direction: column;
-    align-items: center; /* Center the content horizontally */
-    width: 100%; /* Ensure it takes full width */
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 #toggleTableButton {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #43a047;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#toggleTableButton:hover {
-    background-color: #66bb6a;
+    margin-bottom: 20px;
 }
 
 .sales-filters {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    margin-top: 20px;
-    background-color: #1e1e1e;
-    padding: 15px;
+    background-color: #1E1E1E;
+    padding: 15px 20px;
     border-radius: 8px;
-    width: 100%; /* Full width */
+    margin-bottom: 20px;
 }
 
 .sales-filters label {
-    margin-right: 10px;
-    font-weight: 500;
-    color: #ffffff;
     font-size: 16px;
+    font-weight: 500;
+    color: #E0E0E0;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .sales-filters select,
-.sales-filters input {
+.sales-filters input[type="text"] {
     margin-right: 20px;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    font-size: 14px;
-    border: 1px solid #444444;
-    border-radius: 4px;
-    background-color: #2e2e2e;
-    color: #ffffff;
-}
-
-#showMoreButton {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #3f51b5;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-#showMoreButton:hover {
-    background-color: #5c6bc0;
 }
 
 /* Sales Table Container */
 .sales-table-container {
+    width: 100%;
     overflow-x: auto;
-    background-color: #1e1e1e;
+    background-color: #1E1E1E;
     padding: 20px;
-    margin: 20px 0; /* Remove auto to align with full width */
     border-radius: 8px;
-    width: 100%; /* Full width */
 }
 
-/* Sales Table */
 .sales-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto; /* Columns adjust to content */
 }
 
 .sales-table th,
 .sales-table td {
-    border: 1px solid #444444;
-    padding: 12px 15px;
     text-align: left;
-    color: #ffffff;
-    vertical-align: top;
+    padding: 12px 15px;
+    border-bottom: 1px solid #333333;
+    color: #E0E0E0;
     font-size: 14px;
 }
 
 .sales-table th {
-    background-color: #2e2e2e;
+    background-color: #212121;
     font-weight: 600;
-    color: #ffffff;
-    font-size: 16px;
-}
-
-.sales-table tr:nth-child(even) {
-    background-color: #2a2a2a;
 }
 
 .sales-table tr:hover {
-    background-color: #333333;
+    background-color: #2A2A2A;
 }
 
-/* Set maximum width for the "Notes" column */
+.sales-table tr:nth-child(even) {
+    background-color: #1E1E1E;
+}
+
+/* Notes Column */
 .sales-table td:nth-child(3),
 .sales-table th:nth-child(3) {
-    max-width: 300px; /* Adjust as needed */
+    max-width: 250px;
     word-wrap: break-word;
     white-space: pre-wrap;
 }
 
-/* Titles */
-h1, h2, h3, h4, h5, h6 {
-    color: #ffffff;
+/* Show More Button */
+#showMoreButton {
+    display: block;
+    margin: 20px auto;
 }
 
 /* Media Queries */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .chart-wrapper {
-        max-width: 100%;
         flex: 1 1 100%;
+        max-width: 100%;
     }
+}
 
+@media (max-width: 768px) {
     .filter-container,
     .sales-filters {
         flex-direction: column;
-        align-items: flex-start;
-        width: 100%; /* Ensure full width on smaller screens */
     }
 
     .filter-container label,
-    .filter-container select,
-    .filter-container button,
-    .filter-container input,
-    .sales-filters label,
-    .sales-filters select,
-    .sales-filters input {
+    .sales-filters label {
         margin-right: 0;
-        margin-bottom: 15px;
     }
 
-    .remove-chart-button {
-        top: 10px;
-        right: 10px;
-    }
-
-    .sales-table-container {
-        width: 100%; /* Full width on smaller screens */
-        margin: 20px 0;
-    }
-
-    .sales-data-section {
+    .filter-container select,
+    .filter-container input[type="text"],
+    .sales-filters select,
+    .sales-filters input[type="text"] {
+        margin-right: 0;
         width: 100%;
     }
+
+    button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1E1E1E;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555555;
 }
