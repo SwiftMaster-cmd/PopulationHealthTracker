@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+// auth.js
+
+document.addEventListener('firebaseInitialized', function() {
     const auth = firebase.auth();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
 
@@ -16,5 +18,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }); 
         }
     });
-
 });
