@@ -122,7 +122,7 @@ document.addEventListener('firebaseInitialized', function() {
 
         // Add a remove button
         const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove Chart';
+        removeButton.textContent = '×';
         removeButton.classList.add('remove-chart-button');
         removeButton.addEventListener('click', () => {
             chartContainer.remove();
@@ -133,7 +133,7 @@ document.addEventListener('firebaseInitialized', function() {
         // Add total count display
         const totalCountDisplay = document.createElement('div');
         totalCountDisplay.classList.add('total-count-display');
-        totalCountDisplay.textContent = `Total Count: ${totalCount}`;
+        totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: ${totalCount}`;
         chartContainer.appendChild(totalCountDisplay);
 
         // Create canvas for Chart.js
@@ -226,7 +226,7 @@ document.addEventListener('firebaseInitialized', function() {
 
     function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
         const ctx = canvas.getContext('2d');
-    
+
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
@@ -234,11 +234,11 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#1976d2',
-                    borderColor: '#1565c0',
+                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#007bff',
+                    borderColor: '#0056b3',
                     borderWidth: 2,
-                    hoverBackgroundColor: '#1565c0',
-                    hoverBorderColor: '#0d47a1',
+                    hoverBackgroundColor: '#0056b3',
+                    hoverBorderColor: '#003f7f',
                     fill: chartType === 'line', // Fill area under the line for line charts
                 }]
             },
@@ -340,11 +340,10 @@ document.addEventListener('firebaseInitialized', function() {
             },
         });
     }
-    
 
     function generateColors(count) {
         const colors = [];
-        const scale = chroma.scale(['#ff6384', '#36a2eb', '#ffce56']).mode('lch').colors(count);
+        const scale = chroma.scale(['#007bff', '#00c851', '#ff4444']).mode('lch').colors(count);
         return scale;
     }
 
@@ -362,9 +361,9 @@ document.addEventListener('firebaseInitialized', function() {
 
         charts.forEach(chart => {
             const chartConfig = {
-                timeFrame: chart.querySelector('.chart-canvas').dataset.timeFrame,
-                actionType: chart.querySelector('.total-count-display').textContent.split(':')[0].trim(),
-                chartType: chart.querySelector('.chart-canvas').dataset.chartType
+                timeFrame: chart.querySelector('.total-count-display').textContent.match(/\(([^)]+)\)/)[1],
+                actionType: chart.querySelector('.total-count-display').textContent.split('(')[0].trim(),
+                chartType: chart.querySelector('canvas').chartInstance.config.type
             };
             savedCharts.push(chartConfig);
         });
