@@ -18,6 +18,9 @@ window.displaySalesOutcomes = function(user) {
         container.innerHTML = '';
 
         if (data) {
+            const tableContainer = document.createElement('div');
+            tableContainer.classList.add('sales-table-container');
+
             // Create a table to display the sales data
             const table = document.createElement('table');
             table.classList.add('sales-table');
@@ -44,33 +47,34 @@ window.displaySalesOutcomes = function(user) {
 
             // Create table body
             const tbody = document.createElement('tbody');
-
             Object.keys(data).forEach(key => {
                 const sale = data[key];
                 const customerInfo = sale.customerInfo || {};
 
-                const row = document.createElement('tr');
+                const row = tbody.insertRow();
 
-                row.innerHTML = `
-                    <td>${sale.outcomeTime || ''}</td>
-                    <td>${sale.assignAction || ''}</td>
-                    <td>${sale.notesValue || ''}</td>
-                    <td>${sale.accountNumber || ''}</td>
-                    <td>${customerInfo.firstName || ''}</td>
-                    <td>${customerInfo.lastName || ''}</td>
-                    <td>${customerInfo.gender || ''}</td>
-                    <td>${customerInfo.birthdate || ''}</td>
-                    <td>${customerInfo.email || ''}</td>
-                    <td>${customerInfo.phone || ''}</td>
-                    <td>${customerInfo.zipcode || ''}</td>
-                    <td>${customerInfo.stateId || ''}</td>
-                `;
+                // Format date
+                const date = new Date(sale.outcomeTime);
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                const formattedDate = date.toLocaleDateString(undefined, options);
 
-                tbody.appendChild(row);
+                row.insertCell().innerText = formattedDate || '';
+                row.insertCell().innerText = sale.assignAction || '';
+                row.insertCell().innerText = sale.notesValue || '';
+                row.insertCell().innerText = sale.accountNumber || '';
+                row.insertCell().innerText = customerInfo.firstName || '';
+                row.insertCell().innerText = customerInfo.lastName || '';
+                row.insertCell().innerText = customerInfo.gender || '';
+                row.insertCell().innerText = customerInfo.birthdate || '';
+                row.insertCell().innerText = customerInfo.email || '';
+                row.insertCell().innerText = customerInfo.phone || '';
+                row.insertCell().innerText = customerInfo.zipcode || '';
+                row.insertCell().innerText = customerInfo.stateId || '';
             });
 
             table.appendChild(tbody);
-            container.appendChild(table);
+            tableContainer.appendChild(table);
+            container.appendChild(tableContainer);
         } else {
             container.innerHTML = '<p>No sales data found.</p>';
         }

@@ -13,15 +13,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <!-- Chart.js and Chroma.js are already included -->
+    <!-- Chart.js and Chroma.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    <!-- Chart.js Date Adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
     <!-- Your JavaScript Files -->
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="display-sales.js" defer></script>
-    <script src="dashboard.js" defer></script> <!-- New script for dashboard -->
+    <script src="dashboard.js" defer></script>
 
     <!-- Google Analytics -->
     <!-- (Your existing Google Analytics code) -->
@@ -35,7 +37,6 @@
             <option value="currentWeek">Current Week</option>
             <option value="previousWeek">Previous Week</option>
             <option value="currentMonth">Current Month</option>
-            <option value="previousMonth">Previous Month</option>
             <option value="90days">Last 90 Days</option>
             <option value="quarter">Quarter</option>
             <option value="yearToDate">Year to Date</option>

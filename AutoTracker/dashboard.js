@@ -43,7 +43,8 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Updated getSaleType function
+    // Updated getSaleType function (remains the same as before)
+
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
         const normalizedNotes = notes.toLowerCase();
@@ -97,6 +98,9 @@ document.addEventListener('firebaseInitialized', function() {
         // Prepare data for the chart
         const chartData = prepareChartData(filteredData, timeFrame);
 
+        // Calculate total count
+        const totalCount = filteredData.length;
+
         // Create chart container
         const chartContainer = document.createElement('div');
         chartContainer.classList.add('chart-wrapper');
@@ -109,6 +113,12 @@ document.addEventListener('firebaseInitialized', function() {
             chartContainer.remove();
         });
         chartContainer.appendChild(removeButton);
+
+        // Add total count display
+        const totalCountDisplay = document.createElement('div');
+        totalCountDisplay.classList.add('total-count-display');
+        totalCountDisplay.textContent = `Total Count: ${totalCount}`;
+        chartContainer.appendChild(totalCountDisplay);
 
         // Create canvas for Chart.js
         const canvas = document.createElement('canvas');
@@ -145,10 +155,6 @@ document.addEventListener('firebaseInitialized', function() {
             case 'currentMonth':
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
                 break;
-            case 'previousMonth':
-                startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-                now = new Date(now.getFullYear(), now.getMonth(), 0);
-                break;
             case '90days':
                 startDate = new Date(now);
                 startDate.setDate(now.getDate() - 90);
@@ -182,12 +188,16 @@ document.addEventListener('firebaseInitialized', function() {
 
         filteredData.forEach(sale => {
             const date = new Date(sale.outcomeTime);
-            const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+            // Format the date to be more readable
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            const dateKey = date.toLocaleDateString(undefined, options);
+
             dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
         });
 
         // Sort dates
-        const sortedDates = Object.keys(dateCounts).sort();
+        const sortedDates = Object.keys(dateCounts).sort((a, b) => new Date(a) - new Date(b));
 
         return {
             labels: sortedDates,
@@ -235,6 +245,14 @@ document.addEventListener('firebaseInitialized', function() {
                 plugins: {
                     legend: {
                         display: chartType !== 'pie'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                return `${label}: ${context.parsed.y}`;
+                            }
+                        }
                     }
                 }
             }

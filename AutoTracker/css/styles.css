@@ -2,55 +2,44 @@
 
 /* Existing styles */
 
-/* Styles for filter container */
-.filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 20px;
+/* Styles for total count display */
+.total-count-display {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Styles for sales table container */
+.sales-table-container {
+    overflow-x: auto;
+}
+
+/* Styles for the sales table */
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.sales-table th, .sales-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.sales-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.sales-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-.filter-container label {
-    margin-right: 10px;
+.sales-table tr:hover {
+    background-color: #e9e9e9;
 }
 
-.filter-container select, .filter-container button {
-    margin-right: 20px;
-    margin-bottom: 10px;
-    padding: 5px;
-}
-
-.filter-container button {
-    padding: 5px 10px;
-}
-
-/* Styles for charts container */
-.charts-container {
-    display: flex;
-    flex-wrap: wrap;
+/* Style for the container */
+.grid-container {
     padding: 20px;
-}
-
-.chart-wrapper {
-    position: relative;
-    width: 600px;
-    height: 400px;
-    margin: 20px;
-    border: 1px solid #ddd;
-    padding: 10px;
-}
-
-.chart-wrapper canvas {
-    width: 100%;
-    height: 100%;
-}
-
-.remove-chart-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px 8px;
-    font-size: 12px;
-    cursor: pointer;
 }
