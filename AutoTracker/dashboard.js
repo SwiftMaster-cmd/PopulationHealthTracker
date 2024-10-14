@@ -225,16 +225,8 @@ document.addEventListener('firebaseInitialized', function() {
     }
 
     function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
-        // Determine canvas width based on data length
-        const dataPointWidth = 50; // Width per data point in pixels
-        const minCanvasWidth = 800; // Minimum width
-        const maxCanvasWidth = 2000; // Maximum width
-        const calculatedWidth = Math.min(Math.max(minCanvasWidth, chartData.labels.length * dataPointWidth), maxCanvasWidth);
-        canvas.width = calculatedWidth;
-        canvas.height = 400; // Fixed height
-
         const ctx = canvas.getContext('2d');
-
+    
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
@@ -242,54 +234,113 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    fill: chartType !== 'line' // Fill area under the line for line charts
+                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#1976d2',
+                    borderColor: '#1565c0',
+                    borderWidth: 2,
+                    hoverBackgroundColor: '#1565c0',
+                    hoverBorderColor: '#0d47a1',
+                    fill: chartType === 'line', // Fill area under the line for line charts
                 }]
             },
             options: {
-                responsive: false, // Disable responsiveness to maintain fixed size
+                responsive: true,
                 maintainAspectRatio: false,
                 scales: chartType !== 'pie' ? {
                     x: {
                         title: {
                             display: true,
-                            text: 'Date'
+                            text: 'Date',
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 14,
+                                weight: '500',
+                            },
                         },
                         ticks: {
-                            autoSkip: false, // Show all labels
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 12,
+                            },
+                            autoSkip: true,
                             maxRotation: 45,
-                            minRotation: 45
-                        }
+                            minRotation: 45,
+                        },
+                        grid: {
+                            display: false,
+                        },
                     },
                     y: {
                         title: {
                             display: true,
-                            text: 'Count'
+                            text: 'Count',
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 14,
+                                weight: '500',
+                            },
                         },
-                        beginAtZero: true,
                         ticks: {
-                            precision: 0
-                        }
-                    }
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 12,
+                            },
+                            beginAtZero: true,
+                            precision: 0,
+                        },
+                        grid: {
+                            color: '#e0e0e0',
+                        },
+                    },
                 } : {},
                 plugins: {
                     legend: {
-                        display: chartType !== 'pie'
+                        display: chartType !== 'pie',
+                        labels: {
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 14,
+                            },
+                        },
                     },
                     tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#333',
+                        bodyColor: '#555',
+                        borderColor: '#ccc',
+                        borderWidth: 1,
+                        titleFont: {
+                            family: 'Roboto',
+                            size: 14,
+                            weight: '500',
+                        },
+                        bodyFont: {
+                            family: 'Roboto',
+                            size: 12,
+                        },
                         callbacks: {
                             label: function(context) {
                                 const label = context.dataset.label || '';
-                                return `${label}: ${context.parsed.y}`;
+                                if (chartType === 'pie') {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const value = context.parsed;
+                                    const percentage = ((value / total) * 100).toFixed(2) + '%';
+                                    return `${label}: ${value} (${percentage})`;
+                                } else {
+                                    return `${label}: ${context.parsed.y}`;
+                                }
                             }
-                        }
-                    }
-                }
-            }
+                        },
+                    },
+                },
+            },
         });
     }
+    
 
     function generateColors(count) {
         const colors = [];
