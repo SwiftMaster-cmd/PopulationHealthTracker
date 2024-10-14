@@ -208,8 +208,10 @@ document.addEventListener('firebaseInitialized', function() {
     }
 
     function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
-        // Set fixed dimensions for the canvas
-        canvas.style.width = '100%';
+        const dataPointCount = chartData.labels.length;
+
+        // Set canvas width dynamically
+        canvas.style.width = dataPointCount > 8 ? `${dataPointCount * 60}px` : '100%';
         canvas.style.height = '400px'; // Fixed height
 
         const ctx = canvas.getContext('2d');
@@ -339,6 +341,7 @@ document.addEventListener('firebaseInitialized', function() {
 
         return chart;
     }
+
 
     function generateColors(count) {
         const colors = [];
