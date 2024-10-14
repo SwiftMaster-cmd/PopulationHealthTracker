@@ -43,8 +43,7 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Updated getSaleType function (remains the same as before)
-
+    // getSaleType function remains the same
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
         const normalizedNotes = notes.toLowerCase();
@@ -206,6 +205,14 @@ document.addEventListener('firebaseInitialized', function() {
     }
 
     function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
+        // Determine canvas width based on data length
+        const dataPointWidth = 50; // Width per data point in pixels
+        const minCanvasWidth = 800; // Minimum width
+        const maxCanvasWidth = 2000; // Maximum width
+        const calculatedWidth = Math.min(Math.max(minCanvasWidth, chartData.labels.length * dataPointWidth), maxCanvasWidth);
+        canvas.width = calculatedWidth;
+        canvas.height = 400; // Fixed height
+
         const ctx = canvas.getContext('2d');
 
         const chart = new Chart(ctx, {
@@ -222,13 +229,18 @@ document.addEventListener('firebaseInitialized', function() {
                 }]
             },
             options: {
-                responsive: true,
+                responsive: false, // Disable responsiveness to maintain fixed size
                 maintainAspectRatio: false,
                 scales: chartType !== 'pie' ? {
                     x: {
                         title: {
                             display: true,
                             text: 'Date'
+                        },
+                        ticks: {
+                            autoSkip: false, // Show all labels
+                            maxRotation: 45,
+                            minRotation: 45
                         }
                     },
                     y: {

@@ -2,6 +2,58 @@
 
 /* Existing styles */
 
+/* Styles for filter container */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.filter-container label {
+    margin-right: 10px;
+}
+
+.filter-container select, .filter-container button {
+    margin-right: 20px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.filter-container button {
+    padding: 5px 10px;
+}
+
+/* Styles for charts container */
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.chart-wrapper {
+    position: relative;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    margin: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.chart-wrapper canvas {
+    display: block;
+}
+
+.remove-chart-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 8px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
 /* Styles for total count display */
 .total-count-display {
     font-weight: bold;
