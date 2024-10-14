@@ -4,6 +4,27 @@ document.addEventListener('firebaseInitialized', function() {
     const auth = firebase.auth();
     const database = firebase.database();
 
+
+    const toggleChartControlsButton = document.getElementById('toggleChartControlsButton');
+    const filterContainer = document.querySelector('.filter-container');
+    const addChartButton = document.getElementById('addChartButton');
+
+    // Initially hide the filter container
+    filterContainer.style.display = 'none';
+
+    // Add event listener to toggle chart controls
+    toggleChartControlsButton.addEventListener('click', () => {
+        if (filterContainer.style.display === 'none') {
+            // Show chart controls
+            filterContainer.style.display = 'flex';
+            toggleChartControlsButton.textContent = 'Hide Chart Controls';
+        } else {
+            // Hide chart controls
+            filterContainer.style.display = 'none';
+            toggleChartControlsButton.textContent = 'Show Chart Controls';
+        }
+    });
+    
     auth.onAuthStateChanged(user => {
         if (user) {
             initializeDashboard(user);
