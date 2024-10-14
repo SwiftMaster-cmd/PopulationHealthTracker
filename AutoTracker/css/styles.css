@@ -91,7 +91,7 @@ select:focus {
 /* Filter Container */
 .filter-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Creates 2 equal-width columns */
+    grid-template-columns: repeat(2, 2fr); /* Creates 2 equal-width columns */
     gap: 20px; /* Adds space between the grid items */
     align-items: center; /* Aligns items vertically in the center */
     background-color: #1E1E1E;
