@@ -223,123 +223,131 @@ document.addEventListener('firebaseInitialized', function() {
             data: sortedDates.map(date => dateCounts[date])
         };
     }
+// dashboard.js
 
-    function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
-        const ctx = canvas.getContext('2d');
+// ... [other code remains the same]
 
-        const chart = new Chart(ctx, {
-            type: chartType,
-            data: {
-                labels: chartData.labels,
-                datasets: [{
-                    label: `${actionType} (${timeFrame})`,
-                    data: chartData.data,
-                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#007bff',
-                    borderColor: '#0056b3',
-                    borderWidth: 2,
-                    hoverBackgroundColor: '#0056b3',
-                    hoverBorderColor: '#003f7f',
-                    fill: chartType === 'line', // Fill area under the line for line charts
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: chartType !== 'pie' ? {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date',
-                            color: '#555',
-                            font: {
-                                family: 'Roboto',
-                                size: 14,
-                                weight: '500',
-                            },
-                        },
-                        ticks: {
-                            color: '#555',
-                            font: {
-                                family: 'Roboto',
-                                size: 12,
-                            },
-                            autoSkip: true,
-                            maxRotation: 45,
-                            minRotation: 45,
-                        },
-                        grid: {
-                            display: false,
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Count',
-                            color: '#555',
-                            font: {
-                                family: 'Roboto',
-                                size: 14,
-                                weight: '500',
-                            },
-                        },
-                        ticks: {
-                            color: '#555',
-                            font: {
-                                family: 'Roboto',
-                                size: 12,
-                            },
-                            beginAtZero: true,
-                            precision: 0,
-                        },
-                        grid: {
-                            color: '#e0e0e0',
-                        },
-                    },
-                } : {},
-                plugins: {
-                    legend: {
-                        display: chartType !== 'pie',
-                        labels: {
-                            color: '#555',
-                            font: {
-                                family: 'Roboto',
-                                size: 14,
-                            },
-                        },
-                    },
-                    tooltip: {
-                        backgroundColor: '#fff',
-                        titleColor: '#333',
-                        bodyColor: '#555',
-                        borderColor: '#ccc',
-                        borderWidth: 1,
-                        titleFont: {
+function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
+    // Set fixed dimensions for the canvas
+    canvas.style.width = '100%';
+    canvas.style.height = '400px'; // Fixed height
+
+    const ctx = canvas.getContext('2d');
+
+    const chart = new Chart(ctx, {
+        type: chartType,
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: `${actionType} (${timeFrame})`,
+                data: chartData.data,
+                backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#007bff',
+                borderColor: '#0056b3',
+                borderWidth: 2,
+                hoverBackgroundColor: '#0056b3',
+                hoverBorderColor: '#003f7f',
+                fill: chartType === 'line', // Fill area under the line for line charts
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Allow the chart to fill the fixed container size
+            scales: chartType !== 'pie' ? {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#555',
+                        font: {
                             family: 'Roboto',
                             size: 14,
                             weight: '500',
                         },
-                        bodyFont: {
+                    },
+                    ticks: {
+                        color: '#555',
+                        font: {
                             family: 'Roboto',
                             size: 12,
                         },
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                if (chartType === 'pie') {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const value = context.parsed;
-                                    const percentage = ((value / total) * 100).toFixed(2) + '%';
-                                    return `${label}: ${value} (${percentage})`;
-                                } else {
-                                    return `${label}: ${context.parsed.y}`;
-                                }
-                            }
+                        autoSkip: true,
+                        maxRotation: 45,
+                        minRotation: 45,
+                    },
+                    grid: {
+                        display: false,
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Count',
+                        color: '#555',
+                        font: {
+                            family: 'Roboto',
+                            size: 14,
+                            weight: '500',
+                        },
+                    },
+                    ticks: {
+                        color: '#555',
+                        font: {
+                            family: 'Roboto',
+                            size: 12,
+                        },
+                        beginAtZero: true,
+                        precision: 0,
+                    },
+                    grid: {
+                        color: '#e0e0e0',
+                    },
+                },
+            } : {},
+            plugins: {
+                legend: {
+                    display: chartType !== 'pie',
+                    labels: {
+                        color: '#555',
+                        font: {
+                            family: 'Roboto',
+                            size: 14,
                         },
                     },
                 },
+                tooltip: {
+                    backgroundColor: '#fff',
+                    titleColor: '#333',
+                    bodyColor: '#555',
+                    borderColor: '#ccc',
+                    borderWidth: 1,
+                    titleFont: {
+                        family: 'Roboto',
+                        size: 14,
+                        weight: '500',
+                    },
+                    bodyFont: {
+                        family: 'Roboto',
+                        size: 12,
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            if (chartType === 'pie') {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.parsed;
+                                const percentage = ((value / total) * 100).toFixed(2) + '%';
+                                return `${label}: ${value} (${percentage})`;
+                            } else {
+                                return `${label}: ${context.parsed.y}`;
+                            }
+                        }
+                    },
+                },
             },
-        });
-    }
+        },
+    });
+}
+
 
     function generateColors(count) {
         const colors = [];
