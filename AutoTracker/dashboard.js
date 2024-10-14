@@ -21,26 +21,42 @@ document.addEventListener('firebaseInitialized', function() {
             const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
             populateActionTypes(actionTypes);
 
-            // Populate time frames
-            const timeFrames = ['today', 'currentWeek', 'previousWeek', 'currentMonth', '90days', 'quarter', 'yearToDate', 'allTime'];
-            populateTimeFrames(timeFrames);
-
-            // Populate chart types
-            const chartTypes = ['bar', 'line', 'pie'];
-            populateChartTypes(chartTypes);
-
             // Set up event listeners
-            setupEventListeners(salesData);
+            document.getElementById('addChartButton').addEventListener('click', () => {
+                addChart(salesData);
+            });
 
             // Load saved charts after sales data is fetched
             loadSavedCharts(salesData);
 
             // Update existing charts
             updateCharts(salesData);
-
-            // Calculate and display commission
-            calculateAndDisplayCommission(salesData);
         });
+    }
+
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+        const normalizedNotes = notes.toLowerCase();
+
+        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
+            return 'HRA';
+        } else if (
+            /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
+        ) {
+            return 'Transfer';
+        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
+            return 'Select Patient Management';
+        } else if (
+            normalizedAction.includes('srx: enrolled - rx history received') ||
+            normalizedAction.includes('srx: enrolled - rx history not available') ||
+            /select rx/i.test(normalizedAction) ||
+            /select rx/i.test(normalizedNotes)
+        ) {
+            return 'Select RX';
+        } else {
+            // Exclude other options
+            return null;
+        }
     }
 
     function populateActionTypes(actionTypes) {
@@ -53,85 +69,6 @@ document.addEventListener('firebaseInitialized', function() {
             option.textContent = actionType;
             actionTypeSelect.appendChild(option);
         });
-    }
-
-    function populateTimeFrames(timeFrames) {
-        const timeFrameSelect = document.getElementById('timeFrame');
-        timeFrameSelect.innerHTML = ''; // Clear existing options
-
-        timeFrames.forEach(timeFrame => {
-            const option = document.createElement('option');
-            option.value = timeFrame;
-            option.textContent = timeFrame;
-            timeFrameSelect.appendChild(option);
-        });
-    }
-
-    function populateChartTypes(chartTypes) {
-        const chartTypeSelect = document.getElementById('chartType');
-        chartTypeSelect.innerHTML = ''; // Clear existing options
-
-        chartTypes.forEach(chartType => {
-            const option = document.createElement('option');
-            option.value = chartType;
-            option.textContent = chartType;
-            chartTypeSelect.appendChild(option);
-        });
-    }
-
-    function setupEventListeners(salesData) {
-        const addChartButton = document.getElementById('addChartButton');
-        const showChartControlsButton = document.getElementById('showChartControlsButton');
-        const hideChartControlsButton = document.getElementById('hideChartControlsButton');
-
-        addChartButton.addEventListener('click', () => {
-            addChart(salesData);
-        });
-
-        showChartControlsButton.addEventListener('click', () => {
-            document.querySelector('.chart-controls').style.display = 'flex';
-            showChartControlsButton.style.display = 'none';
-        });
-
-        hideChartControlsButton.addEventListener('click', () => {
-            document.querySelector('.chart-controls').style.display = 'none';
-            showChartControlsButton.style.display = 'inline-block';
-        });
-
-        // Commission container click event for popup
-        const commissionContainer = document.getElementById('commissionContainer');
-        commissionContainer.addEventListener('click', () => {
-            showCommissionDetailsPopup();
-        });
-    }
-
-    function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-        const normalizedNotes = notes.toLowerCase();
-
-        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
-            if (/billable|bill/i.test(normalizedNotes)) {
-                return 'billableHRA';
-            } else {
-                return 'HRA';
-            }
-        } else if (
-            /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
-        ) {
-            return 'transfer';
-        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
-            return 'spm';
-        } else if (
-            normalizedAction.includes('srx: enrolled - rx history received') ||
-            normalizedAction.includes('srx: enrolled - rx history not available') ||
-            /select rx/i.test(normalizedAction) ||
-            /select rx/i.test(normalizedNotes)
-        ) {
-            return 'selectRX';
-        } else {
-            // Exclude other options
-            return null;
-        }
     }
 
     function addChart(salesData, chartConfig = null) {
@@ -293,134 +230,157 @@ document.addEventListener('firebaseInitialized', function() {
         // Generate colors based on data values
         const colors = generateValueBasedColors(chartData.data);
 
+        // Set up the dataset
+        const datasets = {
+            label: `${actionType} (${timeFrame})`,
+            data: chartData.data,
+            borderWidth: 2,
+        };
+
+        if (chartType === 'line') {
+            datasets.borderColor = '#FFFFFF'; // Line color
+            datasets.pointBackgroundColor = colors; // Colors for data points
+            datasets.fill = true; // Enable fill for line charts
+            datasets.backgroundColor = createVerticalGradient(ctx, canvas); // Gradient fill
+        } else {
+            datasets.backgroundColor = colors;
+            datasets.borderColor = colors;
+            datasets.hoverBackgroundColor = colors;
+            datasets.hoverBorderColor = colors;
+        }
+
+        // Set up the chart options
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    bottom: 20,
+                },
+            },
+            scales: chartType !== 'pie' ? {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 16,
+                            weight: '500',
+                        },
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 14,
+                        },
+                        autoSkip: dataPointCount > 15,
+                        maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
+                        callback: function(value, index, values) {
+                            if (dataPointCount > 15 && index % 2 !== 0) {
+                                return null;
+                            }
+                            return this.getLabelForValue(value);
+                        },
+                    },
+                    grid: {
+                        display: false,
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Count',
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 16,
+                            weight: '500',
+                        },
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 14,
+                        },
+                        beginAtZero: true,
+                        precision: 0,
+                    },
+                    grid: {
+                        color: '#444444',
+                    },
+                },
+            } : {},
+            plugins: {
+                legend: {
+                    display: chartType !== 'pie',
+                    labels: {
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 14,
+                        },
+                    },
+                },
+                tooltip: {
+                    backgroundColor: '#2e2e2e',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#444444',
+                    borderWidth: 1,
+                    titleFont: {
+                        family: 'Inter',
+                        size: 14,
+                        weight: '500',
+                    },
+                    bodyFont: {
+                        family: 'Inter',
+                        size: 12,
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            if (chartType === 'pie') {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.parsed;
+                                const percentage = ((value / total) * 100).toFixed(2) + '%';
+                                return `${label}: ${value} (${percentage})`;
+                            } else {
+                                return `${label}: ${context.parsed.y}`;
+                            }
+                        }
+                    },
+                },
+            },
+            // Custom properties for updating charts
+            custom: {
+                timeFrame: timeFrame,
+                actionType: actionType
+            }
+        };
+
+        // Create the chart
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
                 labels: chartData.labels,
-                datasets: [{
-                    label: `${actionType} (${timeFrame})`,
-                    data: chartData.data,
-                    backgroundColor: chartType === 'line' ? 'rgba(75,192,192,0.4)' : colors,
-                    borderColor: colors,
-                    borderWidth: 2,
-                    pointBackgroundColor: chartType === 'line' ? colors : undefined,
-                    fill: chartType === 'line', // Fill area under the line for line charts
-                }]
+                datasets: [datasets]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        bottom: 20,
-                    },
-                },
-                scales: chartType !== 'pie' ? {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date',
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 16,
-                                weight: '500',
-                            },
-                        },
-                        ticks: {
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 14,
-                            },
-                            autoSkip: dataPointCount > 15,
-                            maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
-                            callback: function(value, index, values) {
-                                if (dataPointCount > 15 && index % 2 !== 0) {
-                                    return null;
-                                }
-                                return this.getLabelForValue(value);
-                            },
-                        },
-                        grid: {
-                            display: false,
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Count',
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 16,
-                                weight: '500',
-                            },
-                        },
-                        ticks: {
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 14,
-                            },
-                            beginAtZero: true,
-                            precision: 0,
-                        },
-                        grid: {
-                            color: '#444444',
-                        },
-                    },
-                } : {},
-                plugins: {
-                    legend: {
-                        display: chartType !== 'pie',
-                        labels: {
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 14,
-                            },
-                        },
-                    },
-                    tooltip: {
-                        backgroundColor: '#2e2e2e',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#444444',
-                        borderWidth: 1,
-                        titleFont: {
-                            family: 'Inter',
-                            size: 14,
-                            weight: '500',
-                        },
-                        bodyFont: {
-                            family: 'Inter',
-                            size: 12,
-                        },
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                if (chartType === 'pie') {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const value = context.parsed;
-                                    const percentage = ((value / total) * 100).toFixed(2) + '%';
-                                    return `${label}: ${value} (${percentage})`;
-                                } else {
-                                    return `${label}: ${context.parsed.y}`;
-                                }
-                            }
-                        },
-                    },
-                },
-                // Custom properties for updating charts
-                custom: {
-                    timeFrame: timeFrame,
-                    actionType: actionType
-                }
-            },
+            options: chartOptions,
         });
 
         return chart;
+    }
+
+    function createVerticalGradient(ctx, canvas) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, 'green');   // Top
+        gradient.addColorStop(0.5, 'orange'); // Middle
+        gradient.addColorStop(1, 'red');     // Bottom
+        return gradient;
     }
 
     function generateValueBasedColors(data) {
@@ -428,7 +388,7 @@ document.addEventListener('firebaseInitialized', function() {
         const minValue = Math.min(...data);
 
         return data.map(value => {
-            const ratio = (value - minValue) / (maxValue - minValue || 1); // Avoid division by zero
+            const ratio = (value - minValue) / (maxValue - minValue || 1);
             // Create a gradient from red to green
             const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
             return color;
@@ -504,186 +464,21 @@ document.addEventListener('firebaseInitialized', function() {
             // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
-            chartInstance.data.datasets[0].backgroundColor = chartConfig.chartType === 'line' ? 'rgba(75,192,192,0.4)' : colors;
-            chartInstance.data.datasets[0].borderColor = colors;
-            chartInstance.data.datasets[0].pointBackgroundColor = chartConfig.chartType === 'line' ? colors : undefined;
+
+            if (chartConfig.chartType === 'line') {
+                chartInstance.data.datasets[0].pointBackgroundColor = colors;
+                // Update gradient fill
+                const ctx = chartInstance.ctx;
+                chartInstance.data.datasets[0].backgroundColor = createVerticalGradient(ctx, canvas);
+            } else {
+                chartInstance.data.datasets[0].backgroundColor = colors;
+                chartInstance.data.datasets[0].borderColor = colors;
+                chartInstance.data.datasets[0].hoverBackgroundColor = colors;
+                chartInstance.data.datasets[0].hoverBorderColor = colors;
+            }
+
+            // Trigger an update
             chartInstance.update();
         });
-
-        // Update commission display
-        calculateAndDisplayCommission(salesData);
-    }
-
-    // Commission Calculation Functions
-
-    function calculateAndDisplayCommission(salesData) {
-        // Calculate sales totals for current month
-        const salesTotals = calculateSalesTotals(salesData);
-
-        // Assuming level is provided or determined elsewhere
-        const level = getUserLevel(); // Implement this function as needed
-
-        // Calculate commission
-        const commission = calculateCommission(salesTotals, level);
-
-        // Display commission
-        displayCommission(commission, salesTotals);
-    }
-
-    function calculateSalesTotals(salesData) {
-        const salesTotals = {
-            selectRX: 0,
-            transfer: 0,
-            billableHRA: 0,
-            spm: 0
-        };
-
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const startTime = startOfMonth.getTime();
-        const endTime = now.getTime();
-
-        salesData.forEach(sale => {
-            const saleTime = new Date(sale.outcomeTime).getTime();
-            if (saleTime >= startTime && saleTime <= endTime) {
-                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                if (saleType && saleType in salesTotals) {
-                    salesTotals[saleType]++;
-                }
-            }
-        });
-
-        return salesTotals;
-    }
-
-    function calculateCommission(salesTotals, level) {
-        let srxPayout;
-        let transferPayout;
-        let hraPayout;
-        let spmPayout = 11;  // Example value, adjust accordingly
-
-        if (level === 3) {
-            srxPayout = getPayout(salesTotals.selectRX, [
-                { min: 75, max: Infinity, payout: 17.00 },
-                { min: 65, max: 74, payout: 16.50 },
-                { min: 30, max: 64, payout: 16.00 },
-                { min: 15, max: 29, payout: 15.50 },
-                { min: 0, max: 14, payout: 15.00 }
-            ]);
-            transferPayout = getPayout(salesTotals.transfer, [
-                { min: 50, max: Infinity, payout: 11.00 },
-                { min: 35, max: 49, payout: 10.00 },
-                { min: 20, max: 34, payout: 9.00 },
-                { min: 10, max: 19, payout: 8.00 },
-                { min: 0, max: 9, payout: 7.00 }
-            ]);
-            hraPayout = getPayout(salesTotals.billableHRA, [
-                { min: 50, max: Infinity, payout: 6.00 },
-                { min: 35, max: 49, payout: 5.00 },
-                { min: 20, max: 34, payout: 4.00 },
-                { min: 10, max: 19, payout: 3.00 },
-                { min: 0, max: 9, payout: 2.00 }
-            ]);
-        } else if (level === 2) {
-            srxPayout = getPayout(salesTotals.selectRX, [
-                { min: 75, max: Infinity, payout: 18.00 },
-                { min: 65, max: 74, payout: 17.50 },
-                { min: 30, max: 64, payout: 17.00 },
-                { min: 15, max: 29, payout: 16.50 },
-                { min: 0, max: 14, payout: 16.00 }
-            ]);
-            transferPayout = getPayout(salesTotals.transfer, [
-                { min: 40, max: Infinity, payout: 10.00 },
-                { min: 30, max: 39, payout: 9.25 },
-                { min: 15, max: 29, payout: 8.50 },
-                { min: 10, max: 14, payout: 7.75 },
-                { min: 0, max: 9, payout: 7.00 }
-            ]);
-            hraPayout = getPayout(salesTotals.billableHRA, [
-                { min: 45, max: Infinity, payout: 5.00 },
-                { min: 30, max: 44, payout: 4.25 },
-                { min: 20, max: 29, payout: 3.50 },
-                { min: 10, max: 19, payout: 2.75 },
-                { min: 0, max: 9, payout: 2.00 }
-            ]);
-        } else if (level === 1) {
-            srxPayout = getPayout(salesTotals.selectRX, [
-                { min: 75, max: Infinity, payout: 19.00 },
-                { min: 65, max: 74, payout: 18.50 },
-                { min: 30, max: 64, payout: 18.00 },
-                { min: 15, max: 29, payout: 17.50 },
-                { min: 0, max: 14, payout: 17.00 }
-            ]);
-            transferPayout = getPayout(salesTotals.transfer, [
-                { min: 25, max: Infinity, payout: 8.00 },
-                { min: 20, max: 24, payout: 7.50 },
-                { min: 10, max: 19, payout: 7.00 },
-                { min: 5, max: 9, payout: 6.50 },
-                { min: 0, max: 4, payout: 6.00 }
-            ]);
-            hraPayout = getPayout(salesTotals.billableHRA, [
-                { min: 40, max: Infinity, payout: 4.00 },
-                { min: 30, max: 39, payout: 3.50 },
-                { min: 15, max: 29, payout: 3.00 },
-                { min: 5, max: 14, payout: 2.50 },
-                { min: 0, max: 4, payout: 2.00 }
-            ]);
-        }
-
-        // Calculate total commissions
-        const totalCommission = (
-            (salesTotals.selectRX * srxPayout) +
-            (salesTotals.transfer * transferPayout) +
-            (salesTotals.billableHRA * hraPayout) +
-            (salesTotals.spm * spmPayout)
-        );
-
-        return { srxPayout, transferPayout, hraPayout, spmPayout, totalCommission };
-    }
-
-    function getPayout(count, tiers) {
-        for (let tier of tiers) {
-            if (count >= tier.min && count <= tier.max) {
-                return tier.payout;
-            }
-        }
-        return 0;
-    }
-
-    function displayCommission(commission, salesTotals) {
-        const commissionContainer = document.getElementById('commissionContainer');
-        commissionContainer.innerHTML = `
-            <p>Total Commission: $${commission.totalCommission.toFixed(2)}</p>
-        `;
-    }
-
-    function showCommissionDetailsPopup() {
-        const commissionDetailsPopup = document.getElementById('commissionDetailsPopup');
-        const popupContent = commissionDetailsPopup.querySelector('.popup-content');
-
-        // Populate popupContent with commission details
-        popupContent.innerHTML = `
-            <h2>Commission Breakdown</h2>
-            <p>Select RX (${salesTotals.selectRX} sales): $${(salesTotals.selectRX * commission.srxPayout).toFixed(2)}</p>
-            <p>Transfer (${salesTotals.transfer} sales): $${(salesTotals.transfer * commission.transferPayout).toFixed(2)}</p>
-            <p>Billable HRA (${salesTotals.billableHRA} sales): $${(salesTotals.billableHRA * commission.hraPayout).toFixed(2)}</p>
-            <p>SPM (${salesTotals.spm} sales): $${(salesTotals.spm * commission.spmPayout).toFixed(2)}</p>
-        `;
-
-        commissionDetailsPopup.style.display = 'flex';
-
-        // Close the popup when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target === commissionDetailsPopup) {
-                commissionDetailsPopup.style.display = 'none';
-            }
-        });
-    }
-
-    function getUserLevel() {
-        // Implement logic to retrieve the user's level
-        // For example, you could store the level in the user's profile in Firebase
-        // Here, we'll assume level 1 for demonstration purposes
-        return 1; // Example level
     }
 });

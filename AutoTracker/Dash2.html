@@ -39,38 +39,40 @@
     </script>
 </head>
 <body>
-   <!-- Header Container -->
-   <div class="header-container">
-    <!-- Left Side: Chart Controls -->
-    <div class="chart-controls-container">
-        <button id="showChartControlsButton">Add A Chart</button>
-        <div class="chart-controls" style="display: none;">
-            <select id="timeFrame"></select>
-            <select id="actionType"></select>
-            <select id="chartType"></select>
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <label for="timeFrame">Time Frame:</label>
+            <select id="timeFrame">
+                <option value="today">Today</option>
+                <option value="currentWeek">Current Week</option>
+                <option value="previousWeek">Previous Week</option>
+                <option value="currentMonth">Current Month</option>
+                <option value="90days">Last 90 Days</option>
+                <option value="quarter">Quarter</option>
+                <option value="yearToDate">Year to Date</option>
+                <option value="allTime">All Time</option>
+            </select>
+
+            <label for="actionType">Action Type:</label>
+            <select id="actionType">
+                <!-- Options will be populated dynamically -->
+            </select>
+
+            <label for="chartType">Chart Type:</label>
+            <select id="chartType">
+                <option value="bar">Bar Chart</option>
+                <option value="line">Line Chart</option>
+                <option value="pie">Pie Chart</option>
+            </select>
+
             <button id="addChartButton">Add Chart</button>
-            <button id="hideChartControlsButton">Hide Chart Controller</button>
         </div>
-    </div>
 
-    <!-- Right Side: Commission Display -->
-    <div id="commissionContainer" class="commission-container">
-        <!-- Total commission will be displayed here -->
-    </div>
-</div>
-
-<!-- Charts Container -->
-<div class="charts-container">
-    <!-- Charts will be dynamically added here -->
-</div>
-
-<!-- Commission Details Popup -->
-<div id="commissionDetailsPopup" class="commission-details-popup">
-    <div class="popup-content">
-        <!-- Commission details will be populated here dynamically -->
-    </div>
-</div>
-
+        <!-- Container for charts -->
+        <div class="charts-container">
+            <!-- Charts will be dynamically added here -->
+        </div>
 
         <!-- Sales Data Section -->
         <div class="sales-data-section">
