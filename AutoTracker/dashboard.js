@@ -43,21 +43,19 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Define getSaleType function
+    // Updated getSaleType function
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
         const normalizedNotes = notes.toLowerCase();
 
         if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
             return 'Select RX';
-        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(normalizedNotes)) {
             return 'Billable HRA';
-        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
-            return 'Transfer';
-        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
-            return 'Select Patient Management';
-        } else if (/fe|final expense/i.test(normalizedNotes)) {
-            return 'Final Expense';
+        } else if (
+            /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh|spm|select patient management)/i.test(normalizedNotes)
+        ) {
+            return 'Transfer/Partner';
         } else if (/dental/i.test(normalizedNotes)) {
             return 'Dental';
         }
