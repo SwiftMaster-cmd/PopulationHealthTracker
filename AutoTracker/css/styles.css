@@ -90,15 +90,21 @@ select:focus {
 
 /* Filter Container */
 .filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates 2 equal-width columns */
+    gap: 20px; /* Adds space between the grid items */
+    align-items: center; /* Aligns items vertically in the center */
     background-color: #1E1E1E;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 30px;
-    overflow-x: auto; /* Allow horizontal scrolling if necessary */
 }
+
+/* Make the buttons span the full width of a column */
+#addChartButton {
+    grid-column: span 2;
+}
+
 
 /* Charts Container */
 .charts-container {
