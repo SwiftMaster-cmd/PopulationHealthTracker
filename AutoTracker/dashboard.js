@@ -300,11 +300,10 @@ document.addEventListener('firebaseInitialized', function() {
                 datasets: [{
                     label: `${actionType} (${timeFrame})`,
                     data: chartData.data,
-                    backgroundColor: colors,
+                    backgroundColor: chartType === 'line' ? 'rgba(75,192,192,0.4)' : colors,
                     borderColor: colors,
                     borderWidth: 2,
-                    hoverBackgroundColor: colors,
-                    hoverBorderColor: colors,
+                    pointBackgroundColor: chartType === 'line' ? colors : undefined,
                     fill: chartType === 'line', // Fill area under the line for line charts
                 }]
             },
@@ -505,8 +504,9 @@ document.addEventListener('firebaseInitialized', function() {
             // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
-            chartInstance.data.datasets[0].backgroundColor = colors;
+            chartInstance.data.datasets[0].backgroundColor = chartConfig.chartType === 'line' ? 'rgba(75,192,192,0.4)' : colors;
             chartInstance.data.datasets[0].borderColor = colors;
+            chartInstance.data.datasets[0].pointBackgroundColor = chartConfig.chartType === 'line' ? colors : undefined;
             chartInstance.update();
         });
 

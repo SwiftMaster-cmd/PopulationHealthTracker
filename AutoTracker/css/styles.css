@@ -100,57 +100,129 @@ select:focus {
     overflow-x: auto; /* Allow horizontal scrolling if necessary */
 }
 
+/* Header Container */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px; /* Increased padding for better spacing */
+    background-color: #1E1E1E; /* Added background color */
+    border-bottom: 1px solid #333333; /* Added border for separation */
+}
+
+/* Chart Controls Container */
+.chart-controls-container {
+    display: flex;
+    align-items: center;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+}
+
+.chart-controls select,
+.chart-controls button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: #2E2E2E;
+    color: #E0E0E0;
+    border: 1px solid #333333;
+    border-radius: 4px;
+}
+
+.chart-controls button {
+    background-color: #3A3A3A;
+}
+
+.chart-controls button:hover {
+    background-color: #4A4A4A;
+}
+
+/* Commission Container */
+.commission-container {
+    cursor: pointer;
+}
+
+.commission-container p {
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Commission Details Popup */
+.commission-details-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none; /* Initially hidden */
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: #1E1E1E;
+    padding: 20px;
+    border-radius: 8px;
+    color: #E0E0E0;
+    max-width: 500px;
+    width: 90%;
+}
+
+.popup-content p {
+    margin: 10px 0;
+    color: #E0E0E0;
+}
+
 /* Charts Container */
 .charts-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 40px;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding: 20px;
 }
 
 .chart-wrapper {
     position: relative;
+    margin-bottom: 40px;
     background-color: #1E1E1E;
-    border-radius: 8px;
     padding: 20px;
-    flex: 1 1 48%;
-    max-width: 48%;
-    height: 450px;
-    overflow: hidden; /* Hide overflow to prevent affecting main view */
+    border-radius: 8px;
 }
 
 .chart-content {
     overflow-x: auto; /* Allow horizontal scrolling within chart */
-    height: 100%;
+    overflow-y: hidden;
+    height: 400px; /* Fixed height */
 }
 
 .chart-content canvas {
-    display: block;
-}
-
-/* Remove Chart Button */
-.remove-chart-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: transparent;
-    color: #E0E0E0;
-    font-size: 24px;
-    border: none;
-    cursor: pointer;
-}
-
-.remove-chart-button:hover {
-    color: #E53935;
+    background-color: #1E1E1E;
+    width: 100% !important; /* Ensure canvas takes full width */
+    height: 100% !important; /* Ensure canvas takes full height */
 }
 
 .total-count-display {
     font-size: 18px;
-    font-weight: 500;
-    color: #FFFFFF;
     margin-bottom: 10px;
+    color: #FFFFFF;
+}
+
+.remove-chart-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    color: #E0E0E0;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.remove-chart-button:hover {
+    color: #FF5252;
 }
 
 /* Sales Data Section */
@@ -162,6 +234,7 @@ select:focus {
     margin-bottom: 20px;
 }
 
+/* Sales Filters */
 .sales-filters {
     display: flex;
     flex-wrap: wrap;
@@ -173,6 +246,12 @@ select:focus {
     overflow-x: auto; /* Allow horizontal scrolling if necessary */
 }
 
+.sales-filters label {
+    margin-right: 10px;
+    color: #E0E0E0;
+}
+
+/* Sales Table */
 .sales-table-container {
     width: 100%;
     overflow-x: auto;
@@ -232,26 +311,35 @@ select:focus {
 
 @media (max-width: 768px) {
     .filter-container,
-    .sales-filters {
+    .sales-filters,
+    .chart-controls {
         flex-direction: column;
-    }
-
-    .filter-container label,
-    .sales-filters label {
-        margin-right: 0;
+        align-items: flex-start;
     }
 
     .filter-container select,
     .filter-container input[type="text"],
     .sales-filters select,
-    .sales-filters input[type="text"] {
+    .sales-filters input[type="text"],
+    .chart-controls select,
+    .chart-controls button {
         margin-right: 0;
+        margin-bottom: 10px;
         width: 100%;
     }
 
     button {
         width: 100%;
         margin-bottom: 10px;
+    }
+
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .commission-container {
+        margin-top: 10px;
     }
 }
 
@@ -272,62 +360,4 @@ select:focus {
 
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555555;
-}
-/* Header Container */
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-}
-
-/* Chart Controls Container */
-.chart-controls-container {
-    display: flex;
-    align-items: center;
-}
-
-.chart-controls {
-    display: flex;
-    align-items: center;
-}
-
-.chart-controls select,
-.chart-controls button {
-    margin-right: 10px;
-}
-
-/* Commission Container */
-.commission-container {
-    cursor: pointer;
-}
-
-.commission-container p {
-    margin: 0;
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* Commission Details Popup */
-.commission-details-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup-content {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 5px;
-}
-
-.popup-content p {
-    margin: 10px 0;
 }
