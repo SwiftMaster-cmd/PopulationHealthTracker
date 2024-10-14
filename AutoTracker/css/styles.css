@@ -182,6 +182,8 @@ select:focus {
 /* Charts Container */
 .charts-container {
     padding: 20px;
+    width: 48%;
+
 }
 
 .chart-wrapper {
@@ -195,8 +197,7 @@ select:focus {
 .chart-content {
     overflow-x: auto; /* Allow horizontal scrolling within chart */
     overflow-y: hidden;
-    width: 48% !important; /* Ensure canvas takes full width */
-
+    
     height: 400px; /* Fixed height */
 }
 
