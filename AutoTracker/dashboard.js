@@ -16,9 +16,17 @@ document.addEventListener('firebaseInitialized', function() {
             const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
             populateActionTypes(actionTypes);
 
+            // Load saved charts and preferences
+            loadSavedCharts(salesData);
+
             // Set up event listeners
             document.getElementById('addChartButton').addEventListener('click', () => {
                 addChart(salesData);
+            });
+
+            document.getElementById('sortBy').addEventListener('change', () => {
+                sortCharts();
+                saveChartsToLocalStorage();
             });
         }).catch(error => {
             console.error('Error fetching sales data:', error);
@@ -86,10 +94,23 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function addChart(salesData) {
-        const timeFrame = document.getElementById('timeFrame').value;
-        const actionType = document.getElementById('actionType').value;
-        const chartType = document.getElementById('chartType').value;
+    function addChart(salesData, chartConfig = null) {
+        let timeFrame, actionType, chartType;
+
+        if (chartConfig) {
+            // Use provided chart configuration (from saved settings)
+            timeFrame = chartConfig.timeFrame;
+            actionType = chartConfig.actionType;
+            chartType = chartConfig.chartType;
+        } else {
+            // Get values from UI
+            timeFrame = document.getElementById('timeFrame').value;
+            actionType = document.getElementById('actionType').value;
+            chartType = document.getElementById('chartType').value;
+
+            // Save the chart configuration
+            saveChartConfig({ timeFrame, actionType, chartType });
+        }
 
         // Filter data based on time frame and action type
         const filteredData = filterSalesData(salesData, timeFrame, actionType);
@@ -103,6 +124,8 @@ document.addEventListener('firebaseInitialized', function() {
         // Create chart container
         const chartContainer = document.createElement('div');
         chartContainer.classList.add('chart-wrapper');
+        chartContainer.dataset.chartType = chartType;
+        chartContainer.dataset.timeFrame = timeFrame;
 
         // Add a remove button
         const removeButton = document.createElement('button');
@@ -110,6 +133,7 @@ document.addEventListener('firebaseInitialized', function() {
         removeButton.classList.add('remove-chart-button');
         removeButton.addEventListener('click', () => {
             chartContainer.remove();
+            saveChartsToLocalStorage();
         });
         chartContainer.appendChild(removeButton);
 
@@ -128,6 +152,9 @@ document.addEventListener('firebaseInitialized', function() {
 
         // Render the chart
         renderChart(canvas, chartType, chartData, actionType, timeFrame);
+
+        // Save charts to localStorage
+        saveChartsToLocalStorage();
     }
 
     function filterSalesData(salesData, timeFrame, actionType) {
@@ -275,5 +302,75 @@ document.addEventListener('firebaseInitialized', function() {
         const colors = [];
         const scale = chroma.scale(['#ff6384', '#36a2eb', '#ffce56']).mode('lch').colors(count);
         return scale;
+    }
+
+    // Persistence Functions
+
+    function saveChartConfig(chartConfig) {
+        let savedCharts = JSON.parse(localStorage.getItem('savedCharts')) || [];
+        savedCharts.push(chartConfig);
+        localStorage.setItem('savedCharts', JSON.stringify(savedCharts));
+    }
+
+    function saveChartsToLocalStorage() {
+        const charts = document.querySelectorAll('.chart-wrapper');
+        const savedCharts = [];
+
+        charts.forEach(chart => {
+            const chartConfig = {
+                timeFrame: chart.dataset.timeFrame,
+                actionType: chart.querySelector('.total-count-display').textContent.split(':')[0].trim(),
+                chartType: chart.dataset.chartType
+            };
+            savedCharts.push(chartConfig);
+        });
+
+        localStorage.setItem('savedCharts', JSON.stringify(savedCharts));
+
+        // Save sorting preference
+        const sortBy = document.getElementById('sortBy').value;
+        localStorage.setItem('sortBy', sortBy);
+    }
+
+    function loadSavedCharts(salesData) {
+        const savedCharts = JSON.parse(localStorage.getItem('savedCharts')) || [];
+        const sortBy = localStorage.getItem('sortBy') || 'none';
+
+        // Set sorting preference
+        document.getElementById('sortBy').value = sortBy;
+
+        // Add saved charts
+        savedCharts.forEach(chartConfig => {
+            addChart(salesData, chartConfig);
+        });
+
+        // Apply sorting
+        sortCharts();
+    }
+
+    function sortCharts() {
+        const sortBy = document.getElementById('sortBy').value;
+        const chartsContainer = document.querySelector('.charts-container');
+        const charts = Array.from(chartsContainer.children);
+
+        if (sortBy === 'none') {
+            // Do nothing
+            return;
+        }
+
+        charts.sort((a, b) => {
+            if (sortBy === 'chartType') {
+                return a.dataset.chartType.localeCompare(b.dataset.chartType);
+            } else if (sortBy === 'timeFrame') {
+                return a.dataset.timeFrame.localeCompare(b.dataset.timeFrame);
+            } else {
+                return 0;
+            }
+        });
+
+        // Re-append charts in sorted order
+        charts.forEach(chart => {
+            chartsContainer.appendChild(chart);
+        });
     }
 });
