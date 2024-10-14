@@ -115,6 +115,8 @@ body {
 .sales-table-container {
     overflow-x: auto;
     background-color: #ffffffcc;
+    justify-content: center; /* Center the charts */
+
     padding: 20px;
     margin: 20px 0;
     border-radius: 8px;
