@@ -25,7 +25,7 @@
     <script src="firebase-init.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="display-sales.js" defer></script>
-    <script src="dashboard.js" defer></script> <!-- Updated script for dashboard -->
+    <script src="dashboard.js" defer></script>
 
     <!-- Google Analytics -->
     <!-- (Your existing Google Analytics code) -->
@@ -38,42 +38,72 @@
     </script>
 </head>
 <body>
-    <!-- Filter Section -->
-    <div class="filter-container">
-        <label for="timeFrame">Time Frame:</label>
-        <select id="timeFrame">
-            <option value="today">Today</option>
-            <option value="currentWeek">Current Week</option>
-            <option value="previousWeek">Previous Week</option>
-            <option value="currentMonth">Current Month</option>
-            <option value="90days">Last 90 Days</option>
-            <option value="quarter">Quarter</option>
-            <option value="yearToDate">Year to Date</option>
-        </select>
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <label for="timeFrame">Time Frame:</label>
+            <select id="timeFrame">
+                <option value="today">Today</option>
+                <option value="currentWeek">Current Week</option>
+                <option value="previousWeek">Previous Week</option>
+                <option value="currentMonth">Current Month</option>
+                <option value="90days">Last 90 Days</option>
+                <option value="quarter">Quarter</option>
+                <option value="yearToDate">Year to Date</option>
+                <option value="allTime">All Time</option>
+            </select>
 
-        <label for="actionType">Action Type:</label>
-        <select id="actionType">
-            <!-- Options will be populated dynamically -->
-        </select>
+            <label for="actionType">Action Type:</label>
+            <select id="actionType">
+                <!-- Options will be populated dynamically -->
+            </select>
 
-        <label for="chartType">Chart Type:</label>
-        <select id="chartType">
-            <option value="bar">Bar Chart</option>
-            <option value="line">Line Chart</option>
-            <option value="pie">Pie Chart</option>
-        </select>
+            <label for="chartType">Chart Type:</label>
+            <select id="chartType">
+                <option value="bar">Bar Chart</option>
+                <option value="line">Line Chart</option>
+                <option value="pie">Pie Chart</option>
+            </select>
 
-        <button id="addChartButton">Add Chart</button>
-    </div>
+            <button id="addChartButton">Add Chart</button>
+        </div>
 
-    <!-- Container for charts -->
-    <div class="charts-container">
-        <!-- Charts will be dynamically added here -->
-    </div>
+        <!-- Container for charts -->
+        <div class="charts-container">
+            <!-- Charts will be dynamically added here -->
+        </div>
 
-    <!-- Existing grid container -->
-    <div class="grid-container">
-        <!-- Sales data table will be displayed here -->
+        <!-- Sales Data Section -->
+        <div class="sales-data-section">
+            <!-- Show/Hide Button -->
+            <button id="toggleTableButton">Show Sales Data</button>
+
+            <!-- Sales Data Filters -->
+            <div class="sales-filters" id="salesFilters" style="display: none;">
+                <label for="salesTimeFrame">Time Frame:</label>
+                <select id="salesTimeFrame">
+                    <option value="allTime">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="currentWeek">Current Week</option>
+                    <option value="previousWeek">Previous Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="90days">Last 90 Days</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="yearToDate">Year to Date</option>
+                </select>
+
+                <label for="searchInput">Search:</label>
+                <input type="text" id="searchInput" placeholder="Search...">
+            </div>
+
+            <!-- Sales Data Table -->
+            <div class="grid-container" id="salesTableContainer" style="display: none;">
+                <!-- Sales data table will be displayed here -->
+            </div>
+
+            <!-- Show More Button -->
+            <button id="showMoreButton" style="display: none;">Show More</button>
+        </div>
     </div>
 </body>
 </html>
