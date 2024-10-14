@@ -12,7 +12,7 @@ document.addEventListener('firebaseInitialized', function() {
 
     function initializeDashboard(user) {
         fetchSalesData(user).then(salesData => {
-            // Populate action types
+            // Populate action types using sale types
             const actionTypes = getUniqueActionTypes(salesData);
             populateActionTypes(actionTypes);
 
@@ -43,11 +43,34 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
+    // Define getSaleType function
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+        const normalizedNotes = notes.toLowerCase();
+
+        if (normalizedAction.includes('srx: enrolled - rx history received') || normalizedAction.includes('srx: enrolled - rx history not available')) {
+            return 'Select RX';
+        } else if (normalizedAction.includes('hra') && /bill|billable/i.test(notes)) {
+            return 'Billable HRA';
+        } else if (normalizedAction.includes('notes') && /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(notes)) {
+            return 'Transfer';
+        } else if (normalizedAction.includes('notes') && /(spm|select patient management)/i.test(notes)) {
+            return 'Select Patient Management';
+        } else if (/fe|final expense/i.test(normalizedNotes)) {
+            return 'Final Expense';
+        } else if (/dental/i.test(normalizedNotes)) {
+            return 'Dental';
+        }
+        // Include other specific notes as needed
+        return action;
+    }
+
     function getUniqueActionTypes(salesData) {
         const actionTypes = new Set();
         salesData.forEach(sale => {
-            if (sale.assignAction) {
-                actionTypes.add(sale.assignAction);
+            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+            if (saleType) {
+                actionTypes.add(saleType);
             }
         });
         return Array.from(actionTypes);
@@ -102,7 +125,7 @@ document.addEventListener('firebaseInitialized', function() {
 
     function filterSalesData(salesData, timeFrame, actionType) {
         const now = new Date();
-        let startDate;
+        let startDate = new Date();
 
         // Determine start date based on time frame
         switch (timeFrame) {
@@ -110,11 +133,16 @@ document.addEventListener('firebaseInitialized', function() {
                 startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 break;
             case 'currentWeek':
-                startDate = new Date(now.setDate(now.getDate() - now.getDay()));
+                const dayOfWeek = now.getDay(); // 0 (Sun) to 6 (Sat)
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - dayOfWeek);
                 break;
             case 'previousWeek':
-                startDate = new Date(now.setDate(now.getDate() - now.getDay() - 7));
-                now.setDate(startDate.getDate() + 6);
+                const previousWeekStart = new Date(now);
+                const prevWeekDayOfWeek = now.getDay();
+                previousWeekStart.setDate(now.getDate() - prevWeekDayOfWeek - 7);
+                startDate = previousWeekStart;
+                now.setDate(previousWeekStart.getDate() + 6);
                 break;
             case 'currentMonth':
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -124,7 +152,8 @@ document.addEventListener('firebaseInitialized', function() {
                 now = new Date(now.getFullYear(), now.getMonth(), 0);
                 break;
             case '90days':
-                startDate = new Date(now.setDate(now.getDate() - 90));
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - 90);
                 break;
             case 'quarter':
                 const currentQuarter = Math.floor((now.getMonth() + 3) / 3);
@@ -144,7 +173,8 @@ document.addEventListener('firebaseInitialized', function() {
         // Filter data
         return salesData.filter(sale => {
             const saleTime = new Date(sale.outcomeTime).getTime();
-            return sale.assignAction === actionType && saleTime >= startTime && saleTime <= endTime;
+            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+            return saleType === actionType && saleTime >= startTime && saleTime <= endTime;
         });
     }
 
