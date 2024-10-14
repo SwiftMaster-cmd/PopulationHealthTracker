@@ -1,5 +1,3 @@
-// display-sales.js
-
 window.displaySalesOutcomes = function(user) {
     // Ensure Firebase is initialized
     if (!firebase.apps.length) {
@@ -45,10 +43,15 @@ window.displaySalesOutcomes = function(user) {
             `;
             table.appendChild(thead);
 
+            // Convert data object to array and sort it
+            const dataArray = Object.values(data);
+
+            // Sort the array in descending order based on outcomeTime
+            dataArray.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
+
             // Create table body
             const tbody = document.createElement('tbody');
-            Object.keys(data).forEach(key => {
-                const sale = data[key];
+            dataArray.forEach(sale => {
                 const customerInfo = sale.customerInfo || {};
 
                 const row = tbody.insertRow();

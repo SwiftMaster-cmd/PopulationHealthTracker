@@ -58,13 +58,14 @@ body {
     background-color: #0056b3;
 }
 
-/* Charts Container */
 .charts-container {
     display: flex;
     flex-wrap: wrap;
     padding: 20px 0;
-    justify-content: space-between;
+    justify-content: center; /* Center the charts */
+    gap: 20px; /* Add gap between charts */
 }
+
 
 /* Chart Wrapper */
 .chart-wrapper {
@@ -122,8 +123,9 @@ body {
 
 /* Sales Table */
 .sales-table {
-    width: 100%;
+    width: auto; /* Allow table to be as wide as needed */
     border-collapse: collapse;
+    table-layout: auto; /* Columns adjust to content */
 }
 
 .sales-table th,
@@ -132,6 +134,7 @@ body {
     padding: 12px 15px;
     text-align: left;
     color: #333;
+    vertical-align: top; /* Align cells to the top */
 }
 
 .sales-table th {
@@ -147,6 +150,15 @@ body {
 .sales-table tr:hover {
     background-color: #f1f1f1;
 }
+
+/* Set maximum width for the "Notes" column */
+.sales-table td:nth-child(3), /* Notes column */
+.sales-table th:nth-child(3) {
+    max-width: 200px; /* Adjust as needed */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
 
 /* Grid Container */
 .grid-container {

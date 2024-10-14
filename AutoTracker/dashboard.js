@@ -246,12 +246,17 @@ function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
                 borderWidth: 2,
                 hoverBackgroundColor: '#0056b3',
                 hoverBorderColor: '#003f7f',
-                fill: chartType === 'line', // Fill area under the line for line charts
+                fill: chartType === 'line',
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Allow the chart to fill the fixed container size
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    bottom: 20, // Increase bottom padding to prevent labels from being cut off
+                },
+            },
             scales: chartType !== 'pie' ? {
                 x: {
                     title: {
@@ -270,7 +275,7 @@ function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
                             family: 'Roboto',
                             size: 12,
                         },
-                        autoSkip: true,
+                        autoSkip: false, // Show all labels
                         maxRotation: 45,
                         minRotation: 45,
                     },
@@ -347,6 +352,7 @@ function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
         },
     });
 }
+
 
 
     function generateColors(count) {
