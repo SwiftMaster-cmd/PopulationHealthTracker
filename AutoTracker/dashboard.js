@@ -11,7 +11,12 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeDashboard(user) {
-        fetchSalesData(user).then(salesData => {
+        const salesRef = database.ref('salesOutcomes/' + user.uid);
+
+        // Listen for real-time updates
+        salesRef.on('value', snapshot => {
+            const salesData = snapshot.val() ? Object.values(snapshot.val()) : [];
+
             // Populate action types using predefined options
             const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
             populateActionTypes(actionTypes);
@@ -23,30 +28,12 @@ document.addEventListener('firebaseInitialized', function() {
 
             // Load saved charts after sales data is fetched
             loadSavedCharts(salesData);
-        }).catch(error => {
-            console.error('Error fetching sales data:', error);
+
+            // Update existing charts
+            updateCharts(salesData);
         });
     }
 
-    function fetchSalesData(user) {
-        return new Promise((resolve, reject) => {
-            const salesRef = database.ref('salesOutcomes/' + user.uid);
-            salesRef.once('value', snapshot => {
-                const data = snapshot.val();
-                if (data) {
-                    // Convert data to an array
-                    const salesData = Object.values(data);
-                    resolve(salesData);
-                } else {
-                    resolve([]);
-                }
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-
-    // getSaleType function remains the same
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
         const normalizedNotes = notes.toLowerCase();
@@ -70,11 +57,6 @@ document.addEventListener('firebaseInitialized', function() {
             // Exclude other options
             return null;
         }
-    }
-
-    function getUniqueActionTypes(salesData) {
-        // We already have predefined action types
-        return ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
     }
 
     function populateActionTypes(actionTypes) {
@@ -144,7 +126,7 @@ document.addEventListener('firebaseInitialized', function() {
         document.querySelector('.charts-container').appendChild(chartContainer);
 
         // Render the chart
-        renderChart(canvas, chartType, chartData, actionType, timeFrame);
+        const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame);
 
         // Save charts to localStorage
         saveChartsToLocalStorage();
@@ -185,6 +167,7 @@ document.addEventListener('firebaseInitialized', function() {
             case 'yearToDate':
                 startDate = new Date(now.getFullYear(), 0, 1);
                 break;
+            case 'allTime':
             default:
                 startDate = new Date(0); // All time
         }
@@ -223,137 +206,139 @@ document.addEventListener('firebaseInitialized', function() {
             data: sortedDates.map(date => dateCounts[date])
         };
     }
-// dashboard.js
 
-// ... [other code remains the same]
+    function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
+        // Set fixed dimensions for the canvas
+        canvas.style.width = '100%';
+        canvas.style.height = '400px'; // Fixed height
 
-function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
-    // Set fixed dimensions for the canvas
-    canvas.style.width = '100%';
-    canvas.style.height = '400px'; // Fixed height
+        const ctx = canvas.getContext('2d');
 
-    const ctx = canvas.getContext('2d');
-
-    const chart = new Chart(ctx, {
-        type: chartType,
-        data: {
-            labels: chartData.labels,
-            datasets: [{
-                label: `${actionType} (${timeFrame})`,
-                data: chartData.data,
-                backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#007bff',
-                borderColor: '#0056b3',
-                borderWidth: 2,
-                hoverBackgroundColor: '#0056b3',
-                hoverBorderColor: '#003f7f',
-                fill: chartType === 'line',
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    bottom: 20, // Increase bottom padding to prevent labels from being cut off
-                },
+        const chart = new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: `${actionType} (${timeFrame})`,
+                    data: chartData.data,
+                    backgroundColor: chartType === 'pie' ? generateColors(chartData.data.length) : '#007bff',
+                    borderColor: '#0056b3',
+                    borderWidth: 2,
+                    hoverBackgroundColor: '#0056b3',
+                    hoverBorderColor: '#003f7f',
+                    fill: chartType === 'line', // Fill area under the line for line charts
+                }]
             },
-            scales: chartType !== 'pie' ? {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Date',
-                        color: '#555',
-                        font: {
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: 20,
+                    },
+                },
+                scales: chartType !== 'pie' ? {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 14,
+                                weight: '500',
+                            },
+                        },
+                        ticks: {
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 12,
+                            },
+                            autoSkip: false,
+                            maxRotation: 45,
+                            minRotation: 45,
+                        },
+                        grid: {
+                            display: false,
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Count',
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 14,
+                                weight: '500',
+                            },
+                        },
+                        ticks: {
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 12,
+                            },
+                            beginAtZero: true,
+                            precision: 0,
+                        },
+                        grid: {
+                            color: '#e0e0e0',
+                        },
+                    },
+                } : {},
+                plugins: {
+                    legend: {
+                        display: chartType !== 'pie',
+                        labels: {
+                            color: '#555',
+                            font: {
+                                family: 'Roboto',
+                                size: 14,
+                            },
+                        },
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#333',
+                        bodyColor: '#555',
+                        borderColor: '#ccc',
+                        borderWidth: 1,
+                        titleFont: {
                             family: 'Roboto',
                             size: 14,
                             weight: '500',
                         },
-                    },
-                    ticks: {
-                        color: '#555',
-                        font: {
+                        bodyFont: {
                             family: 'Roboto',
                             size: 12,
                         },
-                        autoSkip: false, // Show all labels
-                        maxRotation: 45,
-                        minRotation: 45,
-                    },
-                    grid: {
-                        display: false,
-                    },
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Count',
-                        color: '#555',
-                        font: {
-                            family: 'Roboto',
-                            size: 14,
-                            weight: '500',
-                        },
-                    },
-                    ticks: {
-                        color: '#555',
-                        font: {
-                            family: 'Roboto',
-                            size: 12,
-                        },
-                        beginAtZero: true,
-                        precision: 0,
-                    },
-                    grid: {
-                        color: '#e0e0e0',
-                    },
-                },
-            } : {},
-            plugins: {
-                legend: {
-                    display: chartType !== 'pie',
-                    labels: {
-                        color: '#555',
-                        font: {
-                            family: 'Roboto',
-                            size: 14,
-                        },
-                    },
-                },
-                tooltip: {
-                    backgroundColor: '#fff',
-                    titleColor: '#333',
-                    bodyColor: '#555',
-                    borderColor: '#ccc',
-                    borderWidth: 1,
-                    titleFont: {
-                        family: 'Roboto',
-                        size: 14,
-                        weight: '500',
-                    },
-                    bodyFont: {
-                        family: 'Roboto',
-                        size: 12,
-                    },
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.dataset.label || '';
-                            if (chartType === 'pie') {
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const value = context.parsed;
-                                const percentage = ((value / total) * 100).toFixed(2) + '%';
-                                return `${label}: ${value} (${percentage})`;
-                            } else {
-                                return `${label}: ${context.parsed.y}`;
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                if (chartType === 'pie') {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const value = context.parsed;
+                                    const percentage = ((value / total) * 100).toFixed(2) + '%';
+                                    return `${label}: ${value} (${percentage})`;
+                                } else {
+                                    return `${label}: ${context.parsed.y}`;
+                                }
                             }
-                        }
+                        },
                     },
                 },
+                // Custom properties for updating charts
+                custom: {
+                    timeFrame: timeFrame,
+                    actionType: actionType
+                }
             },
-        },
-    });
-}
+        });
 
-
+        return chart;
+    }
 
     function generateColors(count) {
         const colors = [];
@@ -373,11 +358,14 @@ function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
         const charts = document.querySelectorAll('.chart-wrapper');
         const savedCharts = [];
 
-        charts.forEach(chart => {
+        charts.forEach(chartWrapper => {
+            const canvas = chartWrapper.querySelector('canvas');
+            const chartInstance = Chart.getChart(canvas);
+
             const chartConfig = {
-                timeFrame: chart.querySelector('.total-count-display').textContent.match(/\(([^)]+)\)/)[1],
-                actionType: chart.querySelector('.total-count-display').textContent.split('(')[0].trim(),
-                chartType: chart.querySelector('canvas').chartInstance.config.type
+                timeFrame: chartInstance.options.custom.timeFrame,
+                actionType: chartInstance.options.custom.actionType,
+                chartType: chartInstance.config.type
             };
             savedCharts.push(chartConfig);
         });
@@ -388,9 +376,43 @@ function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
     function loadSavedCharts(salesData) {
         const savedCharts = JSON.parse(localStorage.getItem('savedCharts')) || [];
 
+        // Clear existing charts to avoid duplicates
+        document.querySelector('.charts-container').innerHTML = '';
+
         // Add saved charts
         savedCharts.forEach(chartConfig => {
             addChart(salesData, chartConfig);
+        });
+    }
+
+    function updateCharts(salesData) {
+        // Update all charts with new data
+        const charts = document.querySelectorAll('.chart-wrapper');
+        charts.forEach(chartWrapper => {
+            const canvas = chartWrapper.querySelector('canvas');
+            const chartInstance = Chart.getChart(canvas);
+
+            const totalCountDisplay = chartWrapper.querySelector('.total-count-display');
+            const chartConfig = {
+                timeFrame: chartInstance.options.custom.timeFrame,
+                actionType: chartInstance.options.custom.actionType,
+                chartType: chartInstance.config.type
+            };
+
+            // Filter data based on time frame and actionType
+            const filteredData = filterSalesData(salesData, chartConfig.timeFrame, chartConfig.actionType);
+
+            // Prepare data for the chart
+            const chartData = prepareChartData(filteredData, chartConfig.timeFrame);
+
+            // Update total count
+            const totalCount = filteredData.length;
+            totalCountDisplay.textContent = `${chartConfig.actionType} (${chartConfig.timeFrame}) - Total Count: ${totalCount}`;
+
+            // Update chart data
+            chartInstance.data.labels = chartData.labels;
+            chartInstance.data.datasets[0].data = chartData.data;
+            chartInstance.update();
         });
     }
 });

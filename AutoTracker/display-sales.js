@@ -1,3 +1,5 @@
+// display-sales.js
+
 window.displaySalesOutcomes = function(user) {
     // Ensure Firebase is initialized
     if (!firebase.apps.length) {
@@ -8,22 +10,77 @@ window.displaySalesOutcomes = function(user) {
     const database = firebase.database();
     const salesRef = database.ref('salesOutcomes/' + user.uid);
 
-    salesRef.once('value', snapshot => {
-        const data = snapshot.val();
-        const container = document.querySelector('.grid-container');
+    let salesData = [];
+    let displayedData = [];
+    let itemsPerPage = 25;
+    let currentPage = 1;
 
-        // Clear any existing content
+    // Elements
+    const container = document.getElementById('salesTableContainer');
+    const showMoreButton = document.getElementById('showMoreButton');
+    const toggleTableButton = document.getElementById('toggleTableButton');
+    const salesFilters = document.getElementById('salesFilters');
+    const searchInput = document.getElementById('searchInput');
+    const salesTimeFrame = document.getElementById('salesTimeFrame');
+
+    // Event Listeners
+    toggleTableButton.addEventListener('click', () => {
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            salesFilters.style.display = 'flex';
+            toggleTableButton.textContent = 'Hide Sales Data';
+            showMoreButton.style.display = 'block';
+            renderTable();
+        } else {
+            container.style.display = 'none';
+            salesFilters.style.display = 'none';
+            toggleTableButton.textContent = 'Show Sales Data';
+            showMoreButton.style.display = 'none';
+        }
+    });
+
+    showMoreButton.addEventListener('click', () => {
+        currentPage++;
+        renderTable();
+    });
+
+    searchInput.addEventListener('input', () => {
+        currentPage = 1;
+        renderTable();
+    });
+
+    salesTimeFrame.addEventListener('change', () => {
+        currentPage = 1;
+        renderTable();
+    });
+
+    // Listen for real-time updates
+    salesRef.on('value', snapshot => {
+        salesData = snapshot.val() ? Object.values(snapshot.val()) : [];
+        currentPage = 1;
+        renderTable();
+    });
+
+    function renderTable() {
+        // Clear container
         container.innerHTML = '';
 
-        if (data) {
+        // Filter data
+        let filteredData = filterSalesData(salesData, salesTimeFrame.value);
+        filteredData = searchSalesData(filteredData, searchInput.value);
+
+        // Update displayed data
+        displayedData = filteredData.slice(0, itemsPerPage * currentPage);
+
+        // Create table
+        if (displayedData.length > 0) {
             const tableContainer = document.createElement('div');
             tableContainer.classList.add('sales-table-container');
 
-            // Create a table to display the sales data
             const table = document.createElement('table');
             table.classList.add('sales-table');
 
-            // Create table header
+            // Table Header
             const thead = document.createElement('thead');
             thead.innerHTML = `
                 <tr>
@@ -43,15 +100,9 @@ window.displaySalesOutcomes = function(user) {
             `;
             table.appendChild(thead);
 
-            // Convert data object to array and sort it
-            const dataArray = Object.values(data);
-
-            // Sort the array in descending order based on outcomeTime
-            dataArray.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
-
-            // Create table body
+            // Table Body
             const tbody = document.createElement('tbody');
-            dataArray.forEach(sale => {
+            displayedData.forEach(sale => {
                 const customerInfo = sale.customerInfo || {};
 
                 const row = tbody.insertRow();
@@ -81,9 +132,85 @@ window.displaySalesOutcomes = function(user) {
         } else {
             container.innerHTML = '<p>No sales data found.</p>';
         }
-    }).catch(error => {
-        console.error('Error fetching sales data:', error);
-        const container = document.querySelector('.grid-container');
-        container.innerHTML = '<p>Error fetching sales data.</p>';
-    });
+
+        // Show or hide the "Show More" button
+        if (filteredData.length > displayedData.length) {
+            showMoreButton.style.display = 'block';
+        } else {
+            showMoreButton.style.display = 'none';
+        }
+    }
+
+    function filterSalesData(data, timeFrame) {
+        const now = new Date();
+        let startDate = new Date();
+
+        switch (timeFrame) {
+            case 'today':
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                break;
+            case 'currentWeek':
+                const dayOfWeek = now.getDay(); // 0 (Sun) to 6 (Sat)
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - dayOfWeek);
+                break;
+            case 'previousWeek':
+                const previousWeekStart = new Date(now);
+                const prevWeekDayOfWeek = now.getDay();
+                previousWeekStart.setDate(now.getDate() - prevWeekDayOfWeek - 7);
+                startDate = previousWeekStart;
+                now.setDate(previousWeekStart.getDate() + 6);
+                break;
+            case 'currentMonth':
+                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                break;
+            case '90days':
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - 90);
+                break;
+            case 'quarter':
+                const currentQuarter = Math.floor((now.getMonth() + 3) / 3);
+                startDate = new Date(now.getFullYear(), (currentQuarter - 1) * 3, 1);
+                break;
+            case 'yearToDate':
+                startDate = new Date(now.getFullYear(), 0, 1);
+                break;
+            case 'allTime':
+            default:
+                startDate = new Date(0);
+        }
+
+        const startTime = startDate.getTime();
+        const endTime = now.getTime();
+
+        // Filter data based on time frame
+        let filteredData = data.filter(sale => {
+            const saleTime = new Date(sale.outcomeTime).getTime();
+            return saleTime >= startTime && saleTime <= endTime;
+        });
+
+        // Sort data by outcomeTime descending
+        filteredData.sort((a, b) => new Date(b.outcomeTime) - new Date(a.outcomeTime));
+
+        return filteredData;
+    }
+
+    function searchSalesData(data, query) {
+        if (!query) return data;
+
+        query = query.toLowerCase();
+
+        return data.filter(sale => {
+            const customerInfo = sale.customerInfo || {};
+            return (
+                (sale.assignAction && sale.assignAction.toLowerCase().includes(query)) ||
+                (sale.notesValue && sale.notesValue.toLowerCase().includes(query)) ||
+                (sale.accountNumber && sale.accountNumber.toLowerCase().includes(query)) ||
+                (customerInfo.firstName && customerInfo.firstName.toLowerCase().includes(query)) ||
+                (customerInfo.lastName && customerInfo.lastName.toLowerCase().includes(query)) ||
+                (customerInfo.email && customerInfo.email.toLowerCase().includes(query)) ||
+                (customerInfo.phone && customerInfo.phone.toLowerCase().includes(query))
+            );
+        });
+    }
 };
