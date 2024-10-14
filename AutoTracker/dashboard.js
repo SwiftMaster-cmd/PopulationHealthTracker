@@ -205,7 +205,11 @@ document.addEventListener('firebaseInitialized', function() {
         });
 
         // Sort dates
-        const sortedDates = Object.keys(dateCounts).sort((a, b) => new Date(a) - new Date(b));
+        const sortedDates = Object.keys(dateCounts).sort((a, b) => {
+            const dateA = new Date(a);
+            const dateB = new Date(b);
+            return dateA - dateB;
+        });
 
         return {
             labels: sortedDates,
@@ -226,144 +230,199 @@ document.addEventListener('firebaseInitialized', function() {
         // Generate colors based on data values
         const colors = generateValueBasedColors(chartData.data);
 
+        // Set up the dataset
+        const datasets = {
+            label: `${actionType} (${timeFrame})`,
+            data: chartData.data,
+            borderWidth: 2,
+        };
+
+        if (chartType === 'line') {
+            datasets.borderColor = colors;
+            datasets.pointBackgroundColor = colors;
+            datasets.fill = true; // Enable fill for line charts
+            datasets.backgroundColor = 'transparent'; // Will be set by the plugin
+        } else {
+            datasets.backgroundColor = colors;
+            datasets.borderColor = colors;
+            datasets.hoverBackgroundColor = colors;
+            datasets.hoverBorderColor = colors;
+        }
+
+        // Set up the chart options
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    bottom: 20,
+                },
+            },
+            scales: chartType !== 'pie' ? {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 16,
+                            weight: '500',
+                        },
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 14,
+                        },
+                        autoSkip: dataPointCount > 15,
+                        maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
+                        callback: function(value, index, values) {
+                            if (dataPointCount > 15 && index % 2 !== 0) {
+                                return null;
+                            }
+                            return this.getLabelForValue(value);
+                        },
+                    },
+                    grid: {
+                        display: false,
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Count',
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 16,
+                            weight: '500',
+                        },
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 14,
+                        },
+                        beginAtZero: true,
+                        precision: 0,
+                    },
+                    grid: {
+                        color: '#444444',
+                    },
+                },
+            } : {},
+            plugins: {
+                legend: {
+                    display: chartType !== 'pie',
+                    labels: {
+                        color: '#ffffff',
+                        font: {
+                            family: 'Inter',
+                            size: 14,
+                        },
+                    },
+                },
+                tooltip: {
+                    backgroundColor: '#2e2e2e',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#444444',
+                    borderWidth: 1,
+                    titleFont: {
+                        family: 'Inter',
+                        size: 14,
+                        weight: '500',
+                    },
+                    bodyFont: {
+                        family: 'Inter',
+                        size: 12,
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            if (chartType === 'pie') {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.parsed;
+                                const percentage = ((value / total) * 100).toFixed(2) + '%';
+                                return `${label}: ${value} (${percentage})`;
+                            } else {
+                                return `${label}: ${context.parsed.y}`;
+                            }
+                        }
+                    },
+                },
+            },
+            // Custom properties for updating charts
+            custom: {
+                timeFrame: timeFrame,
+                actionType: actionType
+            }
+        };
+
+        // Include the gradient fill plugin for line charts
+        const plugins = [];
+        if (chartType === 'line') {
+            plugins.push(gradientFillPlugin);
+        }
+
+        // Create the chart
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
                 labels: chartData.labels,
-                datasets: [{
-                    label: `${actionType} (${timeFrame})`,
-                    data: chartData.data,
-                    backgroundColor: colors,
-                    borderColor: colors,
-                    borderWidth: 2,
-                    hoverBackgroundColor: colors,
-                    hoverBorderColor: colors,
-                    fill: chartType === 'line', // Fill area under the line for line charts
-                }]
+                datasets: [datasets]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        bottom: 20,
-                    },
-                },
-                scales: chartType !== 'pie' ? {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date',
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 16,
-                                weight: '500',
-                            },
-                        },
-                        ticks: {
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 14,
-                            },
-                            autoSkip: dataPointCount > 15, // Enable autoSkip when data points exceed 15
-                            maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
-                            callback: function(value, index, values) {
-                                // Show every other label when data points exceed 15
-                                if (dataPointCount > 15 && index % 2 !== 0) {
-                                    return null;
-                                }
-                                return this.getLabelForValue(value);
-                            },
-                        },
-                        grid: {
-                            display: false,
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Count',
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 16,
-                                weight: '500',
-                            },
-                        },
-                        ticks: {
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 14,
-                            },
-                            beginAtZero: true,
-                            precision: 0,
-                        },
-                        grid: {
-                            color: '#444444',
-                        },
-                    },
-                } : {},
-                plugins: {
-                    legend: {
-                        display: chartType !== 'pie',
-                        labels: {
-                            color: '#ffffff',
-                            font: {
-                                family: 'Inter',
-                                size: 14,
-                            },
-                        },
-                    },
-                    tooltip: {
-                        backgroundColor: '#2e2e2e',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#444444',
-                        borderWidth: 1,
-                        titleFont: {
-                            family: 'Inter',
-                            size: 14,
-                            weight: '500',
-                        },
-                        bodyFont: {
-                            family: 'Inter',
-                            size: 12,
-                        },
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                if (chartType === 'pie') {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const value = context.parsed;
-                                    const percentage = ((value / total) * 100).toFixed(2) + '%';
-                                    return `${label}: ${value} (${percentage})`;
-                                } else {
-                                    return `${label}: ${context.parsed.y}`;
-                                }
-                            }
-                        },
-                    },
-                },
-                // Custom properties for updating charts
-                custom: {
-                    timeFrame: timeFrame,
-                    actionType: actionType
-                }
-            },
+            options: chartOptions,
+            plugins: plugins,
         });
 
         return chart;
     }
+
+    // Custom plugin to create gradient fill for line charts
+    const gradientFillPlugin = {
+        id: 'gradientFillPlugin',
+        beforeDatasetsDraw(chart, args, options) {
+            if (chart.config.type !== 'line') {
+                return;
+            }
+
+            const ctx = chart.ctx;
+            const dataset = chart.data.datasets[0];
+            const yScale = chart.scales.y;
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(
+                0, yScale.getPixelForValue(yScale.max),
+                0, yScale.getPixelForValue(yScale.min)
+            );
+
+            // Get min and max values
+            const minValue = Math.min(...dataset.data);
+            const maxValue = Math.max(...dataset.data);
+
+            // Build color stops
+            dataset.data.forEach((value, index) => {
+                const ratio = (value - minValue) / (maxValue - minValue || 1);
+                const color = dataset.borderColor[index];
+                const stopPosition = ratio; // Since gradient from top (0) to bottom (1)
+                gradient.addColorStop(stopPosition, color);
+            });
+
+            // Set the gradient as the fill style
+            dataset.backgroundColor = gradient;
+        }
+    };
 
     function generateValueBasedColors(data) {
         const maxValue = Math.max(...data);
         const minValue = Math.min(...data);
 
         return data.map(value => {
-            const ratio = (value - minValue) / (maxValue - minValue || 1); // Avoid division by zero
+            const ratio = (value - minValue) / (maxValue - minValue || 1);
             // Create a gradient from red to green
             const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
             return color;
@@ -439,8 +498,18 @@ document.addEventListener('firebaseInitialized', function() {
             // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
-            chartInstance.data.datasets[0].backgroundColor = colors;
-            chartInstance.data.datasets[0].borderColor = colors;
+
+            if (chartConfig.chartType === 'line') {
+                chartInstance.data.datasets[0].borderColor = colors;
+                chartInstance.data.datasets[0].pointBackgroundColor = colors;
+            } else {
+                chartInstance.data.datasets[0].backgroundColor = colors;
+                chartInstance.data.datasets[0].borderColor = colors;
+                chartInstance.data.datasets[0].hoverBackgroundColor = colors;
+                chartInstance.data.datasets[0].hoverBorderColor = colors;
+            }
+
+            // Trigger an update
             chartInstance.update();
         });
     }
