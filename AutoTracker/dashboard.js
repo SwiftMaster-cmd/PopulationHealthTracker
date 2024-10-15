@@ -24,7 +24,7 @@ document.addEventListener('firebaseInitialized', function() {
             toggleChartControlsButton.textContent = 'Show Chart Controls';
         }
     });
-    
+
     auth.onAuthStateChanged(user => {
         if (user) {
             initializeDashboard(user);
@@ -62,7 +62,7 @@ document.addEventListener('firebaseInitialized', function() {
         if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
             return 'HRA';
         } else if (
-            /(vbc|transfer|ndr|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
+            /(vbc|transfer|ndr|dental|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
         ) {
             return 'Transfer';
         } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
