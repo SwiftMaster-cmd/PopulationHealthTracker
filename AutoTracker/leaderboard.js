@@ -91,7 +91,10 @@ document.addEventListener('firebaseInitialized', function() {
 
             if (count > 0) {
                 const userInfo = usersData[userId] || {};
-                const displayName = userInfo.displayName || userInfo.email || userId;
+
+                // Updated this line to use 'names' from the user data
+                const displayName = userInfo.names || userId;
+
                 leaderboardData.push({ userId, displayName, count });
             }
         }
