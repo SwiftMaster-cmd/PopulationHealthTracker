@@ -324,3 +324,58 @@ select option {
     background-color: #333333; /* Slightly lighter black on hover */
     border-color: #1E88E5; /* Light blue border on hover */
 }
+
+
+
+/* Leaderboard Section */
+.leaderboard-section {
+    background-color: #1E1E1E;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.leaderboard-section h2 {
+    margin-bottom: 20px;
+}
+
+.leaderboard-filters {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.leaderboard-filters label {
+    margin-right: 10px;
+}
+
+.leaderboard-filters select {
+    width: auto;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #333333;
+    color: #E0E0E0;
+    font-size: 14px;
+}
+
+.leaderboard-table th {
+    background-color: #212121;
+    font-weight: 600;
+}
+
+.leaderboard-table tr:hover {
+    background-color: #2A2A2A;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #1E1E1E;
+}

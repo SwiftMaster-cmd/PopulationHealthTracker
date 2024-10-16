@@ -27,6 +27,7 @@
     <script src="display-sales.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="dashboard.js" defer></script>
+    <script src="leaderboard.js" defer></script>
 
     <!-- Google Analytics -->
     <!-- (Your existing Google Analytics code) -->
@@ -39,6 +40,24 @@
     </script>
 </head>
 <body>
+
+    <!-- Leaderboard Section -->
+<div class="leaderboard-section">
+    <h2>Leaderboard</h2>
+    <div class="leaderboard-filters">
+        <label for="saleTypeFilter">Sale Type:</label>
+        <select id="saleTypeFilter">
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+    <div id="leaderboardContainer">
+        <!-- Leaderboard table will be rendered here -->
+    </div>
+</div>
+
+<!-- Include the leaderboard.js script -->
+
+
   <div class="container">
     <div class="container">
         <!-- Filter Section -->
