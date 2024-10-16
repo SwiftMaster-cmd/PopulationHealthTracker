@@ -41,19 +41,23 @@
 </head>
 <body>
 
-    <!-- Leaderboard Section -->
-<div class="leaderboard-section">
-    <h2>Leaderboard</h2>
-    <div class="leaderboard-filters">
-        <label for="saleTypeFilter">Sale Type:</label>
-        <select id="saleTypeFilter">
-            <!-- Options will be populated dynamically -->
-        </select>
+    <div class="leaderboard-section">
+        <h2>Leaderboard</h2>
+        <div class="leaderboard-filters">
+            <label for="saleTypeFilter">Sale Type:</label>
+            <select id="saleTypeFilter">
+                <!-- Options will be populated dynamically -->
+            </select>
+
+            <label for="timeFrameFilter">Time Frame:</label>
+            <select id="timeFrameFilter">
+                <!-- Options will be populated dynamically -->
+            </select>
+        </div>
+        <div id="leaderboardContainer">
+            <!-- Leaderboard table will be rendered here -->
+        </div>
     </div>
-    <div id="leaderboardContainer">
-        <!-- Leaderboard table will be rendered here -->
-    </div>
-</div>
 
 <!-- Include the leaderboard.js script -->
 
