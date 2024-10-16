@@ -11,14 +11,9 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeLeaderboard() {
-        const salesRef = database.ref('salesOutcomes');
-        const usersRef = database.ref('users');
+        const usersRef = database.ref('Users');
 
-        Promise.all([
-            salesRef.once('value'),
-            usersRef.once('value')
-        ]).then(([salesSnapshot, usersSnapshot]) => {
-            const salesData = salesSnapshot.val() || {};
+        usersRef.once('value').then(usersSnapshot => {
             const usersData = usersSnapshot.val() || {};
 
             // Populate sale types
@@ -45,7 +40,7 @@ document.addEventListener('firebaseInitialized', function() {
                 const selectedTimeFrame = timeFrameSelect.value || 'allTime';
 
                 // Compute totals based on selected time frame
-                const totals = computeTotals(salesData, selectedTimeFrame);
+                const totals = computeTotals(usersData, selectedTimeFrame);
                 renderLeaderboard(totals, usersData, selectedSaleType);
             };
 
@@ -57,8 +52,8 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function computeTotals(salesData, selectedTimeFrame) {
-        // salesData is an object with user IDs as keys
+    function computeTotals(usersData, selectedTimeFrame) {
+        // usersData is an object with user IDs as keys
         const totals = {}; // { userId: { saleType: count } }
 
         const now = new Date();
@@ -92,10 +87,12 @@ document.addEventListener('firebaseInitialized', function() {
         const startTime = startDate.getTime();
         const endTime = now.getTime();
 
-        for (const userId in salesData) {
-            const userSales = salesData[userId];
-            for (const saleId in userSales) {
-                const sale = userSales[saleId];
+        for (const userId in usersData) {
+            const userData = usersData[userId];
+            const userSalesOutcomes = userData.salesOutcomes || {};
+
+            for (const saleId in userSalesOutcomes) {
+                const sale = userSalesOutcomes[saleId];
                 const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
                 const saleTime = new Date(sale.outcomeTime).getTime();
 
