@@ -62,13 +62,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Listen for real-time updates
         salesRef.on('value', snapshot => {
-            salesData = snapshot.val() ? Object.values(snapshot.val()) : [];
+            salesData = [];
+            const salesObj = snapshot.val() || {};
+            for (const saleId in salesObj) {
+                salesData.push({ saleId: saleId, ...salesObj[saleId] });
+            }
             currentPage = 1;
             // Only render table if it is visible
             if (container.style.display !== 'none' && container.style.display !== '') {
                 renderTable();
             }
         });
+
+        // Monitor for duplicate sales
+        monitorSalesForDuplicates(user.uid);
 
         function renderTable() {
             // Clear container
@@ -105,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <th>Phone</th>
                         <th>Zipcode</th>
                         <th>State ID</th>
+                        <th>Action</th> <!-- New column for delete button -->
                     </tr>
                 `;
                 table.appendChild(thead);
@@ -133,6 +141,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     row.insertCell().innerText = customerInfo.phone || '';
                     row.insertCell().innerText = customerInfo.zipcode || '';
                     row.insertCell().innerText = customerInfo.stateId || '';
+
+                    // Add delete button
+                    const actionCell = row.insertCell();
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.classList.add('delete-button');
+                    deleteButton.addEventListener('click', () => {
+                        confirmAndDeleteSale(sale.saleId);
+                    });
+                    actionCell.appendChild(deleteButton);
                 });
 
                 table.appendChild(tbody);
@@ -148,6 +166,66 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showMoreButton.style.display = 'none';
             }
+        }
+
+        function confirmAndDeleteSale(saleId) {
+            const confirmation = confirm('Are you sure you want to delete this sale?');
+            if (confirmation) {
+                const userId = user.uid;
+                const saleRef = database.ref(`salesOutcomes/${userId}/${saleId}`);
+                saleRef.remove()
+                    .then(() => {
+                        alert('Sale deleted successfully.');
+                    })
+                    .catch(error => {
+                        console.error('Error deleting sale:', error);
+                        alert('Error deleting sale. Please try again.');
+                    });
+            }
+        }
+
+        function monitorSalesForDuplicates(userId) {
+            const salesRef = database.ref(`salesOutcomes/${userId}`);
+            salesRef.on('child_added', snapshot => {
+                const newSale = snapshot.val();
+                const newSaleId = snapshot.key;
+                const newSaleTime = new Date(newSale.outcomeTime).getTime();
+
+                // Query for sales within the last 2 seconds
+                const timeWindowStart = newSaleTime - 2000;
+                salesRef.orderByChild('outcomeTime').startAt(timeWindowStart).endAt(newSaleTime).once('value', salesSnapshot => {
+                    const salesInWindow = salesSnapshot.val() || {};
+                    const duplicateSales = [];
+
+                    for (const saleId in salesInWindow) {
+                        if (saleId !== newSaleId) {
+                            const sale = salesInWindow[saleId];
+                            // Compare sales fields to determine if they are duplicates
+                            if (isDuplicateSale(newSale, sale)) {
+                                duplicateSales.push(saleId);
+                            }
+                        }
+                    }
+
+                    // Remove duplicate sales
+                    duplicateSales.forEach(duplicateSaleId => {
+                        database.ref(`salesOutcomes/${userId}/${duplicateSaleId}`).remove()
+                            .then(() => {
+                                console.log(`Duplicate sale ${duplicateSaleId} removed.`);
+                            })
+                            .catch(error => {
+                                console.error('Error removing duplicate sale:', error);
+                            });
+                    });
+                });
+            });
+        }
+
+        function isDuplicateSale(sale1, sale2) {
+            // Compare relevant fields to determine if sales are duplicates
+            return sale1.assignAction === sale2.assignAction &&
+                   sale1.notesValue === sale2.notesValue &&
+                   sale1.outcomeTime === sale2.outcomeTime;
         }
 
         function filterSalesData(data, timeFrame) {
