@@ -11,10 +11,10 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeLeaderboard() {
-        const usersRef = database.ref('Users');
+        const leaderboardRef = database.ref('leaderboardData');
 
-        usersRef.once('value').then(usersSnapshot => {
-            const usersData = usersSnapshot.val() || {};
+        leaderboardRef.on('value', snapshot => {
+            const leaderboardData = snapshot.val() || {};
 
             // Populate sale types
             const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
@@ -39,9 +39,7 @@ document.addEventListener('firebaseInitialized', function() {
                 const selectedSaleType = saleTypeSelect.value || actionTypes[0];
                 const selectedTimeFrame = timeFrameSelect.value || 'allTime';
 
-                // Compute totals based on selected time frame
-                const totals = computeTotals(usersData, selectedTimeFrame);
-                renderLeaderboard(totals, usersData, selectedSaleType);
+                renderLeaderboard(leaderboardData, selectedSaleType, selectedTimeFrame);
             };
 
             saleTypeSelect.addEventListener('change', updateLeaderboard);
@@ -52,113 +50,34 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function computeTotals(usersData, selectedTimeFrame) {
-        // usersData is an object with user IDs as keys
-        const totals = {}; // { userId: { saleType: count } }
-
-        const now = new Date();
-        let startDate = new Date();
-
-        // Determine start date based on selected time frame
-        switch (selectedTimeFrame) {
-            case 'today':
-                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                break;
-            case 'currentWeek':
-                const dayOfWeek = now.getDay(); // 0 (Sun) to 6 (Sat)
-                startDate = new Date(now);
-                startDate.setDate(now.getDate() - dayOfWeek);
-                break;
-            case 'currentMonth':
-                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-                break;
-            case 'quarter':
-                const currentQuarter = Math.floor((now.getMonth() + 3) / 3);
-                startDate = new Date(now.getFullYear(), (currentQuarter - 1) * 3, 1);
-                break;
-            case 'yearToDate':
-                startDate = new Date(now.getFullYear(), 0, 1);
-                break;
-            case 'allTime':
-            default:
-                startDate = new Date(0); // All time
-        }
-
-        const startTime = startDate.getTime();
-        const endTime = now.getTime();
-
-        for (const userId in usersData) {
-            const userData = usersData[userId];
-            const userSalesOutcomes = userData.salesOutcomes || {};
-
-            for (const saleId in userSalesOutcomes) {
-                const sale = userSalesOutcomes[saleId];
-                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                const saleTime = new Date(sale.outcomeTime).getTime();
-
-                // Check if sale falls within the selected time frame
-                if (saleTime >= startTime && saleTime <= endTime && saleType) {
-                    if (!totals[userId]) {
-                        totals[userId] = {};
-                    }
-                    if (!totals[userId][saleType]) {
-                        totals[userId][saleType] = 0;
-                    }
-                    totals[userId][saleType]++;
-                }
-            }
-        }
-        return totals;
-    }
-
-    function populateSaleTypeFilter(actionTypes) {
-        const saleTypeSelect = document.getElementById('saleTypeFilter');
-        saleTypeSelect.innerHTML = ''; // Clear existing options
-
-        actionTypes.forEach(actionType => {
-            const option = document.createElement('option');
-            option.value = actionType;
-            option.textContent = actionType;
-            saleTypeSelect.appendChild(option);
-        });
-    }
-
-    function populateTimeFrameFilter(timeFrames) {
-        const timeFrameSelect = document.getElementById('timeFrameFilter');
-        timeFrameSelect.innerHTML = ''; // Clear existing options
-
-        timeFrames.forEach(frame => {
-            const option = document.createElement('option');
-            option.value = frame.value;
-            option.textContent = frame.label;
-            timeFrameSelect.appendChild(option);
-        });
-    }
-
-    function renderLeaderboard(totals, usersData, selectedSaleType) {
+    function renderLeaderboard(leaderboardData, selectedSaleType, selectedTimeFrame) {
         const leaderboardContainer = document.getElementById('leaderboardContainer');
         leaderboardContainer.innerHTML = ''; // Clear existing content
 
         // Prepare data for leaderboard
-        const leaderboardData = [];
+        const leaderboardArray = [];
 
-        for (const userId in totals) {
-            const userTotals = totals[userId];
-            const count = userTotals[selectedSaleType] || 0;
+        for (const userId in leaderboardData) {
+            const userData = leaderboardData[userId];
+            const salesCounts = userData.salesCounts || {};
+
+            let count = 0;
+
+            // Get the count for the selected time frame and sale type
+            if (salesCounts[selectedTimeFrame] && salesCounts[selectedTimeFrame][selectedSaleType]) {
+                count = salesCounts[selectedTimeFrame][selectedSaleType];
+            }
 
             if (count > 0) {
-                const userInfo = usersData[userId] || {};
+                const displayName = userData.names || userId;
 
-                // Use 'names' from the user data
-                const displayName = userInfo.names || userId;
-
-                leaderboardData.push({ userId, displayName, count });
+                leaderboardArray.push({ userId, displayName, count });
             }
         }
 
-        // Sort leaderboardData by count descending and limit to top 10
-        leaderboardData.sort((a, b) => b.count - a.count);
-        const top10Data = leaderboardData.slice(0, 10);
+        // Sort and display top 10
+        leaderboardArray.sort((a, b) => b.count - a.count);
+        const top10Data = leaderboardArray.slice(0, 10);
 
         // Render leaderboard
         const table = document.createElement('table');
@@ -193,28 +112,27 @@ document.addEventListener('firebaseInitialized', function() {
         leaderboardContainer.appendChild(table);
     }
 
-    function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-        const normalizedNotes = notes.toLowerCase();
+    function populateSaleTypeFilter(actionTypes) {
+        const saleTypeSelect = document.getElementById('saleTypeFilter');
+        saleTypeSelect.innerHTML = ''; // Clear existing options
 
-        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
-            return 'HRA';
-        } else if (
-            /(vbc|transfer|ndr|dental|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
-        ) {
-            return 'Transfer';
-        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
-            return 'Select Patient Management';
-        } else if (
-            normalizedAction.includes('srx: enrolled - rx history received') ||
-            normalizedAction.includes('srx: enrolled - rx history not available') ||
-            /select rx/i.test(normalizedAction) ||
-            /select rx/i.test(normalizedNotes)
-        ) {
-            return 'Select RX';
-        } else {
-            // Exclude other options
-            return null;
-        }
+        actionTypes.forEach(actionType => {
+            const option = document.createElement('option');
+            option.value = actionType;
+            option.textContent = actionType;
+            saleTypeSelect.appendChild(option);
+        });
+    }
+
+    function populateTimeFrameFilter(timeFrames) {
+        const timeFrameSelect = document.getElementById('timeFrameFilter');
+        timeFrameSelect.innerHTML = ''; // Clear existing options
+
+        timeFrames.forEach(frame => {
+            const option = document.createElement('option');
+            option.value = frame.value;
+            option.textContent = frame.label;
+            timeFrameSelect.appendChild(option);
+        });
     }
 });
