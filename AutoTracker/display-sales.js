@@ -189,19 +189,20 @@ document.addEventListener('DOMContentLoaded', function() {
             salesRef.on('child_added', snapshot => {
                 const newSale = snapshot.val();
                 const newSaleId = snapshot.key;
-                const newSaleTime = new Date(newSale.outcomeTime).getTime();
 
-                // Query for sales within the last 2 seconds
-                const timeWindowStart = newSaleTime - 2000;
-                salesRef.orderByChild('outcomeTime').startAt(timeWindowStart).endAt(newSaleTime).once('value', salesSnapshot => {
-                    const salesInWindow = salesSnapshot.val() || {};
+                // Create a unique identifier for the sale based on its content
+                const saleHash = generateSaleHash(newSale);
+
+                // Query for sales with the same hash
+                salesRef.orderByChild('saleHash').equalTo(saleHash).once('value', salesSnapshot => {
+                    const salesWithSameHash = salesSnapshot.val() || {};
                     const duplicateSales = [];
 
-                    for (const saleId in salesInWindow) {
+                    for (const saleId in salesWithSameHash) {
                         if (saleId !== newSaleId) {
-                            const sale = salesInWindow[saleId];
-                            // Compare sales fields to determine if they are duplicates
-                            if (isDuplicateSale(newSale, sale)) {
+                            const sale = salesWithSameHash[saleId];
+                            // Compare sales to determine if they are exact duplicates
+                            if (isExactDuplicate(newSale, sale)) {
                                 duplicateSales.push(saleId);
                             }
                         }
@@ -218,11 +219,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             });
                     });
                 });
+
+                // Update the new sale with the hash
+                database.ref(`salesOutcomes/${userId}/${newSaleId}/saleHash`).set(saleHash);
             });
         }
 
-        function isDuplicateSale(sale1, sale2) {
-            // Compare relevant fields to determine if sales are duplicates
+        function generateSaleHash(sale) {
+            // Create a unique hash based on assignAction, notesValue, and outcomeTime
+            const dataString = `${sale.assignAction || ''}|${sale.notesValue || ''}|${sale.outcomeTime || ''}`;
+            return hashString(dataString);
+        }
+
+        function hashString(str) {
+            // Simple hash function (djb2)
+            let hash = 5381;
+            for (let i = 0; i < str.length; i++) {
+                hash = (hash * 33) ^ str.charCodeAt(i);
+            }
+            return hash >>> 0;
+        }
+
+        function isExactDuplicate(sale1, sale2) {
             return sale1.assignAction === sale2.assignAction &&
                    sale1.notesValue === sale2.notesValue &&
                    sale1.outcomeTime === sale2.outcomeTime;
