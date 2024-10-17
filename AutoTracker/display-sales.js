@@ -74,9 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Monitor for duplicate sales
-        monitorSalesForDuplicates(user.uid);
-
         function renderTable() {
             // Clear container
             container.innerHTML = '';
@@ -112,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <th>Phone</th>
                         <th>Zipcode</th>
                         <th>State ID</th>
-                        <th>Action</th> <!-- New column for delete button -->
+                        <th>Action</th> <!-- Column for delete button -->
                     </tr>
                 `;
                 table.appendChild(thead);
@@ -182,68 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         alert('Error deleting sale. Please try again.');
                     });
             }
-        }
-
-        function monitorSalesForDuplicates(userId) {
-            const salesRef = database.ref(`salesOutcomes/${userId}`);
-            salesRef.on('child_added', snapshot => {
-                const newSale = snapshot.val();
-                const newSaleId = snapshot.key;
-
-                // Create a unique identifier for the sale based on its content
-                const saleHash = generateSaleHash(newSale);
-
-                // Query for sales with the same hash
-                salesRef.orderByChild('saleHash').equalTo(saleHash).once('value', salesSnapshot => {
-                    const salesWithSameHash = salesSnapshot.val() || {};
-                    const duplicateSales = [];
-
-                    for (const saleId in salesWithSameHash) {
-                        if (saleId !== newSaleId) {
-                            const sale = salesWithSameHash[saleId];
-                            // Compare sales to determine if they are exact duplicates
-                            if (isExactDuplicate(newSale, sale)) {
-                                duplicateSales.push(saleId);
-                            }
-                        }
-                    }
-
-                    // Remove duplicate sales
-                    duplicateSales.forEach(duplicateSaleId => {
-                        database.ref(`salesOutcomes/${userId}/${duplicateSaleId}`).remove()
-                            .then(() => {
-                                console.log(`Duplicate sale ${duplicateSaleId} removed.`);
-                            })
-                            .catch(error => {
-                                console.error('Error removing duplicate sale:', error);
-                            });
-                    });
-                });
-
-                // Update the new sale with the hash
-                database.ref(`salesOutcomes/${userId}/${newSaleId}/saleHash`).set(saleHash);
-            });
-        }
-
-        function generateSaleHash(sale) {
-            // Create a unique hash based on assignAction, notesValue, and outcomeTime
-            const dataString = `${sale.assignAction || ''}|${sale.notesValue || ''}|${sale.outcomeTime || ''}`;
-            return hashString(dataString);
-        }
-
-        function hashString(str) {
-            // Simple hash function (djb2)
-            let hash = 5381;
-            for (let i = 0; i < str.length; i++) {
-                hash = (hash * 33) ^ str.charCodeAt(i);
-            }
-            return hash >>> 0;
-        }
-
-        function isExactDuplicate(sale1, sale2) {
-            return sale1.assignAction === sale2.assignAction &&
-                   sale1.notesValue === sale2.notesValue &&
-                   sale1.outcomeTime === sale2.outcomeTime;
         }
 
         function filterSalesData(data, timeFrame) {
