@@ -377,14 +377,40 @@ document.addEventListener('firebaseInitialized', function() {
             saleDiv.appendChild(likeButton);
             saleDiv.appendChild(likesInfo);
 
-            // Add comments section
+            // Create "Comment" button
+            const commentToggleButton = document.createElement('button');
+            commentToggleButton.textContent = 'Comment';
+            commentToggleButton.addEventListener('click', () => {
+                commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+            });
+
+            saleDiv.appendChild(commentToggleButton);
+
+            // Comments section (hidden by default)
             const commentsSection = document.createElement('div');
             commentsSection.classList.add('comments-section');
+            commentsSection.style.display = 'none'; // Hide comments section initially
 
-            // Display existing comments
+            // Create "Show Replies" button
+            const showRepliesButton = document.createElement('button');
+            showRepliesButton.textContent = 'Show Replies';
+            showRepliesButton.addEventListener('click', () => {
+                if (commentsList.style.display === 'none') {
+                    commentsList.style.display = 'block';
+                    showRepliesButton.textContent = 'Hide Replies';
+                } else {
+                    commentsList.style.display = 'none';
+                    showRepliesButton.textContent = 'Show Replies';
+                }
+            });
+
+            commentsSection.appendChild(showRepliesButton);
+
+            // Display existing comments (hidden by default)
             const saleComments = commentsData[sale.saleId] || {};
             const commentsList = document.createElement('ul');
             commentsList.classList.add('comments-list');
+            commentsList.style.display = 'none'; // Hide comments list initially
 
             for (const commentId in saleComments) {
                 const comment = saleComments[commentId];
