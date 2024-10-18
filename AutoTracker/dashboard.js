@@ -48,9 +48,14 @@ document.addEventListener('firebaseInitialized', function() {
         // Set up event listener for team filter
         teamFilter.addEventListener('change', fetchSalesData);
 
-        // Set up event listener for add chart button
+        // Set up event listener for add chart button with debounce
+        let isAddingChart = false;
         addChartButton.addEventListener('click', () => {
-            addChart(salesData);
+            if (isAddingChart) return; // Prevent multiple clicks
+            isAddingChart = true;
+            addChart(salesData, null, () => {
+                isAddingChart = false; // Reset flag after chart is added
+            });
         });
 
         function fetchSalesData() {
@@ -88,7 +93,7 @@ document.addEventListener('firebaseInitialized', function() {
                 document.querySelector('.charts-container').innerHTML = '';
 
                 // Load saved charts with new data
-                loadSavedCharts(salesData);
+                loadSavedCharts(salesData, user);
             }, error => {
                 console.error('Error fetching sales data:', error);
             });
@@ -139,7 +144,7 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function addChart(salesData, chartConfig = null) {
+    function addChart(salesData, chartConfig = null, callback = null) {
         let timeFrame, actionType, chartType;
 
         if (chartConfig) {
@@ -155,6 +160,7 @@ document.addEventListener('firebaseInitialized', function() {
 
             if (!timeFrameSelect || !actionTypeSelect || !chartTypeSelect) {
                 console.error('One or more filter select elements are missing.');
+                if (callback) callback();
                 return;
             }
 
@@ -185,7 +191,7 @@ document.addEventListener('firebaseInitialized', function() {
         removeButton.classList.add('remove-chart-button');
         removeButton.addEventListener('click', () => {
             chartContainer.remove();
-            saveChartsToLocalStorage();
+            saveChartsToFirebase(); // Update saved charts in Firebase
         });
         chartContainer.appendChild(removeButton);
 
@@ -209,6 +215,7 @@ document.addEventListener('firebaseInitialized', function() {
         const chartsContainer = document.querySelector('.charts-container');
         if (!chartsContainer) {
             console.error('Charts container element not found.');
+            if (callback) callback();
             return;
         }
         chartsContainer.appendChild(chartContainer);
@@ -216,8 +223,10 @@ document.addEventListener('firebaseInitialized', function() {
         // Render the chart
         const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame);
 
-        // Save charts to localStorage
-        saveChartsToLocalStorage();
+        // Save charts to Firebase
+        saveChartsToFirebase();
+
+        if (callback) callback(); // Invoke the callback if provided
     }
 
     function filterSalesData(salesData, timeFrame, actionType) {
@@ -440,7 +449,8 @@ document.addEventListener('firebaseInitialized', function() {
             // Custom properties for updating charts
             custom: {
                 timeFrame: timeFrame,
-                actionType: actionType
+                actionType: actionType,
+                chartType: chartType // Include chartType for rebuilding charts
             }
         };
 
@@ -480,12 +490,18 @@ document.addEventListener('firebaseInitialized', function() {
     // Persistence Functions
 
     function saveChartConfig(chartConfig) {
+        // Save chart configurations to an array and then to Firebase
         let savedCharts = JSON.parse(localStorage.getItem('savedCharts')) || [];
         savedCharts.push(chartConfig);
         localStorage.setItem('savedCharts', JSON.stringify(savedCharts));
+
+        saveChartsToFirebase();
     }
 
-    function saveChartsToLocalStorage() {
+    function saveChartsToFirebase() {
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+
         const charts = document.querySelectorAll('.chart-wrapper');
         const savedCharts = [];
 
@@ -496,18 +512,15 @@ document.addEventListener('firebaseInitialized', function() {
             const chartConfig = {
                 timeFrame: chartInstance.options.custom.timeFrame,
                 actionType: chartInstance.options.custom.actionType,
-                chartType: chartInstance.config.type
+                chartType: chartInstance.options.custom.chartType
             };
             savedCharts.push(chartConfig);
         });
 
-        localStorage.setItem('savedCharts', JSON.stringify(savedCharts));
+        database.ref('chartConfigs/' + user.uid).set(savedCharts);
     }
 
-    function loadSavedCharts(salesData) {
-        const savedCharts = JSON.parse(localStorage.getItem('savedCharts')) || [];
-
-        // Clear existing charts to avoid duplicates
+    function loadSavedCharts(salesData, user) {
         const chartsContainer = document.querySelector('.charts-container');
         if (!chartsContainer) {
             console.error('Charts container element not found.');
@@ -515,9 +528,20 @@ document.addEventListener('firebaseInitialized', function() {
         }
         chartsContainer.innerHTML = '';
 
-        // Add saved charts
-        savedCharts.forEach(chartConfig => {
-            addChart(salesData, chartConfig);
+        database.ref('chartConfigs/' + user.uid).once('value').then(snapshot => {
+            const savedCharts = snapshot.val() || [];
+
+            if (savedCharts.length === 0) {
+                // No saved charts, you can set up default charts here if desired
+                return;
+            }
+
+            // Add saved charts
+            savedCharts.forEach(chartConfig => {
+                addChart(salesData, chartConfig);
+            });
+        }).catch(error => {
+            console.error('Error loading saved charts:', error);
         });
     }
 
@@ -532,7 +556,7 @@ document.addEventListener('firebaseInitialized', function() {
             const chartConfig = {
                 timeFrame: chartInstance.options.custom.timeFrame,
                 actionType: chartInstance.options.custom.actionType,
-                chartType: chartInstance.config.type
+                chartType: chartInstance.options.custom.chartType
             };
 
             // Filter data based on time frame and actionType
