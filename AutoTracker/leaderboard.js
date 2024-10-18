@@ -6,12 +6,15 @@ document.addEventListener('firebaseInitialized', function() {
 
     let usersData = {};
     let salesData = {};
+    let likesData = {};
 
     let selectedSaleType;
     let selectedTimeFrame;
+    let currentUserId = null;
 
     auth.onAuthStateChanged(user => {
         if (user) {
+            currentUserId = user.uid;
             checkUserName(user);
         }
     });
@@ -98,7 +101,7 @@ document.addEventListener('firebaseInitialized', function() {
             updateLeaderboard();
         });
 
-        // Set up listeners for Users and salesOutcomes to load data in real-time
+        // Set up listeners for Users, salesOutcomes, and likes to load data in real-time
         const usersRef = database.ref('Users');
         usersRef.on('value', usersSnapshot => {
             usersData = usersSnapshot.val() || {};
@@ -109,6 +112,12 @@ document.addEventListener('firebaseInitialized', function() {
         salesOutcomesRef.on('value', salesSnapshot => {
             salesData = salesSnapshot.val() || {};
             updateUI(); // Update both leaderboard and live activities
+        });
+
+        const likesRef = database.ref('likes');
+        likesRef.on('value', likesSnapshot => {
+            likesData = likesSnapshot.val() || {};
+            updateLiveActivities(); // Update live activities when likes data changes
         });
     }
 
@@ -289,6 +298,7 @@ document.addEventListener('firebaseInitialized', function() {
 
                 if (saleType) { // Include only valid sale types
                     salesList.push({
+                        saleId, // Include saleId
                         userId,
                         userName,
                         saleType,
@@ -325,12 +335,58 @@ document.addEventListener('firebaseInitialized', function() {
             };
             const formattedTime = saleDate.toLocaleDateString(undefined, options);
 
+            // Get likes for this sale
+            const saleLikes = likesData[sale.saleId] || {};
+            const likesCount = Object.keys(saleLikes).length;
+            const usersWhoLiked = Object.keys(saleLikes).map(userId => {
+                const user = usersData[userId];
+                return user ? user.name : 'Unknown';
+            });
+
+            // Check if current user liked this sale
+            const userLiked = saleLikes[currentUserId];
+
+            // Create like button
+            const likeButton = document.createElement('button');
+            likeButton.textContent = userLiked ? 'Unlike' : 'Like';
+            likeButton.addEventListener('click', () => {
+                toggleLike(sale.saleId, userLiked);
+            });
+
+            // Create likes info
+            const likesInfo = document.createElement('p');
+            if (likesCount > 0) {
+                likesInfo.textContent = `${likesCount} Like${likesCount > 1 ? 's' : ''} (Liked by: ${usersWhoLiked.join(', ')})`;
+            } else {
+                likesInfo.textContent = 'No likes yet';
+            }
+
+            // Build the saleDiv
             saleDiv.innerHTML = `
                 <p><strong>${sale.userName}</strong> made a <strong>${sale.saleType}</strong> sale on ${formattedTime}</p>
             `;
 
+            // Append like button and likes info
+            saleDiv.appendChild(likeButton);
+            saleDiv.appendChild(likesInfo);
+
             liveActivitiesContainer.appendChild(saleDiv);
         });
+    }
+
+    function toggleLike(saleId, userLiked) {
+        const likeRef = database.ref(`likes/${saleId}/${currentUserId}`);
+        if (userLiked) {
+            // User wants to unlike
+            likeRef.remove().catch(error => {
+                console.error('Error removing like:', error);
+            });
+        } else {
+            // User wants to like
+            likeRef.set(true).catch(error => {
+                console.error('Error adding like:', error);
+            });
+        }
     }
 
 });
