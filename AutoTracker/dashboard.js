@@ -4,12 +4,10 @@ document.addEventListener('firebaseInitialized', function() {
     const auth = firebase.auth();
     const database = firebase.database();
 
+
     const toggleChartControlsButton = document.getElementById('toggleChartControlsButton');
     const filterContainer = document.querySelector('.filter-container');
     const addChartButton = document.getElementById('addChartButton');
-
-    // Get the team filter select element
-    const teamFilter = document.getElementById('teamFilter');
 
     // Initially hide the filter container
     filterContainer.style.display = 'none';
@@ -34,59 +32,27 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeDashboard(user) {
-        let salesRef;
-        let salesData = [];
-        let salesDataListener;
+        const salesRef = database.ref('salesOutcomes/' + user.uid);
 
-        // Set up event listener for team filter
-        teamFilter.addEventListener('change', fetchSalesData);
+        // Listen for real-time updates
+        salesRef.on('value', snapshot => {
+            const salesData = snapshot.val() ? Object.values(snapshot.val()) : [];
 
-        // Set up event listener for add chart button
-        addChartButton.addEventListener('click', () => {
-            addChart(salesData);
-        });
+            // Populate action types using predefined options
+            const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
+            populateActionTypes(actionTypes);
 
-        function fetchSalesData() {
-            // Remove previous listener if any
-            if (salesRef && salesDataListener) {
-                salesRef.off('value', salesDataListener);
-            }
-
-            const teamFilterValue = teamFilter.value;
-
-            if (teamFilterValue === 'allData') {
-                salesRef = database.ref('salesOutcomes');
-            } else {
-                salesRef = database.ref('salesOutcomes/' + user.uid);
-            }
-
-            salesDataListener = salesRef.on('value', snapshot => {
-                salesData = [];
-
-                if (teamFilterValue === 'allData') {
-                    const allUsersData = snapshot.val();
-                    if (allUsersData) {
-                        for (let uid in allUsersData) {
-                            const userData = allUsersData[uid];
-                            const userSalesData = Object.values(userData);
-                            salesData = salesData.concat(userSalesData);
-                        }
-                    }
-                } else {
-                    const userData = snapshot.val();
-                    salesData = userData ? Object.values(userData) : [];
-                }
-
-                // Clear existing charts
-                document.querySelector('.charts-container').innerHTML = '';
-
-                // Load saved charts with new data
-                loadSavedCharts(salesData);
+            // Set up event listeners
+            document.getElementById('addChartButton').addEventListener('click', () => {
+                addChart(salesData);
             });
-        }
 
-        // Initial data fetch
-        fetchSalesData();
+            // Load saved charts after sales data is fetched
+            loadSavedCharts(salesData);
+
+            // Update existing charts
+            updateCharts(salesData);
+        });
     }
 
     function getSaleType(action, notes) {
