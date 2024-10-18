@@ -381,18 +381,24 @@ select option {
 }
 
 
+/* Global Box Sizing */
+* {
+    box-sizing: border-box;
+}
+
 /* Container Styles */
 .container {
-    width: 90%;
+    width: 95%;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 /* Filter Container Styles */
 .filter-container {
     background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 40px; /* Doubled from 20px */
+    border-radius: 16px; /* Doubled from 8px */
+    margin-bottom: 40px; /* Doubled from 20px */
 }
 
 /* Filter Rows */
@@ -400,37 +406,45 @@ select option {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 30px; /* Doubled from 15px */
 }
 
 /* Labels */
 .filter-container label {
-    font-size: 18px;
-    margin-right: 10px;
-    min-width: 120px;
+    font-size: 36px; /* Doubled from 18px */
+    margin-right: 20px; /* Doubled from 10px */
+    min-width: 200px; /* Adjusted for better layout */
+    flex: 0 0 auto;
 }
 
 /* Selects and Inputs */
 .filter-container select,
 .filter-container input[type="text"] {
-    font-size: 16px;
-    padding: 8px;
-    margin-right: 20px;
-    margin-bottom: 10px;
+    font-size: 32px; /* Doubled from 16px */
+    padding: 16px; /* Doubled from 8px */
+    margin-right: 40px; /* Doubled from 20px */
+    margin-bottom: 20px; /* Doubled from 10px */
     border: 1px solid #ccc;
-    border-radius: 4px;
-    min-width: 200px;
+    border-radius: 8px; /* Doubled from 4px */
+    min-width: 300px; /* Adjusted for better layout */
+    flex: 1 1 auto;
+}
+
+/* Select Options */
+.filter-container select option {
+    font-size: 32px; /* Ensure options are larger */
 }
 
 /* Buttons */
 .filter-container button {
-    font-size: 16px;
-    padding: 10px 15px;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    font-size: 32px; /* Doubled from 16px */
+    padding: 20px 30px; /* Doubled from 10px 15px */
+    margin-right: 20px; /* Doubled from 10px */
+    margin-bottom: 20px; /* Doubled from 10px */
     border: none;
-    border-radius: 4px;
+    border-radius: 8px; /* Doubled from 4px */
     cursor: pointer;
+    flex: 0 0 auto;
 }
 
 /* Specific Button Styles */
@@ -459,20 +473,42 @@ select option {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 40px; /* Doubled from 20px */
 }
 
 /* Adjusting Preset Controls Spacing */
 .preset-controls input[type="text"] {
-    margin-right: 10px;
+    font-size: 32px; /* Ensure consistency */
+    padding: 16px;
+    margin-right: 20px; /* Doubled from 10px */
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    min-width: 300px;
 }
 
 .preset-controls select {
-    margin-right: 10px;
+    font-size: 32px;
+    padding: 16px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    min-width: 300px;
 }
 
-@media screen and (max-width: 768px) {
-    /* Stack elements on smaller screens */
+.preset-controls button {
+    font-size: 32px;
+    padding: 20px 30px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 1024px) {
+    /* Adjust breakpoint for larger elements */
     .filter-row {
         flex-direction: column;
         align-items: flex-start;
