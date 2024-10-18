@@ -40,6 +40,11 @@ document.addEventListener('firebaseInitialized', function() {
         }
     });
 
+    // Define salesRef and salesData at a higher scope
+    let salesRef;
+    let salesData = [];
+    let salesDataListener;
+
     auth.onAuthStateChanged(user => {
         if (user) {
             initializeDashboard(user);
@@ -49,13 +54,12 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeDashboard(user) {
-        let salesRef;
-        let salesData = [];
-        let salesDataListener;
-
         // Set up event listener for team filter
         teamFilter.addEventListener('change', () => {
-            fetchSalesData();
+            fetchSalesData(user, () => {
+                // After fetching data, update charts
+                updateCharts(salesData);
+            });
         });
 
         // Set up event listener for add chart button with debounce
@@ -102,10 +106,13 @@ document.addEventListener('firebaseInitialized', function() {
         loadPresets(user);
 
         // Initial data fetch
-        fetchSalesData();
+        fetchSalesData(user, () => {
+            // After fetching data, load saved charts
+            loadSavedCharts(salesData, user);
+        });
     }
 
-    function fetchSalesData(callback) {
+    function fetchSalesData(user, callback) {
         // Remove previous listener if any
         if (salesRef && salesDataListener) {
             salesRef.off('value', salesDataListener);
@@ -116,7 +123,6 @@ document.addEventListener('firebaseInitialized', function() {
         if (teamFilterValue === 'allData') {
             salesRef = database.ref('salesOutcomes');
         } else {
-            const user = firebase.auth().currentUser;
             salesRef = database.ref('salesOutcomes/' + user.uid);
         }
 
@@ -139,11 +145,6 @@ document.addEventListener('firebaseInitialized', function() {
 
             if (callback) {
                 callback();
-            } else {
-                // Clear existing charts
-                document.querySelector('.charts-container').innerHTML = '';
-                // Load saved charts with new data
-                loadSavedCharts(salesData, firebase.auth().currentUser);
             }
 
         }, error => {
@@ -223,7 +224,8 @@ document.addEventListener('firebaseInitialized', function() {
 
         // If salesData is empty, fetch it based on current teamFilter value
         if (salesData.length === 0) {
-            fetchSalesData(() => {
+            const user = firebase.auth().currentUser;
+            fetchSalesData(user, () => {
                 proceedWithChartCreation(salesData);
                 if (callback) callback(); // Invoke the callback if provided
             });
@@ -725,7 +727,7 @@ document.addEventListener('firebaseInitialized', function() {
             teamFilter.value = savedTeamFilterValue;
 
             // Fetch sales data based on the team filter
-            fetchSalesData(() => {
+            fetchSalesData(user, () => {
                 // After fetching sales data, load the charts
                 const chartsContainer = document.querySelector('.charts-container');
                 chartsContainer.innerHTML = '';
