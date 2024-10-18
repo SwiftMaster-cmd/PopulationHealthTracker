@@ -44,6 +44,16 @@
     </script>
 </head>
 <body>
+<!-- header.html -->
+<header id="mainHeader">
+    <button class="toggle-section-button" data-target="leaderboardSection">Leaderboard</button>
+    <button class="toggle-section-button" data-target="privateChatSection">Chat</button>
+    <button class="toggle-section-button" data-target="liveActivitiesSection">Live Activities</button>
+    <button class="toggle-section-button" data-target="chartsContainer">Dashboard</button>
+    <button class="toggle-section-button" data-target="salesDataSection">Sales Data</button>
+    <button class="toggle-section-button" data-target="notificationsSection">Notifications</button>
+    <button class="toggle-section-button" data-target="settingsSection">Settings</button>
+</header>
 
     <div class="leaderboard-section">
         <h2>Leaderboard</h2>
@@ -179,6 +189,8 @@
         </div>
     </div>
     
+    
+    
         </div>
         <button id="toggleChartControlsButton">Show Chart Controls</button>
 
@@ -221,6 +233,50 @@
 
 
         </div>
+
+        <div id="notesApp">
+            <!-- Sidebar for Folders and Notes List -->
+            <div id="sidebar">
+                <div id="foldersSection">
+                    <h2>Folders</h2>
+                    <ul id="foldersList">
+                        <!-- Folders will be listed here -->
+                    </ul>
+                    <button id="addFolderButton">Add Folder</button>
+                </div>
+                <div id="notesListSection">
+                    <h2>Notes</h2>
+                    <input type="text" id="searchNotesInput" placeholder="Search Notes...">
+                    <ul id="notesList">
+                        <!-- Notes will be listed here -->
+                    </ul>
+                    <button id="addNoteButton">Add Note</button>
+                </div>
+            </div>
+            <!-- Main Content Area for Editing Notes -->
+            <div id="mainContent">
+                <input type="text" id="noteTitle" placeholder="Note Title">
+                <!-- Rich Text Editor Container -->
+                <div id="editorContainer">
+                    <div id="editor">
+                        <!-- Note content will be edited here -->
+                    </div>
+                </div>
+                <div id="noteActions">
+                    <button id="saveNoteButton">Save Note</button>
+                    <button id="deleteNoteButton">Delete Note</button>
+                    <button id="shareNoteButton">Share Note</button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Include Firebase -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    
+        <!-- Include Quill JS -->
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
         <!-- Notifications Section -->
 <div class="notifications-section">
