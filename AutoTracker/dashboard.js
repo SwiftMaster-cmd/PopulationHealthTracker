@@ -40,11 +40,6 @@ document.addEventListener('firebaseInitialized', function() {
         }
     });
 
-    // Define salesRef and salesData at a higher scope
-    let salesRef;
-    let salesData = [];
-    let salesDataListener;
-
     auth.onAuthStateChanged(user => {
         if (user) {
             initializeDashboard(user);
@@ -54,20 +49,12 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeDashboard(user) {
-        // Set up event listener for team filter
-        teamFilter.addEventListener('change', () => {
-            fetchSalesData(user, () => {
-                // After fetching data, update charts
-                updateCharts(salesData);
-            });
-        });
-
-        // Set up event listener for add chart button with debounce
+        // Event listener for adding a chart
         let isAddingChart = false;
         addChartButton.addEventListener('click', () => {
             if (isAddingChart) return; // Prevent multiple clicks
             isAddingChart = true;
-            addChart(salesData, null, () => {
+            addChart(user, null, () => {
                 isAddingChart = false; // Reset flag after chart is added
             });
         });
@@ -105,20 +92,12 @@ document.addEventListener('firebaseInitialized', function() {
         // Load existing presets
         loadPresets(user);
 
-        // Initial data fetch
-        fetchSalesData(user, () => {
-            // After fetching data, load saved charts
-            loadSavedCharts(salesData, user);
-        });
+        // Load saved charts
+        loadSavedCharts(user);
     }
 
-    function fetchSalesData(user, callback) {
-        // Remove previous listener if any
-        if (salesRef && salesDataListener) {
-            salesRef.off('value', salesDataListener);
-        }
-
-        const teamFilterValue = teamFilter.value;
+    function fetchSalesData(user, teamFilterValue, callback) {
+        let salesRef;
 
         if (teamFilterValue === 'allData') {
             salesRef = database.ref('salesOutcomes');
@@ -126,8 +105,8 @@ document.addEventListener('firebaseInitialized', function() {
             salesRef = database.ref('salesOutcomes/' + user.uid);
         }
 
-        salesDataListener = salesRef.on('value', snapshot => {
-            salesData = [];
+        salesRef.once('value').then(snapshot => {
+            let salesData = [];
 
             if (teamFilterValue === 'allData') {
                 const allUsersData = snapshot.val();
@@ -144,12 +123,12 @@ document.addEventListener('firebaseInitialized', function() {
             }
 
             if (callback) {
-                callback();
+                callback(salesData);
             }
 
-        }, error => {
+        }).catch(error => {
             console.error('Error fetching sales data:', error);
-            if (callback) callback();
+            if (callback) callback([]);
         });
     }
 
@@ -194,21 +173,23 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function addChart(salesData, chartConfig = null, callback = null) {
-        let timeFrame, actionType, chartType;
+    function addChart(user, chartConfig = null, callback = null) {
+        let timeFrame, actionType, chartType, teamFilterValue;
 
         if (chartConfig) {
             // Use provided chart configuration (from saved settings)
             timeFrame = chartConfig.timeFrame;
             actionType = chartConfig.actionType;
             chartType = chartConfig.chartType;
+            teamFilterValue = chartConfig.teamFilterValue || 'myData'; // Default to 'myData' if not specified
         } else {
             // Get values from UI
             const timeFrameSelect = document.getElementById('timeFrame');
             const actionTypeSelect = document.getElementById('actionType');
             const chartTypeSelect = document.getElementById('chartType');
+            const teamFilterSelect = document.getElementById('teamFilter');
 
-            if (!timeFrameSelect || !actionTypeSelect || !chartTypeSelect) {
+            if (!timeFrameSelect || !actionTypeSelect || !chartTypeSelect || !teamFilterSelect) {
                 console.error('One or more filter select elements are missing.');
                 if (callback) callback();
                 return;
@@ -217,24 +198,19 @@ document.addEventListener('firebaseInitialized', function() {
             timeFrame = timeFrameSelect.value;
             actionType = actionTypeSelect.value;
             chartType = chartTypeSelect.value;
+            teamFilterValue = teamFilterSelect.value;
 
             // Save the chart configuration
-            saveChartConfig({ timeFrame, actionType, chartType });
+            saveChartConfig({ timeFrame, actionType, chartType, teamFilterValue });
         }
 
-        // If salesData is empty, fetch it based on current teamFilter value
-        if (salesData.length === 0) {
-            const user = firebase.auth().currentUser;
-            fetchSalesData(user, () => {
-                proceedWithChartCreation(salesData);
-                if (callback) callback(); // Invoke the callback if provided
-            });
-        } else {
-            proceedWithChartCreation(salesData);
+        // Fetch sales data based on teamFilterValue
+        fetchSalesData(user, teamFilterValue, salesData => {
+            proceedWithChartCreation(salesData, teamFilterValue);
             if (callback) callback(); // Invoke the callback if provided
-        }
+        });
 
-        function proceedWithChartCreation(data) {
+        function proceedWithChartCreation(data, teamFilterValue) {
             // Filter data based on time frame and action type
             const filteredData = filterSalesData(data, timeFrame, actionType);
 
@@ -283,7 +259,7 @@ document.addEventListener('firebaseInitialized', function() {
             chartsContainer.appendChild(chartContainer);
 
             // Render the chart
-            const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame);
+            const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame, teamFilterValue);
 
             // Save charts to Firebase
             saveChartsToFirebase();
@@ -369,7 +345,7 @@ document.addEventListener('firebaseInitialized', function() {
         };
     }
 
-    function renderChart(canvas, chartType, chartData, actionType, timeFrame) {
+    function renderChart(canvas, chartType, chartData, actionType, timeFrame, teamFilterValue) {
         const dataPointCount = chartData.labels.length;
 
         // Set canvas width dynamically
@@ -511,7 +487,8 @@ document.addEventListener('firebaseInitialized', function() {
             custom: {
                 timeFrame: timeFrame,
                 actionType: actionType,
-                chartType: chartType // Include chartType for rebuilding charts
+                chartType: chartType, // Include chartType for rebuilding charts
+                teamFilterValue: teamFilterValue // Include teamFilterValue
             }
         };
 
@@ -573,7 +550,8 @@ document.addEventListener('firebaseInitialized', function() {
             const chartConfig = {
                 timeFrame: chartInstance.options.custom.timeFrame,
                 actionType: chartInstance.options.custom.actionType,
-                chartType: chartInstance.options.custom.chartType
+                chartType: chartInstance.options.custom.chartType,
+                teamFilterValue: chartInstance.options.custom.teamFilterValue
             };
             savedCharts.push(chartConfig);
         });
@@ -581,7 +559,7 @@ document.addEventListener('firebaseInitialized', function() {
         database.ref('chartConfigs/' + user.uid).set(savedCharts);
     }
 
-    function loadSavedCharts(salesData, user) {
+    function loadSavedCharts(user) {
         const chartsContainer = document.querySelector('.charts-container');
         if (!chartsContainer) {
             console.error('Charts container element not found.');
@@ -599,15 +577,18 @@ document.addEventListener('firebaseInitialized', function() {
 
             // Add saved charts
             savedCharts.forEach(chartConfig => {
-                addChart(salesData, chartConfig);
+                addChart(user, chartConfig);
             });
         }).catch(error => {
             console.error('Error loading saved charts:', error);
         });
     }
 
-    function updateCharts(salesData) {
-        // Update all charts with new data
+    function updateCharts() {
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+
+        // Update all charts with their own data
         const charts = document.querySelectorAll('.chart-wrapper');
         charts.forEach(chartWrapper => {
             const canvas = chartWrapper.querySelector('canvas');
@@ -617,40 +598,44 @@ document.addEventListener('firebaseInitialized', function() {
             const chartConfig = {
                 timeFrame: chartInstance.options.custom.timeFrame,
                 actionType: chartInstance.options.custom.actionType,
-                chartType: chartInstance.options.custom.chartType
+                chartType: chartInstance.options.custom.chartType,
+                teamFilterValue: chartInstance.options.custom.teamFilterValue
             };
 
-            // Filter data based on time frame and actionType
-            const filteredData = filterSalesData(salesData, chartConfig.timeFrame, chartConfig.actionType);
+            // Fetch sales data specific to this chart's teamFilterValue
+            fetchSalesData(user, chartConfig.teamFilterValue, salesData => {
+                // Filter data based on time frame and actionType
+                const filteredData = filterSalesData(salesData, chartConfig.timeFrame, chartConfig.actionType);
 
-            // Prepare data for the chart
-            const chartData = prepareChartData(filteredData, chartConfig.timeFrame);
+                // Prepare data for the chart
+                const chartData = prepareChartData(filteredData, chartConfig.timeFrame);
 
-            // Update total count
-            const totalCount = filteredData.length;
-            totalCountDisplay.textContent = `${chartConfig.actionType} (${chartConfig.timeFrame}) - Total Count: ${totalCount}`;
+                // Update total count
+                const totalCount = filteredData.length;
+                totalCountDisplay.textContent = `${chartConfig.actionType} (${chartConfig.timeFrame}) - Total Count: ${totalCount}`;
 
-            // Generate new colors based on updated data
-            const colors = generateValueBasedColors(chartData.data);
+                // Generate new colors based on updated data
+                const colors = generateValueBasedColors(chartData.data);
 
-            // Update chart data
-            chartInstance.data.labels = chartData.labels;
-            chartInstance.data.datasets[0].data = chartData.data;
+                // Update chart data
+                chartInstance.data.labels = chartData.labels;
+                chartInstance.data.datasets[0].data = chartData.data;
 
-            if (chartConfig.chartType === 'line') {
-                chartInstance.data.datasets[0].pointBackgroundColor = colors;
-                // Update gradient fill
-                const ctx = chartInstance.ctx;
-                chartInstance.data.datasets[0].backgroundColor = createVerticalGradient(ctx, canvas);
-            } else {
-                chartInstance.data.datasets[0].backgroundColor = colors;
-                chartInstance.data.datasets[0].borderColor = colors;
-                chartInstance.data.datasets[0].hoverBackgroundColor = colors;
-                chartInstance.data.datasets[0].hoverBorderColor = colors;
-            }
+                if (chartConfig.chartType === 'line') {
+                    chartInstance.data.datasets[0].pointBackgroundColor = colors;
+                    // Update gradient fill
+                    const ctx = chartInstance.ctx;
+                    chartInstance.data.datasets[0].backgroundColor = createVerticalGradient(ctx, canvas);
+                } else {
+                    chartInstance.data.datasets[0].backgroundColor = colors;
+                    chartInstance.data.datasets[0].borderColor = colors;
+                    chartInstance.data.datasets[0].hoverBackgroundColor = colors;
+                    chartInstance.data.datasets[0].hoverBorderColor = colors;
+                }
 
-            // Trigger an update
-            chartInstance.update();
+                // Trigger an update
+                chartInstance.update();
+            });
         });
     }
 
@@ -659,9 +644,6 @@ document.addEventListener('firebaseInitialized', function() {
     function savePreset(presetName) {
         const user = firebase.auth().currentUser;
         if (!user) return;
-
-        // Get the current team filter value
-        const teamFilterValue = teamFilter.value;
 
         // Retrieve current chart configurations
         const charts = document.querySelectorAll('.chart-wrapper');
@@ -674,14 +656,14 @@ document.addEventListener('firebaseInitialized', function() {
             const chartConfig = {
                 timeFrame: chartInstance.options.custom.timeFrame,
                 actionType: chartInstance.options.custom.actionType,
-                chartType: chartInstance.options.custom.chartType
+                chartType: chartInstance.options.custom.chartType,
+                teamFilterValue: chartInstance.options.custom.teamFilterValue
             };
             savedCharts.push(chartConfig);
         });
 
-        // Save the preset under the user's presets in Firebase, including the teamFilterValue
+        // Save the preset under the user's presets in Firebase
         const presetData = {
-            teamFilter: teamFilterValue,
             charts: savedCharts
         };
 
@@ -721,21 +703,15 @@ document.addEventListener('firebaseInitialized', function() {
                 return;
             }
 
-            const { teamFilter: savedTeamFilterValue, charts: savedCharts } = presetData;
+            const { charts: savedCharts } = presetData;
 
-            // Set the team filter to the saved value
-            teamFilter.value = savedTeamFilterValue;
+            // Clear existing charts
+            const chartsContainer = document.querySelector('.charts-container');
+            chartsContainer.innerHTML = '';
 
-            // Fetch sales data based on the team filter
-            fetchSalesData(user, () => {
-                // After fetching sales data, load the charts
-                const chartsContainer = document.querySelector('.charts-container');
-                chartsContainer.innerHTML = '';
-
-                // Add charts from the preset
-                savedCharts.forEach(chartConfig => {
-                    addChart(salesData, chartConfig);
-                });
+            // Add charts from the preset
+            savedCharts.forEach(chartConfig => {
+                addChart(user, chartConfig);
             });
 
         }).catch(error => {
