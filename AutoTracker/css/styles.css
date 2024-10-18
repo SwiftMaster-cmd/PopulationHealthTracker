@@ -6,102 +6,128 @@
 /* Global Styles */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
     font-family: 'Inter', sans-serif;
     background-color: #121212;
     color: #E0E0E0;
+    margin: 0;
+    padding: 0;
     overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
+/* Container */
 .container {
-    width: 100%;
+    width: 95%;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
-}
-
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-    color: #FFFFFF;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-p {
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-/* Buttons */
-button {
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 500;
-    padding: 10px 20px;
-    transition: background-color 0.3s ease;
-}
-
-button:focus {
-    outline: none;
-}
-
-button.primary {
-    background-color: #1E88E5;
-    color: #FFFFFF;
-}
-
-button.primary:hover {
-    background-color: #1565C0;
-}
-
-button.secondary {
-    background-color: #43A047;
-    color: #FFFFFF;
-}
-
-button.secondary:hover {
-    background-color: #2E7D32;
-}
-
-/* Inputs and Selects */
-input[type="text"],
-select {
-    background-color: #1E1E1E;
-    color: #E0E0E0;
-    border: 1px solid #333333;
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-size: 14px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-select:focus {
-    outline: none;
-    border-color: #1E88E5;
+    padding: 20px 0;
 }
 
 /* Filter Container */
 .filter-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Creates 2 equal-width columns */
-    gap: 20px; /* Adds space between the grid items */
-    align-items: center; /* Aligns items vertically in the center */
     background-color: #1E1E1E;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 40px;
 }
 
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
+.filter-container label {
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 15px;
+    min-width: 150px;
+    color: #E0E0E0;
+}
 
+.filter-container select,
+.filter-container input[type="text"] {
+    background-color: #2A2A2A;
+    color: #E0E0E0;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    min-width: 250px;
+    flex: 1;
+}
+
+.filter-container select option {
+    background-color: #2A2A2A;
+    color: #E0E0E0;
+}
+
+/* Buttons */
+.filter-container button {
+    background-color: #3A3A3A;
+    color: #E0E0E0;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filter-container button:hover {
+    background-color: #4A4A4A;
+}
+
+#addChartButton {
+    background-color: #1E88E5;
+    border-color: #1E88E5;
+}
+
+#addChartButton:hover {
+    background-color: #1565C0;
+}
+
+#savePresetButton {
+    background-color: #43A047;
+    border-color: #43A047;
+}
+
+#savePresetButton:hover {
+    background-color: #2E7D32;
+}
+
+#loadPresetButton {
+    background-color: #F9A825;
+    border-color: #F9A825;
+}
+
+#loadPresetButton:hover {
+    background-color: #F57F17;
+}
+
+#deletePresetButton {
+    background-color: #E53935;
+    border-color: #E53935;
+}
+
+#deletePresetButton:hover {
+    background-color: #D32F2F;
+}
+
+/* Preset Controls */
+.preset-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 20px;
+}
 
 /* Charts Container */
 .charts-container {
@@ -110,7 +136,6 @@ select:focus {
     gap: 20px;
     justify-content: center;
     margin-bottom: 40px;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .chart-wrapper {
@@ -118,8 +143,8 @@ select:focus {
     background-color: #1E1E1E;
     border-radius: 8px;
     padding: 20px;
-    flex: 1 1 48%;
-    max-width: 48%;
+    flex: 1 1 calc(50% - 20px);
+    max-width: calc(50% - 20px);
     height: 450px;
     overflow: hidden; /* Hide overflow to prevent affecting main view */
 }
@@ -131,6 +156,13 @@ select:focus {
 
 .chart-content canvas {
     display: block;
+}
+
+.total-count-display {
+    font-size: 18px;
+    font-weight: 500;
+    color: #FFFFFF;
+    margin-bottom: 10px;
 }
 
 /* Remove Chart Button */
@@ -149,112 +181,50 @@ select:focus {
     color: #E53935;
 }
 
-.total-count-display {
-    font-size: 18px;
-    font-weight: 500;
-    color: #FFFFFF;
-    margin-bottom: 10px;
-}
-
-/* Sales Data Section */
-.sales-data-section {
-    width: 100%;
-}
-
-#toggleTableButton {
-    margin-bottom: 20px;
-}
-
-.sales-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    background-color: #1E1E1E;
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    overflow-x: auto; /* Allow horizontal scrolling if necessary */
-}
-
-.sales-table-container {
-    width: 100%;
-    overflow-x: auto;
-    background-color: #1E1E1E;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.sales-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.sales-table th,
-.sales-table td {
-    text-align: left;
-    padding: 12px 15px;
-    border-bottom: 1px solid #333333;
-    color: #E0E0E0;
-    font-size: 14px;
-}
-
-.sales-table th {
-    background-color: #212121;
-    font-weight: 600;
-}
-
-.sales-table tr:hover {
-    background-color: #2A2A2A;
-}
-
-.sales-table tr:nth-child(even) {
-    background-color: #1E1E1E;
-}
-
-/* Notes Column */
-.sales-table td:nth-child(3),
-.sales-table th:nth-child(3) {
-    max-width: 250px;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-}
-
-/* Show More Button */
-#showMoreButton {
-    display: block;
-    margin: 20px auto;
-}
-
-/* Media Queries */
+/* Responsive Design */
 @media (max-width: 1024px) {
     .chart-wrapper {
         flex: 1 1 100%;
         max-width: 100%;
     }
-}
 
-@media (max-width: 768px) {
     .filter-container,
-    .sales-filters {
+    .preset-controls {
         flex-direction: column;
+        align-items: flex-start;
     }
 
     .filter-container label,
-    .sales-filters label {
-        margin-right: 0;
-    }
-
     .filter-container select,
     .filter-container input[type="text"],
-    .sales-filters select,
-    .sales-filters input[type="text"] {
+    .filter-container button,
+    .preset-controls input[type="text"],
+    .preset-controls select,
+    .preset-controls button {
+        margin-right: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-container label,
+    .filter-container select,
+    .filter-container input[type="text"],
+    .filter-container button {
         margin-right: 0;
         width: 100%;
     }
 
-    button {
+    .preset-controls input[type="text"],
+    .preset-controls select,
+    .preset-controls button {
         width: 100%;
-        margin-bottom: 10px;
+        margin-right: 0;
     }
 }
 
@@ -275,262 +245,4 @@ select:focus {
 
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555555;
-}
-
-
-/* Style the select dropdowns to match the site design */
-select {
-    background-color: #1E1E1E; /* Black background */
-    color: #E0E0E0; /* White text */
-    border: 1px solid #333333; /* Subtle border */
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-size: 14px;
-    width: 100%; /* Ensures the select fills its grid cell */
-    transition: border-color 0.3s ease;
-}
-
-/* On hover and focus, change the border color for better UX */
-select:hover,
-select:focus {
-    outline: none;
-    border-color: #1E88E5; /* Light blue border on hover/focus */
-}
-
-/* Ensure the select dropdown's arrow is visible and styled properly */
-select::-ms-expand {
-    display: none; /* For Internet Explorer and Edge */
-}
-
-select option {
-    background-color: #1E1E1E; /* Black background for dropdown items */
-    color: #E0E0E0; /* White text for dropdown items */
-}
-
-#addChartButton {
-    background-color: #1E1E1E; /* Black background */
-    color: #E0E0E0; /* White text */
-    border: 1px solid #333333; /* Subtle border */
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%; /* Full width to span the grid */
-}
-
-#addChartButton:hover {
-    background-color: #333333; /* Slightly lighter black on hover */
-    border-color: #1E88E5; /* Light blue border on hover */
-}
-
-
-
-/* Leaderboard Section */
-.leaderboard-section {
-    background-color: #1E1E1E;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 40px;
-}
-
-.leaderboard-section h2 {
-    margin-bottom: 20px;
-}
-
-.leaderboard-filters {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.leaderboard-filters label {
-    margin-right: 10px;
-}
-
-.leaderboard-filters select {
-    width: auto;
-}
-
-.leaderboard-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.leaderboard-table th,
-.leaderboard-table td {
-    text-align: left;
-    padding: 12px 15px;
-    border-bottom: 1px solid #333333;
-    color: #E0E0E0;
-    font-size: 14px;
-}
-
-.leaderboard-table th {
-    background-color: #212121;
-    font-weight: 600;
-}
-
-.leaderboard-table tr:hover {
-    background-color: #2A2A2A;
-}
-
-.leaderboard-table tr:nth-child(even) {
-    background-color: #1E1E1E;
-}
-
-
-/* Global Box Sizing */
-* {
-    box-sizing: border-box;
-}
-
-/* Container Styles */
-.container {
-    width: 95%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Filter Container Styles */
-.filter-container {
-    background-color: #f5f5f5;
-    padding: 40px; /* Doubled from 20px */
-    border-radius: 16px; /* Doubled from 8px */
-    margin-bottom: 40px; /* Doubled from 20px */
-}
-
-/* Filter Rows */
-.filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 30px; /* Doubled from 15px */
-}
-
-/* Labels */
-.filter-container label {
-    font-size: 36px; /* Doubled from 18px */
-    margin-right: 20px; /* Doubled from 10px */
-    min-width: 200px; /* Adjusted for better layout */
-    flex: 0 0 auto;
-}
-
-/* Selects and Inputs */
-.filter-container select,
-.filter-container input[type="text"] {
-    font-size: 32px; /* Doubled from 16px */
-    padding: 16px; /* Doubled from 8px */
-    margin-right: 40px; /* Doubled from 20px */
-    margin-bottom: 20px; /* Doubled from 10px */
-    border: 1px solid #ccc;
-    border-radius: 8px; /* Doubled from 4px */
-    min-width: 300px; /* Adjusted for better layout */
-    flex: 1 1 auto;
-}
-
-/* Select Options */
-.filter-container select option {
-    font-size: 32px; /* Ensure options are larger */
-}
-
-/* Buttons */
-.filter-container button {
-    font-size: 32px; /* Doubled from 16px */
-    padding: 20px 30px; /* Doubled from 10px 15px */
-    margin-right: 20px; /* Doubled from 10px */
-    margin-bottom: 20px; /* Doubled from 10px */
-    border: none;
-    border-radius: 8px; /* Doubled from 4px */
-    cursor: pointer;
-    flex: 0 0 auto;
-}
-
-/* Specific Button Styles */
-#addChartButton {
-    background-color: #28a745;
-    color: #fff;
-}
-
-#savePresetButton {
-    background-color: #007bff;
-    color: #fff;
-}
-
-#loadPresetButton {
-    background-color: #17a2b8;
-    color: #fff;
-}
-
-#deletePresetButton {
-    background-color: #dc3545;
-    color: #fff;
-}
-
-/* Preset Controls */
-.preset-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top: 40px; /* Doubled from 20px */
-}
-
-/* Adjusting Preset Controls Spacing */
-.preset-controls input[type="text"] {
-    font-size: 32px; /* Ensure consistency */
-    padding: 16px;
-    margin-right: 20px; /* Doubled from 10px */
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    min-width: 300px;
-}
-
-.preset-controls select {
-    font-size: 32px;
-    padding: 16px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    min-width: 300px;
-}
-
-.preset-controls button {
-    font-size: 32px;
-    padding: 20px 30px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-@media screen and (max-width: 1024px) {
-    /* Adjust breakpoint for larger elements */
-    .filter-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .filter-container label,
-    .filter-container select,
-    .filter-container input[type="text"],
-    .filter-container button {
-        margin-right: 0;
-        min-width: 100%;
-    }
-
-    .preset-controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .preset-controls input[type="text"],
-    .preset-controls select,
-    .preset-controls button {
-        min-width: 100%;
-        margin-right: 0;
-    }
 }
