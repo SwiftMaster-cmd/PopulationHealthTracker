@@ -54,7 +54,9 @@ document.addEventListener('firebaseInitialized', function() {
         let salesDataListener;
 
         // Set up event listener for team filter
-        teamFilter.addEventListener('change', fetchSalesData);
+        teamFilter.addEventListener('change', () => {
+            fetchSalesData();
+        });
 
         // Set up event listener for add chart button with debounce
         let isAddingChart = false;
@@ -99,49 +101,55 @@ document.addEventListener('firebaseInitialized', function() {
         // Load existing presets
         loadPresets(user);
 
-        function fetchSalesData() {
-            // Remove previous listener if any
-            if (salesRef && salesDataListener) {
-                salesRef.off('value', salesDataListener);
-            }
-
-            const teamFilterValue = teamFilter.value;
-
-            if (teamFilterValue === 'allData') {
-                salesRef = database.ref('salesOutcomes');
-            } else {
-                salesRef = database.ref('salesOutcomes/' + user.uid);
-            }
-
-            salesDataListener = salesRef.on('value', snapshot => {
-                salesData = [];
-
-                if (teamFilterValue === 'allData') {
-                    const allUsersData = snapshot.val();
-                    if (allUsersData) {
-                        for (let uid in allUsersData) {
-                            const userData = allUsersData[uid];
-                            const userSalesData = Object.values(userData);
-                            salesData = salesData.concat(userSalesData);
-                        }
-                    }
-                } else {
-                    const userData = snapshot.val();
-                    salesData = userData ? Object.values(userData) : [];
-                }
-
-                // Clear existing charts
-                document.querySelector('.charts-container').innerHTML = '';
-
-                // Load saved charts with new data
-                loadSavedCharts(salesData, user);
-            }, error => {
-                console.error('Error fetching sales data:', error);
-            });
-        }
-
         // Initial data fetch
         fetchSalesData();
+    }
+
+    function fetchSalesData(callback) {
+        // Remove previous listener if any
+        if (salesRef && salesDataListener) {
+            salesRef.off('value', salesDataListener);
+        }
+
+        const teamFilterValue = teamFilter.value;
+
+        if (teamFilterValue === 'allData') {
+            salesRef = database.ref('salesOutcomes');
+        } else {
+            const user = firebase.auth().currentUser;
+            salesRef = database.ref('salesOutcomes/' + user.uid);
+        }
+
+        salesDataListener = salesRef.on('value', snapshot => {
+            salesData = [];
+
+            if (teamFilterValue === 'allData') {
+                const allUsersData = snapshot.val();
+                if (allUsersData) {
+                    for (let uid in allUsersData) {
+                        const userData = allUsersData[uid];
+                        const userSalesData = Object.values(userData);
+                        salesData = salesData.concat(userSalesData);
+                    }
+                }
+            } else {
+                const userData = snapshot.val();
+                salesData = userData ? Object.values(userData) : [];
+            }
+
+            if (callback) {
+                callback();
+            } else {
+                // Clear existing charts
+                document.querySelector('.charts-container').innerHTML = '';
+                // Load saved charts with new data
+                loadSavedCharts(salesData, firebase.auth().currentUser);
+            }
+
+        }, error => {
+            console.error('Error fetching sales data:', error);
+            if (callback) callback();
+        });
     }
 
     function getSaleType(action, notes) {
@@ -215,11 +223,13 @@ document.addEventListener('firebaseInitialized', function() {
 
         // If salesData is empty, fetch it based on current teamFilter value
         if (salesData.length === 0) {
-            fetchSalesDataForChart((fetchedSalesData) => {
-                proceedWithChartCreation(fetchedSalesData);
+            fetchSalesData(() => {
+                proceedWithChartCreation(salesData);
+                if (callback) callback(); // Invoke the callback if provided
             });
         } else {
             proceedWithChartCreation(salesData);
+            if (callback) callback(); // Invoke the callback if provided
         }
 
         function proceedWithChartCreation(data) {
@@ -266,7 +276,6 @@ document.addEventListener('firebaseInitialized', function() {
             const chartsContainer = document.querySelector('.charts-container');
             if (!chartsContainer) {
                 console.error('Charts container element not found.');
-                if (callback) callback();
                 return;
             }
             chartsContainer.appendChild(chartContainer);
@@ -276,8 +285,6 @@ document.addEventListener('firebaseInitialized', function() {
 
             // Save charts to Firebase
             saveChartsToFirebase();
-
-            if (callback) callback(); // Invoke the callback if provided
         }
     }
 
@@ -292,19 +299,21 @@ document.addEventListener('firebaseInitialized', function() {
                 break;
             case 'currentWeek':
                 const dayOfWeek = now.getDay(); // 0 (Sun) to 6 (Sat)
+                startDate = new Date(now);
                 startDate.setDate(now.getDate() - dayOfWeek);
                 break;
             case 'previousWeek':
-                const prevWeekStart = new Date(now);
-                const prevWeekDay = now.getDay();
-                prevWeekStart.setDate(now.getDate() - prevWeekDay - 7);
-                startDate = prevWeekStart;
-                now.setDate(prevWeekStart.getDate() + 6);
+                const previousWeekStart = new Date(now);
+                const prevWeekDayOfWeek = now.getDay();
+                previousWeekStart.setDate(now.getDate() - prevWeekDayOfWeek - 7);
+                startDate = previousWeekStart;
+                now.setDate(previousWeekStart.getDate() + 6);
                 break;
             case 'currentMonth':
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
                 break;
             case '90days':
+                startDate = new Date(now);
                 startDate.setDate(now.getDate() - 90);
                 break;
             case 'quarter':
@@ -649,6 +658,9 @@ document.addEventListener('firebaseInitialized', function() {
         const user = firebase.auth().currentUser;
         if (!user) return;
 
+        // Get the current team filter value
+        const teamFilterValue = teamFilter.value;
+
         // Retrieve current chart configurations
         const charts = document.querySelectorAll('.chart-wrapper');
         const savedCharts = [];
@@ -665,8 +677,13 @@ document.addEventListener('firebaseInitialized', function() {
             savedCharts.push(chartConfig);
         });
 
-        // Save the preset under the user's presets in Firebase
-        database.ref('chartPresets/' + user.uid + '/' + presetName).set(savedCharts).then(() => {
+        // Save the preset under the user's presets in Firebase, including the teamFilterValue
+        const presetData = {
+            teamFilter: teamFilterValue,
+            charts: savedCharts
+        };
+
+        database.ref('chartPresets/' + user.uid + '/' + presetName).set(presetData).then(() => {
             alert('Preset saved successfully!');
             presetNameInput.value = ''; // Clear the input field
             loadPresets(user); // Refresh the presets list
@@ -695,16 +712,30 @@ document.addEventListener('firebaseInitialized', function() {
         if (!user) return;
 
         database.ref('chartPresets/' + user.uid + '/' + presetName).once('value').then(snapshot => {
-            const savedCharts = snapshot.val() || [];
+            const presetData = snapshot.val();
 
-            // Clear existing charts
-            const chartsContainer = document.querySelector('.charts-container');
-            chartsContainer.innerHTML = '';
+            if (!presetData) {
+                console.error('Preset data not found.');
+                return;
+            }
 
-            // Add charts from the preset
-            savedCharts.forEach(chartConfig => {
-                addChart([], chartConfig); // Pass empty salesData; it will be fetched within addChart
+            const { teamFilter: savedTeamFilterValue, charts: savedCharts } = presetData;
+
+            // Set the team filter to the saved value
+            teamFilter.value = savedTeamFilterValue;
+
+            // Fetch sales data based on the team filter
+            fetchSalesData(() => {
+                // After fetching sales data, load the charts
+                const chartsContainer = document.querySelector('.charts-container');
+                chartsContainer.innerHTML = '';
+
+                // Add charts from the preset
+                savedCharts.forEach(chartConfig => {
+                    addChart(salesData, chartConfig);
+                });
             });
+
         }).catch(error => {
             console.error('Error loading preset:', error);
         });
@@ -719,41 +750,6 @@ document.addEventListener('firebaseInitialized', function() {
             loadPresets(user); // Refresh the presets list
         }).catch(error => {
             console.error('Error deleting preset:', error);
-        });
-    }
-
-    function fetchSalesDataForChart(callback) {
-        const teamFilterValue = teamFilter.value;
-        let tempSalesRef;
-
-        if (teamFilterValue === 'allData') {
-            tempSalesRef = database.ref('salesOutcomes');
-        } else {
-            const user = firebase.auth().currentUser;
-            tempSalesRef = database.ref('salesOutcomes/' + user.uid);
-        }
-
-        tempSalesRef.once('value', snapshot => {
-            let tempSalesData = [];
-
-            if (teamFilterValue === 'allData') {
-                const allUsersData = snapshot.val();
-                if (allUsersData) {
-                    for (let uid in allUsersData) {
-                        const userData = allUsersData[uid];
-                        const userSalesData = Object.values(userData);
-                        tempSalesData = tempSalesData.concat(userSalesData);
-                    }
-                }
-            } else {
-                const userData = snapshot.val();
-                tempSalesData = userData ? Object.values(userData) : [];
-            }
-
-            callback(tempSalesData);
-        }, error => {
-            console.error('Error fetching sales data for chart:', error);
-            callback([]);
         });
     }
 
