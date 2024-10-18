@@ -68,14 +68,22 @@ document.addEventListener('firebaseInitialized', function() {
 
         // Handle GIF search
         const gifSearchInput = document.getElementById('gifSearchInput');
-        const gifSearchButton = document.getElementById('gifSearchButton');
         const gifResults = document.getElementById('gifResults');
 
-        gifSearchButton.addEventListener('click', () => {
+        // Debounce function to limit API calls
+        let debounceTimeout = null;
+        gifSearchInput.addEventListener('input', () => {
             const query = gifSearchInput.value.trim();
-            if (query) {
-                searchGifs(query);
+            if (debounceTimeout) {
+                clearTimeout(debounceTimeout);
             }
+            debounceTimeout = setTimeout(() => {
+                if (query) {
+                    searchGifs(query);
+                } else {
+                    gifResults.innerHTML = ''; // Clear results if query is empty
+                }
+            }, 500); // Delay of 500ms
         });
 
         // Handle GIF selection
@@ -129,7 +137,7 @@ document.addEventListener('firebaseInitialized', function() {
     }
 
     function searchGifs(query) {
-        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
+        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)
@@ -145,6 +153,11 @@ document.addEventListener('firebaseInitialized', function() {
     function displayGifResults(gifs) {
         const gifResults = document.getElementById('gifResults');
         gifResults.innerHTML = ''; // Clear previous results
+
+        if (gifs.length === 0) {
+            gifResults.innerHTML = '<p>No GIFs found.</p>';
+            return;
+        }
 
         gifs.forEach(gif => {
             const img = document.createElement('img');
