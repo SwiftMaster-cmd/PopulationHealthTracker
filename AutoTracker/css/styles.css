@@ -818,3 +818,49 @@ p {
     background-color: rgba(0, 0, 0, 0.5);
     z-index: -1;
 }
+/* Toggle Chat List Button */
+#toggleChatListButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color: #007BFF; /* Primary color */
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    z-index: 1000; /* Ensure it is above other elements */
+}
+
+#toggleChatListButton:hover {
+    background-color: #0056b3;
+}
+
+/* Hide the chat sidebar */
+.chat-sidebar.hidden {
+    display: none;
+}
+
+/* Expand chat-main to full width when sidebar is hidden */
+.chat-main.full-width {
+    width: 100%;
+}
+
+/* Adjusted Private Chat Section */
+.private-chat-section {
+    position: relative;
+    display: flex;
+    height: 500px; /* Adjust as needed */
+    background-color: #111;
+    color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.private-chat-section.sidebar-hidden .chat-sidebar {
+    display: none;
+}
+
+.private-chat-section.sidebar-hidden .chat-main {
+    width: 100%;
+}

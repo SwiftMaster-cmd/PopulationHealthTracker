@@ -12,6 +12,33 @@ document.addEventListener('firebaseInitialized', function () {
 
     let usersData = {}; // To store user names
 
+    // Toggle Chat List Functionality
+    const toggleChatListButton = document.getElementById('toggleChatListButton');
+    const chatSidebar = document.querySelector('.chat-sidebar');
+    const chatMain = document.querySelector('.chat-main');
+    const privateChatSection = document.querySelector('.private-chat-section');
+
+    toggleChatListButton.addEventListener('click', () => {
+        if (chatSidebar.classList.contains('hidden')) {
+            // Show the chat list
+            chatSidebar.classList.remove('hidden');
+            privateChatSection.classList.remove('sidebar-hidden');
+            toggleChatListButton.textContent = 'Hide Chats';
+        } else {
+            // Hide the chat list
+            chatSidebar.classList.add('hidden');
+            privateChatSection.classList.add('sidebar-hidden');
+            toggleChatListButton.textContent = 'Show Chats';
+        }
+    });
+
+    // Adjust initial state for mobile view
+    if (window.innerWidth <= 768) {
+        chatSidebar.classList.add('hidden');
+        privateChatSection.classList.add('sidebar-hidden');
+        toggleChatListButton.textContent = 'Show Chats';
+    }
+
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUserId = user.uid;
