@@ -147,6 +147,8 @@ document.addEventListener('firebaseInitialized', function () {
             }
             // Create new chat
             createNewChat(recipientId, recipientName);
+        }).catch(error => {
+            console.error('Error accessing user chats:', error);
         });
     }
 
@@ -169,6 +171,7 @@ document.addEventListener('firebaseInitialized', function () {
             selectChat(chatId, recipientId, recipientName);
         }).catch(error => {
             console.error('Error creating chat:', error);
+            alert('Failed to create chat: ' + error.message);
         });
     }
 
@@ -205,6 +208,8 @@ document.addEventListener('firebaseInitialized', function () {
         messagesRef.on('child_added', snapshot => {
             const message = snapshot.val();
             displayMessage(message);
+        }, error => {
+            console.error('Error listening for messages:', error);
         });
 
         // Handle message form submission
@@ -258,6 +263,8 @@ document.addEventListener('firebaseInitialized', function () {
         messagesRef.on('child_added', snapshot => {
             const message = snapshot.val();
             displayMessage(message);
+        }, error => {
+            console.error('Error listening for group messages:', error);
         });
 
         // Handle message form submission
@@ -290,6 +297,7 @@ document.addEventListener('firebaseInitialized', function () {
         const messagesRef = database.ref(`privateMessages/${selectedChatId}`);
         messagesRef.push(messageData).catch(error => {
             console.error('Error sending message:', error);
+            alert('Failed to send message: ' + error.message);
         });
     }
 
@@ -304,7 +312,8 @@ document.addEventListener('firebaseInitialized', function () {
 
         const messagesRef = database.ref('groupChatMessages');
         messagesRef.push(messageData).catch(error => {
-            console.error('Error sending message:', error);
+            console.error('Error sending group message:', error);
+            alert('Failed to send message: ' + error.message);
         });
     }
 
@@ -379,7 +388,7 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function searchGifs(query) {
-        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
+        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)
