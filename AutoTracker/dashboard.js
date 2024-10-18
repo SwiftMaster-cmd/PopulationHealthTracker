@@ -10,8 +10,16 @@ document.addEventListener('firebaseInitialized', function() {
     const addChartButton = document.getElementById('addChartButton');
     const teamFilter = document.getElementById('teamFilter');
 
+    // New elements for presets
+    const presetNameInput = document.getElementById('presetName');
+    const savePresetButton = document.getElementById('savePresetButton');
+    const presetSelect = document.getElementById('presetSelect');
+    const loadPresetButton = document.getElementById('loadPresetButton');
+    const deletePresetButton = document.getElementById('deletePresetButton');
+
     // Check if all elements are present
-    if (!toggleChartControlsButton || !filterContainer || !addChartButton || !teamFilter) {
+    if (!toggleChartControlsButton || !filterContainer || !addChartButton || !teamFilter ||
+        !presetNameInput || !savePresetButton || !presetSelect || !loadPresetButton || !deletePresetButton) {
         console.error('One or more DOM elements are missing. Please ensure all elements are present in your HTML.');
         return;
     }
@@ -57,6 +65,39 @@ document.addEventListener('firebaseInitialized', function() {
                 isAddingChart = false; // Reset flag after chart is added
             });
         });
+
+        // Event listener for saving a new preset
+        savePresetButton.addEventListener('click', () => {
+            const presetName = presetNameInput.value.trim();
+            if (presetName) {
+                savePreset(presetName);
+            } else {
+                alert('Please enter a name for the preset.');
+            }
+        });
+
+        // Event listener for loading a preset
+        loadPresetButton.addEventListener('click', () => {
+            const selectedPreset = presetSelect.value;
+            if (selectedPreset) {
+                loadPreset(selectedPreset);
+            } else {
+                alert('Please select a preset to load.');
+            }
+        });
+
+        // Event listener for deleting a preset
+        deletePresetButton.addEventListener('click', () => {
+            const selectedPreset = presetSelect.value;
+            if (selectedPreset) {
+                deletePreset(selectedPreset);
+            } else {
+                alert('Please select a preset to delete.');
+            }
+        });
+
+        // Load existing presets
+        loadPresets(user);
 
         function fetchSalesData() {
             // Remove previous listener if any
@@ -172,61 +213,72 @@ document.addEventListener('firebaseInitialized', function() {
             saveChartConfig({ timeFrame, actionType, chartType });
         }
 
-        // Filter data based on time frame and action type
-        const filteredData = filterSalesData(salesData, timeFrame, actionType);
-
-        // Prepare data for the chart
-        const chartData = prepareChartData(filteredData, timeFrame);
-
-        // Calculate total count
-        const totalCount = filteredData.length;
-
-        // Create chart container
-        const chartContainer = document.createElement('div');
-        chartContainer.classList.add('chart-wrapper');
-
-        // Add a remove button
-        const removeButton = document.createElement('button');
-        removeButton.innerHTML = '&times;';
-        removeButton.classList.add('remove-chart-button');
-        removeButton.addEventListener('click', () => {
-            chartContainer.remove();
-            saveChartsToFirebase(); // Update saved charts in Firebase
-        });
-        chartContainer.appendChild(removeButton);
-
-        // Add total count display
-        const totalCountDisplay = document.createElement('div');
-        totalCountDisplay.classList.add('total-count-display');
-        totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: ${totalCount}`;
-        chartContainer.appendChild(totalCountDisplay);
-
-        // Create chart content container for scrolling
-        const chartContent = document.createElement('div');
-        chartContent.classList.add('chart-content');
-
-        // Create canvas for Chart.js
-        const canvas = document.createElement('canvas');
-        chartContent.appendChild(canvas);
-
-        chartContainer.appendChild(chartContent);
-
-        // Add chart container to the page
-        const chartsContainer = document.querySelector('.charts-container');
-        if (!chartsContainer) {
-            console.error('Charts container element not found.');
-            if (callback) callback();
-            return;
+        // If salesData is empty, fetch it based on current teamFilter value
+        if (salesData.length === 0) {
+            fetchSalesDataForChart((fetchedSalesData) => {
+                proceedWithChartCreation(fetchedSalesData);
+            });
+        } else {
+            proceedWithChartCreation(salesData);
         }
-        chartsContainer.appendChild(chartContainer);
 
-        // Render the chart
-        const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame);
+        function proceedWithChartCreation(data) {
+            // Filter data based on time frame and action type
+            const filteredData = filterSalesData(data, timeFrame, actionType);
 
-        // Save charts to Firebase
-        saveChartsToFirebase();
+            // Prepare data for the chart
+            const chartData = prepareChartData(filteredData, timeFrame);
 
-        if (callback) callback(); // Invoke the callback if provided
+            // Calculate total count
+            const totalCount = filteredData.length;
+
+            // Create chart container
+            const chartContainer = document.createElement('div');
+            chartContainer.classList.add('chart-wrapper');
+
+            // Add a remove button
+            const removeButton = document.createElement('button');
+            removeButton.innerHTML = '&times;';
+            removeButton.classList.add('remove-chart-button');
+            removeButton.addEventListener('click', () => {
+                chartContainer.remove();
+                saveChartsToFirebase(); // Update saved charts in Firebase
+            });
+            chartContainer.appendChild(removeButton);
+
+            // Add total count display
+            const totalCountDisplay = document.createElement('div');
+            totalCountDisplay.classList.add('total-count-display');
+            totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: ${totalCount}`;
+            chartContainer.appendChild(totalCountDisplay);
+
+            // Create chart content container for scrolling
+            const chartContent = document.createElement('div');
+            chartContent.classList.add('chart-content');
+
+            // Create canvas for Chart.js
+            const canvas = document.createElement('canvas');
+            chartContent.appendChild(canvas);
+
+            chartContainer.appendChild(chartContent);
+
+            // Add chart container to the page
+            const chartsContainer = document.querySelector('.charts-container');
+            if (!chartsContainer) {
+                console.error('Charts container element not found.');
+                if (callback) callback();
+                return;
+            }
+            chartsContainer.appendChild(chartContainer);
+
+            // Render the chart
+            const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame);
+
+            // Save charts to Firebase
+            saveChartsToFirebase();
+
+            if (callback) callback(); // Invoke the callback if provided
+        }
     }
 
     function filterSalesData(salesData, timeFrame, actionType) {
@@ -240,21 +292,19 @@ document.addEventListener('firebaseInitialized', function() {
                 break;
             case 'currentWeek':
                 const dayOfWeek = now.getDay(); // 0 (Sun) to 6 (Sat)
-                startDate = new Date(now);
                 startDate.setDate(now.getDate() - dayOfWeek);
                 break;
             case 'previousWeek':
-                const previousWeekStart = new Date(now);
-                const prevWeekDayOfWeek = now.getDay();
-                previousWeekStart.setDate(now.getDate() - prevWeekDayOfWeek - 7);
-                startDate = previousWeekStart;
-                now.setDate(previousWeekStart.getDate() + 6);
+                const prevWeekStart = new Date(now);
+                const prevWeekDay = now.getDay();
+                prevWeekStart.setDate(now.getDate() - prevWeekDay - 7);
+                startDate = prevWeekStart;
+                now.setDate(prevWeekStart.getDate() + 6);
                 break;
             case 'currentMonth':
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
                 break;
             case '90days':
-                startDate = new Date(now);
                 startDate.setDate(now.getDate() - 90);
                 break;
             case 'quarter':
@@ -590,6 +640,120 @@ document.addEventListener('firebaseInitialized', function() {
 
             // Trigger an update
             chartInstance.update();
+        });
+    }
+
+    // Preset Functions
+
+    function savePreset(presetName) {
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+
+        // Retrieve current chart configurations
+        const charts = document.querySelectorAll('.chart-wrapper');
+        const savedCharts = [];
+
+        charts.forEach(chartWrapper => {
+            const canvas = chartWrapper.querySelector('canvas');
+            const chartInstance = Chart.getChart(canvas);
+
+            const chartConfig = {
+                timeFrame: chartInstance.options.custom.timeFrame,
+                actionType: chartInstance.options.custom.actionType,
+                chartType: chartInstance.options.custom.chartType
+            };
+            savedCharts.push(chartConfig);
+        });
+
+        // Save the preset under the user's presets in Firebase
+        database.ref('chartPresets/' + user.uid + '/' + presetName).set(savedCharts).then(() => {
+            alert('Preset saved successfully!');
+            presetNameInput.value = ''; // Clear the input field
+            loadPresets(user); // Refresh the presets list
+        }).catch(error => {
+            console.error('Error saving preset:', error);
+        });
+    }
+
+    function loadPresets(user) {
+        database.ref('chartPresets/' + user.uid).once('value').then(snapshot => {
+            const presets = snapshot.val() || {};
+            presetSelect.innerHTML = '<option value="">Select a Preset</option>';
+            Object.keys(presets).forEach(presetName => {
+                const option = document.createElement('option');
+                option.value = presetName;
+                option.textContent = presetName;
+                presetSelect.appendChild(option);
+            });
+        }).catch(error => {
+            console.error('Error loading presets:', error);
+        });
+    }
+
+    function loadPreset(presetName) {
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+
+        database.ref('chartPresets/' + user.uid + '/' + presetName).once('value').then(snapshot => {
+            const savedCharts = snapshot.val() || [];
+
+            // Clear existing charts
+            const chartsContainer = document.querySelector('.charts-container');
+            chartsContainer.innerHTML = '';
+
+            // Add charts from the preset
+            savedCharts.forEach(chartConfig => {
+                addChart([], chartConfig); // Pass empty salesData; it will be fetched within addChart
+            });
+        }).catch(error => {
+            console.error('Error loading preset:', error);
+        });
+    }
+
+    function deletePreset(presetName) {
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+
+        database.ref('chartPresets/' + user.uid + '/' + presetName).remove().then(() => {
+            alert('Preset deleted successfully!');
+            loadPresets(user); // Refresh the presets list
+        }).catch(error => {
+            console.error('Error deleting preset:', error);
+        });
+    }
+
+    function fetchSalesDataForChart(callback) {
+        const teamFilterValue = teamFilter.value;
+        let tempSalesRef;
+
+        if (teamFilterValue === 'allData') {
+            tempSalesRef = database.ref('salesOutcomes');
+        } else {
+            const user = firebase.auth().currentUser;
+            tempSalesRef = database.ref('salesOutcomes/' + user.uid);
+        }
+
+        tempSalesRef.once('value', snapshot => {
+            let tempSalesData = [];
+
+            if (teamFilterValue === 'allData') {
+                const allUsersData = snapshot.val();
+                if (allUsersData) {
+                    for (let uid in allUsersData) {
+                        const userData = allUsersData[uid];
+                        const userSalesData = Object.values(userData);
+                        tempSalesData = tempSalesData.concat(userSalesData);
+                    }
+                }
+            } else {
+                const userData = snapshot.val();
+                tempSalesData = userData ? Object.values(userData) : [];
+            }
+
+            callback(tempSalesData);
+        }, error => {
+            console.error('Error fetching sales data for chart:', error);
+            callback([]);
         });
     }
 
