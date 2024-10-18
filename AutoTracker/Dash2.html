@@ -66,55 +66,60 @@
     <div class="container">
         <!-- Filter Section -->
         <div class="filter-container">
-            <label for="timeFrame">Time Frame:</label>
-            <select id="timeFrame">
-                <option value="today">Today</option>
-                <option value="currentWeek">Current Week</option>
-                <option value="previousWeek">Previous Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="90days">Last 90 Days</option>
-                <option value="quarter">Quarter</option>
-                <option value="yearToDate">Year to Date</option>
-                <option value="allTime">All Time</option>
-            </select>
-            <select id="teamFilter">
-                <option value="myData">My Data</option>
-                <option value="allData">All Data</option>
-            </select>
-        
-            <label for="actionType">Action Type:</label>
-            <select id="actionType">
-                <!-- Options will be populated dynamically -->
-            </select>
-
-            <label for="chartType">Chart Type:</label>
-            <select id="chartType">
-                <option value="bar">Bar Chart</option>
-                <option value="line">Line Chart</option>
-                <option value="pie">Pie Chart</option>
-            </select>
-
-            <button id="addChartButton">Add Chart</button>
-            
-            <!-- Add this button above or near the filter section -->
-<!-- Preset Name Input -->
-<input type="text" id="presetName" placeholder="Enter Preset Name">
-
-<!-- Save Preset Button -->
-<button id="savePresetButton">Save Preset</button>
-
-<!-- Preset Selection Dropdown -->
-<select id="presetSelect">
-    <option value="">Select a Preset</option>
-    <!-- Options will be populated dynamically -->
-</select>
-
-<!-- Load Preset Button -->
-<button id="loadPresetButton">Load Preset</button>
-
-<!-- Delete Preset Button -->
-<button id="deletePresetButton">Delete Preset</button>
-
+            <div class="filter-row">
+                <label for="timeFrame">Time Frame:</label>
+                <select id="timeFrame">
+                    <option value="today">Today</option>
+                    <option value="currentWeek">Current Week</option>
+                    <option value="previousWeek">Previous Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="90days">Last 90 Days</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="yearToDate">Year to Date</option>
+                    <option value="allTime">All Time</option>
+                </select>
+    
+                <label for="teamFilter">Team Filter:</label>
+                <select id="teamFilter">
+                    <option value="myData">My Data</option>
+                    <option value="allData">All Data</option>
+                </select>
+            </div>
+    
+            <div class="filter-row">
+                <label for="actionType">Action Type:</label>
+                <select id="actionType">
+                    <!-- Options will be populated dynamically -->
+                </select>
+    
+                <label for="chartType">Chart Type:</label>
+                <select id="chartType">
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
+            </div>
+    
+            <div class="filter-row">
+                <button id="addChartButton">Add Chart</button>
+            </div>
+    
+            <div class="preset-controls">
+                <input type="text" id="presetName" placeholder="Enter Preset Name">
+    
+                <button id="savePresetButton">Save Preset</button>
+    
+                <select id="presetSelect">
+                    <option value="">Select a Preset</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+    
+                <button id="loadPresetButton">Load Preset</button>
+                <button id="deletePresetButton">Delete Preset</button>
+            </div>
+        </div>
+    </div>
+    
         </div>
         <button id="toggleChartControlsButton">Show Chart Controls</button>
 
