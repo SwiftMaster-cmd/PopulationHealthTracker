@@ -381,7 +381,7 @@ document.addEventListener('firebaseInitialized', function() {
             const commentToggleButton = document.createElement('button');
             commentToggleButton.textContent = 'Comment';
             commentToggleButton.addEventListener('click', () => {
-                commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+                commentForm.style.display = commentForm.style.display === 'none' ? 'flex' : 'none';
             });
 
             saleDiv.appendChild(commentToggleButton);
@@ -389,28 +389,31 @@ document.addEventListener('firebaseInitialized', function() {
             // Comments section (hidden by default)
             const commentsSection = document.createElement('div');
             commentsSection.classList.add('comments-section');
-            commentsSection.style.display = 'none'; // Hide comments section initially
+            // commentsSection.style.display = 'none'; // Remove this line to always display the section
 
-            // Create "Show Replies" button
-            const showRepliesButton = document.createElement('button');
-            showRepliesButton.textContent = 'Show Replies';
-            showRepliesButton.addEventListener('click', () => {
-                if (commentsList.style.display === 'none') {
-                    commentsList.style.display = 'block';
-                    showRepliesButton.textContent = 'Hide Replies';
-                } else {
-                    commentsList.style.display = 'none';
-                    showRepliesButton.textContent = 'Show Replies';
-                }
-            });
-
-            commentsSection.appendChild(showRepliesButton);
-
-            // Display existing comments (hidden by default)
+            // Display existing comments
             const saleComments = commentsData[sale.saleId] || {};
+            const commentsCount = Object.keys(saleComments).length;
+
+            if (commentsCount > 0) {
+                // Create "Show Replies" button
+                const showRepliesButton = document.createElement('button');
+                showRepliesButton.textContent = `Show Replies (${commentsCount})`;
+                let repliesVisible = false;
+
+                showRepliesButton.addEventListener('click', () => {
+                    repliesVisible = !repliesVisible;
+                    commentsList.style.display = repliesVisible ? 'block' : 'none';
+                    showRepliesButton.textContent = repliesVisible ? `Hide Replies (${commentsCount})` : `Show Replies (${commentsCount})`;
+                });
+
+                saleDiv.appendChild(showRepliesButton);
+            }
+
+            // Create comments list
             const commentsList = document.createElement('ul');
             commentsList.classList.add('comments-list');
-            commentsList.style.display = 'none'; // Hide comments list initially
+            commentsList.style.display = 'none'; // Hidden initially
 
             for (const commentId in saleComments) {
                 const comment = saleComments[commentId];
@@ -422,9 +425,11 @@ document.addEventListener('firebaseInitialized', function() {
 
             commentsSection.appendChild(commentsList);
 
-            // Add comment form
+            // Add comment form (hidden by default)
             const commentForm = document.createElement('form');
             commentForm.classList.add('comment-form');
+            commentForm.style.display = 'none'; // Hide comment form initially
+
             commentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const commentText = commentInput.value.trim();
