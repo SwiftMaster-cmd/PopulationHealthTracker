@@ -66,13 +66,21 @@ document.addEventListener('firebaseInitialized', function () {
 
         const newChatButton = document.getElementById('newChatButton');
         newChatButton.addEventListener('click', () => {
-            startNewChat();
+            displayUserList();
         });
     }
 
     function renderChatList(chats) {
         const chatList = document.getElementById('chatList');
         chatList.innerHTML = '';
+
+        // Include Group Chat in the chat list
+        const groupChatListItem = document.createElement('li');
+        groupChatListItem.textContent = 'Group Chat';
+        groupChatListItem.addEventListener('click', () => {
+            selectGroupChat();
+        });
+        chatList.appendChild(groupChatListItem);
 
         for (const chatId in chats) {
             const chat = chats[chatId];
@@ -90,40 +98,53 @@ document.addEventListener('firebaseInitialized', function () {
         }
     }
 
-    function startNewChat() {
-        const recipientName = prompt('Enter the name of the user you want to chat with:');
-        if (recipientName) {
-            // Find the user with the given name
-            const recipientId = findUserIdByName(recipientName);
-            if (recipientId) {
-                // Check if chat already exists
-                const userChatsRef = database.ref(`userChats/${currentUserId}`);
-                userChatsRef.once('value').then(snapshot => {
-                    const chats = snapshot.val() || {};
-                    for (const chatId in chats) {
-                        const chat = chats[chatId];
-                        if (chat.participants && chat.participants[recipientId]) {
-                            // Chat already exists
-                            selectChat(chatId, recipientId, recipientName);
-                            return;
-                        }
-                    }
-                    // Create new chat
-                    createNewChat(recipientId, recipientName);
+    function displayUserList() {
+        const userListContainer = document.getElementById('userListContainer');
+        userListContainer.style.display = 'block';
+        const userList = document.getElementById('userList');
+        userList.innerHTML = '';
+
+        for (const userId in usersData) {
+            if (userId !== currentUserId) {
+                const userName = usersData[userId].name;
+                const userListItem = document.createElement('li');
+                userListItem.textContent = userName;
+                userListItem.addEventListener('click', () => {
+                    createOrSelectChatWithUser(userId, userName);
+                    userListContainer.style.display = 'none';
                 });
-            } else {
-                alert('User not found.');
+                userList.appendChild(userListItem);
             }
         }
+
+        // Handle search input
+        const userSearchInput = document.getElementById('userSearchInput');
+        userSearchInput.value = ''; // Clear previous input
+        userSearchInput.addEventListener('input', () => {
+            const query = userSearchInput.value.toLowerCase();
+            for (const listItem of userList.children) {
+                const name = listItem.textContent.toLowerCase();
+                listItem.style.display = name.includes(query) ? '' : 'none';
+            }
+        });
     }
 
-    function findUserIdByName(name) {
-        for (const userId in usersData) {
-            if (usersData[userId].name === name && userId !== currentUserId) {
-                return userId;
+    function createOrSelectChatWithUser(recipientId, recipientName) {
+        // Check if chat already exists
+        const userChatsRef = database.ref(`userChats/${currentUserId}`);
+        userChatsRef.once('value').then(snapshot => {
+            const chats = snapshot.val() || {};
+            for (const chatId in chats) {
+                const chat = chats[chatId];
+                if (chat.participants && chat.participants[recipientId]) {
+                    // Chat already exists
+                    selectChat(chatId, recipientId, recipientName);
+                    return;
+                }
             }
-        }
-        return null;
+            // Create new chat
+            createNewChat(recipientId, recipientName);
+        });
     }
 
     function createNewChat(recipientId, recipientName) {
@@ -198,34 +219,60 @@ document.addEventListener('firebaseInitialized', function () {
         messageForm.addEventListener('submit', sendMessageHandler);
 
         // Handle GIF search
-        const gifSearchInput = document.getElementById('gifSearchInput');
-        const gifResults = document.getElementById('gifResults');
+        initializeGifSearch();
+    }
 
-        // Debounce function to limit API calls
-        let debounceTimeout = null;
-        gifSearchInput.addEventListener('input', () => {
-            const query = gifSearchInput.value.trim();
-            if (debounceTimeout) {
-                clearTimeout(debounceTimeout);
-            }
-            debounceTimeout = setTimeout(() => {
-                if (query) {
-                    searchGifs(query);
-                } else {
-                    gifResults.innerHTML = ''; // Clear results if query is empty
-                }
-            }, 500); // Delay of 500ms
+    function selectGroupChat() {
+        selectedChatId = 'groupChat';
+
+        // Update chat header
+        const chatHeader = document.getElementById('chatHeader');
+        chatHeader.textContent = 'Group Chat';
+
+        // Show message form and GIF search
+        const messageForm = document.getElementById('messageForm');
+        messageForm.style.display = 'flex';
+        const gifSearchContainer = document.getElementById('gifSearchContainer');
+        gifSearchContainer.style.display = 'block';
+
+        // Remove previous chat listener
+        if (chatListener) {
+            chatListener.off();
+        }
+
+        // Remove previous sendMessageHandler
+        if (sendMessageHandler) {
+            messageForm.removeEventListener('submit', sendMessageHandler);
+        }
+
+        // Clear chat container
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.innerHTML = '';
+
+        // Listen for new messages
+        const messagesRef = database.ref('groupChatMessages');
+        chatListener = messagesRef;
+        messagesRef.on('child_added', snapshot => {
+            const message = snapshot.val();
+            displayMessage(message);
         });
 
-        // Handle GIF selection
-        gifResults.addEventListener('click', (e) => {
-            if (e.target.tagName === 'IMG') {
-                const gifUrl = e.target.src;
-                sendMessage(gifUrl, 'gif');
-                gifResults.innerHTML = ''; // Clear GIF results after selection
-                gifSearchInput.value = ''; // Clear search input
+        // Handle message form submission
+        const messageInput = document.getElementById('messageInput');
+
+        sendMessageHandler = function (e) {
+            e.preventDefault();
+            const text = messageInput.value.trim();
+            if (text) {
+                sendGroupMessage(text, 'text');
+                messageInput.value = '';
             }
-        });
+        };
+
+        messageForm.addEventListener('submit', sendMessageHandler);
+
+        // Handle GIF search
+        initializeGifSearch();
     }
 
     function sendMessage(content, type) {
@@ -243,6 +290,21 @@ document.addEventListener('firebaseInitialized', function () {
         });
     }
 
+    function sendGroupMessage(content, type) {
+        const messageData = {
+            userId: currentUserId,
+            userName: currentUserName || 'Anonymous',
+            content: content,
+            type: type, // 'text' or 'gif'
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        const messagesRef = database.ref('groupChatMessages');
+        messagesRef.push(messageData).catch(error => {
+            console.error('Error sending message:', error);
+        });
+    }
+
     function displayMessage(message) {
         const chatContainer = document.getElementById('chatContainer');
 
@@ -250,7 +312,13 @@ document.addEventListener('firebaseInitialized', function () {
         messageDiv.classList.add('chat-message');
 
         const time = new Date(message.timestamp).toLocaleTimeString();
-        const senderName = message.senderId === currentUserId ? 'You' : message.senderName;
+        let senderName = '';
+
+        if (selectedChatId === 'groupChat') {
+            senderName = message.userId === currentUserId ? 'You' : message.userName;
+        } else {
+            senderName = message.senderId === currentUserId ? 'You' : message.senderName;
+        }
 
         if (message.type === 'text') {
             messageDiv.innerHTML = `
@@ -268,8 +336,47 @@ document.addEventListener('firebaseInitialized', function () {
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
     }
 
+    function initializeGifSearch() {
+        const gifSearchInput = document.getElementById('gifSearchInput');
+        const gifResults = document.getElementById('gifResults');
+
+        // Clear previous event listeners
+        const newGifSearchInput = gifSearchInput.cloneNode(true);
+        gifSearchInput.parentNode.replaceChild(newGifSearchInput, gifSearchInput);
+
+        // Debounce function to limit API calls
+        let debounceTimeout = null;
+        newGifSearchInput.addEventListener('input', () => {
+            const query = newGifSearchInput.value.trim();
+            if (debounceTimeout) {
+                clearTimeout(debounceTimeout);
+            }
+            debounceTimeout = setTimeout(() => {
+                if (query) {
+                    searchGifs(query);
+                } else {
+                    gifResults.innerHTML = ''; // Clear results if query is empty
+                }
+            }, 500); // Delay of 500ms
+        });
+
+        // Handle GIF selection
+        gifResults.addEventListener('click', (e) => {
+            if (e.target.tagName === 'IMG') {
+                const gifUrl = e.target.src;
+                if (selectedChatId === 'groupChat') {
+                    sendGroupMessage(gifUrl, 'gif');
+                } else {
+                    sendMessage(gifUrl, 'gif');
+                }
+                gifResults.innerHTML = ''; // Clear GIF results after selection
+                newGifSearchInput.value = ''; // Clear search input
+            }
+        });
+    }
+
     function searchGifs(query) {
-        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
+        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)
