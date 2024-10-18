@@ -6,23 +6,35 @@
 /* Global Styles */
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     font-family: 'Inter', sans-serif;
     background-color: #121212;
     color: #E0E0E0;
-    margin: 0;
-    padding: 0;
     overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Container */
 .container {
-    width: 95%;
+    width: 90%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px 0;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: #FFFFFF;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 15px;
 }
 
 /* Filter Container */
@@ -129,6 +141,51 @@ body {
     margin-top: 20px;
 }
 
+/* Leaderboard Section */
+.leaderboard-section {
+    background-color: #1E1E1E;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.leaderboard-section h2 {
+    margin-bottom: 20px;
+}
+
+.leaderboard-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.leaderboard-filters label {
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 15px;
+    min-width: 150px;
+    color: #E0E0E0;
+}
+
+.leaderboard-filters select {
+    background-color: #2A2A2A;
+    color: #E0E0E0;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    min-width: 250px;
+    flex: 1;
+}
+
+.leaderboard-filters select option {
+    background-color: #2A2A2A;
+    color: #E0E0E0;
+}
+
 /* Charts Container */
 .charts-container {
     display: flex;
@@ -146,11 +203,11 @@ body {
     flex: 1 1 calc(50% - 20px);
     max-width: calc(50% - 20px);
     height: 450px;
-    overflow: hidden; /* Hide overflow to prevent affecting main view */
+    overflow: hidden;
 }
 
 .chart-content {
-    overflow-x: auto; /* Allow horizontal scrolling within chart */
+    overflow-x: auto;
     height: 100%;
 }
 
@@ -181,6 +238,124 @@ body {
     color: #E53935;
 }
 
+/* Sales Data Section */
+.sales-data-section {
+    background-color: #1E1E1E;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.sales-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sales-filters label {
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 15px;
+    min-width: 150px;
+    color: #E0E0E0;
+}
+
+.sales-filters select,
+.sales-filters input[type="text"] {
+    background-color: #2A2A2A;
+    color: #E0E0E0;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    min-width: 250px;
+    flex: 1;
+}
+
+/* Sales Data Table */
+.sales-table-container {
+    width: 100%;
+    overflow-x: auto;
+    background-color: #1E1E1E;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sales-table th,
+.sales-table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #333333;
+    color: #E0E0E0;
+    font-size: 14px;
+}
+
+.sales-table th {
+    background-color: #212121;
+    font-weight: 600;
+}
+
+.sales-table tr:hover {
+    background-color: #2A2A2A;
+}
+
+.sales-table tr:nth-child(even) {
+    background-color: #1E1E1E;
+}
+
+/* Notes Column */
+.sales-table td:nth-child(3),
+.sales-table th:nth-child(3) {
+    max-width: 250px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* Show More Button */
+#showMoreButton {
+    display: block;
+    margin: 20px auto;
+    background-color: #3A3A3A;
+    color: #E0E0E0;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#showMoreButton:hover {
+    background-color: #4A4A4A;
+}
+
+/* Toggle Buttons */
+#toggleChartControlsButton,
+#toggleTableButton {
+    background-color: #3A3A3A;
+    color: #E0E0E0;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
+
+#toggleChartControlsButton:hover,
+#toggleTableButton:hover {
+    background-color: #4A4A4A;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .chart-wrapper {
@@ -189,7 +364,9 @@ body {
     }
 
     .filter-container,
-    .preset-controls {
+    .preset-controls,
+    .leaderboard-filters,
+    .sales-filters {
         flex-direction: column;
         align-items: flex-start;
     }
@@ -200,7 +377,12 @@ body {
     .filter-container button,
     .preset-controls input[type="text"],
     .preset-controls select,
-    .preset-controls button {
+    .preset-controls button,
+    .leaderboard-filters label,
+    .leaderboard-filters select,
+    .sales-filters label,
+    .sales-filters select,
+    .sales-filters input[type="text"] {
         margin-right: 0;
         width: 100%;
     }
@@ -215,16 +397,17 @@ body {
     .filter-container label,
     .filter-container select,
     .filter-container input[type="text"],
-    .filter-container button {
-        margin-right: 0;
-        width: 100%;
-    }
-
+    .filter-container button,
     .preset-controls input[type="text"],
     .preset-controls select,
-    .preset-controls button {
-        width: 100%;
+    .preset-controls button,
+    .leaderboard-filters label,
+    .leaderboard-filters select,
+    .sales-filters label,
+    .sales-filters select,
+    .sales-filters input[type="text"] {
         margin-right: 0;
+        width: 100%;
     }
 }
 
