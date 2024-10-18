@@ -477,17 +477,29 @@ p {
     background-color: #1565C0;
 }
 
+/* Existing styles... */
+
+/* Styles for Live Activities Section */
 .live-activities-section {
     margin-top: 20px;
+    background-color: #000; /* Black background */
+    color: #fff;            /* White text */
+    padding: 20px;
+    border-radius: 5px;
 }
 
 .live-activity {
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    padding: 10px 0;
+    border-bottom: 1px solid #444;
+}
+
+.live-activity:last-child {
+    border-bottom: none;
 }
 
 .live-activity p {
     margin: 0;
 }
+
+/* Existing styles... */
+
