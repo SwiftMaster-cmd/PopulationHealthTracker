@@ -62,24 +62,29 @@
         </div>
     </div>
 
-<!-- Group Chat Section -->
-<div class="group-chat-section">
-    <h2>Group Chat</h2>
-    <div id="chatContainer">
-        <!-- Messages will be displayed here -->
+<!-- Private Chat Section -->
+<div class="private-chat-section">
+    <div class="chat-sidebar">
+        <button id="newChatButton">New Chat</button>
+        <ul id="chatList">
+            <!-- List of chats will be rendered here -->
+        </ul>
     </div>
-    <div id="gifSearchContainer">
-        <input type="text" id="gifSearchInput" placeholder="Search GIFs...">
-        <button id="gifSearchButton">Search</button>
-        <div id="gifResults">
-            <!-- GIF search results will be displayed here -->
+    <div class="chat-main">
+        <h2 id="chatHeader">Select a chat</h2>
+        <div id="chatContainer">
+            <!-- Messages will be displayed here -->
         </div>
+        <form id="messageForm" style="display: none;">
+            <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required>
+            <button type="submit">Send</button>
+        </form>
     </div>
-    <form id="messageForm">
-        <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required>
-        <button type="submit">Send</button>
-    </form>
 </div>
+
+<!-- Include the privateChat.js script -->
+<script src="js/privateChat.js"></script>
+
 
 <!-- Include the groupChat.js script -->
 <script src="js/groupChat.js"></script>
