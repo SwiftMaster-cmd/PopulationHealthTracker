@@ -51,9 +51,6 @@ document.addEventListener('firebaseInitialized', function() {
             notificationsContainer.appendChild(notificationDiv);
         });
     }
-    if (saleOwnerId && saleOwnerId !== currentUserId) {
-        createNotification(saleOwnerId, `${usersData[currentUserId].name} liked your sale.`, saleId);
-    }
     
 
     // Optional: Function to mark notifications as read or clear them
