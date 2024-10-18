@@ -18,6 +18,9 @@ document.addEventListener('firebaseInitialized', function () {
             initializeUserName(user);
             loadUsers(); // Load user names
             initializeChatList(); // Load existing chats
+
+            // Load group chat by default
+            selectGroupChat();
         }
     });
 
@@ -376,7 +379,7 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function searchGifs(query) {
-        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
+        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)

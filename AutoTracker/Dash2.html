@@ -72,10 +72,19 @@
         </ul>
     </div>
     <div class="chat-main">
-        <h2 id="chatHeader">Select a chat</h2>
+        <h2 id="chatHeader">Group Chat</h2>
         <div id="chatContainer">
             <!-- Messages will be displayed here -->
         </div>
+
+        <!-- GIF Search Container -->
+        <div id="gifSearchContainer" style="display: none;">
+            <input type="text" id="gifSearchInput" placeholder="Search GIFs...">
+            <div id="gifResults">
+                <!-- GIF search results will be displayed here -->
+            </div>
+        </div>
+
         <form id="messageForm" style="display: none;">
             <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required>
             <button type="submit">Send</button>
@@ -83,9 +92,13 @@
     </div>
 </div>
 
-
-<!-- Include the groupChat.js script -->
-<script src="groupChat.js"></script>
+<!-- User List Container for New Chat -->
+<div id="userListContainer" style="display: none;">
+    <input type="text" id="userSearchInput" placeholder="Search users...">
+    <ul id="userList">
+        <!-- List of users will be rendered here -->
+    </ul>
+</div>
 
 
       <!-- Live Activities Section -->

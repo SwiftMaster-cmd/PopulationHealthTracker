@@ -616,48 +616,75 @@ p {
 
 
 
-
-
-/* Styles for Group Chat */
-.group-chat-section {
-    margin-top: 20px;
+/* Styles for Private and Group Chat */
+.private-chat-section {
+    display: flex;
+    height: 500px; /* Adjust as needed */
     background-color: #111;
     color: #fff;
-    padding: 20px;
     border-radius: 5px;
+    overflow: hidden;
 }
 
-/* Chat Container with Max Height and Scroll */
-#chatContainer {
-    max-height: 300px; /* Adjust the max height as needed */
-    overflow-y: auto;
-    margin-bottom: 10px;
+/* Chat Sidebar */
+.chat-sidebar {
+    width: 200px;
     background-color: #222;
     padding: 10px;
-    border-radius: 5px;
-}
-
-/* GIF Search Container */
-#gifSearchContainer {
-    margin-bottom: 10px;
-}
-
-/* GIF Results Container with Max Height and Scroll */
-#gifResults {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 10px;
-    max-height: 200px; /* Adjust the max height as needed */
+    box-sizing: border-box;
     overflow-y: auto;
 }
 
-/* GIF Result Styling */
-.gif-result {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    margin: 5px;
+.chat-sidebar button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF; /* Primary color */
+    color: #fff;
+    border: none;
+    border-radius: 3px;
     cursor: pointer;
+}
+
+.chat-sidebar button:hover {
+    background-color: #0056b3;
+}
+
+#chatList {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#chatList li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #333;
+}
+
+#chatList li:hover {
+    background-color: #333;
+}
+
+/* Chat Main Area */
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#chatHeader {
+    margin: 0 0 10px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+#chatContainer {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #222;
+    padding: 10px;
     border-radius: 5px;
 }
 
@@ -680,6 +707,7 @@ p {
     border-radius: 5px;
 }
 
+/* Message Form */
 #messageForm {
     display: flex;
     margin-top: 10px;
@@ -708,6 +736,11 @@ p {
     background-color: #218838;
 }
 
+/* GIF Search Container */
+#gifSearchContainer {
+    margin-top: 10px;
+}
+
 #gifSearchInput {
     width: 100%;
     padding: 5px;
@@ -716,6 +749,23 @@ p {
     background-color: #222;
     color: #fff;
     box-sizing: border-box;
+}
+
+#gifResults {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    max-height: 200px; /* Adjust the max height as needed */
+    overflow-y: auto;
+}
+
+.gif-result {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 /* User List Container Styles */
