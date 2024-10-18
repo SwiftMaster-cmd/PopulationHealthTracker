@@ -4,10 +4,17 @@ document.addEventListener('firebaseInitialized', function() {
     const auth = firebase.auth();
     const database = firebase.database();
 
-
+    // Get references to DOM elements
     const toggleChartControlsButton = document.getElementById('toggleChartControlsButton');
     const filterContainer = document.querySelector('.filter-container');
     const addChartButton = document.getElementById('addChartButton');
+    const teamFilter = document.getElementById('teamFilter');
+
+    // Check if all elements are present
+    if (!toggleChartControlsButton || !filterContainer || !addChartButton || !teamFilter) {
+        console.error('One or more DOM elements are missing. Please ensure all elements are present in your HTML.');
+        return;
+    }
 
     // Initially hide the filter container
     filterContainer.style.display = 'none';
@@ -28,31 +35,67 @@ document.addEventListener('firebaseInitialized', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             initializeDashboard(user);
+        } else {
+            console.error('User is not authenticated.');
         }
     });
 
     function initializeDashboard(user) {
-        const salesRef = database.ref('salesOutcomes/' + user.uid);
+        let salesRef;
+        let salesData = [];
+        let salesDataListener;
 
-        // Listen for real-time updates
-        salesRef.on('value', snapshot => {
-            const salesData = snapshot.val() ? Object.values(snapshot.val()) : [];
+        // Set up event listener for team filter
+        teamFilter.addEventListener('change', fetchSalesData);
 
-            // Populate action types using predefined options
-            const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
-            populateActionTypes(actionTypes);
-
-            // Set up event listeners
-            document.getElementById('addChartButton').addEventListener('click', () => {
-                addChart(salesData);
-            });
-
-            // Load saved charts after sales data is fetched
-            loadSavedCharts(salesData);
-
-            // Update existing charts
-            updateCharts(salesData);
+        // Set up event listener for add chart button
+        addChartButton.addEventListener('click', () => {
+            addChart(salesData);
         });
+
+        function fetchSalesData() {
+            // Remove previous listener if any
+            if (salesRef && salesDataListener) {
+                salesRef.off('value', salesDataListener);
+            }
+
+            const teamFilterValue = teamFilter.value;
+
+            if (teamFilterValue === 'allData') {
+                salesRef = database.ref('salesOutcomes');
+            } else {
+                salesRef = database.ref('salesOutcomes/' + user.uid);
+            }
+
+            salesDataListener = salesRef.on('value', snapshot => {
+                salesData = [];
+
+                if (teamFilterValue === 'allData') {
+                    const allUsersData = snapshot.val();
+                    if (allUsersData) {
+                        for (let uid in allUsersData) {
+                            const userData = allUsersData[uid];
+                            const userSalesData = Object.values(userData);
+                            salesData = salesData.concat(userSalesData);
+                        }
+                    }
+                } else {
+                    const userData = snapshot.val();
+                    salesData = userData ? Object.values(userData) : [];
+                }
+
+                // Clear existing charts
+                document.querySelector('.charts-container').innerHTML = '';
+
+                // Load saved charts with new data
+                loadSavedCharts(salesData);
+            }, error => {
+                console.error('Error fetching sales data:', error);
+            });
+        }
+
+        // Initial data fetch
+        fetchSalesData();
     }
 
     function getSaleType(action, notes) {
@@ -82,6 +125,10 @@ document.addEventListener('firebaseInitialized', function() {
 
     function populateActionTypes(actionTypes) {
         const actionTypeSelect = document.getElementById('actionType');
+        if (!actionTypeSelect) {
+            console.error('Action type select element not found.');
+            return;
+        }
         actionTypeSelect.innerHTML = ''; // Clear existing options
 
         actionTypes.forEach(actionType => {
@@ -102,9 +149,18 @@ document.addEventListener('firebaseInitialized', function() {
             chartType = chartConfig.chartType;
         } else {
             // Get values from UI
-            timeFrame = document.getElementById('timeFrame').value;
-            actionType = document.getElementById('actionType').value;
-            chartType = document.getElementById('chartType').value;
+            const timeFrameSelect = document.getElementById('timeFrame');
+            const actionTypeSelect = document.getElementById('actionType');
+            const chartTypeSelect = document.getElementById('chartType');
+
+            if (!timeFrameSelect || !actionTypeSelect || !chartTypeSelect) {
+                console.error('One or more filter select elements are missing.');
+                return;
+            }
+
+            timeFrame = timeFrameSelect.value;
+            actionType = actionTypeSelect.value;
+            chartType = chartTypeSelect.value;
 
             // Save the chart configuration
             saveChartConfig({ timeFrame, actionType, chartType });
@@ -150,7 +206,12 @@ document.addEventListener('firebaseInitialized', function() {
         chartContainer.appendChild(chartContent);
 
         // Add chart container to the page
-        document.querySelector('.charts-container').appendChild(chartContainer);
+        const chartsContainer = document.querySelector('.charts-container');
+        if (!chartsContainer) {
+            console.error('Charts container element not found.');
+            return;
+        }
+        chartsContainer.appendChild(chartContainer);
 
         // Render the chart
         const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame);
@@ -447,7 +508,12 @@ document.addEventListener('firebaseInitialized', function() {
         const savedCharts = JSON.parse(localStorage.getItem('savedCharts')) || [];
 
         // Clear existing charts to avoid duplicates
-        document.querySelector('.charts-container').innerHTML = '';
+        const chartsContainer = document.querySelector('.charts-container');
+        if (!chartsContainer) {
+            console.error('Charts container element not found.');
+            return;
+        }
+        chartsContainer.innerHTML = '';
 
         // Add saved charts
         savedCharts.forEach(chartConfig => {
@@ -502,4 +568,8 @@ document.addEventListener('firebaseInitialized', function() {
             chartInstance.update();
         });
     }
+
+    // Populate action types on page load
+    const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
+    populateActionTypes(actionTypes);
 });
