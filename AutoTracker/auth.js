@@ -20,6 +20,7 @@ document.addEventListener('firebaseInitialized', function() {
     });
 });
 // auth.js
+// auth.js
 
 auth.onAuthStateChanged(user => {
     if (user) {
