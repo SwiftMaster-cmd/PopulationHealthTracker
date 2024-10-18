@@ -503,3 +503,97 @@ p {
 
 /* Existing styles... */
 
+.live-activities-section {
+    /* ... existing styles ... */
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+/* Styles for Comments Section */
+.comments-section {
+    margin-top: 15px;
+    background-color: #111; /* Slightly lighter than black for contrast */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.comments-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+
+.comments-list li {
+    padding: 5px 0;
+    border-bottom: 1px solid #333;
+}
+
+.comments-list li:last-child {
+    border-bottom: none;
+}
+
+.comment-form {
+    display: flex;
+}
+
+.comment-form input[type="text"] {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #333;
+    border-radius: 3px;
+    background-color: #222;
+    color: #fff;
+}
+
+.comment-form button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    background-color: #28a745; /* Bootstrap success color */
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #218838;
+}
+/* Styles for Notifications Section */
+.notifications-section {
+    margin-top: 20px;
+    background-color: #222;
+    color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.notification {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.notification:last-child {
+    border-bottom: none;
+}
+
+.notification p {
+    margin: 0;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: #ccc;
+}
+
+#clearNotificationsButton {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #dc3545; /* Danger color */
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#clearNotificationsButton:hover {
+    background-color: #c82333;
+}
