@@ -429,3 +429,50 @@ p {
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555555;
 }
+
+
+/* Settings Section */
+.settings-section {
+    background-color: #1E1E1E;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.settings-section h2 {
+    margin-bottom: 20px;
+}
+
+.settings-section label {
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 15px;
+    color: #E0E0E0;
+}
+
+.settings-section input[type="text"] {
+    background-color: #2A2A2A;
+    color: #E0E0E0;
+    border: 1px solid #444444;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    width: 300px;
+}
+
+#saveNameButton {
+    background-color: #1E88E5;
+    border-color: #1E88E5;
+    color: #FFFFFF;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#saveNameButton:hover {
+    background-color: #1565C0;
+}

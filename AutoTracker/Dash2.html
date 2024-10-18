@@ -24,6 +24,8 @@
 
     <!-- Your JavaScript Files -->
     <script src="firebase-init.js" defer></script>
+    <script src="settings.js" defer></script>
+
     <script src="display-sales.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="dashboard.js" defer></script>
@@ -161,7 +163,17 @@
 
             <!-- Show More Button -->
             <button id="showMoreButton" style="display: none;">Show More</button>
+
+
         </div>
+        <!-- Settings Section -->
+<div class="settings-section">
+    <h2>Settings</h2>
+    <label for="userNameInput">Your Name:</label>
+    <input type="text" id="userNameInput" placeholder="Enter your name">
+    <button id="saveNameButton">Save Name</button>
+</div>
+
     </div>
 </body>
 </html>

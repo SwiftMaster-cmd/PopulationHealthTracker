@@ -6,9 +6,42 @@ document.addEventListener('firebaseInitialized', function() {
 
     auth.onAuthStateChanged(user => {
         if (user) {
-            initializeLeaderboard();
+            checkUserName(user);
         }
     });
+
+    function checkUserName(user) {
+        const userRef = database.ref('Users/' + user.uid);
+
+        userRef.once('value').then(snapshot => {
+            const userData = snapshot.val();
+            if (userData && userData.name) {
+                // Name exists; proceed to initialize the leaderboard
+                initializeLeaderboard();
+            } else {
+                // Name does not exist; prompt user to enter it
+                promptForUserName(user, initializeLeaderboard);
+            }
+        }).catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }
+
+    function promptForUserName(user, callback) {
+        let userName = prompt('Please enter your name:');
+        if (userName === null || userName.trim() === '') {
+            userName = 'No name';
+        }
+
+        // Save the name in the database
+        const userRef = database.ref('Users/' + user.uid);
+        userRef.update({ name: userName }).then(() => {
+            console.log('User name saved successfully.');
+            callback(); // Proceed to initialize the leaderboard after saving the name
+        }).catch(error => {
+            console.error('Error saving user name:', error);
+        });
+    }
 
     function initializeLeaderboard() {
         const usersRef = database.ref('Users');
@@ -39,9 +72,10 @@ document.addEventListener('firebaseInitialized', function() {
                 const selectedSaleType = saleTypeSelect.value || actionTypes[0];
                 const selectedTimeFrame = timeFrameSelect.value || 'allTime';
 
-                // Compute totals based on selected time frame
-                const totals = computeTotals(usersData, selectedTimeFrame);
-                renderLeaderboard(totals, usersData, selectedSaleType);
+                // Compute totals based on selected time frame and sale type
+                computeTotals(usersData, selectedTimeFrame, selectedSaleType, totals => {
+                    renderLeaderboard(totals, selectedSaleType);
+                });
             };
 
             saleTypeSelect.addEventListener('change', updateLeaderboard);
@@ -54,9 +88,8 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function computeTotals(usersData, selectedTimeFrame) {
-        // usersData is an object with user IDs as keys
-        const totals = {}; // { userId: { saleType: count } }
+    function computeTotals(usersData, selectedTimeFrame, selectedSaleType, callback) {
+        const totals = []; // Array of { userId, name, count }
 
         const now = new Date();
         let startDate = new Date();
@@ -89,28 +122,47 @@ document.addEventListener('firebaseInitialized', function() {
         const startTime = startDate.getTime();
         const endTime = now.getTime();
 
-        for (const userId in usersData) {
+        const userIds = Object.keys(usersData);
+        let usersProcessed = 0;
+
+        userIds.forEach(userId => {
             const userData = usersData[userId];
-            const userSalesOutcomes = userData.salesOutcomes || {};
+            const userName = userData.name || 'No name';
 
-            for (const saleId in userSalesOutcomes) {
-                const sale = userSalesOutcomes[saleId];
-                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                const saleTime = new Date(sale.outcomeTime).getTime();
+            const salesOutcomesRef = database.ref(`salesOutcomes/${userId}`);
 
-                // Check if sale falls within the selected time frame
-                if (saleTime >= startTime && saleTime <= endTime && saleType) {
-                    if (!totals[userId]) {
-                        totals[userId] = {};
+            salesOutcomesRef.once('value').then(salesSnapshot => {
+                const salesData = salesSnapshot.val() || {};
+                let count = 0;
+
+                for (const saleId in salesData) {
+                    const sale = salesData[saleId];
+                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                    const saleTime = new Date(sale.outcomeTime).getTime();
+
+                    // Check if sale falls within the selected time frame and sale type
+                    if (saleTime >= startTime && saleTime <= endTime && saleType === selectedSaleType) {
+                        count++;
                     }
-                    if (!totals[userId][saleType]) {
-                        totals[userId][saleType] = 0;
-                    }
-                    totals[userId][saleType]++;
                 }
-            }
-        }
-        return totals;
+
+                if (count > 0) {
+                    totals.push({ userId, name: userName, count });
+                }
+
+                usersProcessed++;
+                if (usersProcessed === userIds.length) {
+                    // All users processed, proceed to render leaderboard
+                    callback(totals);
+                }
+            }).catch(error => {
+                console.error('Error fetching sales data for user:', userId, error);
+                usersProcessed++;
+                if (usersProcessed === userIds.length) {
+                    callback(totals);
+                }
+            });
+        });
     }
 
     function populateSaleTypeFilter(actionTypes) {
@@ -137,30 +189,13 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function renderLeaderboard(totals, usersData, selectedSaleType) {
+    function renderLeaderboard(totals, selectedSaleType) {
         const leaderboardContainer = document.getElementById('leaderboardContainer');
         leaderboardContainer.innerHTML = ''; // Clear existing content
 
-        // Prepare data for leaderboard
-        const leaderboardData = [];
-
-        for (const userId in totals) {
-            const userTotals = totals[userId];
-            const count = userTotals[selectedSaleType] || 0;
-
-            if (count > 0) {
-                const userInfo = usersData[userId] || {};
-
-                // Use 'names' from the user data
-                const displayName = userInfo.names || userId;
-
-                leaderboardData.push({ userId, displayName, count });
-            }
-        }
-
-        // Sort leaderboardData by count descending and limit to top 10
-        leaderboardData.sort((a, b) => b.count - a.count);
-        const top10Data = leaderboardData.slice(0, 10);
+        // Sort totals by count descending and limit to top 10
+        totals.sort((a, b) => b.count - a.count);
+        const top10Data = totals.slice(0, 10);
 
         // Render leaderboard
         const table = document.createElement('table');
@@ -185,7 +220,7 @@ document.addEventListener('firebaseInitialized', function() {
             rankCell.textContent = index + 1;
 
             const userCell = row.insertCell();
-            userCell.textContent = entry.displayName;
+            userCell.textContent = entry.name;
 
             const countCell = row.insertCell();
             countCell.textContent = entry.count;
