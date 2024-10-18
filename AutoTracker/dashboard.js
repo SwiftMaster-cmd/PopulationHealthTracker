@@ -8,6 +8,7 @@ document.addEventListener('firebaseInitialized', function() {
     const toggleChartControlsButton = document.getElementById('toggleChartControlsButton');
     const filterContainer = document.querySelector('.filter-container');
     const addChartButton = document.getElementById('addChartButton');
+    const clearChartsButton = document.getElementById('clearChartsButton'); // New button reference
     const teamFilter = document.getElementById('teamFilter');
 
     // New elements for presets
@@ -19,7 +20,7 @@ document.addEventListener('firebaseInitialized', function() {
 
     // Check if all elements are present
     if (!toggleChartControlsButton || !filterContainer || !addChartButton || !teamFilter ||
-        !presetNameInput || !savePresetButton || !presetSelect || !loadPresetButton || !deletePresetButton) {
+        !presetNameInput || !savePresetButton || !presetSelect || !loadPresetButton || !deletePresetButton || !clearChartsButton) {
         console.error('One or more DOM elements are missing. Please ensure all elements are present in your HTML.');
         return;
     }
@@ -57,6 +58,11 @@ document.addEventListener('firebaseInitialized', function() {
             addChart(user, null, () => {
                 isAddingChart = false; // Reset flag after chart is added
             });
+        });
+
+        // Event listener for clearing all charts
+        clearChartsButton.addEventListener('click', () => {
+            clearAllCharts();
         });
 
         // Event listener for saving a new preset
@@ -637,6 +643,23 @@ document.addEventListener('firebaseInitialized', function() {
                 chartInstance.update();
             });
         });
+    }
+
+    // New function to clear all charts
+    function clearAllCharts() {
+        const chartsContainer = document.querySelector('.charts-container');
+        if (chartsContainer) {
+            chartsContainer.innerHTML = '';
+        }
+        // Remove saved charts from Firebase
+        const user = firebase.auth().currentUser;
+        if (user) {
+            database.ref('chartConfigs/' + user.uid).remove().then(() => {
+                console.log('All charts cleared.');
+            }).catch(error => {
+                console.error('Error clearing charts:', error);
+            });
+        }
     }
 
     // Preset Functions
