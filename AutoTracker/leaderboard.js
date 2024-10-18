@@ -102,14 +102,20 @@ document.addEventListener('firebaseInitialized', function() {
         const usersRef = database.ref('Users');
         usersRef.on('value', usersSnapshot => {
             usersData = usersSnapshot.val() || {};
-            updateLeaderboard();
+            updateUI(); // Update both leaderboard and live activities
         });
 
         const salesOutcomesRef = database.ref('salesOutcomes');
         salesOutcomesRef.on('value', salesSnapshot => {
             salesData = salesSnapshot.val() || {};
-            updateLeaderboard();
+            updateUI(); // Update both leaderboard and live activities
         });
+    }
+
+    // Function to update both leaderboard and live activities
+    function updateUI() {
+        updateLeaderboard();
+        updateLiveActivities();
     }
 
     function updateLeaderboard() {
@@ -267,4 +273,64 @@ document.addEventListener('firebaseInitialized', function() {
             return null;
         }
     }
+
+    // New function to update live activities
+    function updateLiveActivities() {
+        const salesList = []; // Array to hold all sales
+
+        for (const userId in salesData) {
+            const userSalesData = salesData[userId];
+            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+
+            for (const saleId in userSalesData) {
+                const sale = userSalesData[saleId];
+                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                const saleTime = new Date(sale.outcomeTime).getTime();
+
+                if (saleType) { // Include only valid sale types
+                    salesList.push({
+                        userId,
+                        userName,
+                        saleType,
+                        saleTime,
+                        sale // Include other sale data if needed
+                    });
+                }
+            }
+        }
+
+        // Sort salesList by saleTime descending (newest first)
+        salesList.sort((a, b) => b.saleTime - a.saleTime);
+
+        // Take the first 5 sales
+        const recentSales = salesList.slice(0, 5);
+
+        // Render recentSales in the liveActivitiesContainer
+        renderLiveActivities(recentSales);
+    }
+
+    function renderLiveActivities(sales) {
+        const liveActivitiesContainer = document.getElementById('liveActivitiesContainer');
+        liveActivitiesContainer.innerHTML = ''; // Clear existing content
+
+        sales.forEach(sale => {
+            const saleDiv = document.createElement('div');
+            saleDiv.classList.add('live-activity');
+
+            // Format saleTime to a readable format
+            const saleDate = new Date(sale.saleTime);
+            const options = {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: 'numeric', minute: 'numeric'
+            };
+            const formattedTime = saleDate.toLocaleDateString(undefined, options);
+
+            saleDiv.innerHTML = `
+                <p><strong>${sale.userName}</strong> made a <strong>${sale.saleType}</strong> sale on ${formattedTime}</p>
+            `;
+
+            liveActivitiesContainer.appendChild(saleDiv);
+        });
+    }
+
 });

@@ -476,3 +476,18 @@ p {
 #saveNameButton:hover {
     background-color: #1565C0;
 }
+
+.live-activities-section {
+    margin-top: 20px;
+}
+
+.live-activity {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.live-activity p {
+    margin: 0;
+}
