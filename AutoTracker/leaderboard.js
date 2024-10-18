@@ -7,6 +7,7 @@ document.addEventListener('firebaseInitialized', function() {
     let usersData = {};
     let salesData = {};
     let likesData = {};
+    let commentsData = {};
 
     let selectedSaleType;
     let selectedTimeFrame;
@@ -101,7 +102,7 @@ document.addEventListener('firebaseInitialized', function() {
             updateLeaderboard();
         });
 
-        // Set up listeners for Users, salesOutcomes, and likes to load data in real-time
+        // Set up listeners for Users, salesOutcomes, likes, and comments to load data in real-time
         const usersRef = database.ref('Users');
         usersRef.on('value', usersSnapshot => {
             usersData = usersSnapshot.val() || {};
@@ -118,6 +119,12 @@ document.addEventListener('firebaseInitialized', function() {
         likesRef.on('value', likesSnapshot => {
             likesData = likesSnapshot.val() || {};
             updateLiveActivities(); // Update live activities when likes data changes
+        });
+
+        const commentsRef = database.ref('comments');
+        commentsRef.on('value', commentsSnapshot => {
+            commentsData = commentsSnapshot.val() || {};
+            updateLiveActivities(); // Update live activities when comments data changes
         });
     }
 
@@ -283,7 +290,7 @@ document.addEventListener('firebaseInitialized', function() {
         }
     }
 
-    // New function to update live activities
+    // Function to update live activities
     function updateLiveActivities() {
         const salesList = []; // Array to hold all sales
 
@@ -370,6 +377,53 @@ document.addEventListener('firebaseInitialized', function() {
             saleDiv.appendChild(likeButton);
             saleDiv.appendChild(likesInfo);
 
+            // Add comments section
+            const commentsSection = document.createElement('div');
+            commentsSection.classList.add('comments-section');
+
+            // Display existing comments
+            const saleComments = commentsData[sale.saleId] || {};
+            const commentsList = document.createElement('ul');
+            commentsList.classList.add('comments-list');
+
+            for (const commentId in saleComments) {
+                const comment = saleComments[commentId];
+                const commentItem = document.createElement('li');
+                const commentTime = new Date(comment.timestamp).toLocaleString();
+                commentItem.innerHTML = `<strong>${comment.userName}</strong> (${commentTime}): ${comment.commentText}`;
+                commentsList.appendChild(commentItem);
+            }
+
+            commentsSection.appendChild(commentsList);
+
+            // Add comment form
+            const commentForm = document.createElement('form');
+            commentForm.classList.add('comment-form');
+            commentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const commentText = commentInput.value.trim();
+                if (commentText) {
+                    addComment(sale.saleId, commentText);
+                    commentInput.value = '';
+                }
+            });
+
+            const commentInput = document.createElement('input');
+            commentInput.type = 'text';
+            commentInput.placeholder = 'Add a comment...';
+            commentInput.required = true;
+
+            const commentSubmit = document.createElement('button');
+            commentSubmit.type = 'submit';
+            commentSubmit.textContent = 'Post';
+
+            commentForm.appendChild(commentInput);
+            commentForm.appendChild(commentSubmit);
+
+            commentsSection.appendChild(commentForm);
+
+            saleDiv.appendChild(commentsSection);
+
             liveActivitiesContainer.appendChild(saleDiv);
         });
     }
@@ -387,6 +441,22 @@ document.addEventListener('firebaseInitialized', function() {
                 console.error('Error adding like:', error);
             });
         }
+    }
+
+    function addComment(saleId, commentText) {
+        const commentId = database.ref().child('comments').push().key;
+        const commentData = {
+            userId: currentUserId,
+            userName: usersData[currentUserId] ? usersData[currentUserId].name : 'Unknown',
+            commentText: commentText,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+        const updates = {};
+        updates[`comments/${saleId}/${commentId}`] = commentData;
+
+        database.ref().update(updates).catch(error => {
+            console.error('Error adding comment:', error);
+        });
     }
 
 });
