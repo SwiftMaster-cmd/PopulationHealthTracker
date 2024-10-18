@@ -4,6 +4,12 @@ document.addEventListener('firebaseInitialized', function() {
     const auth = firebase.auth();
     const database = firebase.database();
 
+    let usersData = {};
+    let salesData = {};
+
+    let selectedSaleType;
+    let selectedTimeFrame;
+
     auth.onAuthStateChanged(user => {
         if (user) {
             checkUserName(user);
@@ -44,51 +50,75 @@ document.addEventListener('firebaseInitialized', function() {
     }
 
     function initializeLeaderboard() {
-        const usersRef = database.ref('Users');
+        // Populate sale types
+        const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
+        populateSaleTypeFilter(actionTypes);
 
-        usersRef.once('value').then(usersSnapshot => {
-            const usersData = usersSnapshot.val() || {};
+        // Populate time frame options
+        const timeFrames = [
+            { value: 'today', label: 'Today' },
+            { value: 'currentWeek', label: 'This Week' },
+            { value: 'currentMonth', label: 'This Month' },
+            { value: 'quarter', label: 'This Quarter' },
+            { value: 'yearToDate', label: 'Year to Date' },
+            { value: 'allTime', label: 'All Time' },
+        ];
+        populateTimeFrameFilter(timeFrames);
 
-            // Populate sale types
-            const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
-            populateSaleTypeFilter(actionTypes);
+        // Get references to filters
+        const saleTypeSelect = document.getElementById('saleTypeFilter');
+        const timeFrameSelect = document.getElementById('timeFrameFilter');
 
-            // Populate time frame options
-            const timeFrames = [
-                { value: 'today', label: 'Today' },
-                { value: 'currentWeek', label: 'This Week' },
-                { value: 'currentMonth', label: 'This Month' },
-                { value: 'quarter', label: 'This Quarter' },
-                { value: 'yearToDate', label: 'Year to Date' },
-                { value: 'allTime', label: 'All Time' },
-            ];
-            populateTimeFrameFilter(timeFrames);
+        // Load saved selections from localStorage
+        const savedSaleType = localStorage.getItem('selectedSaleType');
+        const savedTimeFrame = localStorage.getItem('selectedTimeFrame');
 
-            // Add event listeners to update leaderboard when filters are changed
-            const saleTypeSelect = document.getElementById('saleTypeFilter');
-            const timeFrameSelect = document.getElementById('timeFrameFilter');
+        if (savedSaleType && actionTypes.includes(savedSaleType)) {
+            saleTypeSelect.value = savedSaleType;
+        }
 
-            const updateLeaderboard = () => {
-                const selectedSaleType = saleTypeSelect.value || actionTypes[0];
-                const selectedTimeFrame = timeFrameSelect.value || 'allTime';
+        if (savedTimeFrame && timeFrames.some(frame => frame.value === savedTimeFrame)) {
+            timeFrameSelect.value = savedTimeFrame;
+        }
 
-                // Compute totals based on selected time frame and sale type
-                computeTotals(usersData, selectedTimeFrame, selectedSaleType, totals => {
-                    renderLeaderboard(totals, selectedSaleType);
-                });
-            };
+        // Set selected values
+        selectedSaleType = saleTypeSelect.value || actionTypes[0];
+        selectedTimeFrame = timeFrameSelect.value || 'allTime';
 
-            saleTypeSelect.addEventListener('change', updateLeaderboard);
-            timeFrameSelect.addEventListener('change', updateLeaderboard);
-
-            // Initial render
+        // Event listeners for filters
+        saleTypeSelect.addEventListener('change', () => {
+            selectedSaleType = saleTypeSelect.value;
+            localStorage.setItem('selectedSaleType', selectedSaleType);
             updateLeaderboard();
-        }).catch(error => {
-            console.error('Error fetching users data:', error);
+        });
+
+        timeFrameSelect.addEventListener('change', () => {
+            selectedTimeFrame = timeFrameSelect.value;
+            localStorage.setItem('selectedTimeFrame', selectedTimeFrame);
+            updateLeaderboard();
+        });
+
+        // Set up listeners for Users and salesOutcomes to load data in real-time
+        const usersRef = database.ref('Users');
+        usersRef.on('value', usersSnapshot => {
+            usersData = usersSnapshot.val() || {};
+            updateLeaderboard();
+        });
+
+        const salesOutcomesRef = database.ref('salesOutcomes');
+        salesOutcomesRef.on('value', salesSnapshot => {
+            salesData = salesSnapshot.val() || {};
+            updateLeaderboard();
         });
     }
 
-    function computeTotals(usersData, selectedTimeFrame, selectedSaleType, callback) {
+    function updateLeaderboard() {
+        computeTotals(usersData, salesData, selectedTimeFrame, selectedSaleType, totals => {
+            renderLeaderboard(totals, selectedSaleType);
+        });
+    }
+
+    function computeTotals(usersData, salesData, selectedTimeFrame, selectedSaleType, callback) {
         const totals = []; // Array of { userId, name, count }
 
         const now = new Date();
@@ -122,47 +152,30 @@ document.addEventListener('firebaseInitialized', function() {
         const startTime = startDate.getTime();
         const endTime = now.getTime();
 
-        const userIds = Object.keys(usersData);
-        let usersProcessed = 0;
-
-        userIds.forEach(userId => {
+        for (const userId in usersData) {
             const userData = usersData[userId];
             const userName = userData.name || 'No name';
 
-            const salesOutcomesRef = database.ref(`salesOutcomes/${userId}`);
+            const userSalesData = salesData[userId] || {};
+            let count = 0;
 
-            salesOutcomesRef.once('value').then(salesSnapshot => {
-                const salesData = salesSnapshot.val() || {};
-                let count = 0;
+            for (const saleId in userSalesData) {
+                const sale = userSalesData[saleId];
+                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                const saleTime = new Date(sale.outcomeTime).getTime();
 
-                for (const saleId in salesData) {
-                    const sale = salesData[saleId];
-                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                    const saleTime = new Date(sale.outcomeTime).getTime();
-
-                    // Check if sale falls within the selected time frame and sale type
-                    if (saleTime >= startTime && saleTime <= endTime && saleType === selectedSaleType) {
-                        count++;
-                    }
+                // Check if sale falls within the selected time frame and sale type
+                if (saleTime >= startTime && saleTime <= endTime && saleType === selectedSaleType) {
+                    count++;
                 }
+            }
 
-                if (count > 0) {
-                    totals.push({ userId, name: userName, count });
-                }
+            if (count > 0) {
+                totals.push({ userId, name: userName, count });
+            }
+        }
 
-                usersProcessed++;
-                if (usersProcessed === userIds.length) {
-                    // All users processed, proceed to render leaderboard
-                    callback(totals);
-                }
-            }).catch(error => {
-                console.error('Error fetching sales data for user:', userId, error);
-                usersProcessed++;
-                if (usersProcessed === userIds.length) {
-                    callback(totals);
-                }
-            });
-        });
+        callback(totals);
     }
 
     function populateSaleTypeFilter(actionTypes) {
