@@ -27,7 +27,13 @@ body {
     padding: 0;
 }
 
-
+/* Container */
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
 
 /* Typography */
 h2 {
