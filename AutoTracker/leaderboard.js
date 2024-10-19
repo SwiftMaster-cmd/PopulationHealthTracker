@@ -569,7 +569,7 @@ document.addEventListener('firebaseInitialized', function() {
         const giphyResults = document.getElementById('giphyResults');
         giphyResults.innerHTML = 'Loading...';
 
-        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH}&q=${encodeURIComponent(query)}&limit=25&rating=G`)
+        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${maeaJ3Qxv4p2tFD222X3ccfwBhK3ju2J}&q=${encodeURIComponent(query)}&limit=25&rating=G`)
             .then(response => response.json())
             .then(data => {
                 giphyResults.innerHTML = '';
