@@ -12,50 +12,52 @@
     --radius: 10px;
     --transition-duration: 0.3s;
     --font-family: 'Roboto', sans-serif;
-    --font-size-base: 18px;
+    --font-size-base: 16px;
     --font-size-large: 20px;
-    --font-size-small: 16px;
+    --font-size-small: 14px;
 }
 
-/* Chart Controller Container */
-.chart-controller {
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Charts Container */
+#chartsContainer {
     background-color: var(--card-background-color);
     padding: 30px;
     border-radius: var(--radius);
     margin-bottom: 40px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    max-width: 1200px;
-    margin: 0 auto 40px auto; /* Center the container */
 }
 
-/* Section Title */
-.chart-controller h2 {
-    font-size: 2em;
-    font-weight: bold;
-    color: var(--text-color);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Chart Controls */
-.chart-controls {
+/* Filter Container */
+.filter-container {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     margin-bottom: 30px;
 }
 
-.chart-controls label {
-    font-size: var(--font-size-base);
-    margin-right: 10px;
-    color: var(--text-color);
-    margin-bottom: 10px;
+/* Filter Row */
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.chart-controls select,
-.chart-controls input[type="text"],
-.chart-controls button {
+.filter-row label {
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    margin-right: 10px;
+    margin-bottom: 10px;
+    min-width: 120px;
+}
+
+.filter-row select,
+.filter-row input[type="text"] {
     font-size: var(--font-size-base);
     padding: 10px 15px;
     margin-right: 20px;
@@ -65,135 +67,128 @@
     background-color: var(--background-color);
     color: var(--text-color);
     transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    flex: 1;
+    min-width: 200px;
 }
 
-.chart-controls select:hover,
-.chart-controls input[type="text"]:hover,
-.chart-controls button:hover {
+.filter-row select:hover,
+.filter-row input[type="text"]:hover {
     background-color: #2a2a2a;
     border-color: var(--primary-color);
 }
 
-.chart-controls select:focus,
-.chart-controls input[type="text"]:focus {
+.filter-row select:focus,
+.filter-row input[type="text"]:focus {
     outline: none;
     border-color: var(--primary-color);
 }
 
-.chart-controls button {
-    background-color: var(--primary-color);
+.filter-row button {
+    font-size: var(--font-size-base);
+    padding: 10px 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
     border: none;
+    border-radius: var(--radius);
+    background-color: var(--primary-color);
+    color: #fff;
     cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
 }
 
-.chart-controls button:hover {
+.filter-row button:hover {
     background-color: var(--accent-color);
     transform: translateY(-2px);
 }
 
-/* Chart Container */
-.chart-container {
-    position: relative;
-    background-color: var(--card-background-color);
-    padding: 20px;
-    border-radius: var(--radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    margin-bottom: 40px;
-}
-
-.chart-container canvas {
-    max-width: 100%;
-}
-
-/* Remove Chart Button */
-.remove-chart-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: transparent;
-    color: var(--text-color);
-    font-size: 24px;
-    border: none;
-    cursor: pointer;
-    transition: color var(--transition-duration);
-}
-
-.remove-chart-button:hover {
-    color: var(--accent-color);
-}
-
-/* Chart Legend */
-.chart-legend {
-    margin-top: 20px;
+/* Preset Controls */
+.preset-controls {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-}
-
-.chart-legend .legend-item {
-    display: flex;
     align-items: center;
-    margin: 5px 10px;
+    margin-top: 20px;
 }
 
-.chart-legend .legend-color {
-    width: 20px;
-    height: 20px;
+.preset-controls input[type="text"] {
+    font-size: var(--font-size-base);
+    padding: 10px 15px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    margin-right: 8px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    flex: 1;
+    min-width: 200px;
 }
 
-.chart-legend .legend-label {
-    font-size: var(--font-size-small);
+.preset-controls button {
+    font-size: var(--font-size-base);
+    padding: 10px 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: var(--radius);
+    background-color: var(--primary-color);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+
+.preset-controls button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.preset-controls select {
+    font-size: var(--font-size-base);
+    padding: 10px 15px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--background-color);
     color: var(--text-color);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    flex: 1;
+    min-width: 200px;
+}
+
+.preset-controls select:hover {
+    background-color: #2a2a2a;
+    border-color: var(--primary-color);
+}
+
+.preset-controls select:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .chart-controls {
+    .filter-row {
         flex-direction: column;
-        align-items: stretch;
+        align-items: flex-start;
     }
 
-    .chart-controls label,
-    .chart-controls select,
-    .chart-controls input[type="text"],
-    .chart-controls button {
+    .filter-row label,
+    .filter-row select,
+    .filter-row input[type="text"],
+    .filter-row button {
         width: 100%;
         margin-right: 0;
     }
-}
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+    .preset-controls {
+        flex-direction: column;
+        align-items: flex-start;
     }
-    to {
-        opacity: 1;
-        transform: none;
+
+    .preset-controls input[type="text"],
+    .preset-controls select,
+    .preset-controls button {
+        width: 100%;
+        margin-right: 0;
     }
-}
-
-.chart-container {
-    animation: fadeIn var(--transition-duration) ease;
-}
-
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--card-background-color);
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
-    border-radius: var(--radius);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--accent-color);
 }
