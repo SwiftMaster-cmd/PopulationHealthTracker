@@ -8,6 +8,8 @@
 
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="css/styles.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/leaderboard.css"> <!-- Main styles -->
+
 
     <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -84,13 +86,36 @@
         </ul>
     </div>
 
-    <!-- Live Activities Section -->
-    <div class="live-activities-section" id="liveActivitiesSection">
-        <h2>Live Activities</h2>
-        <div id="liveActivitiesContainer">
-            <!-- Live activities will be rendered here -->
+<!-- Live Activities Section -->
+<div class="live-activities-section" id="liveActivitiesSection">
+    <h2>Live Activities</h2>
+    <div id="liveActivitiesContainer">
+        <!-- Each live activity -->
+        <div class="live-activity">
+            <p><strong>User Name</strong> made a <strong>Sale Type</strong> sale on <time datetime="...">Date and Time</time></p>
+            <!-- Buttons -->
+            <button class="like-button">Like</button>
+            <button class="comment-button">Comment</button>
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <button class="show-replies-button">Show Replies</button>
+                <ul class="comments-list">
+                    <li>
+                        <p><strong>Commenter Name</strong>: Comment text</p>
+                        <time datetime="...">Date and Time</time>
+                    </li>
+                    <!-- More comments -->
+                </ul>
+                <!-- Comment Form -->
+                <form class="comment-form">
+                    <input type="text" placeholder="Add a comment...">
+                    <button type="submit">Post</button>
+                </form>
+            </div>
         </div>
+        <!-- More live activities -->
     </div>
+</div>
 
     <!-- Dashboard Charts Section -->
     <div class="container" id="chartsContainer">
