@@ -12,6 +12,11 @@ document.addEventListener('firebaseInitialized', function () {
 
     let usersData = {}; // To store user names
 
+    let messagesLoaded = false;
+    let messagesEndReached = false;
+    let lastMessageKey = null;
+    let isLoadingMore = false;
+
     // Toggle Chat List Functionality
     const toggleChatListButton = document.getElementById('toggleChatListButton');
     const chatSidebar = document.querySelector('.chat-sidebar');
@@ -229,15 +234,14 @@ document.addEventListener('firebaseInitialized', function () {
         const chatContainer = document.getElementById('chatContainer');
         chatContainer.innerHTML = '';
 
-        // Listen for new messages
-        const messagesRef = database.ref(`privateMessages/${chatId}`);
-        chatListener = messagesRef;
-        messagesRef.on('child_added', snapshot => {
-            const message = snapshot.val();
-            displayMessage(message);
-        }, error => {
-            console.error('Error listening for messages:', error);
-        });
+        // Reset pagination variables
+        messagesLoaded = false;
+        messagesEndReached = false;
+        lastMessageKey = null;
+        isLoadingMore = false;
+
+        // Load initial messages
+        loadMoreMessages();
 
         // Handle message form submission
         const messageInput = document.getElementById('messageInput');
@@ -255,6 +259,9 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Handle GIF search
         initializeGifSearch();
+
+        // Remove scroll event listener
+        chatContainer.removeEventListener('scroll', handleScroll);
     }
 
     function selectGroupChat() {
@@ -284,15 +291,14 @@ document.addEventListener('firebaseInitialized', function () {
         const chatContainer = document.getElementById('chatContainer');
         chatContainer.innerHTML = '';
 
-        // Listen for new messages
-        const messagesRef = database.ref('groupChatMessages');
-        chatListener = messagesRef;
-        messagesRef.on('child_added', snapshot => {
-            const message = snapshot.val();
-            displayMessage(message);
-        }, error => {
-            console.error('Error listening for group messages:', error);
-        });
+        // Reset pagination variables
+        messagesLoaded = false;
+        messagesEndReached = false;
+        lastMessageKey = null;
+        isLoadingMore = false;
+
+        // Load initial messages
+        loadMoreMessages();
 
         // Handle message form submission
         const messageInput = document.getElementById('messageInput');
@@ -311,138 +317,99 @@ document.addEventListener('firebaseInitialized', function () {
         // Handle GIF search
         initializeGifSearch();
 
-        // Load live activities into group chat
-        loadLiveActivities();
+        // Handle scrolling for loading more messages
+        chatContainer.addEventListener('scroll', handleScroll);
     }
 
-    // Function to load live activities into group chat
-    function loadLiveActivities() {
-        const salesOutcomesRef = database.ref('salesOutcomes');
+    function handleScroll() {
+        const chatContainer = document.getElementById('chatContainer');
+        if (chatContainer.scrollTop === 0 && !isLoadingMore && !messagesEndReached) {
+            isLoadingMore = true;
+            loadMoreMessages();
+        }
+    }
 
-        // Fetch usersData if not already available
-        if (Object.keys(usersData).length === 0) {
-            const usersRef = database.ref('Users');
-            usersRef.once('value').then(usersSnapshot => {
-                usersData = usersSnapshot.val() || {};
-                fetchAndDisplaySales();
-            }).catch(error => {
-                console.error('Error fetching users data:', error);
-            });
-        } else {
-            fetchAndDisplaySales();
+    function loadMoreMessages() {
+        const chatContainer = document.getElementById('chatContainer');
+        const messagesRef = selectedChatId === 'groupChat'
+            ? database.ref('groupChatMessages')
+            : database.ref(`privateMessages/${selectedChatId}`);
+
+        let query = messagesRef.orderByKey().limitToLast(20);
+
+        if (lastMessageKey) {
+            query = messagesRef.orderByKey().endAt(lastMessageKey).limitToLast(21);
         }
 
-        function fetchAndDisplaySales() {
-            salesOutcomesRef.once('value').then(snapshot => {
-                const salesData = snapshot.val();
-                const salesList = [];
+        query.once('value', snapshot => {
+            const messages = [];
+            snapshot.forEach(childSnapshot => {
+                const message = childSnapshot.val();
+                message.key = childSnapshot.key;
+                messages.push(message);
+            });
 
-                for (const userId in salesData) {
-                    const userSalesData = salesData[userId];
-                    const userName = usersData[userId] ? usersData[userId].name : 'No name';
+            if (lastMessageKey) {
+                // Remove duplicate last message
+                messages.pop();
+            }
 
-                    for (const saleId in userSalesData) {
-                        const sale = userSalesData[saleId];
-                        const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                        const saleTime = new Date(sale.outcomeTime).getTime();
+            if (messages.length === 0) {
+                messagesEndReached = true;
+                return;
+            }
 
-                        if (saleType) {
-                            salesList.push({
-                                userId: userId,
-                                userName: userName,
-                                content: {
-                                    saleId: saleId,
-                                    saleType: saleType,
-                                    saleTime: saleTime,
-                                    saleData: sale
-                                },
-                                type: 'liveActivity',
-                                timestamp: saleTime,
-                                likes: {},
-                                comments: {}
-                            });
-                        }
-                    }
-                }
+            lastMessageKey = messages[0].key;
 
-                // Sort sales by timestamp
-                salesList.sort((a, b) => a.timestamp - b.timestamp);
+            messages.reverse(); // Oldest to newest
 
-                // Display all past sales as messages in the chat
-                salesList.forEach(sale => {
-                    const messageId = `sale-${sale.content.saleId}`;
-                    displayMessage(sale, messageId);
+            // Load live activities if group chat
+            if (selectedChatId === 'groupChat') {
+                loadLiveActivities(messages[0].timestamp, messages[messages.length - 1].timestamp).then(liveActivities => {
+                    // Merge messages and live activities
+                    const combined = [...messages, ...liveActivities];
+                    combined.sort((a, b) => a.timestamp - b.timestamp);
+                    combined.forEach(message => {
+                        displayMessage(message);
+                    });
+                    isLoadingMore = false;
                 });
+            } else {
+                messages.forEach(message => {
+                    displayMessage(message);
+                });
+                isLoadingMore = false;
+            }
+
+            if (!messagesLoaded) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                messagesLoaded = true;
+            }
+        }).catch(error => {
+            console.error('Error loading messages:', error);
+            isLoadingMore = false;
+        });
+    }
+
+    // Adjusted function to load live activities within a timestamp range
+    function loadLiveActivities(startTimestamp, endTimestamp) {
+        return new Promise((resolve, reject) => {
+            const salesOutcomesRef = database.ref('liveActivities');
+
+            let query = salesOutcomesRef.orderByChild('timestamp').startAt(startTimestamp).endAt(endTimestamp);
+
+            query.once('value', snapshot => {
+                const liveActivities = [];
+                snapshot.forEach(childSnapshot => {
+                    const activity = childSnapshot.val();
+                    liveActivities.push(activity);
+                });
+                resolve(liveActivities);
             }).catch(error => {
-                console.error('Error loading past live activities:', error);
+                console.error('Error loading live activities:', error);
+                resolve([]);
             });
-
-            // Listen for new sales (live activities)
-            salesOutcomesRef.on('child_added', snapshot => {
-                const userId = snapshot.key;
-                const userSalesData = snapshot.val();
-                const userName = usersData[userId] ? usersData[userId].name : 'No name';
-
-                for (const saleId in userSalesData) {
-                    const sale = userSalesData[saleId];
-                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                    const saleTime = new Date(sale.outcomeTime).getTime();
-
-                    if (saleType) {
-                        const saleMessage = {
-                            userId: userId,
-                            userName: userName,
-                            content: {
-                                saleId: saleId,
-                                saleType: saleType,
-                                saleTime: saleTime,
-                                saleData: sale
-                            },
-                            type: 'liveActivity',
-                            timestamp: saleTime,
-                            likes: {},
-                            comments: {}
-                        };
-
-                        const messageId = `sale-${saleId}`;
-                        displayMessage(saleMessage, messageId);
-                    }
-                }
-            });
-
-            // Listen for updates to sales
-            salesOutcomesRef.on('child_changed', snapshot => {
-                const userId = snapshot.key;
-                const userSalesData = snapshot.val();
-                const userName = usersData[userId] ? usersData[userId].name : 'No name';
-
-                for (const saleId in userSalesData) {
-                    const sale = userSalesData[saleId];
-                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                    const saleTime = new Date(sale.outcomeTime).getTime();
-
-                    if (saleType) {
-                        const saleMessage = {
-                            userId: userId,
-                            userName: userName,
-                            content: {
-                                saleId: saleId,
-                                saleType: saleType,
-                                saleTime: saleTime,
-                                saleData: sale
-                            },
-                            type: 'liveActivity',
-                            timestamp: saleTime,
-                            likes: {},
-                            comments: {}
-                        };
-
-                        const messageId = `sale-${saleId}`;
-                        displayMessage(saleMessage, messageId);
-                    }
-                }
-            });
-        }
+        });
     }
 
     function sendMessage(content, type) {
@@ -479,12 +446,12 @@ document.addEventListener('firebaseInitialized', function () {
         });
     }
 
-    function displayMessage(message, messageId = null) {
+    function displayMessage(message) {
         const chatContainer = document.getElementById('chatContainer');
 
         // For live activities, check if message already exists
-        if (message.type === 'liveActivity' && messageId) {
-            if (document.getElementById(`message-${messageId}`)) {
+        if (message.type === 'liveActivity' && message.saleId) {
+            if (document.getElementById(`message-${message.saleId}`)) {
                 return;
             }
         }
@@ -492,8 +459,8 @@ document.addEventListener('firebaseInitialized', function () {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('chat-message');
 
-        if (messageId) {
-            messageDiv.id = `message-${messageId}`;
+        if (message.type === 'liveActivity' && message.saleId) {
+            messageDiv.id = `message-${message.saleId}`;
         }
 
         const time = new Date(message.timestamp).toLocaleString();
@@ -516,15 +483,14 @@ document.addEventListener('firebaseInitialized', function () {
                 <img src="${message.content}" alt="GIF" class="chat-gif">
             `;
         } else if (message.type === 'liveActivity') {
-            const saleType = message.content.saleType;
-            const saleTime = new Date(message.content.saleTime).toLocaleString();
+            const saleType = message.saleType;
+            const saleTime = new Date(message.saleTime).toLocaleString();
             messageDiv.innerHTML = `
                 <p><strong>${message.userName}</strong> made a <strong>${saleType}</strong> sale on ${saleTime}</p>
             `;
         }
 
-        chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
     }
 
     function getSaleType(action, notes) {
@@ -621,6 +587,21 @@ document.addEventListener('firebaseInitialized', function () {
             img.classList.add('gif-result');
 
             gifResults.appendChild(img);
+        });
+    }
+
+    // Real-time listener for new messages
+    if (selectedChatId === 'groupChat') {
+        const messagesRef = database.ref('groupChatMessages').limitToLast(1);
+        messagesRef.on('child_added', snapshot => {
+            const message = snapshot.val();
+            displayMessage(message);
+        });
+    } else {
+        const messagesRef = database.ref(`privateMessages/${selectedChatId}`).limitToLast(1);
+        messagesRef.on('child_added', snapshot => {
+            const message = snapshot.val();
+            displayMessage(message);
         });
     }
 });
