@@ -501,7 +501,7 @@ button:hover {
 
 /* Total Commission Styles */
 .total-commission {
-    position: relative;
+    position: fixed;
     cursor: pointer;
     display: flex;
     align-items: right;
