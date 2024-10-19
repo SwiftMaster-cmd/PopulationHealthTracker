@@ -16,7 +16,7 @@ document.addEventListener('firebaseInitialized', function () {
     let commentsData = {};
 
     let messagesEndReached = false;
-    let oldestMessageTimestamp = null;
+    let newestMessageTimestamp = null;
     let isLoadingMore = false;
 
     const MESSAGES_PER_LOAD = 20; // Number of messages to load per batch
@@ -207,7 +207,7 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Reset pagination variables
         messagesEndReached = false;
-        oldestMessageTimestamp = null;
+        newestMessageTimestamp = null;
         isLoadingMore = false;
 
         // Load initial messages
@@ -256,7 +256,7 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Reset pagination variables
         messagesEndReached = false;
-        oldestMessageTimestamp = null;
+        newestMessageTimestamp = null;
         isLoadingMore = false;
 
         // Load initial messages
@@ -311,8 +311,8 @@ document.addEventListener('firebaseInitialized', function () {
 
     function handleScroll() {
         const chatContainer = document.getElementById('chatContainer');
-        if (chatContainer.scrollTop === 0 && !isLoadingMore && !messagesEndReached) {
-            // User scrolled to the top, load older messages
+        if (chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 50 && !isLoadingMore && !messagesEndReached) {
+            // User scrolled to the bottom, load older messages
             isLoadingMore = true;
             loadMoreMessages();
         }
@@ -333,11 +333,11 @@ document.addEventListener('firebaseInitialized', function () {
         }
 
         // Prepare queries
-        let messagesQuery = messagesRef.orderByChild('timestamp').limitToLast(MESSAGES_PER_LOAD);
+        let messagesQuery = messagesRef.orderByChild('timestamp').limitToFirst(MESSAGES_PER_LOAD);
         let liveActivitiesQuery = null;
 
-        if (oldestMessageTimestamp) {
-            messagesQuery = messagesRef.orderByChild('timestamp').endAt(oldestMessageTimestamp - 1).limitToLast(MESSAGES_PER_LOAD);
+        if (newestMessageTimestamp) {
+            messagesQuery = messagesRef.orderByChild('timestamp').startAfter(newestMessageTimestamp).limitToFirst(MESSAGES_PER_LOAD);
         }
 
         if (liveActivitiesRef) {
@@ -397,12 +397,12 @@ document.addEventListener('firebaseInitialized', function () {
                 }
             }
 
-            // Sort messages by timestamp ascending (oldest first)
-            messages.sort((a, b) => a.timestamp - b.timestamp);
+            // Sort messages by timestamp descending (newest first)
+            messages.sort((a, b) => b.timestamp - a.timestamp);
 
-            // Filter messages to only include those older than the oldestMessageTimestamp
-            if (oldestMessageTimestamp) {
-                messages = messages.filter(msg => msg.timestamp < oldestMessageTimestamp);
+            // Filter messages to only include those newer than the newestMessageTimestamp
+            if (newestMessageTimestamp) {
+                messages = messages.filter(msg => msg.timestamp < newestMessageTimestamp);
             }
 
             // Limit to MESSAGES_PER_LOAD
@@ -413,19 +413,19 @@ document.addEventListener('firebaseInitialized', function () {
                 return;
             }
 
-            // Update oldestMessageTimestamp
-            oldestMessageTimestamp = messages[0].timestamp;
+            // Update newestMessageTimestamp
+            newestMessageTimestamp = messages[messages.length - 1].timestamp;
 
             // Render messages
             messages.forEach(message => {
-                prependMessage(message);
+                appendMessage(message);
             });
 
             isLoadingMore = false;
 
-            // If first load, scroll to bottom
+            // If first load, scroll to top
             if (!chatContainer.dataset.initialScroll) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+                chatContainer.scrollTop = 0;
                 chatContainer.dataset.initialScroll = 'true';
 
                 // Set up real-time listeners after initial load
@@ -434,9 +434,9 @@ document.addEventListener('firebaseInitialized', function () {
                 }
             } else {
                 // Maintain scroll position
-                const firstNewMessage = chatContainer.children[messages.length];
-                if (firstNewMessage) {
-                    firstNewMessage.scrollIntoView();
+                const lastNewMessage = chatContainer.children[chatContainer.children.length - messages.length];
+                if (lastNewMessage) {
+                    lastNewMessage.scrollIntoView();
                 }
             }
 
@@ -454,11 +454,11 @@ document.addEventListener('firebaseInitialized', function () {
             : database.ref(`privateMessages/${selectedChatId}`);
 
         // Real-time listener for new chat messages
-        chatListener = messagesRef.orderByChild('timestamp').startAt(Date.now());
+        chatListener = messagesRef.orderByChild('timestamp').endAt(Date.now());
         chatListener.on('child_added', snapshot => {
             const message = snapshot.val();
             message.key = snapshot.key;
-            displayMessage(message);
+            prependNewMessage(message);
 
             // Remove excess messages to limit the number of rendered messages
             trimMessages();
@@ -467,10 +467,7 @@ document.addEventListener('firebaseInitialized', function () {
         if (selectedChatId === 'groupChat') {
             // Real-time listener for new live activities
             salesListener = database.ref('salesOutcomes');
-            salesListener.on('child_added', snapshot => {
-                processSalesData(snapshot);
-            });
-            salesListener.on('child_changed', snapshot => {
+            salesListener.on('value', snapshot => {
                 processSalesData(snapshot);
             });
 
@@ -490,35 +487,53 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function processSalesData(snapshot) {
-        const userId = snapshot.key;
-        const userSalesData = snapshot.val();
-        const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+        const salesData = snapshot.val() || {};
 
-        for (const saleId in userSalesData) {
-            const sale = userSalesData[saleId];
-            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-            const saleTime = new Date(sale.outcomeTime).getTime();
+        let liveActivities = [];
 
-            if (saleType) { // Include only valid sale types
-                const liveActivityMessage = {
-                    key: `sale-${saleId}`,
-                    userId,
-                    userName,
-                    saleType,
-                    saleTime: sale.outcomeTime,
-                    saleId,
-                    type: 'liveActivity',
-                    timestamp: saleTime,
-                    likes: likesData[saleId] || {},
-                    comments: commentsData[saleId] || {}
-                };
+        for (const userId in salesData) {
+            const userSalesData = salesData[userId];
+            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
 
-                displayMessage(liveActivityMessage);
+            for (const saleId in userSalesData) {
+                const sale = userSalesData[saleId];
+                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                const saleTime = new Date(sale.outcomeTime).getTime();
 
-                // Remove excess messages to limit the number of rendered messages
-                trimMessages();
+                if (saleType) { // Include only valid sale types
+                    const liveActivityMessage = {
+                        key: `sale-${saleId}`,
+                        userId,
+                        userName,
+                        saleType,
+                        saleTime: sale.outcomeTime,
+                        saleId,
+                        type: 'liveActivity',
+                        timestamp: saleTime,
+                        likes: likesData[saleId] || {},
+                        comments: commentsData[saleId] || {}
+                    };
+
+                    liveActivities.push(liveActivityMessage);
+                }
             }
         }
+
+        // Sort live activities by timestamp descending (newest first)
+        liveActivities.sort((a, b) => b.timestamp - a.timestamp);
+
+        // Filter live activities to only include those newer than the newestMessageTimestamp
+        if (newestMessageTimestamp) {
+            liveActivities = liveActivities.filter(msg => msg.timestamp < newestMessageTimestamp);
+        }
+
+        // Append live activities to chat
+        liveActivities.forEach(activity => {
+            appendMessage(activity);
+        });
+
+        // Remove excess messages to limit the number of rendered messages
+        trimMessages();
     }
 
     function updateLikesAndComments() {
@@ -540,6 +555,7 @@ document.addEventListener('firebaseInitialized', function () {
                 // Live activity
                 message.likes = likesData[messageKey] || {};
                 message.comments = commentsData[messageKey] || {};
+                updateMessage(message);
             } else {
                 // Regular message
                 const messageRef = selectedChatId === 'groupChat'
@@ -554,10 +570,7 @@ document.addEventListener('firebaseInitialized', function () {
                         updateMessage(message);
                     }
                 });
-                return; // Wait for async data
             }
-
-            updateMessage(message);
         });
     }
 
@@ -597,7 +610,7 @@ document.addEventListener('firebaseInitialized', function () {
         });
     }
 
-    function displayMessage(message) {
+    function appendMessage(message) {
         const chatContainer = document.getElementById('chatContainer');
 
         // Check if message already exists
@@ -606,50 +619,13 @@ document.addEventListener('firebaseInitialized', function () {
             return;
         }
 
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('chat-message');
-        messageDiv.id = `message-${message.key}`;
+        const messageDiv = createMessageDiv(message);
 
-        const time = new Date(message.timestamp).toLocaleString();
-        let senderName = '';
-
-        if (message.type === 'liveActivity') {
-            senderName = message.userName;
-            const saleType = message.saleType;
-            const saleTime = new Date(message.saleTime).toLocaleString();
-            messageDiv.innerHTML = `
-                <p><strong>${senderName}</strong> made a <strong>${saleType}</strong> sale on ${saleTime}</p>
-            `;
-        } else {
-            if (selectedChatId === 'groupChat') {
-                senderName = message.userId === currentUserId ? 'You' : message.userName;
-            } else {
-                senderName = message.senderId === currentUserId ? 'You' : message.senderName;
-            }
-
-            if (message.type === 'text') {
-                messageDiv.innerHTML = `
-                    <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
-                    <p>${message.content}</p>
-                `;
-            } else if (message.type === 'gif') {
-                messageDiv.innerHTML = `
-                    <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
-                    <img src="${message.content}" alt="GIF" class="chat-gif">
-                `;
-            }
-        }
-
-        // Likes and Comments Functionality
-        createMessageActions(message, messageDiv);
-
-        // Append messages to display newest at the bottom
+        // Append messages to display newest at the top
         chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    function prependMessage(message) {
-        // Prepend older messages when loading more
+    function prependNewMessage(message) {
         const chatContainer = document.getElementById('chatContainer');
 
         // Check if message already exists
@@ -658,6 +634,14 @@ document.addEventListener('firebaseInitialized', function () {
             return;
         }
 
+        const messageDiv = createMessageDiv(message);
+
+        // Prepend new messages to the top
+        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+        chatContainer.scrollTop = 0;
+    }
+
+    function createMessageDiv(message) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('chat-message');
         messageDiv.id = `message-${message.key}`;
@@ -695,8 +679,7 @@ document.addEventListener('firebaseInitialized', function () {
         // Likes and Comments Functionality
         createMessageActions(message, messageDiv);
 
-        // Prepend messages to the top
-        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+        return messageDiv;
     }
 
     function createMessageActions(message, messageDiv) {
@@ -869,8 +852,8 @@ document.addEventListener('firebaseInitialized', function () {
     function trimMessages() {
         const chatContainer = document.getElementById('chatContainer');
         while (chatContainer.children.length > MAX_MESSAGES_DISPLAYED) {
-            // Remove the oldest message (first child)
-            chatContainer.removeChild(chatContainer.firstChild);
+            // Remove the oldest message (last child)
+            chatContainer.removeChild(chatContainer.lastChild);
         }
     }
 
