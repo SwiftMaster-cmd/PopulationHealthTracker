@@ -20,13 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (user) {
             loadAgentLevel(user).then(agentLevel => {
                 // Fetch sales data for the current month
-                fetchSalesData(user, 'myData', salesData => {
+                fetchSalesData(user).then(salesData => {
                     // Filter sales data to current month
                     const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
                     // Calculate commissions
                     const commissionData = calculateCommission(currentMonthSales, agentLevel);
                     // Display commissions
                     displayCommission(commissionData);
+                }).catch(error => {
+                    console.error('Error fetching sales data:', error);
                 });
             }).catch(error => {
                 console.error('Error loading agent level:', error);
@@ -48,6 +50,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     resolve('Level2'); // Default to Level2 if not set
                 }
             }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+
+    function fetchSalesData(user) {
+        return new Promise((resolve, reject) => {
+            const salesRef = database.ref('salesOutcomes/' + user.uid);
+
+            salesRef.once('value', snapshot => {
+                let salesData = [];
+                const salesObj = snapshot.val() || {};
+                for (const saleId in salesObj) {
+                    salesData.push({ saleId: saleId, ...salesObj[saleId] });
+                }
+                resolve(salesData);
+            }, error => {
                 reject(error);
             });
         });
@@ -229,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const actionLower = action.toLowerCase();
         const notesLower = notes.toLowerCase();
 
-        // IntraCompany: if action or notes mention 'transfer', 'ndr', 'dental', 'fe', 'final expense', but not 'vbc', 'national debt relief', or 'ndr'
+        // IntraCompany: if action or notes mention 'transfer', 'dental', 'fe', 'final expense', but not 'vbc', 'national debt relief', or 'ndr'
         if (/transfer|dental|fe|final expense/i.test(actionLower) || /transfer|dental|fe|final expense/i.test(notesLower)) {
             if (!/vbc|national debt relief|ndr|value based care|oak street|osh/i.test(actionLower + ' ' + notesLower)) {
                 return 'IntraCompany';
@@ -266,6 +285,5 @@ document.addEventListener('DOMContentLoaded', function() {
         spmSalesCountEl.textContent = `SPM Sales: ${commissionData.salesCounts.spm}`;
     }
 
-    // Assuming fetchSalesData function is defined in dashboard.js or elsewhere
-    // If not, include it here or import appropriately
+    // No need for fetchSalesData function to be defined elsewhere; it's defined above
 });
