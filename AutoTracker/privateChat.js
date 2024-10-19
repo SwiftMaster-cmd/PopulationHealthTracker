@@ -19,7 +19,7 @@ document.addEventListener('firebaseInitialized', function () {
     let oldestMessageTimestamp = null;
     let isLoadingMore = false;
 
-    const MESSAGES_PER_LOAD = 20; // Number of messages to load per batch
+    const MESSAGES_PER_LOAD = 25; // Number of messages to load per batch
     const MAX_MESSAGES_DISPLAYED = 100; // Max messages to keep in DOM
 
     auth.onAuthStateChanged(user => {
@@ -210,6 +210,9 @@ document.addEventListener('firebaseInitialized', function () {
         oldestMessageTimestamp = null;
         isLoadingMore = false;
 
+        // Add "Load More" button
+        addLoadMoreButton();
+
         // Load initial messages
         loadMoreMessages();
 
@@ -229,9 +232,6 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Handle GIF search
         initializeGifSearch();
-
-        // Handle scrolling for loading more messages
-        chatContainer.addEventListener('scroll', handleScroll);
     }
 
     function selectGroupChat() {
@@ -259,6 +259,9 @@ document.addEventListener('firebaseInitialized', function () {
         oldestMessageTimestamp = null;
         isLoadingMore = false;
 
+        // Add "Load More" button
+        addLoadMoreButton();
+
         // Load initial messages
         loadMoreMessages();
 
@@ -278,9 +281,6 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Handle GIF search
         initializeGifSearch();
-
-        // Handle scrolling for loading more messages
-        chatContainer.addEventListener('scroll', handleScroll);
     }
 
     function removeListeners() {
@@ -305,21 +305,28 @@ document.addEventListener('firebaseInitialized', function () {
             sendMessageHandler = null;
         }
 
-        // Remove scroll event listener
-        chatContainer.removeEventListener('scroll', handleScroll);
-    }
-
-    function handleScroll() {
-        const chatContainer = document.getElementById('chatContainer');
-        if (chatContainer.scrollTop === 0 && !isLoadingMore && !messagesEndReached) {
-            // User scrolled to the top, load older messages
-            isLoadingMore = true;
-            loadMoreMessages();
+        // Remove "Load More" button if it exists
+        const loadMoreButton = document.getElementById('loadMoreButton');
+        if (loadMoreButton) {
+            loadMoreButton.removeEventListener('click', loadMoreMessages);
+            loadMoreButton.remove();
         }
     }
 
-    function loadMoreMessages() {
+    function addLoadMoreButton() {
         const chatContainer = document.getElementById('chatContainer');
+        const loadMoreButton = document.createElement('button');
+        loadMoreButton.id = 'loadMoreButton';
+        loadMoreButton.textContent = 'Load More Messages';
+        loadMoreButton.addEventListener('click', loadMoreMessages);
+
+        chatContainer.insertBefore(loadMoreButton, chatContainer.firstChild);
+    }
+
+    function loadMoreMessages() {
+        if (isLoadingMore || messagesEndReached) return;
+
+        isLoadingMore = true;
 
         let messagesRef;
         let liveActivitiesRef;
@@ -422,25 +429,6 @@ document.addEventListener('firebaseInitialized', function () {
             });
 
             isLoadingMore = false;
-
-            // Adjust scroll position after prepending messages
-            if (!chatContainer.dataset.initialScroll) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                chatContainer.dataset.initialScroll = 'true';
-
-                // Set up real-time listeners after initial load
-                if (!chatListener) {
-                    setupRealtimeListeners();
-                }
-            } else {
-                // Calculate the height difference and adjust scrollTop
-                const scrollHeightBefore = chatContainer.scrollHeight;
-                chatContainer.dataset.prevScrollHeight = scrollHeightBefore;
-                setTimeout(() => {
-                    const scrollHeightAfter = chatContainer.scrollHeight;
-                    chatContainer.scrollTop += (scrollHeightAfter - scrollHeightBefore);
-                }, 0);
-            }
 
             // Remove excess messages to limit the number of rendered messages
             trimMessages();
@@ -625,8 +613,9 @@ document.addEventListener('firebaseInitialized', function () {
 
         const messageDiv = createMessageDiv(message);
 
-        // Prepend messages to the top
-        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+        // Insert after the "Load More" button
+        const loadMoreButton = document.getElementById('loadMoreButton');
+        chatContainer.insertBefore(messageDiv, loadMoreButton.nextSibling);
     }
 
     function createMessageDiv(message) {
@@ -839,9 +828,9 @@ document.addEventListener('firebaseInitialized', function () {
 
     function trimMessages() {
         const chatContainer = document.getElementById('chatContainer');
-        while (chatContainer.children.length > MAX_MESSAGES_DISPLAYED) {
-            // Remove the oldest message (first child)
-            chatContainer.removeChild(chatContainer.firstChild);
+        while (chatContainer.children.length > MAX_MESSAGES_DISPLAYED + 1) {
+            // Remove the oldest message (after the Load More button)
+            chatContainer.removeChild(chatContainer.children[1]);
         }
     }
 
