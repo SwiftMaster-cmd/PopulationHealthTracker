@@ -10,19 +10,50 @@ document.addEventListener('DOMContentLoaded', function() {
     const intraCompanyCommissionEl = document.getElementById('intraCompanyCommission');
     const spmCommissionEl = document.getElementById('spmCommission');
     const totalCommissionEl = document.getElementById('totalCommission');
+    const totalCommissionAfterTaxEl = document.getElementById('totalCommissionAfterTax');
 
     const partnerTransferSalesCountEl = document.getElementById('partnerTransferSalesCount');
     const selectRxSalesCountEl = document.getElementById('selectRxSalesCount');
     const intraCompanySalesCountEl = document.getElementById('intraCompanySalesCount');
     const spmSalesCountEl = document.getElementById('spmSalesCount');
 
+    // Settings elements
+    const taxesRemovedCheckbox = document.getElementById('taxesRemovedCheckbox');
+    const taxPercentageInput = document.getElementById('taxPercentageInput');
+
     let agentLevel = 'Level2'; // Default agent level
     let salesData = []; // To store sales data
+    let taxesRemoved = false; // Default to taxes not removed
+    let taxPercentage = 40; // Default tax percentage
 
     auth.onAuthStateChanged(user => {
         if (user) {
             listenForAgentLevel(user);
             listenForSalesData(user);
+            listenForSettings(user);
+
+            // Event listeners for settings
+            taxesRemovedCheckbox.addEventListener('change', () => {
+                taxesRemoved = taxesRemovedCheckbox.checked;
+                saveSettings(user);
+                // Recalculate and display commissions
+                const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
+                const commissionData = calculateCommission(currentMonthSales, agentLevel);
+                displayCommission(commissionData);
+            });
+
+            taxPercentageInput.addEventListener('input', () => {
+                let value = parseFloat(taxPercentageInput.value);
+                if (isNaN(value) || value < 0 || value > 100) {
+                    value = 40; // Reset to default if invalid
+                }
+                taxPercentage = value;
+                saveSettings(user);
+                // Recalculate and display commissions
+                const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
+                const commissionData = calculateCommission(currentMonthSales, agentLevel);
+                displayCommission(commissionData);
+            });
         } else {
             console.error('User not authenticated.');
         }
@@ -62,6 +93,37 @@ document.addEventListener('DOMContentLoaded', function() {
             displayCommission(commissionData);
         }, error => {
             console.error('Error fetching sales data:', error);
+        });
+    }
+
+    function listenForSettings(user) {
+        const settingsRef = database.ref('Users/' + user.uid + '/settings');
+
+        settingsRef.on('value', snapshot => {
+            const settings = snapshot.val() || {};
+            taxesRemoved = settings.taxesRemoved || false;
+            taxPercentage = settings.taxPercentage !== undefined ? settings.taxPercentage : 40;
+
+            // Update UI elements
+            taxesRemovedCheckbox.checked = taxesRemoved;
+            taxPercentageInput.value = taxPercentage;
+
+            // Recalculate and display commissions
+            const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
+            const commissionData = calculateCommission(currentMonthSales, agentLevel);
+            displayCommission(commissionData);
+        }, error => {
+            console.error('Error fetching settings:', error);
+        });
+    }
+
+    function saveSettings(user) {
+        const settingsRef = database.ref('Users/' + user.uid + '/settings');
+        settingsRef.set({
+            taxesRemoved: taxesRemoved,
+            taxPercentage: taxPercentage
+        }).catch(error => {
+            console.error('Error saving settings:', error);
         });
     }
 
@@ -223,6 +285,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         commissionData.salesCounts = salesCounts;
 
+        // Apply taxes if taxesRemoved is true
+        if (taxesRemoved) {
+            commissionData.totalCommissionAfterTax = commissionData.totalCommission * ((100 - taxPercentage) / 100);
+        } else {
+            commissionData.totalCommissionAfterTax = commissionData.totalCommission;
+        }
+
         return commissionData;
     }
 
@@ -269,7 +338,8 @@ document.addEventListener('DOMContentLoaded', function() {
         selectRxCommissionEl.textContent = `SelectRx Commission: $${commissionData.selectRx.toFixed(2)}`;
         intraCompanyCommissionEl.textContent = `IntraCompany Commission: $${commissionData.intraCompany.toFixed(2)}`;
         spmCommissionEl.textContent = `SPM Commission: $${commissionData.spm.toFixed(2)}`;
-        totalCommissionEl.textContent = `$${commissionData.totalCommission.toFixed(2)}`;
+        totalCommissionEl.textContent = `Total Commission Before Tax: $${commissionData.totalCommission.toFixed(2)}`;
+        totalCommissionAfterTaxEl.textContent = `Total Commission After Tax: $${commissionData.totalCommissionAfterTax.toFixed(2)}`;
 
         // Also display sales counts
         partnerTransferSalesCountEl.textContent = `Partner Transfer Sales: ${commissionData.salesCounts.partnerTransfer}`;
