@@ -51,16 +51,31 @@
     </script>
 </head>
 <body>
-       <!-- Header Section -->
-       <header class="commission-header">
-        <h1></h1>
-        <div class="total-commission" id="totalCommissionContainer">
-            <span id="totalCommission"></span>
-            <div class="commission-details-tooltip" id="commissionDetailsTooltip">
-                <!-- Details will be populated dynamically -->
-            </div>
+<!-- Header Section -->
+<header class="commission-header">
+    <h1>Commission Dashboard</h1>
+    <div class="total-commission" id="totalCommissionContainer">
+        <span id="totalCommissionLabel">Total Commission Before Tax:</span>
+        <span id="totalCommissionAmount">$0.00</span>
+        <div class="commission-details-tooltip" id="commissionDetailsTooltip">
+            <h3>Commission Breakdown</h3>
+            <ul>
+                <li>Partner Transfer Commission: <span id="partnerTransferCommission">$0.00</span></li>
+                <li>SelectRx Commission: <span id="selectRxCommission">$0.00</span></li>
+                <li>IntraCompany Commission: <span id="intraCompanyCommission">$0.00</span></li>
+                <li>SPM Commission: <span id="spmCommission">$0.00</span></li>
+                <li>Sales Counts:</li>
+                <ul>
+                    <li>Partner Transfer Sales: <span id="partnerTransferSalesCount">0</span></li>
+                    <li>SelectRx Sales: <span id="selectRxSalesCount">0</span></li>
+                    <li>IntraCompany Sales: <span id="intraCompanySalesCount">0</span></li>
+                    <li>SPM Sales: <span id="spmSalesCount">0</span></li>
+                </ul>
+            </ul>
         </div>
-    </header>
+    </div>
+</header>
+
 
 
 
