@@ -484,6 +484,20 @@ document.addEventListener('firebaseInitialized', function() {
             inputContainer.appendChild(commentInput);
             inputContainer.appendChild(giphySearchInput);
 
+            // GIF Preview Container
+            const gifPreviewContainer = document.createElement('div');
+            gifPreviewContainer.classList.add('gif-preview-container');
+
+            // Giphy Results Container
+            const giphyResultsContainer = document.createElement('div');
+            giphyResultsContainer.classList.add('giphy-results-container');
+
+            // Giphy Results
+            const giphyResults = document.createElement('div');
+            giphyResults.classList.add('giphy-results');
+
+            giphyResultsContainer.appendChild(giphyResults);
+
             // Handle Giphy search input
             let giphySearchTimeout;
             giphySearchInput.addEventListener('input', () => {
@@ -498,21 +512,13 @@ document.addEventListener('firebaseInitialized', function() {
                 }
             });
 
-            // GIF Preview Container
-            const gifPreviewContainer = document.createElement('div');
-            gifPreviewContainer.classList.add('gif-preview-container');
-
-            // Giphy Results Container
-            const giphyResults = document.createElement('div');
-            giphyResults.classList.add('giphy-results');
-
             // Comment Submit Button
             const commentSubmit = document.createElement('button');
             commentSubmit.type = 'submit';
             commentSubmit.textContent = 'Post';
 
             // Append elements to comment form
-            commentForm.appendChild(giphyResults); // GIF container above the search field
+            commentForm.appendChild(giphyResultsContainer); // GIF container above the input fields
             commentForm.appendChild(inputContainer); // Inputs side by side
             commentForm.appendChild(gifPreviewContainer);
             commentForm.appendChild(commentSubmit);
@@ -561,7 +567,7 @@ document.addEventListener('firebaseInitialized', function() {
     function searchGiphy(query, giphyResults, commentForm, gifPreviewContainer) {
         giphyResults.innerHTML = 'Loading...';
 
-        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=16&rating=G`)
+        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=20&rating=G`)
             .then(response => response.json())
             .then(data => {
                 giphyResults.innerHTML = '';
