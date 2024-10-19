@@ -50,6 +50,7 @@ document.addEventListener('firebaseInitialized', function() {
             initializeDashboard(user);
         } else {
             console.error('User is not authenticated.');
+            clearAllCharts(null, false); // Clear charts if user logs out
         }
     });
 
@@ -253,6 +254,8 @@ document.addEventListener('firebaseInitialized', function() {
             delete chartRegistry[chartKey];
             // Remove chart container from DOM
             chartContainer.remove();
+            // Remove listener for this chart
+            removeChartListener(user, chartKey);
             // Update saved charts in Firebase
             saveChartsToFirebase(user);
         });
@@ -281,7 +284,7 @@ document.addEventListener('firebaseInitialized', function() {
         }
         chartsContainer.appendChild(chartContainer);
 
-        // Render the chart
+        // Render the chart with empty data initially
         const chartInstance = renderChart(canvas, chartType, { labels: [], data: [] }, actionType, timeFrame, teamFilterValue);
 
         // Register the chart to prevent duplication
@@ -349,6 +352,17 @@ document.addEventListener('firebaseInitialized', function() {
         fetchSalesData.listeners[chartKey] = chartListener;
     }
 
+    // Function to remove a specific chart's listener
+    function removeChartListener(user, chartKey) {
+        const salesRefPath = chartKey.includes('allData') ? 'salesOutcomes' : `salesOutcomes/${user.uid}`;
+        const salesRef = database.ref(salesRefPath);
+
+        if (fetchSalesData.listeners && fetchSalesData.listeners[chartKey]) {
+            salesRef.off('value', fetchSalesData.listeners[chartKey]);
+            delete fetchSalesData.listeners[chartKey];
+        }
+    }
+
     // Function to filter sales data based on time frame and action type
     function filterSalesData(salesData, timeFrame, actionType) {
         const now = new Date();
@@ -402,7 +416,7 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to prepare chart data, showing hourly data when timeFrame is 'today'
+    // Function to prepare chart data, handling overcrowded dates by skipping some
     function prepareChartData(filteredData, timeFrame) {
         const dateCounts = {};
 
@@ -425,7 +439,7 @@ document.addEventListener('firebaseInitialized', function() {
         });
 
         // Sort the keys (hours or dates)
-        const sortedKeys = Object.keys(dateCounts).sort((a, b) => {
+        let sortedKeys = Object.keys(dateCounts).sort((a, b) => {
             if (timeFrame === 'today') {
                 return parseInt(a) - parseInt(b);
             } else {
@@ -434,6 +448,18 @@ document.addEventListener('firebaseInitialized', function() {
                 return dateA - dateB;
             }
         });
+
+        // Handle overcrowded dates by skipping some
+        const MAX_LABELS = 15; // Maximum number of labels to display
+        if (sortedKeys.length > MAX_LABELS) {
+            // Calculate step size to skip labels
+            const step = Math.ceil(sortedKeys.length / MAX_LABELS);
+            sortedKeys = sortedKeys.filter((_, index) => index % step === 0);
+            // Ensure the last label is included
+            if (!sortedKeys.includes(sortedKeys[sortedKeys.length - 1])) {
+                sortedKeys.push(sortedKeys[sortedKeys.length - 1]);
+            }
+        }
 
         return {
             labels: sortedKeys,
@@ -625,7 +651,7 @@ document.addEventListener('firebaseInitialized', function() {
 
     // Persistence Functions
 
-    // Function to save chart configurations to Firebase
+    // Function to save a single chart configuration to Firebase
     function saveChartConfig(chartConfig) {
         const user = firebase.auth().currentUser;
         if (!user) return;
@@ -715,6 +741,8 @@ document.addEventListener('firebaseInitialized', function() {
             chartsContainer.innerHTML = '';
             // Clear the chart registry
             for (let key in chartRegistry) {
+                // Remove listeners associated with each chart
+                removeChartListener(user, key);
                 delete chartRegistry[key];
             }
         }
@@ -831,7 +859,37 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Populate action types on page load
-    const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
-    populateActionTypes(actionTypes);
+    // Function to check if a chart with the same configuration already exists
+    function checkExistingChart(timeFrame, actionType, chartType, teamFilterValue) {
+        const charts = document.querySelectorAll('.chart-wrapper');
+        return Array.from(charts).some(chartWrapper => {
+            const canvas = chartWrapper.querySelector('canvas');
+            const chartInstance = Chart.getChart(canvas);
+            if (!chartInstance) return false;
+
+            const options = chartInstance.options.custom;
+            return options.timeFrame === timeFrame && 
+                   options.actionType === actionType && 
+                   options.chartType === chartType && 
+                   options.teamFilterValue === teamFilterValue;
+        });
+    }
+
+    // Function to remove all listeners associated with a chart
+    function removeAllListeners(user) {
+        if (fetchSalesData.listeners) {
+            for (let refPath in fetchSalesData.listeners) {
+                const listener = fetchSalesData.listeners[refPath];
+                const ref = database.ref(refPath);
+                ref.off('value', listener);
+            }
+            fetchSalesData.listeners = {};
+        }
+    }
+
+    // Handle window unload to clean up listeners
+    window.addEventListener('beforeunload', () => {
+        removeAllListeners();
+    });
+
 });
