@@ -378,55 +378,45 @@ button:hover {
     margin-top: 160px; /* Adjust margin-top to prevent content overlap */
 }
 
-/* styles.css */
+ 
+.giphy-container {
+    display: none;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
 
-/* Giphy Modal Styles */
-.giphy-modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000; /* On top of other elements */
-    left: 0;
-    top: 0;
+.giphy-search-input {
+    padding: 8px;
+    margin-bottom: 5px;
     width: 100%;
-    height: 100%;
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.8); /* Black with opacity */
-}
-
-.giphy-modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* Centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less */
-    max-width: 600px;
-}
-
-.giphy-modal-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.giphy-modal-close:hover,
-.giphy-modal-close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 .giphy-results {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 10px;
 }
 
 .giphy-results img {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     object-fit: cover;
     cursor: pointer;
+}
+
+/* GIF Preview in Comment Form */
+.gif-preview-container {
+    margin-top: 10px;
+}
+
+.selected-gif-preview {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Comment GIFs */
+.comment-gif {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
 }
