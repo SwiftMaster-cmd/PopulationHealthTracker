@@ -8,6 +8,7 @@ document.addEventListener('firebaseInitialized', function () {
     let currentUserName = null;
     let selectedChatId = null;
     let chatListener = null;
+    let salesListener = null;
     let sendMessageHandler = null;
 
     let usersData = {}; // To store user names
@@ -192,15 +193,8 @@ document.addEventListener('firebaseInitialized', function () {
         const gifSearchContainer = document.getElementById('gifSearchContainer');
         gifSearchContainer.style.display = 'block';
 
-        // Remove previous chat listener
-        if (chatListener) {
-            chatListener.off();
-        }
-
-        // Remove previous sendMessageHandler
-        if (sendMessageHandler) {
-            messageForm.removeEventListener('submit', sendMessageHandler);
-        }
+        // Remove previous listeners
+        removeListeners();
 
         // Clear chat container
         const chatContainer = document.getElementById('chatContainer');
@@ -232,7 +226,6 @@ document.addEventListener('firebaseInitialized', function () {
         initializeGifSearch();
 
         // Handle scrolling for loading more messages
-        chatContainer.removeEventListener('scroll', handleScroll);
         chatContainer.addEventListener('scroll', handleScroll);
     }
 
@@ -249,15 +242,8 @@ document.addEventListener('firebaseInitialized', function () {
         const gifSearchContainer = document.getElementById('gifSearchContainer');
         gifSearchContainer.style.display = 'block';
 
-        // Remove previous chat listener
-        if (chatListener) {
-            chatListener.off();
-        }
-
-        // Remove previous sendMessageHandler
-        if (sendMessageHandler) {
-            messageForm.removeEventListener('submit', sendMessageHandler);
-        }
+        // Remove previous listeners
+        removeListeners();
 
         // Clear chat container
         const chatContainer = document.getElementById('chatContainer');
@@ -289,8 +275,33 @@ document.addEventListener('firebaseInitialized', function () {
         initializeGifSearch();
 
         // Handle scrolling for loading more messages
-        chatContainer.removeEventListener('scroll', handleScroll);
         chatContainer.addEventListener('scroll', handleScroll);
+    }
+
+    function removeListeners() {
+        const chatContainer = document.getElementById('chatContainer');
+
+        // Remove previous chat listener
+        if (chatListener) {
+            chatListener.off();
+            chatListener = null;
+        }
+
+        // Remove previous sales listener
+        if (salesListener) {
+            salesListener.off();
+            salesListener = null;
+        }
+
+        // Remove previous sendMessageHandler
+        if (sendMessageHandler) {
+            const messageForm = document.getElementById('messageForm');
+            messageForm.removeEventListener('submit', sendMessageHandler);
+            sendMessageHandler = null;
+        }
+
+        // Remove scroll event listener
+        chatContainer.removeEventListener('scroll', handleScroll);
     }
 
     function handleScroll() {
@@ -351,13 +362,57 @@ document.addEventListener('firebaseInitialized', function () {
             isLoadingMore = false;
         });
 
-        // Real-time listener for new messages
+        // Set up real-time listeners
         if (!chatListener) {
             chatListener = messagesRef.orderByChild('timestamp').startAt(Date.now());
             chatListener.on('child_added', snapshot => {
                 const message = snapshot.val();
+                message.key = snapshot.key;
                 displayMessage(message);
             });
+
+            chatListener.on('child_changed', snapshot => {
+                const message = snapshot.val();
+                message.key = snapshot.key;
+                updateMessage(message);
+            });
+        }
+
+        if (selectedChatId === 'groupChat' && !salesListener) {
+            // Set up listener for salesOutcomes
+            salesListener = database.ref('salesOutcomes');
+            salesListener.on('child_added', handleSalesData);
+            salesListener.on('child_changed', handleSalesData);
+        }
+    }
+
+    function handleSalesData(snapshot) {
+        const userId = snapshot.key;
+        const userSalesData = snapshot.val();
+        const userName = usersData[userId] ? usersData[userId].name : 'No name';
+
+        for (const saleId in userSalesData) {
+            const sale = userSalesData[saleId];
+            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+            const saleTime = new Date(sale.outcomeTime).getTime();
+
+            if (saleType) {
+                const liveActivityMessage = {
+                    userId: userId,
+                    userName: userName,
+                    saleType: saleType,
+                    saleTime: sale.outcomeTime,
+                    saleId: saleId,
+                    type: 'liveActivity',
+                    timestamp: saleTime,
+                    likes: {},
+                    comments: {},
+                    key: `sale-${saleId}`
+                };
+
+                // Display live activity message
+                displayMessage(liveActivityMessage);
+            }
         }
     }
 
@@ -521,10 +576,42 @@ document.addEventListener('firebaseInitialized', function () {
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
     }
 
+    function updateMessage(message) {
+        const messageDiv = document.getElementById(`message-${message.key}`);
+        if (messageDiv) {
+            // Update likes count and button text
+            const likeButton = messageDiv.querySelector('.message-actions button');
+            const likesCount = message.likes ? Object.keys(message.likes).length : 0;
+            const userLiked = message.likes && message.likes[currentUserId];
+
+            likeButton.textContent = userLiked ? `Unlike (${likesCount})` : `Like (${likesCount})`;
+
+            // Update comments
+            const commentsSection = messageDiv.querySelector('.comments-section');
+            const commentsList = commentsSection.querySelector('.comments-list');
+            commentsList.innerHTML = '';
+
+            const comments = message.comments || {};
+            const commentsCount = Object.keys(comments).length;
+
+            if (commentsCount > 0) {
+                for (const commentId in comments) {
+                    const comment = comments[commentId];
+                    const commentItem = document.createElement('li');
+                    const commentTime = new Date(comment.timestamp).toLocaleString();
+                    commentItem.innerHTML = `<strong>${comment.userName}</strong> (${commentTime}): ${comment.commentText}`;
+                    commentsList.appendChild(commentItem);
+                }
+            }
+        }
+    }
+
     function toggleLike(messageId, userLiked) {
-        const likeRef = selectedChatId === 'groupChat'
-            ? database.ref(`groupChatMessages/${messageId}/likes/${currentUserId}`)
-            : database.ref(`privateMessages/${selectedChatId}/${messageId}/likes/${currentUserId}`);
+        const messageRef = selectedChatId === 'groupChat'
+            ? database.ref(`groupChatMessages/${messageId}`)
+            : database.ref(`privateMessages/${selectedChatId}/${messageId}`);
+
+        const likeRef = messageRef.child(`likes/${currentUserId}`);
 
         if (userLiked) {
             // User wants to unlike
@@ -626,5 +713,30 @@ document.addEventListener('firebaseInitialized', function () {
 
             gifResults.appendChild(img);
         });
+    }
+
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+        const normalizedNotes = notes.toLowerCase();
+
+        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
+            return 'HRA';
+        } else if (
+            /(vbc|transfer|ndr|dental|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
+        ) {
+            return 'Transfer';
+        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
+            return 'Select Patient Management';
+        } else if (
+            normalizedAction.includes('srx: enrolled - rx history received') ||
+            normalizedAction.includes('srx: enrolled - rx history not available') ||
+            /select rx/i.test(normalizedAction) ||
+            /select rx/i.test(normalizedNotes)
+        ) {
+            return 'Select RX';
+        } else {
+            // Exclude other options
+            return null;
+        }
     }
 });
