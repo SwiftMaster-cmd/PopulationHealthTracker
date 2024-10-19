@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Show the table by default
+        container.style.display = 'block';
+        salesFilters.style.display = 'flex';
+        toggleTableButton.textContent = 'Hide Sales Data';
+        showMoreButton.style.display = 'block';
+
         // Event Listeners
         toggleTableButton.addEventListener('click', () => {
             if (container.style.display === 'none' || container.style.display === '') {
@@ -68,10 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 salesData.push({ saleId: saleId, ...salesObj[saleId] });
             }
             currentPage = 1;
-            // Only render table if it is visible
-            if (container.style.display !== 'none' && container.style.display !== '') {
-                renderTable();
-            }
+            renderTable();
         });
 
         function renderTable() {
@@ -98,17 +101,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 thead.innerHTML = `
                     <tr>
                         <th>Outcome Time</th>
-                        <th>Assign Action</th>
-                        <th>Notes</th>
+                        <th>Action Type</th>
                         <th>Account Number</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th>Name</th>
                         <th>Gender</th>
                         <th>Birthdate</th>
-                        <th>Email</th>
                         <th>Phone</th>
-                        <th>Zipcode</th>
-                        <th>State ID</th>
+                        <th>State</th>
                         <th>Action</th> <!-- Column for delete button -->
                     </tr>
                 `;
@@ -126,28 +125,55 @@ document.addEventListener('DOMContentLoaded', function() {
                     const options = { year: 'numeric', month: 'short', day: 'numeric' };
                     const formattedDate = date.toLocaleDateString(undefined, options);
 
+                    // Outcome Time
                     row.insertCell().innerText = formattedDate || '';
-                    row.insertCell().innerText = sale.assignAction || '';
-                    row.insertCell().innerText = sale.notesValue || '';
+
+                    // Action Type with Notes Tooltip
+                    const actionCell = row.insertCell();
+                    actionCell.innerText = sale.assignAction || '';
+                    if (sale.notesValue) {
+                        actionCell.classList.add('notes-tooltip');
+                        actionCell.setAttribute('data-notes', sale.notesValue);
+                    }
+
+                    // Account Number
                     row.insertCell().innerText = sale.accountNumber || '';
-                    row.insertCell().innerText = customerInfo.firstName || '';
-                    row.insertCell().innerText = customerInfo.lastName || '';
+
+                    // Name (First and Last merged)
+                    const name = `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`.trim();
+                    row.insertCell().innerText = name || '';
+
+                    // Gender
                     row.insertCell().innerText = customerInfo.gender || '';
+
+                    // Birthdate
                     row.insertCell().innerText = customerInfo.birthdate || '';
-                    row.insertCell().innerText = customerInfo.email || '';
-                    row.insertCell().innerText = customerInfo.phone || '';
-                    row.insertCell().innerText = customerInfo.zipcode || '';
-                    row.insertCell().innerText = customerInfo.stateId || '';
+
+                    // Phone with Email Tooltip
+                    const phoneCell = row.insertCell();
+                    phoneCell.innerText = customerInfo.phone || '';
+                    if (customerInfo.email) {
+                        phoneCell.classList.add('email-tooltip');
+                        phoneCell.setAttribute('data-email', customerInfo.email);
+                    }
+
+                    // State with Zipcode Tooltip
+                    const stateCell = row.insertCell();
+                    stateCell.innerText = customerInfo.stateId || '';
+                    if (customerInfo.zipcode) {
+                        stateCell.classList.add('zipcode-tooltip');
+                        stateCell.setAttribute('data-zipcode', customerInfo.zipcode);
+                    }
 
                     // Add delete button
-                    const actionCell = row.insertCell();
+                    const actionBtnCell = row.insertCell();
                     const deleteButton = document.createElement('button');
                     deleteButton.textContent = 'Delete';
                     deleteButton.classList.add('delete-button');
                     deleteButton.addEventListener('click', () => {
                         confirmAndDeleteSale(sale.saleId);
                     });
-                    actionCell.appendChild(deleteButton);
+                    actionBtnCell.appendChild(deleteButton);
                 });
 
                 table.appendChild(tbody);
