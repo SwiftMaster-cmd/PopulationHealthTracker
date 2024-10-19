@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectRxCommissionEl = document.getElementById('selectRxCommission');
     const intraCompanyCommissionEl = document.getElementById('intraCompanyCommission');
     const spmCommissionEl = document.getElementById('spmCommission');
-    const totalCommissionEl = document.getElementById('totalCommission');
-    const totalCommissionAfterTaxEl = document.getElementById('totalCommissionAfterTax');
+    const totalCommissionLabelEl = document.getElementById('totalCommissionLabel');
+    const totalCommissionAmountEl = document.getElementById('totalCommissionAmount');
 
     const partnerTransferSalesCountEl = document.getElementById('partnerTransferSalesCount');
     const selectRxSalesCountEl = document.getElementById('selectRxSalesCount');
@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Event listeners for settings
             taxesRemovedCheckbox.addEventListener('change', () => {
                 taxesRemoved = taxesRemovedCheckbox.checked;
+                taxPercentageInput.disabled = !taxesRemoved; // Disable input if taxes are not removed
                 saveSettings(user);
                 // Recalculate and display commissions
                 const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let value = parseFloat(taxPercentageInput.value);
                 if (isNaN(value) || value < 0 || value > 100) {
                     value = 40; // Reset to default if invalid
+                    taxPercentageInput.value = value;
                 }
                 taxPercentage = value;
                 saveSettings(user);
@@ -107,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update UI elements
             taxesRemovedCheckbox.checked = taxesRemoved;
             taxPercentageInput.value = taxPercentage;
+            taxPercentageInput.disabled = !taxesRemoved; // Disable input if taxes are not removed
 
             // Recalculate and display commissions
             const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
@@ -338,8 +341,15 @@ document.addEventListener('DOMContentLoaded', function() {
         selectRxCommissionEl.textContent = `SelectRx Commission: $${commissionData.selectRx.toFixed(2)}`;
         intraCompanyCommissionEl.textContent = `IntraCompany Commission: $${commissionData.intraCompany.toFixed(2)}`;
         spmCommissionEl.textContent = `SPM Commission: $${commissionData.spm.toFixed(2)}`;
-        totalCommissionEl.textContent = `Total Commission Before Tax: $${commissionData.totalCommission.toFixed(2)}`;
-        totalCommissionAfterTaxEl.textContent = `Total Commission After Tax: $${commissionData.totalCommissionAfterTax.toFixed(2)}`;
+
+        // Display total commission with appropriate label and amount
+        if (taxesRemoved) {
+            totalCommissionLabelEl.textContent = 'Total Commission After Tax:';
+            totalCommissionAmountEl.textContent = `$${commissionData.totalCommissionAfterTax.toFixed(2)}`;
+        } else {
+            totalCommissionLabelEl.textContent = 'Total Commission Before Tax:';
+            totalCommissionAmountEl.textContent = `$${commissionData.totalCommission.toFixed(2)}`;
+        }
 
         // Also display sales counts
         partnerTransferSalesCountEl.textContent = `Partner Transfer Sales: ${commissionData.salesCounts.partnerTransfer}`;
