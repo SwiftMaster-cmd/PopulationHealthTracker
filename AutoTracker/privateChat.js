@@ -8,7 +8,6 @@ document.addEventListener('firebaseInitialized', function () {
     let currentUserName = null;
     let selectedChatId = null;
     let chatListener = null;
-    let salesListener = null;
     let sendMessageHandler = null;
 
     let usersData = {}; // To store user names
@@ -16,8 +15,10 @@ document.addEventListener('firebaseInitialized', function () {
     let commentsData = {};
 
     let messagesEndReached = false;
-    let lastMessageTimestamp = null;
+    let oldestMessageTimestamp = null;
     let isLoadingMore = false;
+
+    const MESSAGES_PER_LOAD = 20; // Number of messages to load per batch
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -204,7 +205,7 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Reset pagination variables
         messagesEndReached = false;
-        lastMessageTimestamp = null;
+        oldestMessageTimestamp = null;
         isLoadingMore = false;
 
         // Load initial messages
@@ -253,7 +254,7 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Reset pagination variables
         messagesEndReached = false;
-        lastMessageTimestamp = null;
+        oldestMessageTimestamp = null;
         isLoadingMore = false;
 
         // Load initial messages
@@ -289,12 +290,6 @@ document.addEventListener('firebaseInitialized', function () {
             chatListener = null;
         }
 
-        // Remove previous sales listener
-        if (salesListener) {
-            salesListener.off();
-            salesListener = null;
-        }
-
         // Remove previous sendMessageHandler
         if (sendMessageHandler) {
             const messageForm = document.getElementById('messageForm');
@@ -308,8 +303,8 @@ document.addEventListener('firebaseInitialized', function () {
 
     function handleScroll() {
         const chatContainer = document.getElementById('chatContainer');
-        if (chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 50 && !isLoadingMore && !messagesEndReached) {
-            // Near the bottom of the chat container
+        if (chatContainer.scrollTop === 0 && !isLoadingMore && !messagesEndReached) {
+            // User scrolled to the top, load older messages
             isLoadingMore = true;
             loadMoreMessages();
         }
@@ -317,127 +312,196 @@ document.addEventListener('firebaseInitialized', function () {
 
     function loadMoreMessages() {
         const chatContainer = document.getElementById('chatContainer');
-        const messagesRef = selectedChatId === 'groupChat'
-            ? database.ref('groupChatMessages')
-            : database.ref(`privateMessages/${selectedChatId}`);
 
-        let query = messagesRef.orderByChild('timestamp').limitToFirst(25);
+        let messagesRef;
+        let liveActivitiesRef;
 
-        if (lastMessageTimestamp) {
-            query = messagesRef.orderByChild('timestamp').startAfter(lastMessageTimestamp).limitToFirst(25);
+        if (selectedChatId === 'groupChat') {
+            messagesRef = database.ref('groupChatMessages');
+            liveActivitiesRef = database.ref('salesOutcomes');
+        } else {
+            messagesRef = database.ref(`privateMessages/${selectedChatId}`);
+            liveActivitiesRef = null; // No live activities in private chats
         }
 
-        query.once('value', snapshot => {
+        // Prepare queries
+        let messagesQuery = messagesRef.orderByChild('timestamp').limitToLast(MESSAGES_PER_LOAD);
+        let liveActivitiesQuery = null;
+
+        if (oldestMessageTimestamp) {
+            messagesQuery = messagesRef.orderByChild('timestamp').endAt(oldestMessageTimestamp - 1).limitToLast(MESSAGES_PER_LOAD);
+        }
+
+        if (liveActivitiesRef) {
+            liveActivitiesQuery = liveActivitiesRef;
+        }
+
+        // Fetch messages and live activities in parallel
+        const promises = [messagesQuery.once('value')];
+
+        if (liveActivitiesQuery) {
+            promises.push(liveActivitiesQuery.once('value'));
+        }
+
+        Promise.all(promises).then(results => {
+            const messagesSnapshot = results[0];
+            const liveActivitiesSnapshot = results[1];
+
             const messages = [];
-            snapshot.forEach(childSnapshot => {
+
+            // Process chat messages
+            messagesSnapshot.forEach(childSnapshot => {
                 const message = childSnapshot.val();
                 message.key = childSnapshot.key;
                 messages.push(message);
             });
 
+            // Process live activities
+            if (liveActivitiesSnapshot) {
+                const salesData = liveActivitiesSnapshot.val() || {};
+
+                for (const userId in salesData) {
+                    const userSalesData = salesData[userId];
+                    const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+
+                    for (const saleId in userSalesData) {
+                        const sale = userSalesData[saleId];
+                        const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                        const saleTime = new Date(sale.outcomeTime).getTime();
+
+                        if (saleType) { // Include only valid sale types
+                            const liveActivityMessage = {
+                                key: `sale-${saleId}`,
+                                userId,
+                                userName,
+                                saleType,
+                                saleTime: sale.outcomeTime,
+                                saleId,
+                                type: 'liveActivity',
+                                timestamp: saleTime,
+                                likes: {},
+                                comments: {}
+                            };
+
+                            messages.push(liveActivityMessage);
+                        }
+                    }
+                }
+            }
+
+            // Sort messages by timestamp ascending (oldest first)
+            messages.sort((a, b) => a.timestamp - b.timestamp);
+
+            // Filter messages to only include those older than the oldestMessageTimestamp
+            if (oldestMessageTimestamp) {
+                messages = messages.filter(msg => msg.timestamp < oldestMessageTimestamp);
+            }
+
+            // Limit to MESSAGES_PER_LOAD
+            messagesEndReached = messages.length < MESSAGES_PER_LOAD;
+
             if (messages.length === 0) {
-                messagesEndReached = true;
+                isLoadingMore = false;
                 return;
             }
 
-            lastMessageTimestamp = messages[messages.length - 1].timestamp;
+            // Update oldestMessageTimestamp
+            oldestMessageTimestamp = messages[0].timestamp;
 
-            // Messages are already in order from oldest to newest
+            // Render messages
             messages.forEach(message => {
-                displayMessage(message);
+                prependMessage(message);
             });
 
             isLoadingMore = false;
 
-            // Scroll to the top only when loading the first batch
+            // If first load, scroll to bottom
             if (!chatContainer.dataset.initialScroll) {
-                chatContainer.scrollTop = 0;
+                chatContainer.scrollTop = chatContainer.scrollHeight;
                 chatContainer.dataset.initialScroll = 'true';
+            } else {
+                // Maintain scroll position
+                const firstNewMessage = chatContainer.children[messages.length];
+                if (firstNewMessage) {
+                    firstNewMessage.scrollIntoView();
+                }
+            }
+
+            // Set up real-time listeners after initial load
+            if (!chatListener) {
+                setupRealtimeListeners();
             }
         }).catch(error => {
             console.error('Error loading messages:', error);
             isLoadingMore = false;
         });
+    }
 
-        // Set up real-time listeners
-        if (!chatListener) {
-            chatListener = messagesRef.orderByChild('timestamp').startAt(Date.now());
-            chatListener.on('child_added', snapshot => {
-                const message = snapshot.val();
-                message.key = snapshot.key;
-                prependMessage(message);
+    function setupRealtimeListeners() {
+        const messagesRef = selectedChatId === 'groupChat'
+            ? database.ref('groupChatMessages')
+            : database.ref(`privateMessages/${selectedChatId}`);
+
+        // Real-time listener for new chat messages
+        chatListener = messagesRef.orderByChild('timestamp').startAt(Date.now());
+        chatListener.on('child_added', snapshot => {
+            const message = snapshot.val();
+            message.key = snapshot.key;
+            displayMessage(message);
+        });
+
+        if (selectedChatId === 'groupChat') {
+            // Real-time listener for new live activities
+            const salesListener = database.ref('salesOutcomes');
+            salesListener.on('child_added', snapshot => {
+                processSalesData(snapshot);
             });
-
-            chatListener.on('child_changed', snapshot => {
-                const message = snapshot.val();
-                message.key = snapshot.key;
-                updateMessage(message);
-            });
-        }
-
-        if (selectedChatId === 'groupChat' && !salesListener) {
-            // Set up listener for salesOutcomes
-            salesListener = database.ref('salesOutcomes');
-            salesListener.on('value', snapshot => {
-                const salesData = snapshot.val() || {};
-                handleSalesData(salesData);
+            salesListener.on('child_changed', snapshot => {
+                processSalesData(snapshot);
             });
 
             // Listen for likes and comments
             const likesRef = database.ref('likes');
             likesRef.on('value', likesSnapshot => {
                 likesData = likesSnapshot.val() || {};
-                // Update messages with new likes data
                 updateLikesAndComments();
             });
 
             const commentsRef = database.ref('comments');
             commentsRef.on('value', commentsSnapshot => {
                 commentsData = commentsSnapshot.val() || {};
-                // Update messages with new comments data
                 updateLikesAndComments();
             });
         }
     }
 
-    function handleSalesData(salesData) {
-        const salesList = [];
+    function processSalesData(snapshot) {
+        const userId = snapshot.key;
+        const userSalesData = snapshot.val();
+        const userName = (usersData[userId] && usersData[userId].name) || 'No name';
 
-        for (const userId in salesData) {
-            const userSalesData = salesData[userId];
-            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+        for (const saleId in userSalesData) {
+            const sale = userSalesData[saleId];
+            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+            const saleTime = new Date(sale.outcomeTime).getTime();
 
-            for (const saleId in userSalesData) {
-                const sale = userSalesData[saleId];
-                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                const saleTime = new Date(sale.outcomeTime).getTime();
+            if (saleType) { // Include only valid sale types
+                const liveActivityMessage = {
+                    key: `sale-${saleId}`,
+                    userId,
+                    userName,
+                    saleType,
+                    saleTime: sale.outcomeTime,
+                    saleId,
+                    type: 'liveActivity',
+                    timestamp: saleTime,
+                    likes: likesData[saleId] || {},
+                    comments: commentsData[saleId] || {}
+                };
 
-                if (saleType) { // Include only valid sale types
-                    const liveActivityMessage = {
-                        key: `sale-${saleId}`,
-                        userId,
-                        userName,
-                        saleType,
-                        saleTime: sale.outcomeTime,
-                        saleId,
-                        type: 'liveActivity',
-                        timestamp: saleTime,
-                        likes: likesData[saleId] || {},
-                        comments: commentsData[saleId] || {}
-                    };
-
-                    salesList.push(liveActivityMessage);
-                }
+                displayMessage(liveActivityMessage);
             }
         }
-
-        // Sort salesList by timestamp descending (newest first)
-        salesList.sort((a, b) => b.timestamp - a.timestamp);
-
-        // Display live activities
-        salesList.forEach(message => {
-            displayMessage(message);
-        });
     }
 
     function updateLikesAndComments() {
@@ -627,13 +691,136 @@ document.addEventListener('firebaseInitialized', function () {
 
         messageDiv.appendChild(commentsSection);
 
-        // Prepend messages to display newest first
-        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+        // Append messages to display newest at the bottom
+        chatContainer.appendChild(messageDiv);
     }
 
     function prependMessage(message) {
-        // New messages added in real-time
-        displayMessage(message);
+        // Prepend older messages when loading more
+        const chatContainer = document.getElementById('chatContainer');
+
+        // Check if message already exists
+        if (document.getElementById(`message-${message.key}`)) {
+            return;
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('chat-message');
+        messageDiv.id = `message-${message.key}`;
+
+        const time = new Date(message.timestamp).toLocaleString();
+        let senderName = '';
+
+        if (message.type === 'liveActivity') {
+            senderName = message.userName;
+            const saleType = message.saleType;
+            const saleTime = new Date(message.saleTime).toLocaleString();
+            messageDiv.innerHTML = `
+                <p><strong>${senderName}</strong> made a <strong>${saleType}</strong> sale on ${saleTime}</p>
+            `;
+        } else {
+            if (selectedChatId === 'groupChat') {
+                senderName = message.userId === currentUserId ? 'You' : message.userName;
+            } else {
+                senderName = message.senderId === currentUserId ? 'You' : message.senderName;
+            }
+
+            if (message.type === 'text') {
+                messageDiv.innerHTML = `
+                    <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
+                    <p>${message.content}</p>
+                `;
+            } else if (message.type === 'gif') {
+                messageDiv.innerHTML = `
+                    <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
+                    <img src="${message.content}" alt="GIF" class="chat-gif">
+                `;
+            }
+        }
+
+        // Likes and Comments Functionality (same as in displayMessage)
+        // Create action buttons container
+        const actionsDiv = document.createElement('div');
+        actionsDiv.classList.add('message-actions');
+
+        // Like Button
+        const likeButton = document.createElement('button');
+        const likesCount = message.likes ? Object.keys(message.likes).length : 0;
+        const userLiked = message.likes && message.likes[currentUserId];
+
+        likeButton.textContent = userLiked ? `Unlike (${likesCount})` : `Like (${likesCount})`;
+        likeButton.addEventListener('click', () => {
+            toggleLike(message);
+        });
+
+        actionsDiv.appendChild(likeButton);
+
+        // Comment Button
+        const commentToggleButton = document.createElement('button');
+        commentToggleButton.textContent = 'Reply';
+        commentToggleButton.addEventListener('click', () => {
+            commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        actionsDiv.appendChild(commentToggleButton);
+
+        messageDiv.appendChild(actionsDiv);
+
+        // Comments Section
+        const commentsSection = document.createElement('div');
+        commentsSection.classList.add('comments-section');
+
+        // Display existing comments
+        const commentsList = document.createElement('ul');
+        commentsList.classList.add('comments-list');
+
+        const comments = message.comments || {};
+        const commentsCount = Object.keys(comments).length;
+
+        if (commentsCount > 0) {
+            for (const commentId in comments) {
+                const comment = comments[commentId];
+                const commentItem = document.createElement('li');
+                const commentTime = new Date(comment.timestamp).toLocaleString();
+                commentItem.innerHTML = `<strong>${comment.userName}</strong> (${commentTime}): ${comment.commentText}`;
+                commentsList.appendChild(commentItem);
+            }
+        }
+
+        commentsSection.appendChild(commentsList);
+
+        // Add comment form
+        const commentForm = document.createElement('form');
+        commentForm.classList.add('comment-form');
+        commentForm.style.display = 'none'; // Hide comment form initially
+
+        commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                addComment(message, commentText);
+                commentInput.value = '';
+            }
+        });
+
+        const commentInput = document.createElement('input');
+        commentInput.type = 'text';
+        commentInput.placeholder = 'Add a reply...';
+        commentInput.required = true;
+
+        const commentSubmit = document.createElement('button');
+        commentSubmit.type = 'submit';
+        commentSubmit.textContent = 'Post';
+
+        commentForm.appendChild(commentInput);
+        commentForm.appendChild(commentSubmit);
+
+        commentsSection.appendChild(commentForm);
+
+        messageDiv.appendChild(commentsSection);
+
+        // Prepend messages to the top
+        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
     }
 
     function updateMessage(message) {
@@ -668,15 +855,13 @@ document.addEventListener('firebaseInitialized', function () {
 
     function toggleLike(message) {
         let likeRef;
-        let messageRef;
 
         if (message.type === 'liveActivity') {
             // For live activities, likes are stored under 'likes' node
             likeRef = database.ref(`likes/${message.saleId}/${currentUserId}`);
-            messageRef = null; // Not used in this case
         } else {
             // For chat messages, likes are stored under the message in groupChatMessages or privateMessages
-            messageRef = selectedChatId === 'groupChat'
+            const messageRef = selectedChatId === 'groupChat'
                 ? database.ref(`groupChatMessages/${message.key}`)
                 : database.ref(`privateMessages/${selectedChatId}/${message.key}`);
 
@@ -763,7 +948,7 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function searchGifs(query) {
-        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
+        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)
