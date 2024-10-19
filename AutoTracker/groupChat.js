@@ -55,10 +55,8 @@ document.addEventListener('firebaseInitialized', function() {
         const usersRef = database.ref('Users');
         usersRef.on('value', usersSnapshot => {
             usersData = usersSnapshot.val() || {};
+            loadChatList(); // Load chat list after usersData is available
         });
-
-        // Initialize chat list
-        loadChatList();
 
         // Set up event listeners
         setupEventListeners();
@@ -113,12 +111,68 @@ document.addEventListener('firebaseInitialized', function() {
     function loadPastLiveActivities() {
         const salesOutcomesRef = database.ref('salesOutcomes');
 
-        salesOutcomesRef.once('value').then(snapshot => {
-            const salesData = snapshot.val();
-            const salesList = [];
+        // Fetch usersData if not already available
+        if (Object.keys(usersData).length === 0) {
+            const usersRef = database.ref('Users');
+            usersRef.once('value').then(usersSnapshot => {
+                usersData = usersSnapshot.val() || {};
+                fetchAndDisplaySales();
+            }).catch(error => {
+                console.error('Error fetching users data:', error);
+            });
+        } else {
+            fetchAndDisplaySales();
+        }
 
-            for (const userId in salesData) {
-                const userSalesData = salesData[userId];
+        function fetchAndDisplaySales() {
+            salesOutcomesRef.once('value').then(snapshot => {
+                const salesData = snapshot.val();
+                const salesList = [];
+
+                for (const userId in salesData) {
+                    const userSalesData = salesData[userId];
+                    const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+
+                    for (const saleId in userSalesData) {
+                        const sale = userSalesData[saleId];
+                        const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                        const saleTime = new Date(sale.outcomeTime).getTime();
+
+                        if (saleType) {
+                            salesList.push({
+                                userId: userId,
+                                userName: userName,
+                                content: {
+                                    saleId: saleId,
+                                    saleType: saleType,
+                                    saleTime: saleTime,
+                                    saleData: sale
+                                },
+                                type: 'liveActivity',
+                                timestamp: saleTime,
+                                likes: {},
+                                comments: {}
+                            });
+                        }
+                    }
+                }
+
+                // Sort sales by timestamp
+                salesList.sort((a, b) => a.timestamp - b.timestamp);
+
+                // Display all past sales as messages in the chat
+                salesList.forEach(sale => {
+                    const messageId = `sale-${sale.content.saleId}`;
+                    displayMessage(sale, messageId);
+                });
+            }).catch(error => {
+                console.error('Error loading past live activities:', error);
+            });
+
+            // Listen for new sales (live activities)
+            salesOutcomesRef.on('child_added', snapshot => {
+                const userId = snapshot.key;
+                const userSalesData = snapshot.val();
                 const userName = (usersData[userId] && usersData[userId].name) || 'No name';
 
                 for (const saleId in userSalesData) {
@@ -127,7 +181,7 @@ document.addEventListener('firebaseInitialized', function() {
                     const saleTime = new Date(sale.outcomeTime).getTime();
 
                     if (saleType) {
-                        salesList.push({
+                        const saleMessage = {
                             userId: userId,
                             userName: userName,
                             content: {
@@ -140,89 +194,47 @@ document.addEventListener('firebaseInitialized', function() {
                             timestamp: saleTime,
                             likes: {},
                             comments: {}
-                        });
+                        };
+
+                        const messageId = `sale-${saleId}`;
+                        displayMessage(saleMessage, messageId);
                     }
                 }
-            }
-
-            // Sort sales by timestamp
-            salesList.sort((a, b) => a.timestamp - b.timestamp);
-
-            // Display all past sales as messages in the chat
-            salesList.forEach(sale => {
-                const messageId = `sale-${sale.content.saleId}`;
-                displayMessage(sale, messageId);
             });
-        }).catch(error => {
-            console.error('Error loading past live activities:', error);
-        });
 
-        // Listen for new sales (live activities)
-        const salesOutcomesRefLive = database.ref('salesOutcomes');
-        salesOutcomesRefLive.on('child_added', snapshot => {
-            const userId = snapshot.key;
-            const userSalesData = snapshot.val();
-            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+            // Listen for updates to sales
+            salesOutcomesRef.on('child_changed', snapshot => {
+                const userId = snapshot.key;
+                const userSalesData = snapshot.val();
+                const userName = (usersData[userId] && usersData[userId].name) || 'No name';
 
-            for (const saleId in userSalesData) {
-                const sale = userSalesData[saleId];
-                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                const saleTime = new Date(sale.outcomeTime).getTime();
+                for (const saleId in userSalesData) {
+                    const sale = userSalesData[saleId];
+                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                    const saleTime = new Date(sale.outcomeTime).getTime();
 
-                if (saleType) {
-                    const saleMessage = {
-                        userId: userId,
-                        userName: userName,
-                        content: {
-                            saleId: saleId,
-                            saleType: saleType,
-                            saleTime: saleTime,
-                            saleData: sale
-                        },
-                        type: 'liveActivity',
-                        timestamp: saleTime,
-                        likes: {},
-                        comments: {}
-                    };
+                    if (saleType) {
+                        const saleMessage = {
+                            userId: userId,
+                            userName: userName,
+                            content: {
+                                saleId: saleId,
+                                saleType: saleType,
+                                saleTime: saleTime,
+                                saleData: sale
+                            },
+                            type: 'liveActivity',
+                            timestamp: saleTime,
+                            likes: {},
+                            comments: {}
+                        };
 
-                    const messageId = `sale-${saleId}`;
-                    displayMessage(saleMessage, messageId);
+                        const messageId = `sale-${saleId}`;
+                        displayMessage(saleMessage, messageId);
+                    }
                 }
-            }
-        });
-
-        // Listen for updates to sales
-        salesOutcomesRefLive.on('child_changed', snapshot => {
-            const userId = snapshot.key;
-            const userSalesData = snapshot.val();
-            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
-
-            for (const saleId in userSalesData) {
-                const sale = userSalesData[saleId];
-                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                const saleTime = new Date(sale.outcomeTime).getTime();
-
-                if (saleType) {
-                    const saleMessage = {
-                        userId: userId,
-                        userName: userName,
-                        content: {
-                            saleId: saleId,
-                            saleType: saleType,
-                            saleTime: saleTime,
-                            saleData: sale
-                        },
-                        type: 'liveActivity',
-                        timestamp: saleTime,
-                        likes: {},
-                        comments: {}
-                    };
-
-                    const messageId = `sale-${saleId}`;
-                    displayMessage(saleMessage, messageId);
-                }
-            }
-        });
+            });
+        }
     }
 
     function sendMessage(content, type) {
@@ -254,7 +266,7 @@ document.addEventListener('firebaseInitialized', function() {
         messageDiv.classList.add('chat-message');
         messageDiv.id = `message-${messageId}`;
 
-        const time = new Date(message.timestamp).toLocaleTimeString();
+        const time = new Date(message.timestamp).toLocaleString();
 
         if (message.type === 'text') {
             messageDiv.innerHTML = `
@@ -367,7 +379,11 @@ document.addEventListener('firebaseInitialized', function() {
         messageDiv.appendChild(commentsSection);
 
         chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+
+        // Scroll to the bottom if near the bottom
+        if (chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < 200) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
     }
 
     function toggleLike(messageId, userLiked) {
