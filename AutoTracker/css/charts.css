@@ -96,9 +96,4 @@
     background-color: var(--accent-color);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .chart-wrapper {
-        width: 100%; /* On smaller screens, charts take full width */
-    }
-}
+
