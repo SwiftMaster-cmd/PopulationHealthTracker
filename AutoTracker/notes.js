@@ -24,17 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize the app after authentication
     auth.onAuthStateChanged(user => {
         if (user) {
+            console.log('User authenticated:', user.uid);
             currentUserId = user.uid;
             initializeNotesApp();
         } else {
             // Sign in anonymously
-            auth.signInAnonymously().catch(error => {
+            auth.signInAnonymously().then(() => {
+                console.log('Signed in anonymously');
+            }).catch(error => {
                 console.error('Authentication error:', error);
             });
         }
     });
 
     function initializeNotesApp() {
+        console.log('Initializing Notes App');
         // Load folders
         loadFolders();
 
@@ -43,16 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('addNoteButton').addEventListener('click', addNote);
         document.getElementById('saveNoteButton').addEventListener('click', saveNote);
         document.getElementById('deleteNoteButton').addEventListener('click', deleteNote);
-        // Uncomment if implementing sharing
-        // document.getElementById('shareNoteButton').addEventListener('click', shareNote);
         document.getElementById('searchNotesInput').addEventListener('input', searchNotes);
     }
 
     function loadFolders() {
+        console.log('Loading folders...');
         const foldersRef = database.ref(`notes/${currentUserId}/folders`);
         foldersRef.on('value', snapshot => {
             const folders = snapshot.val() || {};
+            console.log('Folders loaded:', folders);
             renderFolders(folders);
+        }, error => {
+            console.error('Error loading folders:', error);
         });
     }
 
@@ -72,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function selectFolder(folderId, folderItem) {
         currentFolderId = folderId;
+        console.log('Folder selected:', folderId);
         // Highlight selected folder
         document.querySelectorAll('#foldersList li').forEach(li => li.classList.remove('selected'));
         folderItem.classList.add('selected');
@@ -81,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function addFolder() {
         const folderName = prompt('Enter folder name:');
         if (folderName) {
+            console.log('Adding folder:', folderName);
             const folderRef = database.ref(`notes/${currentUserId}/folders`).push();
             folderRef.set({
                 name: folderName
@@ -90,14 +98,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error adding folder:', error);
                 alert('Failed to add folder: ' + error.message);
             });
+        } else {
+            console.log('Folder creation canceled');
         }
     }
 
     function loadNotes(folderId) {
+        console.log('Loading notes for folder:', folderId);
         const notesRef = database.ref(`notes/${currentUserId}/notes`).orderByChild('folderId').equalTo(folderId);
         notesRef.on('value', snapshot => {
             const notes = snapshot.val() || {};
+            console.log('Notes loaded:', notes);
             renderNotes(notes);
+        }, error => {
+            console.error('Error loading notes:', error);
         });
     }
 
@@ -118,8 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function addNote() {
         if (!currentFolderId) {
             alert('Please select a folder first.');
+            console.log('No folder selected when adding note');
             return;
         }
+        console.log('Adding note to folder:', currentFolderId);
         const noteRef = database.ref(`notes/${currentUserId}/notes`).push();
         noteRef.set({
             title: 'New Note',
@@ -127,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             folderId: currentFolderId,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
+            console.log('Note added successfully.');
             selectNote(noteRef.key);
         }).catch(error => {
             console.error('Error adding note:', error);
@@ -136,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function selectNote(noteId, noteItem = null) {
         currentNoteId = noteId;
+        console.log('Note selected:', noteId);
         const noteRef = database.ref(`notes/${currentUserId}/notes/${noteId}`);
         noteRef.once('value').then(snapshot => {
             const note = snapshot.val();
@@ -162,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentNoteId) return;
         const title = document.getElementById('noteTitle').value.trim();
         const content = quill.root.innerHTML;
+        console.log('Saving note:', currentNoteId);
         const noteRef = database.ref(`notes/${currentUserId}/notes/${currentNoteId}`);
         noteRef.update({
             title: title || 'Untitled',
@@ -173,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedNoteItem) {
                 selectedNoteItem.textContent = title || 'Untitled';
             }
+            console.log('Note saved successfully.');
             alert('Note saved successfully.');
         }).catch(error => {
             console.error('Error saving note:', error);
@@ -183,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteNote() {
         if (!currentNoteId) return;
         if (confirm('Are you sure you want to delete this note?')) {
+            console.log('Deleting note:', currentNoteId);
             const noteRef = database.ref(`notes/${currentUserId}/notes/${currentNoteId}`);
             noteRef.remove().then(() => {
                 currentNoteId = null;
@@ -191,43 +212,4 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('mainContent').classList.add('hidden');
                 // Remove note from list
                 const selectedNoteItem = document.querySelector(`#notesList li.selected`);
-                if (selectedNoteItem) {
-                    selectedNoteItem.remove();
-                }
-                alert('Note deleted successfully.');
-            }).catch(error => {
-                console.error('Error deleting note:', error);
-                alert('Failed to delete note: ' + error.message);
-            });
-        }
-    }
-
-    // Uncomment and implement if you wish to add sharing functionality
-    // function shareNote() {
-    //     if (!currentNoteId) return;
-    //     const email = prompt('Enter email to share with:');
-    //     if (email) {
-    //         // Implement sharing logic here
-    //         alert('Note shared with ' + email);
-    //     }
-    // }
-
-    function searchNotes() {
-        const query = document.getElementById('searchNotesInput').value.toLowerCase();
-        const notesRef = database.ref(`notes/${currentUserId}/notes`).orderByChild('folderId').equalTo(currentFolderId);
-        notesRef.once('value').then(snapshot => {
-            const notes = snapshot.val() || {};
-            const filteredNotes = {};
-            for (const noteId in notes) {
-                const note = notes[noteId];
-                if (note.title.toLowerCase().includes(query)) {
-                    filteredNotes[noteId] = note;
-                }
-            }
-            renderNotes(filteredNotes);
-        }).catch(error => {
-            console.error('Error searching notes:', error);
-            alert('Failed to search notes: ' + error.message);
-        });
-    }
-});
+                i
