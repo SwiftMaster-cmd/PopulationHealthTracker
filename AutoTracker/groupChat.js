@@ -6,6 +6,7 @@ document.addEventListener('firebaseInitialized', function() {
 
     let currentUserId = null;
     let currentUserName = null;
+    let usersData = {};
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -48,9 +49,24 @@ document.addEventListener('firebaseInitialized', function() {
 
     function initializeChat() {
         const messagesRef = database.ref('groupChatMessages');
+
+        // Load existing messages and listen for new ones
         messagesRef.limitToLast(50).on('child_added', snapshot => {
             const message = snapshot.val();
-            displayMessage(message);
+            const messageId = snapshot.key;
+            displayMessage(message, messageId);
+        });
+
+        // Listen for message updates (likes/comments)
+        messagesRef.limitToLast(50).on('child_changed', snapshot => {
+            const message = snapshot.val();
+            const messageId = snapshot.key;
+            const messageDiv = document.getElementById(`message-${messageId}`);
+            if (messageDiv) {
+                // Update the messageDiv
+                messageDiv.parentNode.removeChild(messageDiv);
+                displayMessage(message, messageId);
+            }
         });
 
         // Handle message form submission
@@ -66,33 +82,54 @@ document.addEventListener('firebaseInitialized', function() {
             }
         });
 
-        // Handle GIF search
-        const gifSearchInput = document.getElementById('gifSearchInput');
-        const gifResults = document.getElementById('gifResults');
+        // Handle GIF search (existing code)
+        // ...
 
-        // Debounce function to limit API calls
-        let debounceTimeout = null;
-        gifSearchInput.addEventListener('input', () => {
-            const query = gifSearchInput.value.trim();
-            if (debounceTimeout) {
-                clearTimeout(debounceTimeout);
-            }
-            debounceTimeout = setTimeout(() => {
-                if (query) {
-                    searchGifs(query);
-                } else {
-                    gifResults.innerHTML = ''; // Clear results if query is empty
-                }
-            }, 500); // Delay of 500ms
+        // Load Users data
+        const usersRef = database.ref('Users');
+        usersRef.on('value', usersSnapshot => {
+            usersData = usersSnapshot.val() || {};
         });
 
-        // Handle GIF selection
-        gifResults.addEventListener('click', (e) => {
-            if (e.target.tagName === 'IMG') {
-                const gifUrl = e.target.src;
-                sendMessage(gifUrl, 'gif');
-                gifResults.innerHTML = ''; // Clear GIF results after selection
-                gifSearchInput.value = ''; // Clear search input
+        // Listen for live activities (sales data)
+        const salesOutcomesRef = database.ref('salesOutcomes');
+        salesOutcomesRef.on('child_added', snapshot => {
+            const userId = snapshot.key;
+            const userSalesData = snapshot.val();
+            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+
+            for (const saleId in userSalesData) {
+                const sale = userSalesData[saleId];
+                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                const saleTime = new Date(sale.outcomeTime).getTime();
+
+                if (saleType) {
+                    // Create a message of type 'liveActivity' and push it to groupChatMessages
+                    const messageData = {
+                        userId: userId,
+                        userName: userName,
+                        content: {
+                            saleId: saleId,
+                            saleType: saleType,
+                            saleTime: saleTime,
+                            saleData: sale
+                        },
+                        type: 'liveActivity',
+                        timestamp: saleTime,
+                        likes: {},
+                        comments: {}
+                    };
+
+                    // Check if the live activity message already exists
+                    const query = messagesRef.orderByChild('content/saleId').equalTo(saleId);
+                    query.once('value', snapshot => {
+                        if (!snapshot.exists()) {
+                            messagesRef.push(messageData).catch(error => {
+                                console.error('Error sending live activity message:', error);
+                            });
+                        }
+                    });
+                }
             }
         });
     }
@@ -102,8 +139,10 @@ document.addEventListener('firebaseInitialized', function() {
             userId: currentUserId,
             userName: currentUserName || 'Anonymous',
             content: content,
-            type: type, // 'text' or 'gif'
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+            type: type, // 'text', 'gif', or 'liveActivity'
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            likes: {},
+            comments: {}
         };
 
         const messagesRef = database.ref('groupChatMessages');
@@ -112,11 +151,12 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function displayMessage(message) {
+    function displayMessage(message, messageId) {
         const chatContainer = document.getElementById('chatContainer');
 
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('chat-message');
+        messageDiv.id = `message-${messageId}`;
 
         const time = new Date(message.timestamp).toLocaleTimeString();
 
@@ -130,42 +170,166 @@ document.addEventListener('firebaseInitialized', function() {
                 <p><strong>${message.userName}</strong> <span class="chat-time">${time}</span></p>
                 <img src="${message.content}" alt="GIF" class="chat-gif">
             `;
+        } else if (message.type === 'liveActivity') {
+            const saleType = message.content.saleType;
+            const saleTime = new Date(message.content.saleTime).toLocaleString();
+            messageDiv.innerHTML = `
+                <p><strong>${message.userName}</strong> made a <strong>${saleType}</strong> sale on ${saleTime}</p>
+            `;
         }
+
+        // Add like button and likes count
+        const likeButton = document.createElement('button');
+        const likesCount = message.likes ? Object.keys(message.likes).length : 0;
+        const userLiked = message.likes && message.likes[currentUserId];
+
+        likeButton.textContent = userLiked ? 'Unlike' : 'Like';
+        likeButton.addEventListener('click', () => {
+            toggleLike(messageId, userLiked);
+        });
+
+        const likesInfo = document.createElement('span');
+        likesInfo.textContent = ` ${likesCount} Like${likesCount !== 1 ? 's' : ''}`;
+
+        // Add comment button
+        const commentButton = document.createElement('button');
+        commentButton.textContent = 'Comment';
+        commentButton.addEventListener('click', () => {
+            commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Append buttons and info
+        const actionsDiv = document.createElement('div');
+        actionsDiv.appendChild(likeButton);
+        actionsDiv.appendChild(likesInfo);
+        actionsDiv.appendChild(commentButton);
+
+        messageDiv.appendChild(actionsDiv);
+
+        // Display comments
+        const commentsSection = document.createElement('div');
+        commentsSection.classList.add('comments-section');
+
+        const comments = message.comments || {};
+        const commentsCount = Object.keys(comments).length;
+
+        // Create "Show Replies" button
+        if (commentsCount > 0) {
+            const showRepliesButton = document.createElement('button');
+            showRepliesButton.textContent = `Show Replies (${commentsCount})`;
+            let repliesVisible = false;
+
+            showRepliesButton.addEventListener('click', () => {
+                repliesVisible = !repliesVisible;
+                commentsList.style.display = repliesVisible ? 'block' : 'none';
+                showRepliesButton.textContent = repliesVisible ? `Hide Replies (${commentsCount})` : `Show Replies (${commentsCount})`;
+            });
+
+            commentsSection.appendChild(showRepliesButton);
+        }
+
+        // Create comments list
+        const commentsList = document.createElement('ul');
+        commentsList.classList.add('comments-list');
+        commentsList.style.display = 'none'; // Hidden initially
+
+        for (const commentId in comments) {
+            const comment = comments[commentId];
+            const commentItem = document.createElement('li');
+            const commentTime = new Date(comment.timestamp).toLocaleString();
+            commentItem.innerHTML = `<strong>${comment.userName}</strong> (${commentTime}): ${comment.commentText}`;
+            commentsList.appendChild(commentItem);
+        }
+
+        commentsSection.appendChild(commentsList);
+
+        // Add comment form
+        const commentForm = document.createElement('form');
+        commentForm.classList.add('comment-form');
+        commentForm.style.display = 'none'; // Hide comment form initially
+
+        commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                addComment(messageId, commentText);
+                commentInput.value = '';
+            }
+        });
+
+        const commentInput = document.createElement('input');
+        commentInput.type = 'text';
+        commentInput.placeholder = 'Add a comment...';
+        commentInput.required = true;
+
+        const commentSubmit = document.createElement('button');
+        commentSubmit.type = 'submit';
+        commentSubmit.textContent = 'Post';
+
+        commentForm.appendChild(commentInput);
+        commentForm.appendChild(commentSubmit);
+
+        commentsSection.appendChild(commentForm);
+
+        messageDiv.appendChild(commentsSection);
 
         chatContainer.appendChild(messageDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
     }
 
-    function searchGifs(query) {
-        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
-        const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                displayGifResults(data.data);
-            })
-            .catch(error => {
-                console.error('Error fetching GIFs:', error);
+    function toggleLike(messageId, userLiked) {
+        const likeRef = database.ref(`groupChatMessages/${messageId}/likes/${currentUserId}`);
+        if (userLiked) {
+            // User wants to unlike
+            likeRef.remove().catch(error => {
+                console.error('Error removing like:', error);
             });
+        } else {
+            // User wants to like
+            likeRef.set(true).catch(error => {
+                console.error('Error adding like:', error);
+            });
+        }
     }
 
-    function displayGifResults(gifs) {
-        const gifResults = document.getElementById('gifResults');
-        gifResults.innerHTML = ''; // Clear previous results
-
-        if (gifs.length === 0) {
-            gifResults.innerHTML = '<p>No GIFs found.</p>';
-            return;
-        }
-
-        gifs.forEach(gif => {
-            const img = document.createElement('img');
-            img.src = gif.images.fixed_height.url;
-            img.alt = gif.title || 'GIF';
-            img.classList.add('gif-result');
-
-            gifResults.appendChild(img);
+    function addComment(messageId, commentText) {
+        const commentId = database.ref().child('groupChatMessages').child(messageId).child('comments').push().key;
+        const commentData = {
+            userId: currentUserId,
+            userName: currentUserName || 'Anonymous',
+            commentText: commentText,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+        const commentRef = database.ref(`groupChatMessages/${messageId}/comments/${commentId}`);
+        commentRef.set(commentData).catch(error => {
+            console.error('Error adding comment:', error);
         });
     }
+
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+        const normalizedNotes = notes.toLowerCase();
+
+        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
+            return 'HRA';
+        } else if (
+            /(vbc|transfer|ndr|dental|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
+        ) {
+            return 'Transfer';
+        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
+            return 'Select Patient Management';
+        } else if (
+            normalizedAction.includes('srx: enrolled - rx history received') ||
+            normalizedAction.includes('srx: enrolled - rx history not available') ||
+            /select rx/i.test(normalizedAction) ||
+            /select rx/i.test(normalizedNotes)
+        ) {
+            return 'Select RX';
+        } else {
+            // Exclude other options
+            return null;
+        }
+    }
+
+    // Existing functions for GIF search and other features...
 });
