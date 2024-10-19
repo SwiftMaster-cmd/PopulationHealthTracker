@@ -1,85 +1,274 @@
-/* Remove glow from the entire leaderboard item */
-.leaderboard-item {
-    box-shadow: none; /* Remove any box shadow */
+/* LeaderBoard-LiveActivities.css */
+
+/* Root Variables */
+:root {
+    --background-color: #f0f2f5; /* Light background for better readability */
+    --card-background-color: #ffffff; /* White card background */
+    --primary-color: #007bff; /* Blue accent color */
+    --secondary-color: #6c757d; /* Secondary grey color */
+    --text-color: #212529; /* Dark text color */
+    --border-color: #dee2e6; /* Light grey border */
+    --radius: 8px;
+    --transition-duration: 0.3s;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-base: 18px;
+    --font-size-large: 22px;
+    --font-size-small: 16px;
 }
 
-/* First place text with gold shadow */
-.leaderboard-item.first-place .leaderboard-name,
-.leaderboard-item.first-place .leaderboard-position {
-    color: #FFD700; /* Base gold color */
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255, 215, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
-    animation: glow-animation-gold 3s infinite linear;
+/* Global Styles */
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
 }
 
-/* Second place text with silver shadow */
-.leaderboard-item.second-place .leaderboard-name,
-.leaderboard-item.second-place .leaderboard-position {
-    color: #C0C0C0; /* Base silver color */
-    text-shadow: 0 0 4px rgba(192, 192, 192, 0.5), 0 0 8px rgba(192, 192, 192, 0.3), 0 0 12px rgba(192, 192, 192, 0.2);
-    animation: glow-animation-silver 3s infinite linear;
+/* Container */
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
 }
 
-/* Third place text with bronze shadow */
-.leaderboard-item.third-place .leaderboard-name,
-.leaderboard-item.third-place .leaderboard-position {
-    color: #CD7F32; /* Base bronze color */
-    text-shadow: 0 0 3px rgba(205, 127, 50, 0.4), 0 0 6px rgba(205, 127, 50, 0.3), 0 0 9px rgba(205, 127, 50, 0.2);
-    animation: glow-animation-bronze 3s infinite linear;
+/* Typography */
+h2 {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-/* Keyframes for gold glow */
-@keyframes glow-animation-gold {
-    0% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
+p {
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+    background-color: var(--card-background-color);
+    padding: 40px;
+    border-radius: var(--radius);
+    margin-bottom: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.leaderboard-filters label {
+    font-size: var(--font-size-base);
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.leaderboard-filters select {
+    font-size: var(--font-size-base);
+    padding: 10px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: #fff;
+    transition: border-color var(--transition-duration);
+}
+
+.leaderboard-filters select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+#leaderboardContainer {
+    overflow-x: auto;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: var(--font-size-large);
+}
+
+.leaderboard-table th {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.leaderboard-table tr:hover {
+    background-color: #e9ecef;
+    transition: background-color var(--transition-duration);
+}
+
+/* Live Activities Section */
+.live-activities-section {
+    background-color: var(--card-background-color);
+    padding: 40px;
+    border-radius: var(--radius);
+    margin-bottom: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.live-activity {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.5s ease;
+}
+
+.live-activity:last-child {
+    border-bottom: none;
+}
+
+.live-activity p {
+    font-size: var(--font-size-base);
+    margin-bottom: 10px;
+}
+
+.live-activity strong {
+    color: var(--primary-color);
+}
+
+.live-activity time {
+    font-size: var(--font-size-small);
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+button {
+    font-size: var(--font-size-base);
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+.like-button {
+    background-color: var(--primary-color);
+    color: #fff;
+    margin-right: 10px;
+}
+
+.like-button.liked {
+    background-color: #dc3545; /* Red color for 'Unlike' */
+}
+
+.comment-button {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.show-replies-button {
+    background-color: transparent;
+    color: var(--primary-color);
+    font-size: var(--font-size-small);
+    margin-bottom: 10px;
+}
+
+.show-replies-button:hover {
+    text-decoration: underline;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 20px;
+    padding-left: 20px;
+    border-left: 2px solid var(--border-color);
+}
+
+.comment-form {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.comment-form input[type="text"] {
+    flex: 1;
+    font-size: var(--font-size-base);
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin-right: 10px;
+    transition: border-color var(--transition-duration);
+}
+
+.comment-form input[type="text"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.comment-form button {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.comments-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.comments-list li {
+    margin-bottom: 15px;
+}
+
+.comments-list li p {
+    margin: 0;
+    font-size: var(--font-size-base);
+}
+
+.comments-list li time {
+    font-size: var(--font-size-small);
+    color: var(--secondary-color);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20%, 0);
     }
-    25% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
-    }
-    50% {
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
-    }
-    75% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
-    }
-    100% {
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0), 0 0 10px rgba(255, 215, 0, 0), 0 0 15px rgba(255, 215, 0, 0);
+    to {
+        opacity: 1;
+        transform: none;
     }
 }
 
-/* Keyframes for silver glow */
-@keyframes glow-animation-silver {
-    0% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
+/* Responsive Design */
+@media (max-width: 768px) {
+    .leaderboard-filters {
+        flex-direction: column;
+        align-items: stretch;
     }
-    25% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
-    }
-    50% {
-        text-shadow: 0 0 8px rgba(192, 192, 192, 0.6), 0 0 16px rgba(192, 192, 192, 0.5), 0 0 24px rgba(192, 192, 192, 0.4);
-    }
-    75% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0.3), 0 0 8px rgba(192, 192, 192, 0.25), 0 0 12px rgba(192, 192, 192, 0.2);
-    }
-    100% {
-        text-shadow: 0 0 4px rgba(192, 192, 192, 0), 0 0 8px rgba(192, 192, 192, 0), 0 0 12px rgba(192, 192, 192, 0);
-    }
-}
 
-/* Keyframes for bronze glow */
-@keyframes glow-animation-bronze {
-    0% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
-    }
-    25% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
-    }
-    50% {
-        text-shadow: 0 0 6px rgba(205, 127, 50, 0.4), 0 0 12px rgba(205, 127, 50, 0.3), 0 0 18px rgba(205, 127, 50, 0.2);
-    }
-    75% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0.2), 0 0 6px rgba(205, 127, 50, 0.15), 0 0 9px rgba(205, 127, 50, 0.1);
-    }
-    100% {
-        text-shadow: 0 0 3px rgba(205, 127, 50, 0), 0 0 6px rgba(205, 127, 50, 0), 0 0 9px rgba(205, 127, 50, 0);
+    .leaderboard-filters label,
+    .leaderboard-filters select {
+        width: 100%;
+        margin-right: 0;
     }
 }
