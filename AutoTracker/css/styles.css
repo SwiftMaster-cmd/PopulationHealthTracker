@@ -329,7 +329,7 @@ button:hover {
 /* Style the header title */
 .commission-header h1 {
     margin: 0;
-    font-size: 2.5em; /* Increased font size for bigger text */
+    font-size: 3.5em; /* Increased font size for bigger text */
     color: #fff; /* Ensure the header title text is white */
 }
 
