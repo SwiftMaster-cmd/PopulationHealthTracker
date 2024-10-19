@@ -355,13 +355,34 @@ document.addEventListener('firebaseInitialized', function() {
 
             // Create like button
             const likeButton = document.createElement('button');
-            likeButton.textContent = userLiked ? 'Unlike' : 'Like';
+            likeButton.classList.add('like-button');
+            if (userLiked) {
+                likeButton.classList.add('liked');
+                likeButton.innerHTML = `<svg width="20" height="20" fill="currentColor"><use href="#icon-heart-fill"></use></svg> Unlike`;
+            } else {
+                likeButton.innerHTML = `<svg width="20" height="20" fill="currentColor"><use href="#icon-heart"></use></svg> Like`;
+            }
             likeButton.addEventListener('click', () => {
                 toggleLike(sale.saleId, userLiked);
             });
 
-            // Create likes info
+            // Create comment button
+            const commentButton = document.createElement('button');
+            commentButton.classList.add('comment-button');
+            commentButton.innerHTML = `<svg width="20" height="20" fill="currentColor"><use href="#icon-chat"></use></svg> Comment`;
+            commentButton.addEventListener('click', () => {
+                commentForm.style.display = commentForm.style.display === 'none' ? 'flex' : 'none';
+            });
+
+            // Create activity buttons container
+            const activityButtons = document.createElement('div');
+            activityButtons.classList.add('activity-buttons');
+            activityButtons.appendChild(likeButton);
+            activityButtons.appendChild(commentButton);
+
+            // Likes info
             const likesInfo = document.createElement('p');
+            likesInfo.classList.add('likes-info');
             if (likesCount > 0) {
                 likesInfo.textContent = `${likesCount} Like${likesCount > 1 ? 's' : ''} (Liked by: ${usersWhoLiked.join(', ')})`;
             } else {
@@ -370,26 +391,16 @@ document.addEventListener('firebaseInitialized', function() {
 
             // Build the saleDiv
             saleDiv.innerHTML = `
-                <p><strong>${sale.userName}</strong> made a <strong>${sale.saleType}</strong> sale on ${formattedTime}</p>
+                <p><strong>${sale.userName}</strong> made a <strong>${sale.saleType}</strong> sale on <time datetime="${saleDate.toISOString()}">${formattedTime}</time></p>
             `;
 
-            // Append like button and likes info
-            saleDiv.appendChild(likeButton);
+            // Append activity buttons and likes info
+            saleDiv.appendChild(activityButtons);
             saleDiv.appendChild(likesInfo);
-
-            // Create "Comment" button
-            const commentToggleButton = document.createElement('button');
-            commentToggleButton.textContent = 'Comment';
-            commentToggleButton.addEventListener('click', () => {
-                commentForm.style.display = commentForm.style.display === 'none' ? 'flex' : 'none';
-            });
-
-            saleDiv.appendChild(commentToggleButton);
 
             // Comments section (hidden by default)
             const commentsSection = document.createElement('div');
             commentsSection.classList.add('comments-section');
-            // commentsSection.style.display = 'none'; // Remove this line to always display the section
 
             // Display existing comments
             const saleComments = commentsData[sale.saleId] || {};
@@ -398,6 +409,7 @@ document.addEventListener('firebaseInitialized', function() {
             if (commentsCount > 0) {
                 // Create "Show Replies" button
                 const showRepliesButton = document.createElement('button');
+                showRepliesButton.classList.add('show-replies-button');
                 showRepliesButton.textContent = `Show Replies (${commentsCount})`;
                 let repliesVisible = false;
 
@@ -407,7 +419,7 @@ document.addEventListener('firebaseInitialized', function() {
                     showRepliesButton.textContent = repliesVisible ? `Hide Replies (${commentsCount})` : `Show Replies (${commentsCount})`;
                 });
 
-                saleDiv.appendChild(showRepliesButton);
+                commentsSection.appendChild(showRepliesButton);
             }
 
             // Create comments list
@@ -419,7 +431,7 @@ document.addEventListener('firebaseInitialized', function() {
                 const comment = saleComments[commentId];
                 const commentItem = document.createElement('li');
                 const commentTime = new Date(comment.timestamp).toLocaleString();
-                commentItem.innerHTML = `<strong>${comment.userName}</strong> (${commentTime}): ${comment.commentText}`;
+                commentItem.innerHTML = `<p><strong>${comment.userName}</strong>: ${comment.commentText}</p><time datetime="${new Date(comment.timestamp).toISOString()}">${commentTime}</time>`;
                 commentsList.appendChild(commentItem);
             }
 

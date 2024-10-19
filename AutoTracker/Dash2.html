@@ -57,24 +57,25 @@
         <button class="toggle-section-button" data-target="settingsSection">Settings</button>
     </header>
 
-    <!-- Leaderboard Section -->
-    <div class="leaderboard-section" id="leaderboardSection">
-        <h2>Leaderboard</h2>
-        <div class="leaderboard-filters">
-            <label for="saleTypeFilter">Sale Type:</label>
-            <select id="saleTypeFilter">
-                <!-- Options will be populated dynamically -->
-            </select>
+<!-- Leaderboard Section -->
+<div class="leaderboard-section" id="leaderboardSection">
+    <h2>Leaderboard</h2>
+    <div class="leaderboard-filters">
+        <label for="saleTypeFilter">Sale Type:</label>
+        <select id="saleTypeFilter">
+            <!-- Options will be populated dynamically -->
+        </select>
 
-            <label for="timeFrameFilter">Time Frame:</label>
-            <select id="timeFrameFilter">
-                <!-- Options will be populated dynamically -->
-            </select>
-        </div>
-        <div id="leaderboardContainer">
-            <!-- Leaderboard table will be rendered here -->
-        </div>
+        <label for="timeFrameFilter">Time Frame:</label>
+        <select id="timeFrameFilter">
+            <!-- Options will be populated dynamically -->
+        </select>
     </div>
+    <div id="leaderboardContainer">
+        <!-- Leaderboard table will be rendered here -->
+    </div>
+</div>
+
 
 
 
@@ -90,15 +91,31 @@
 <div class="live-activities-section" id="liveActivitiesSection">
     <h2>Live Activities</h2>
     <div id="liveActivitiesContainer">
-        <!-- Each live activity -->
+        <!-- Live activities will be rendered here -->
+        <!-- Example of a live activity item -->
         <div class="live-activity">
             <p><strong>User Name</strong> made a <strong>Sale Type</strong> sale on <time datetime="...">Date and Time</time></p>
-            <!-- Buttons -->
-            <button class="like-button">Like</button>
-            <button class="comment-button">Comment</button>
+            <div class="activity-buttons">
+                <button class="like-button">
+                    <!-- Like Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <!-- SVG content for like icon -->
+                    </svg>
+                    Like
+                </button>
+                <button class="comment-button">
+                    <!-- Comment Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <!-- SVG content for comment icon -->
+                    </svg>
+                    Comment
+                </button>
+            </div>
+            <!-- Likes Info -->
+            <p class="likes-info">5 Likes (Liked by: User1, User2)</p>
             <!-- Comments Section -->
             <div class="comments-section">
-                <button class="show-replies-button">Show Replies</button>
+                <button class="show-replies-button">Show Replies (2)</button>
                 <ul class="comments-list">
                     <li>
                         <p><strong>Commenter Name</strong>: Comment text</p>
@@ -116,6 +133,7 @@
         <!-- More live activities -->
     </div>
 </div>
+
 
     <!-- Dashboard Charts Section -->
     <div class="container" id="chartsContainer">
