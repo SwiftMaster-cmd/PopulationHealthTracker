@@ -19,7 +19,7 @@ document.addEventListener('firebaseInitialized', function () {
     let oldestMessageTimestamp = null;
     let isLoadingMore = false;
 
-    const MESSAGES_PER_LOAD = 25; // Number of messages to load per batch
+    const MESSAGES_PER_LOAD = 20; // Number of messages to load per batch
     const MAX_MESSAGES_DISPLAYED = 100; // Max messages to keep in DOM
 
     auth.onAuthStateChanged(user => {
@@ -210,9 +210,6 @@ document.addEventListener('firebaseInitialized', function () {
         oldestMessageTimestamp = null;
         isLoadingMore = false;
 
-        // Add "Load More" button
-        addLoadMoreButton();
-
         // Load initial messages
         loadMoreMessages();
 
@@ -258,9 +255,6 @@ document.addEventListener('firebaseInitialized', function () {
         messagesEndReached = false;
         oldestMessageTimestamp = null;
         isLoadingMore = false;
-
-        // Add "Load More" button
-        addLoadMoreButton();
 
         // Load initial messages
         loadMoreMessages();
@@ -313,16 +307,6 @@ document.addEventListener('firebaseInitialized', function () {
         }
     }
 
-    function addLoadMoreButton() {
-        const chatContainer = document.getElementById('chatContainer');
-        const loadMoreButton = document.createElement('button');
-        loadMoreButton.id = 'loadMoreButton';
-        loadMoreButton.textContent = 'Load More Messages';
-        loadMoreButton.addEventListener('click', loadMoreMessages);
-
-        chatContainer.insertBefore(loadMoreButton, chatContainer.firstChild);
-    }
-
     function loadMoreMessages() {
         if (isLoadingMore || messagesEndReached) return;
 
@@ -340,11 +324,11 @@ document.addEventListener('firebaseInitialized', function () {
         }
 
         // Prepare queries
-        let messagesQuery = messagesRef.orderByChild('timestamp').limitToLast(MESSAGES_PER_LOAD);
+        let messagesQuery = messagesRef.orderByChild('timestamp').limitToFirst(MESSAGES_PER_LOAD);
         let liveActivitiesQuery = null;
 
         if (oldestMessageTimestamp) {
-            messagesQuery = messagesRef.orderByChild('timestamp').endAt(oldestMessageTimestamp - 1).limitToLast(MESSAGES_PER_LOAD);
+            messagesQuery = messagesRef.orderByChild('timestamp').startAfter(oldestMessageTimestamp).limitToFirst(MESSAGES_PER_LOAD);
         }
 
         if (liveActivitiesRef) {
@@ -404,9 +388,9 @@ document.addEventListener('firebaseInitialized', function () {
                 }
             }
 
-            // Filter messages to only include those older than the oldestMessageTimestamp
+            // Filter messages to only include those newer than the oldestMessageTimestamp
             if (oldestMessageTimestamp) {
-                messages = messages.filter(msg => msg.timestamp < oldestMessageTimestamp);
+                messages = messages.filter(msg => msg.timestamp > oldestMessageTimestamp);
             }
 
             // Sort messages by timestamp ascending (oldest first)
@@ -421,14 +405,19 @@ document.addEventListener('firebaseInitialized', function () {
             }
 
             // Update oldestMessageTimestamp
-            oldestMessageTimestamp = messages[0].timestamp;
+            oldestMessageTimestamp = messages[messages.length - 1].timestamp;
 
             // Render messages
             messages.forEach(message => {
-                prependMessage(message);
+                appendMessage(message);
             });
 
             isLoadingMore = false;
+
+            // Add "Load More" button at the top after messages
+            if (!document.getElementById('loadMoreButton') && !messagesEndReached) {
+                addLoadMoreButton();
+            }
 
             // Remove excess messages to limit the number of rendered messages
             trimMessages();
@@ -436,6 +425,17 @@ document.addEventListener('firebaseInitialized', function () {
             console.error('Error loading messages:', error);
             isLoadingMore = false;
         });
+    }
+
+    function addLoadMoreButton() {
+        const chatContainer = document.getElementById('chatContainer');
+        const loadMoreButton = document.createElement('button');
+        loadMoreButton.id = 'loadMoreButton';
+        loadMoreButton.textContent = 'Load More Messages';
+        loadMoreButton.addEventListener('click', loadMoreMessages);
+
+        // Append the button after the oldest message
+        chatContainer.insertBefore(loadMoreButton, chatContainer.firstChild.nextSibling);
     }
 
     function setupRealtimeListeners() {
@@ -601,8 +601,8 @@ document.addEventListener('firebaseInitialized', function () {
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    function prependMessage(message) {
-        // Prepend older messages when loading more
+    function appendMessage(message) {
+        // Append messages to the chat container
         const chatContainer = document.getElementById('chatContainer');
 
         // Check if message already exists
@@ -613,9 +613,13 @@ document.addEventListener('firebaseInitialized', function () {
 
         const messageDiv = createMessageDiv(message);
 
-        // Insert after the "Load More" button
+        // Insert message before the "Load More" button or as the first child
         const loadMoreButton = document.getElementById('loadMoreButton');
-        chatContainer.insertBefore(messageDiv, loadMoreButton.nextSibling);
+        if (loadMoreButton) {
+            chatContainer.insertBefore(messageDiv, loadMoreButton.nextSibling);
+        } else {
+            chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+        }
     }
 
     function createMessageDiv(message) {
@@ -829,8 +833,14 @@ document.addEventListener('firebaseInitialized', function () {
     function trimMessages() {
         const chatContainer = document.getElementById('chatContainer');
         while (chatContainer.children.length > MAX_MESSAGES_DISPLAYED + 1) {
-            // Remove the oldest message (after the Load More button)
-            chatContainer.removeChild(chatContainer.children[1]);
+            // Remove the oldest message (excluding the Load More button)
+            const loadMoreButton = document.getElementById('loadMoreButton');
+            let oldestMessageIndex = Array.from(chatContainer.children).indexOf(loadMoreButton) + 1;
+            if (oldestMessageIndex < chatContainer.children.length) {
+                chatContainer.removeChild(chatContainer.children[oldestMessageIndex]);
+            } else {
+                break;
+            }
         }
     }
 
@@ -874,7 +884,7 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function searchGifs(query) {
-        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
+        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)
