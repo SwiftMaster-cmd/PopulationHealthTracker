@@ -8,7 +8,7 @@ document.addEventListener('firebaseInitialized', function() {
     const toggleChartControlsButton = document.getElementById('toggleChartControlsButton');
     const filterContainer = document.querySelector('.filter-container');
     const addChartButton = document.getElementById('addChartButton');
-    const clearChartsButton = document.getElementById('clearChartsButton'); // New button reference
+    const clearChartsButton = document.getElementById('clearChartsButton');
     const teamFilter = document.getElementById('teamFilter');
 
     // New elements for presets
@@ -246,7 +246,7 @@ document.addEventListener('firebaseInitialized', function() {
             totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: ${totalCount}`;
             chartContainer.appendChild(totalCountDisplay);
 
-            // Create chart content container for scrolling
+            // Create chart content container
             const chartContent = document.createElement('div');
             chartContent.classList.add('chart-content');
 
@@ -324,30 +324,42 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
+    // Updated function to prepare chart data, showing hourly data when timeFrame is 'today'
     function prepareChartData(filteredData, timeFrame) {
-        // Group data by date
         const dateCounts = {};
 
         filteredData.forEach(sale => {
             const date = new Date(sale.outcomeTime);
 
-            // Format the date to exclude the year
-            const options = { month: 'short', day: 'numeric' };
-            const dateKey = date.toLocaleDateString(undefined, options);
+            let dateKey;
+
+            if (timeFrame === 'today') {
+                // Format the date to include the hour
+                const hours = date.getHours();
+                dateKey = `${hours}:00`;
+            } else {
+                // Format the date to exclude the year
+                const options = { month: 'short', day: 'numeric' };
+                dateKey = date.toLocaleDateString(undefined, options);
+            }
 
             dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
         });
 
-        // Sort dates
-        const sortedDates = Object.keys(dateCounts).sort((a, b) => {
-            const dateA = new Date(a);
-            const dateB = new Date(b);
-            return dateA - dateB;
+        // Sort the keys (hours or dates)
+        const sortedKeys = Object.keys(dateCounts).sort((a, b) => {
+            if (timeFrame === 'today') {
+                return parseInt(a) - parseInt(b);
+            } else {
+                const dateA = new Date(a);
+                const dateB = new Date(b);
+                return dateA - dateB;
+            }
         });
 
         return {
-            labels: sortedDates,
-            data: sortedDates.map(date => dateCounts[date])
+            labels: sortedKeys,
+            data: sortedKeys.map(key => dateCounts[key])
         };
     }
 
@@ -375,7 +387,7 @@ document.addEventListener('firebaseInitialized', function() {
             datasets.borderColor = '#FFFFFF'; // Line color
             datasets.pointBackgroundColor = colors; // Colors for data points
             datasets.fill = true; // Enable fill for line charts
-            datasets.backgroundColor = createVerticalGradient(ctx, canvas); // Gradient fill
+            datasets.backgroundColor = 'rgba(33, 150, 243, 0.5)'; // Semi-transparent blue
         } else {
             datasets.backgroundColor = colors;
             datasets.borderColor = colors;
@@ -396,7 +408,7 @@ document.addEventListener('firebaseInitialized', function() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Date',
+                        text: timeFrame === 'today' ? 'Hour of Day' : 'Date',
                         color: '#ffffff',
                         font: {
                             family: 'Inter',
@@ -413,10 +425,14 @@ document.addEventListener('firebaseInitialized', function() {
                         autoSkip: dataPointCount > 15,
                         maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
                         callback: function(value, index, values) {
-                            if (dataPointCount > 15 && index % 2 !== 0) {
-                                return null;
+                            if (timeFrame === 'today') {
+                                return this.getLabelForValue(value); // Show every hour
+                            } else {
+                                if (dataPointCount > 15 && index % 2 !== 0) {
+                                    return null;
+                                }
+                                return this.getLabelForValue(value);
                             }
-                            return this.getLabelForValue(value);
                         },
                     },
                     grid: {
@@ -465,6 +481,7 @@ document.addEventListener('firebaseInitialized', function() {
                     bodyColor: '#ffffff',
                     borderColor: '#444444',
                     borderWidth: 1,
+                    displayColors: false,
                     titleFont: {
                         family: 'Inter',
                         size: 14,
@@ -489,7 +506,10 @@ document.addEventListener('firebaseInitialized', function() {
                     },
                 },
             },
-            // Custom properties for updating charts
+            animation: {
+                duration: 1500,
+                easing: 'easeInOutQuad',
+            },
             custom: {
                 timeFrame: timeFrame,
                 actionType: actionType,
@@ -509,14 +529,6 @@ document.addEventListener('firebaseInitialized', function() {
         });
 
         return chart;
-    }
-
-    function createVerticalGradient(ctx, canvas) {
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, 'green');   // Top
-        gradient.addColorStop(0.5, 'orange'); // Middle
-        gradient.addColorStop(1, 'red');     // Bottom
-        return gradient;
     }
 
     function generateValueBasedColors(data) {
@@ -629,9 +641,8 @@ document.addEventListener('firebaseInitialized', function() {
 
                 if (chartConfig.chartType === 'line') {
                     chartInstance.data.datasets[0].pointBackgroundColor = colors;
-                    // Update gradient fill
-                    const ctx = chartInstance.ctx;
-                    chartInstance.data.datasets[0].backgroundColor = createVerticalGradient(ctx, canvas);
+                    // Update background color
+                    chartInstance.data.datasets[0].backgroundColor = 'rgba(33, 150, 243, 0.5)';
                 } else {
                     chartInstance.data.datasets[0].backgroundColor = colors;
                     chartInstance.data.datasets[0].borderColor = colors;
