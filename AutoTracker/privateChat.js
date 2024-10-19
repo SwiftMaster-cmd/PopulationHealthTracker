@@ -12,9 +12,8 @@ document.addEventListener('firebaseInitialized', function () {
 
     let usersData = {}; // To store user names
 
-    let messagesLoaded = false;
     let messagesEndReached = false;
-    let lastMessageKey = null;
+    let lastMessageTimestamp = null;
     let isLoadingMore = false;
 
     // Toggle Chat List Functionality
@@ -235,9 +234,8 @@ document.addEventListener('firebaseInitialized', function () {
         chatContainer.innerHTML = '';
 
         // Reset pagination variables
-        messagesLoaded = false;
         messagesEndReached = false;
-        lastMessageKey = null;
+        lastMessageTimestamp = null;
         isLoadingMore = false;
 
         // Load initial messages
@@ -260,8 +258,9 @@ document.addEventListener('firebaseInitialized', function () {
         // Handle GIF search
         initializeGifSearch();
 
-        // Remove scroll event listener
+        // Handle scrolling for loading more messages
         chatContainer.removeEventListener('scroll', handleScroll);
+        chatContainer.addEventListener('scroll', handleScroll);
     }
 
     function selectGroupChat() {
@@ -292,9 +291,8 @@ document.addEventListener('firebaseInitialized', function () {
         chatContainer.innerHTML = '';
 
         // Reset pagination variables
-        messagesLoaded = false;
         messagesEndReached = false;
-        lastMessageKey = null;
+        lastMessageTimestamp = null;
         isLoadingMore = false;
 
         // Load initial messages
@@ -318,6 +316,7 @@ document.addEventListener('firebaseInitialized', function () {
         initializeGifSearch();
 
         // Handle scrolling for loading more messages
+        chatContainer.removeEventListener('scroll', handleScroll);
         chatContainer.addEventListener('scroll', handleScroll);
     }
 
@@ -335,10 +334,10 @@ document.addEventListener('firebaseInitialized', function () {
             ? database.ref('groupChatMessages')
             : database.ref(`privateMessages/${selectedChatId}`);
 
-        let query = messagesRef.orderByKey().limitToLast(20);
+        let query = messagesRef.orderByChild('timestamp').limitToLast(20);
 
-        if (lastMessageKey) {
-            query = messagesRef.orderByKey().endAt(lastMessageKey).limitToLast(21);
+        if (lastMessageTimestamp) {
+            query = messagesRef.orderByChild('timestamp').endAt(lastMessageTimestamp - 1).limitToLast(20);
         }
 
         query.once('value', snapshot => {
@@ -349,67 +348,42 @@ document.addEventListener('firebaseInitialized', function () {
                 messages.push(message);
             });
 
-            if (lastMessageKey) {
-                // Remove duplicate last message
-                messages.pop();
-            }
-
             if (messages.length === 0) {
                 messagesEndReached = true;
                 return;
             }
 
-            lastMessageKey = messages[0].key;
+            lastMessageTimestamp = messages[0].timestamp;
 
             messages.reverse(); // Oldest to newest
 
-            // Load live activities if group chat
-            if (selectedChatId === 'groupChat') {
-                loadLiveActivities(messages[0].timestamp, messages[messages.length - 1].timestamp).then(liveActivities => {
-                    // Merge messages and live activities
-                    const combined = [...messages, ...liveActivities];
-                    combined.sort((a, b) => a.timestamp - b.timestamp);
-                    combined.forEach(message => {
-                        displayMessage(message);
-                    });
-                    isLoadingMore = false;
-                });
-            } else {
-                messages.forEach(message => {
-                    displayMessage(message);
-                });
-                isLoadingMore = false;
-            }
+            messages.forEach(message => {
+                displayMessage(message);
+            });
 
-            if (!messagesLoaded) {
+            isLoadingMore = false;
+
+            if (!chatContainer.dataset.initialScroll) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-                messagesLoaded = true;
+                chatContainer.dataset.initialScroll = 'true';
+            } else {
+                // Maintain scroll position when loading older messages
+                const firstNewMessage = chatContainer.firstChild;
+                firstNewMessage.scrollIntoView();
             }
         }).catch(error => {
             console.error('Error loading messages:', error);
             isLoadingMore = false;
         });
-    }
 
-    // Adjusted function to load live activities within a timestamp range
-    function loadLiveActivities(startTimestamp, endTimestamp) {
-        return new Promise((resolve, reject) => {
-            const salesOutcomesRef = database.ref('liveActivities');
-
-            let query = salesOutcomesRef.orderByChild('timestamp').startAt(startTimestamp).endAt(endTimestamp);
-
-            query.once('value', snapshot => {
-                const liveActivities = [];
-                snapshot.forEach(childSnapshot => {
-                    const activity = childSnapshot.val();
-                    liveActivities.push(activity);
-                });
-                resolve(liveActivities);
-            }).catch(error => {
-                console.error('Error loading live activities:', error);
-                resolve([]);
+        // Real-time listener for new messages
+        if (!chatListener) {
+            chatListener = messagesRef.orderByChild('timestamp').startAt(Date.now());
+            chatListener.on('child_added', snapshot => {
+                const message = snapshot.val();
+                displayMessage(message);
             });
-        });
+        }
     }
 
     function sendMessage(content, type) {
@@ -490,32 +464,7 @@ document.addEventListener('firebaseInitialized', function () {
             `;
         }
 
-        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
-    }
-
-    function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-        const normalizedNotes = notes.toLowerCase();
-
-        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
-            return 'HRA';
-        } else if (
-            /(vbc|transfer|ndr|dental|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
-        ) {
-            return 'Transfer';
-        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
-            return 'Select Patient Management';
-        } else if (
-            normalizedAction.includes('srx: enrolled - rx history received') ||
-            normalizedAction.includes('srx: enrolled - rx history not available') ||
-            /select rx/i.test(normalizedAction) ||
-            /select rx/i.test(normalizedNotes)
-        ) {
-            return 'Select RX';
-        } else {
-            // Exclude other options
-            return null;
-        }
+        chatContainer.appendChild(messageDiv);
     }
 
     function initializeGifSearch() {
@@ -587,21 +536,6 @@ document.addEventListener('firebaseInitialized', function () {
             img.classList.add('gif-result');
 
             gifResults.appendChild(img);
-        });
-    }
-
-    // Real-time listener for new messages
-    if (selectedChatId === 'groupChat') {
-        const messagesRef = database.ref('groupChatMessages').limitToLast(1);
-        messagesRef.on('child_added', snapshot => {
-            const message = snapshot.val();
-            displayMessage(message);
-        });
-    } else {
-        const messagesRef = database.ref(`privateMessages/${selectedChatId}`).limitToLast(1);
-        messagesRef.on('child_added', snapshot => {
-            const message = snapshot.val();
-            displayMessage(message);
         });
     }
 });
