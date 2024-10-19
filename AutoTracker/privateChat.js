@@ -308,7 +308,8 @@ document.addEventListener('firebaseInitialized', function () {
 
     function handleScroll() {
         const chatContainer = document.getElementById('chatContainer');
-        if (chatContainer.scrollTop === 0 && !isLoadingMore && !messagesEndReached) {
+        if (chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 50 && !isLoadingMore && !messagesEndReached) {
+            // Near the bottom of the chat container
             isLoadingMore = true;
             loadMoreMessages();
         }
@@ -320,10 +321,10 @@ document.addEventListener('firebaseInitialized', function () {
             ? database.ref('groupChatMessages')
             : database.ref(`privateMessages/${selectedChatId}`);
 
-        let query = messagesRef.orderByChild('timestamp').limitToLast(20);
+        let query = messagesRef.orderByChild('timestamp').limitToFirst(25);
 
         if (lastMessageTimestamp) {
-            query = messagesRef.orderByChild('timestamp').endAt(lastMessageTimestamp - 1).limitToLast(20);
+            query = messagesRef.orderByChild('timestamp').startAfter(lastMessageTimestamp).limitToFirst(25);
         }
 
         query.once('value', snapshot => {
@@ -339,25 +340,19 @@ document.addEventListener('firebaseInitialized', function () {
                 return;
             }
 
-            lastMessageTimestamp = messages[0].timestamp;
+            lastMessageTimestamp = messages[messages.length - 1].timestamp;
 
-            messages.reverse(); // Oldest to newest
-
+            // Messages are already in order from oldest to newest
             messages.forEach(message => {
                 displayMessage(message);
             });
 
             isLoadingMore = false;
 
+            // Scroll to the top only when loading the first batch
             if (!chatContainer.dataset.initialScroll) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+                chatContainer.scrollTop = 0;
                 chatContainer.dataset.initialScroll = 'true';
-            } else {
-                // Maintain scroll position when loading older messages
-                const firstNewMessage = chatContainer.children[messages.length];
-                if (firstNewMessage) {
-                    firstNewMessage.scrollIntoView();
-                }
             }
         }).catch(error => {
             console.error('Error loading messages:', error);
@@ -370,7 +365,7 @@ document.addEventListener('firebaseInitialized', function () {
             chatListener.on('child_added', snapshot => {
                 const message = snapshot.val();
                 message.key = snapshot.key;
-                displayMessage(message);
+                prependMessage(message);
             });
 
             chatListener.on('child_changed', snapshot => {
@@ -436,8 +431,8 @@ document.addEventListener('firebaseInitialized', function () {
             }
         }
 
-        // Sort salesList by timestamp ascending
-        salesList.sort((a, b) => a.timestamp - b.timestamp);
+        // Sort salesList by timestamp descending (newest first)
+        salesList.sort((a, b) => b.timestamp - a.timestamp);
 
         // Display live activities
         salesList.forEach(message => {
@@ -632,8 +627,13 @@ document.addEventListener('firebaseInitialized', function () {
 
         messageDiv.appendChild(commentsSection);
 
-        chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+        // Prepend messages to display newest first
+        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+    }
+
+    function prependMessage(message) {
+        // New messages added in real-time
+        displayMessage(message);
     }
 
     function updateMessage(message) {
@@ -763,7 +763,7 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function searchGifs(query) {
-        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
+        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)
