@@ -12,10 +12,9 @@
     --radius: 10px;
     --transition-duration: 0.3s;
     --font-family: 'Roboto', sans-serif;
-    --font-size-base: 16px;
-    --font-size-large: 20px;
-    --font-size-xlarge: 24px; /* Larger font size */
-    --font-size-small: 14px;
+    --font-size-base: 32px;
+    --font-size-large: 36px;
+    --font-size-small: 28px;
 }
 
 /* Global Styles */
@@ -92,74 +91,6 @@ h2 {
     padding: 15px;
     border-bottom: 1px solid var(--border-color);
     font-size: var(--font-size-large);
-    color: var(--text-color);
-}
-
-/* Leaderboard Names Styling */
-.leaderboard-table td.name-cell {
-    font-weight: bold;
-    font-size: var(--font-size-xlarge); /* Larger text */
-    text-transform: uppercase; /* All caps */
-}
-
-/* Top 3 Highlighting */
-.leaderboard-table tr:nth-child(2) td {
-    animation: goldGlow 5s infinite;
-}
-
-.leaderboard-table tr:nth-child(3) td {
-    animation: silverGlow 5s infinite;
-}
-
-.leaderboard-table tr:nth-child(4) td {
-    animation: bronzeGlow 5s infinite;
-}
-
-/* Gold Glow Animation */
-@keyframes goldGlow {
-    0% {
-        background: linear-gradient(45deg, #FFD700, #FFEC8B);
-    }
-    50% {
-        background: linear-gradient(45deg, #FFEC8B, #FFD700);
-    }
-    100% {
-        background: linear-gradient(45deg, #FFD700, #FFEC8B);
-    }
-}
-
-/* Silver Glow Animation */
-@keyframes silverGlow {
-    0% {
-        background: linear-gradient(45deg, #C0C0C0, #D3D3D3);
-    }
-    50% {
-        background: linear-gradient(45deg, #D3D3D3, #C0C0C0);
-    }
-    100% {
-        background: linear-gradient(45deg, #C0C0C0, #D3D3D3);
-    }
-}
-
-/* Bronze Glow Animation */
-@keyframes bronzeGlow {
-    0% {
-        background: linear-gradient(45deg, #CD7F32, #D2B48C);
-    }
-    50% {
-        background: linear-gradient(45deg, #D2B48C, #CD7F32);
-    }
-    100% {
-        background: linear-gradient(45deg, #CD7F32, #D2B48C);
-    }
-}
-
-/* Text Visibility on Gradient Background */
-.leaderboard-table tr:nth-child(2) td,
-.leaderboard-table tr:nth-child(3) td,
-.leaderboard-table tr:nth-child(4) td {
-    color: #000; /* Black text for contrast */
-    font-weight: bold;
 }
 
 .leaderboard-table th {
@@ -196,7 +127,7 @@ h2 {
 }
 
 .live-activity p {
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-large); /* Increased font size for sale text */
     margin-bottom: 15px;
     color: var(--text-color);
 }
@@ -209,7 +140,6 @@ h2 {
     font-size: var(--font-size-small);
     color: var(--muted-text-color);
     margin-bottom: 10px;
-    display: block;
 }
 
 .activity-buttons {
@@ -353,7 +283,6 @@ h2 {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    /* Leaderboard Filters */
     .leaderboard-filters {
         flex-direction: column;
         align-items: stretch;
@@ -365,18 +294,6 @@ h2 {
         margin-right: 0;
     }
 
-    /* Adjusting font sizes for mobile */
-    .leaderboard-table th,
-    .leaderboard-table td {
-        font-size: var(--font-size-base);
-        padding: 10px;
-    }
-
-    .leaderboard-table td.name-cell {
-        font-size: var(--font-size-large);
-    }
-
-    /* Activity Buttons */
     .activity-buttons {
         flex-direction: column;
         align-items: stretch;
@@ -385,20 +302,5 @@ h2 {
     .activity-buttons button {
         width: 100%;
         margin-bottom: 10px;
-    }
-
-    /* Comment Form */
-    .comment-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .comment-form input[type="text"] {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .comment-form button {
-        width: 100%;
     }
 }
