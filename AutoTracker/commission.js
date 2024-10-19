@@ -19,10 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(user => {
         if (user) {
             loadAgentLevel(user).then(agentLevel => {
-                // Fetch sales data
+                // Fetch sales data for the current month
                 fetchSalesData(user, 'myData', salesData => {
+                    // Filter sales data to current month
+                    const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
                     // Calculate commissions
-                    const commissionData = calculateCommission(salesData, agentLevel);
+                    const commissionData = calculateCommission(currentMonthSales, agentLevel);
                     // Display commissions
                     displayCommission(commissionData);
                 });
@@ -43,11 +45,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (userData && userData.agentLevel) {
                     resolve(userData.agentLevel);
                 } else {
-                    resolve('Level1'); // Default to Level1 if not set
+                    resolve('Level2'); // Default to Level2 if not set
                 }
             }).catch(error => {
                 reject(error);
             });
+        });
+    }
+
+    function filterSalesDataToCurrentMonth(salesData) {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+
+        return salesData.filter(sale => {
+            const saleDate = new Date(sale.outcomeTime);
+            return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
         });
     }
 
@@ -169,42 +182,29 @@ document.addEventListener('DOMContentLoaded', function() {
             const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
             if (saleType) {
                 switch(saleType) {
-                    case 'HRA':
                     case 'Transfer':
-                        salesCounts.partnerTransfer += 1; // Assuming each sale counts as 1 point
+                        salesCounts.partnerTransfer += 1;
                         break;
                     case 'Select RX':
                         salesCounts.selectRx += 1;
                         break;
-                    case 'Select Patient Management':
+                    case 'SPM':
                         salesCounts.spm += 1;
                         break;
+                    case 'IntraCompany':
+                        salesCounts.intraCompany += 1;
+                        break;
                     default:
-                        // Handle IntraCompany sales
-                        if (/dental|fe|final expense/i.test(sale.assignAction) || /dental|fe|final expense/i.test(sale.notesValue)) {
-                            salesCounts.intraCompany += 1;
-                        }
+                        // Do nothing
                         break;
                 }
-            }
-
-            // Check for IntraCompany sales if not already counted
-            if (saleType !== 'IntraCompany' && (/dental|fe|final expense/i.test(sale.assignAction) || /dental|fe|final expense/i.test(sale.notesValue))) {
-                salesCounts.intraCompany += 1;
             }
         });
 
         // Calculate commissions per type
-        // For partnerTransfer
         commissionData.partnerTransfer = calculatePayout(salesCounts.partnerTransfer, commissionStructure.partnerTransfer);
-
-        // For selectRx
         commissionData.selectRx = calculatePayout(salesCounts.selectRx, commissionStructure.selectRx);
-
-        // For intraCompany
         commissionData.intraCompany = calculatePayout(salesCounts.intraCompany, commissionStructure.intraCompany);
-
-        // For spm
         commissionData.spm = calculatePayout(salesCounts.spm, commissionStructure.spm);
 
         commissionData.totalCommission = commissionData.partnerTransfer + commissionData.selectRx + commissionData.intraCompany + commissionData.spm;
@@ -226,28 +226,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-        const normalizedNotes = notes.toLowerCase();
+        const combinedText = `${action} ${notes}`.toLowerCase();
 
-        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
-            return 'HRA';
-        } else if (
-            /(vbc|transfer|ndr|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
-        ) {
-            return 'Transfer';
-        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
-            return 'Select Patient Management';
-        } else if (
-            normalizedAction.includes('srx: enrolled - rx history received') ||
-            normalizedAction.includes('srx: enrolled - rx history not available') ||
-            /select rx/i.test(normalizedAction) ||
-            /select rx/i.test(normalizedNotes)
-        ) {
-            return 'Select RX';
-        } else if (/dental|fe|final expense/i.test(normalizedAction) || /dental|fe|final expense/i.test(normalizedNotes)) {
+        // IntraCompany: if notes mention 'notes transfers' or 'basic transfers'
+        if (/notes transfers|basic transfers/i.test(combinedText)) {
             return 'IntraCompany';
-        } else {
-            // Exclude other options
+        }
+        // Transfer: if notes mention 'vbc' or 'national debt relief' or 'ndr'
+        else if (/vbc|national debt relief|ndr/i.test(combinedText)) {
+            return 'Transfer';
+        }
+        // SPM: if notes mention 'spm'
+        else if (/spm/i.test(combinedText)) {
+            return 'SPM';
+        }
+        // Select RX: if notes mention 'srx'
+        else if (/srx/i.test(combinedText)) {
+            return 'Select RX';
+        }
+        else {
+            // Not a recognized sale type
             return null;
         }
     }
@@ -267,6 +265,6 @@ document.addEventListener('DOMContentLoaded', function() {
         spmSalesCountEl.textContent = `SPM Sales: ${commissionData.salesCounts.spm}`;
     }
 
-    // Assume fetchSalesData function is defined in dashboard.js or elsewhere
+    // Assuming fetchSalesData function is defined in dashboard.js or elsewhere
     // If not, include it here or import appropriately
 });
