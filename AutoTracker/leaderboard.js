@@ -13,6 +13,9 @@ document.addEventListener('firebaseInitialized', function() {
     let selectedTimeFrame;
     let currentUserId = null;
 
+    // Giphy API Key
+    const GIPHY_API_KEY = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
+
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUserId = user.uid;
@@ -431,7 +434,12 @@ document.addEventListener('firebaseInitialized', function() {
                 const comment = saleComments[commentId];
                 const commentItem = document.createElement('li');
                 const commentTime = new Date(comment.timestamp).toLocaleString();
-                commentItem.innerHTML = `<p><strong>${comment.userName}</strong>: ${comment.commentText}</p><time datetime="${new Date(comment.timestamp).toISOString()}">${commentTime}</time>`;
+                let commentContent = `<p><strong>${comment.userName}</strong>: ${comment.commentText}</p>`;
+                if (comment.gifUrl) {
+                    commentContent += `<img src="${comment.gifUrl}" alt="GIF" class="comment-gif">`;
+                }
+                commentContent += `<time datetime="${new Date(comment.timestamp).toISOString()}">${commentTime}</time>`;
+                commentItem.innerHTML = commentContent;
                 commentsList.appendChild(commentItem);
             }
 
@@ -445,23 +453,43 @@ document.addEventListener('firebaseInitialized', function() {
             commentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const commentText = commentInput.value.trim();
-                if (commentText) {
-                    addComment(sale.saleId, commentText);
+                const gifUrl = selectedGifUrl; // From Giphy selection
+                if (commentText || gifUrl) {
+                    addComment(sale.saleId, commentText, gifUrl);
                     commentInput.value = '';
+                    selectedGifUrl = null;
+                    gifPreviewContainer.innerHTML = ''; // Clear GIF preview
                 }
             });
 
             const commentInput = document.createElement('input');
             commentInput.type = 'text';
             commentInput.placeholder = 'Add a comment...';
-            commentInput.required = true;
+
+            // Giphy GIF selection button
+            const giphyButton = document.createElement('button');
+            giphyButton.type = 'button';
+            giphyButton.textContent = 'Add GIF';
+            giphyButton.classList.add('giphy-button');
+            giphyButton.addEventListener('click', () => {
+                openGiphyModal();
+            });
+
+            // Container to display selected GIF preview
+            const gifPreviewContainer = document.createElement('div');
+            gifPreviewContainer.classList.add('gif-preview-container');
+
+            // Hidden input to store selected GIF URL
+            let selectedGifUrl = null;
 
             const commentSubmit = document.createElement('button');
             commentSubmit.type = 'submit';
             commentSubmit.textContent = 'Post';
 
             commentForm.appendChild(commentInput);
+            commentForm.appendChild(giphyButton);
             commentForm.appendChild(commentSubmit);
+            commentForm.appendChild(gifPreviewContainer);
 
             commentsSection.appendChild(commentForm);
 
@@ -486,12 +514,13 @@ document.addEventListener('firebaseInitialized', function() {
         }
     }
 
-    function addComment(saleId, commentText) {
+    function addComment(saleId, commentText, gifUrl) {
         const commentId = database.ref().child('comments').push().key;
         const commentData = {
             userId: currentUserId,
             userName: usersData[currentUserId] ? usersData[currentUserId].name : 'Unknown',
-            commentText: commentText,
+            commentText: commentText || '',
+            gifUrl: gifUrl || null,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         };
         const updates = {};
@@ -500,6 +529,76 @@ document.addEventListener('firebaseInitialized', function() {
         database.ref().update(updates).catch(error => {
             console.error('Error adding comment:', error);
         });
+    }
+
+    // Giphy Modal Functions
+    function openGiphyModal() {
+        const giphyModal = document.getElementById('giphyModal');
+        giphyModal.style.display = 'block';
+
+        const giphySearchInput = document.getElementById('giphySearchInput');
+        const giphyResults = document.getElementById('giphyResults');
+
+        giphySearchInput.value = '';
+        giphyResults.innerHTML = '';
+
+        giphySearchInput.addEventListener('input', () => {
+            const query = giphySearchInput.value.trim();
+            if (query.length > 0) {
+                searchGiphy(query);
+            } else {
+                giphyResults.innerHTML = '';
+            }
+        });
+
+        // Close modal when clicking on close button
+        const giphyModalClose = document.getElementById('giphyModalClose');
+        giphyModalClose.onclick = function() {
+            giphyModal.style.display = 'none';
+        };
+
+        // Close modal when clicking outside the modal content
+        window.onclick = function(event) {
+            if (event.target === giphyModal) {
+                giphyModal.style.display = 'none';
+            }
+        };
+    }
+
+    function searchGiphy(query) {
+        const giphyResults = document.getElementById('giphyResults');
+        giphyResults.innerHTML = 'Loading...';
+
+        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH}&q=${encodeURIComponent(query)}&limit=25&rating=G`)
+            .then(response => response.json())
+            .then(data => {
+                giphyResults.innerHTML = '';
+                data.data.forEach(gif => {
+                    const img = document.createElement('img');
+                    img.src = gif.images.fixed_width_small.url;
+                    img.alt = gif.title;
+                    img.addEventListener('click', () => {
+                        selectGif(gif.images.fixed_width.url);
+                    });
+                    giphyResults.appendChild(img);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching Giphy API:', error);
+                giphyResults.innerHTML = 'Error loading GIFs.';
+            });
+    }
+
+    function selectGif(gifUrl) {
+        const giphyModal = document.getElementById('giphyModal');
+        giphyModal.style.display = 'none';
+
+        // Set the selected GIF URL
+        selectedGifUrl = gifUrl;
+
+        // Show GIF preview in the comment form
+        const gifPreviewContainer = document.querySelector('.gif-preview-container');
+        gifPreviewContainer.innerHTML = `<img src="${gifUrl}" alt="Selected GIF" class="selected-gif-preview">`;
     }
 
 });
