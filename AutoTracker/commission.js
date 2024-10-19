@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectRxCommissionEl = document.getElementById('selectRxCommission');
     const intraCompanyCommissionEl = document.getElementById('intraCompanyCommission');
     const spmCommissionEl = document.getElementById('spmCommission');
-    const totalCommissionEl = document.getElementById('totalCommission');
+    const totalCommissionEl = document.getElementById('');
 
     const partnerTransferSalesCountEl = document.getElementById('partnerTransferSalesCount');
     const selectRxSalesCountEl = document.getElementById('selectRxSalesCount');
