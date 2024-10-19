@@ -56,17 +56,17 @@ document.addEventListener('firebaseInitialized', function() {
     function initializeDashboard(user) {
         if (!initializeDashboard.initialized) {
             initializeDashboard.initialized = true;
-
+    
             // Event listener for adding a chart
             addChartButton.addEventListener('click', () => {
                 addChart(user, null);
             });
-
+    
             // Event listener for clearing all charts
             clearChartsButton.addEventListener('click', () => {
                 clearAllCharts(user);
             });
-
+    
             // Event listener for saving a new preset
             savePresetButton.addEventListener('click', () => {
                 const presetName = presetNameInput.value.trim();
@@ -76,32 +76,17 @@ document.addEventListener('firebaseInitialized', function() {
                     alert('Please enter a name for the preset.');
                 }
             });
-
-            // Event listener for loading a preset
-            loadPresetButton.addEventListener('click', () => {
-                const selectedPreset = presetSelect.value;
-                if (selectedPreset) {
-                    loadPreset(user, selectedPreset);
-                } else {
-                    alert('Please select a preset to load.');
-                }
-            });
-
-            // Event listener for deleting a preset
-            deletePresetButton.addEventListener('click', () => {
-                const selectedPreset = presetSelect.value;
-                if (selectedPreset) {
-                    deletePreset(user, selectedPreset);
-                } else {
-                    alert('Please select a preset to delete.');
-                }
-            });
+    
+            // Populate action types
+            const actionTypes = ['Select Patient Management', 'Transfer', 'HRA', 'Select RX'];
+            populateActionTypes(actionTypes); // Ensure this is called to populate the dropdown
         }
-
+    
         // Load existing presets and charts
         loadPresets(user);
         loadSavedCharts(user);
     }
+    
 
     function fetchSalesData(user, teamFilterValue, callback) {
         let salesRef;
@@ -173,12 +158,16 @@ document.addEventListener('firebaseInitialized', function() {
 
     function populateActionTypes(actionTypes) {
         const actionTypeSelect = document.getElementById('actionType');
+        
         if (!actionTypeSelect) {
             console.error('Action type select element not found.');
             return;
         }
+    
+        // Clear existing options
         actionTypeSelect.innerHTML = '<option value="">Select Action Type</option>';
-
+    
+        // Populate the action types dynamically
         actionTypes.forEach(actionType => {
             const option = document.createElement('option');
             option.value = actionType;
@@ -186,36 +175,40 @@ document.addEventListener('firebaseInitialized', function() {
             actionTypeSelect.appendChild(option);
         });
     }
+    
 
     function addChart(user, chartConfig = null) {
         let timeFrame, actionType, chartType, teamFilterValue;
-
+    
         if (chartConfig) {
+            // Use provided chart configuration (from a saved preset or configuration)
             timeFrame = chartConfig.timeFrame;
             actionType = chartConfig.actionType;
             chartType = chartConfig.chartType;
             teamFilterValue = chartConfig.teamFilterValue || 'myData';
         } else {
+            // Get values from UI elements
             const timeFrameSelect = document.getElementById('timeFrame');
-            const actionTypeSelect = document.getElementById('actionType');
+            const actionTypeSelect = document.getElementById('actionType'); // Ensure this is being captured correctly
             const chartTypeSelect = document.getElementById('chartType');
             const teamFilterSelect = document.getElementById('teamFilter');
-
+    
+            // Ensure all elements are present and valid
             if (!timeFrameSelect || !actionTypeSelect || !chartTypeSelect || !teamFilterSelect) {
                 console.error('One or more filter select elements are missing.');
                 return;
             }
-
+    
             timeFrame = timeFrameSelect.value;
-            actionType = actionTypeSelect.value;
+            actionType = actionTypeSelect.value; // Capture the selected action type
             chartType = chartTypeSelect.value;
             teamFilterValue = teamFilterSelect.value;
-
+    
             if (!timeFrame || !actionType || !chartType || !teamFilterValue) {
                 alert('Please select all chart options.');
                 return;
             }
-
+    
             saveChartConfig({ timeFrame, actionType, chartType, teamFilterValue });
         }
 
