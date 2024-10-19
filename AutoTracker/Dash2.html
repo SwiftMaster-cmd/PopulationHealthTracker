@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta Tags and Title -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Dashboard</title>
@@ -17,20 +18,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
     
+
     <!-- Chart.js Date Adapter -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
-    <!-- Custom JS Files -->
+    <!-- Your JavaScript Files -->
     <script src="firebase-init.js" defer></script>
     <script src="settings.js" defer></script>
-    <script src="notifications.js" defer></script>
-    <script src="privateChat.js" defer></script>
+    <script src="notifications.js"></script>
+    <script src="privateChat.js"></script>
+
     <script src="display-sales.js" defer></script>
     <script src="auth.js" defer></script>
     <script src="dashboard.js" defer></script>
     <script src="leaderboard.js" defer></script>
 
     <!-- Google Analytics -->
+    <!-- (Your existing Google Analytics code) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -40,84 +44,217 @@
     </script>
 </head>
 <body>
-    <!-- Header Section -->
-    <header id="mainHeader" class="header">
-        <button class="toggle-section-button" data-target="leaderboardSection">Leaderboard</button>
-        <button class="toggle-section-button" data-target="privateChatSection">Chat</button>
-        <button class="toggle-section-button" data-target="liveActivitiesSection">Live Activities</button>
-        <button class="toggle-section-button" data-target="chartsContainer">Dashboard</button>
-        <button class="toggle-section-button" data-target="salesDataSection">Sales Data</button>
-        <button class="toggle-section-button" data-target="notificationsSection">Notifications</button>
-        <button class="toggle-section-button" data-target="settingsSection">Settings</button>
-    </header>
+<!-- header.html -->
+<header id="mainHeader">
+    <button class="toggle-section-button" data-target="leaderboardSection">Leaderboard</button>
+    <button class="toggle-section-button" data-target="privateChatSection">Chat</button>
+    <button class="toggle-section-button" data-target="liveActivitiesSection">Live Activities</button>
+    <button class="toggle-section-button" data-target="chartsContainer">Dashboard</button>
+    <button class="toggle-section-button" data-target="salesDataSection">Sales Data</button>
+    <button class="toggle-section-button" data-target="notificationsSection">Notifications</button>
+    <button class="toggle-section-button" data-target="settingsSection">Settings</button>
+</header>
 
-    <!-- Main Content -->
-    <main class="content">
-        <!-- Leaderboard Section -->
-        <section class="section leaderboard-section" id="leaderboardSection">
-            <h2>Leaderboard</h2>
-            <div class="leaderboard-filters">
-                <label for="saleTypeFilter">Sale Type:</label>
-                <select id="saleTypeFilter"></select>
+    <div class="leaderboard-section">
+        <h2>Leaderboard</h2>
+        <div class="leaderboard-filters">
+            <label for="saleTypeFilter">Sale Type:</label>
+            <select id="saleTypeFilter">
+                <!-- Options will be populated dynamically -->
+            </select>
 
-                <label for="timeFrameFilter">Time Frame:</label>
-                <select id="timeFrameFilter"></select>
+            <label for="timeFrameFilter">Time Frame:</label>
+            <select id="timeFrameFilter">
+                <!-- Options will be populated dynamically -->
+            </select>
+        </div>
+        <div id="leaderboardContainer">
+            <!-- Leaderboard table will be rendered here -->
+        </div>
+    </div>
+<!-- Toggle Chat List Button -->
+<button id="toggleChatListButton">Hide Chats</button>
+
+<!-- Private Chat Section -->
+<div class="private-chat-section">
+    <!-- Existing chat sidebar and chat main content -->
+</div>
+
+<!-- Private Chat Section -->
+<div class="private-chat-section">
+    <div class="chat-sidebar">
+        <button id="newChatButton">New Chat</button>
+        <ul id="chatList">
+            <!-- List of chats will be rendered here -->
+        </ul>
+    </div>
+    <div class="chat-main">
+        <h2 id="chatHeader">Group Chat</h2>
+        <div id="chatContainer">
+            <!-- Messages will be displayed here -->
+        </div>
+
+        <!-- GIF Search Container -->
+        <div id="gifSearchContainer" style="display: none;">
+            <input type="text" id="gifSearchInput" placeholder="Search GIFs...">
+            <div id="gifResults">
+                <!-- GIF search results will be displayed here -->
             </div>
-            <div id="leaderboardContainer"></div>
-        </section>
+        </div>
 
-        <!-- Private Chat Section -->
-        <section class="section private-chat-section" id="privateChatSection">
-            <div class="chat-sidebar">
-                <button id="newChatButton">New Chat</button>
-                <ul id="chatList"></ul>
+        <form id="messageForm" style="display: none;">
+            <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</div>
+
+<!-- User List Container for New Chat -->
+<div id="userListContainer" style="display: none;">
+    <input type="text" id="userSearchInput" placeholder="Search users...">
+    <ul id="userList">
+        <!-- List of users will be rendered here -->
+    </ul>
+</div>
+
+
+      <!-- Live Activities Section -->
+      <div class="live-activities-section">
+        <h2>Live Activities</h2>
+        <div id="liveActivitiesContainer">
+            <!-- Live activities will be rendered here -->
+        </div>
+    </div>
+
+<!-- Include the leaderboard.js script -->
+
+
+  <div class="container">
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="filter-row">
+                <label for="timeFrame">Time Frame:</label>
+                <select id="timeFrame">
+                    <option value="today">Today</option>
+                    <option value="currentWeek">Current Week</option>
+                    <option value="previousWeek">Previous Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="90days">Last 90 Days</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="yearToDate">Year to Date</option>
+                    <option value="allTime">All Time</option>
+                </select>
+    
+                <label for="teamFilter">Team Filter:</label>
+                <select id="teamFilter">
+                    <option value="myData">My Data</option>
+                    <option value="allData">All Data</option>
+                </select>
             </div>
-            <div class="chat-main">
-                <h2 id="chatHeader">Group Chat</h2>
-                <div id="chatContainer"></div>
-                <form id="messageForm">
-                    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required>
-                    <button type="submit">Send</button>
-                </form>
+    
+            <div class="filter-row">
+                <label for="actionType">Action Type:</label>
+                <select id="actionType">
+                    <!-- Options will be populated dynamically -->
+                </select>
+    
+                <label for="chartType">Chart Type:</label>
+                <select id="chartType">
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
             </div>
-        </section>
+    
+            <div class="filter-row">
+                <button id="addChartButton">Add Chart</button>
+                <button id="clearChartsButton">Clear All Charts</button>
 
-        <!-- Live Activities Section -->
-        <section class="section live-activities-section" id="liveActivitiesSection">
-            <h2>Live Activities</h2>
-            <div id="liveActivitiesContainer"></div>
-        </section>
+            </div>
+    
+            <div class="preset-controls">
+                <input type="text" id="presetName" placeholder="Enter Preset Name">
+    
+                <button id="savePresetButton">Save Preset</button>
+    
+                <select id="presetSelect">
+                    <option value="">Select a Preset</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+    
+                <button id="loadPresetButton">Load Preset</button>
+                <button id="deletePresetButton">Delete Preset</button>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+        </div>
+        <button id="toggleChartControlsButton">Show Chart Controls</button>
 
-        <!-- Charts Section -->
-        <section class="section charts-container" id="chartsContainer"></section>
+      </div>
+        <!-- Container for charts -->
+        <div class="charts-container">
+            <!-- Charts will be dynamically added here -->
+        </div>
 
         <!-- Sales Data Section -->
-        <section class="section sales-data-section" id="salesDataSection">
+        <div class="sales-data-section">
+            <!-- Show/Hide Button -->
             <button id="toggleTableButton">Show Sales Data</button>
-            <div id="salesFilters" class="sales-filters" style="display: none;">
+
+            <!-- Sales Data Filters -->
+            <div class="sales-filters" id="salesFilters" style="display: none;">
                 <label for="salesTimeFrame">Time Frame:</label>
-                <select id="salesTimeFrame"></select>
+                <select id="salesTimeFrame">
+                    <option value="allTime">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="currentWeek">Current Week</option>
+                    <option value="previousWeek">Previous Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="90days">Last 90 Days</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="yearToDate">Year to Date</option>
+                </select>
+
                 <label for="searchInput">Search:</label>
                 <input type="text" id="searchInput" placeholder="Search...">
             </div>
-            <div id="salesTableContainer" style="display: none;"></div>
+
+            <!-- Sales Data Table -->
+            <div class="grid-container" id="salesTableContainer" style="display: none;">
+                <!-- Sales data table will be displayed here -->
+            </div>
+
+            <!-- Show More Button -->
             <button id="showMoreButton" style="display: none;">Show More</button>
-        </section>
+
+
+        </div>
+
+        
 
         <!-- Notifications Section -->
-        <section class="section notifications-section" id="notificationsSection">
-            <h2>Notifications</h2>
-            <div id="notificationsContainer"></div>
-            <button id="clearNotificationsButton">Clear Notifications</button>
-        </section>
+<div class="notifications-section">
+    <h2>Notifications</h2>
+    <div id="notificationsContainer">
+        <!-- Notifications will be rendered here -->
+    </div>
+    <button id="clearNotificationsButton">Clear Notifications</button>
+</div>
+
+<!-- Include the notifications.js script -->
 
         <!-- Settings Section -->
-        <section class="section settings-section" id="settingsSection">
-            <h2>Settings</h2>
-            <label for="userNameInput">Your Name:</label>
-            <input type="text" id="userNameInput" placeholder="Enter your name">
-            <button id="saveNameButton">Save Name</button>
-        </section>
-    </main>
+<div class="settings-section">
+    <h2>Settings</h2>
+    <label for="userNameInput">Your Name:</label>
+    <input type="text" id="userNameInput" placeholder="Enter your name">
+    <button id="saveNameButton">Save Name</button>
+</div>
+
+    </div>
 </body>
 </html>
