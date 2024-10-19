@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
         selectRxCommissionEl.textContent = `SelectRx Commission: $${commissionData.selectRx.toFixed(2)}`;
         intraCompanyCommissionEl.textContent = `IntraCompany Commission: $${commissionData.intraCompany.toFixed(2)}`;
         spmCommissionEl.textContent = `SPM Commission: $${commissionData.spm.toFixed(2)}`;
-        totalCommissionEl.textContent = `${commissionData.totalCommission.toFixed(2)}`;
+        totalCommissionEl.textContent = `$${commissionData.totalCommission.toFixed(2)}`;
 
         // Also display sales counts
         partnerTransferSalesCountEl.textContent = `Partner Transfer Sales: ${commissionData.salesCounts.partnerTransfer}`;
