@@ -1,0 +1,113 @@
+/* charts.css */
+
+/* Root Variables */
+:root {
+    --background-color: #121212; /* Dark background */
+    --card-background-color: #1e1e1e; /* Card background */
+    --primary-color: #2196F3; /* Blue accent color */
+    --accent-color: #4CAF50; /* Green accent color */
+    --text-color: #FFFFFF; /* White text */
+    --muted-text-color: #B0B0B0; /* Muted text color */
+    --border-color: #2c2c2c; /* Border color */
+    --radius: 10px;
+    --transition-duration: 0.3s;
+    --font-family: 'Roboto', sans-serif;
+    --font-size-base: 16px;
+    --font-size-large: 20px;
+    --font-size-small: 14px;
+}
+
+/* Apply box-sizing to all elements */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Charts Container */
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Distribute space between charts */
+    gap: 20px; /* Space between charts */
+    width: 100%; /* Full width */
+    max-width: 100%;
+    margin: 0 auto; /* Center the container */
+    padding: 0 20px; /* Optional horizontal padding */
+    margin-bottom: 40px;
+}
+
+/* Chart Wrapper */
+.chart-wrapper {
+    position: relative;
+    background-color: var(--card-background-color);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: calc(50% - 20px); /* Two charts per row */
+}
+
+/* Remove Chart Button */
+.remove-chart-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    color: #FF0000; /* Red color for the "x" */
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.remove-chart-button:hover {
+    color: #CC0000; /* Darker red on hover */
+}
+
+/* Total Count Display */
+.total-count-display {
+    font-size: var(--font-size-large);
+    color: var(--text-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Chart Content */
+.chart-content {
+    position: relative;
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
+}
+
+.chart-content canvas {
+    width: 100%;
+    height: 400px;
+}
+
+/* Scrollbar Styles */
+.chart-content::-webkit-scrollbar {
+    height: 10px;
+}
+
+.chart-content::-webkit-scrollbar-track {
+    background: var(--card-background-color);
+}
+
+.chart-content::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: var(--radius);
+}
+
+.chart-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chart-wrapper {
+        width: 100%; /* Charts take full width on small screens */
+    }
+}
+.parent-container {
+    width: 100%;
+}
