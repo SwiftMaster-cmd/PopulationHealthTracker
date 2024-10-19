@@ -498,3 +498,13 @@ button:hover {
 .activity-buttons button {
     margin-right: 10px;
 }
+
+/* Total Commission Styles */
+.total-commission {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: right;
+    gap: 10px;
+    flex: 1; /* Allows the container to take available space */
+}
