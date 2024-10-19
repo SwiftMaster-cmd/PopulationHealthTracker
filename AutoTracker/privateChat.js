@@ -310,6 +310,139 @@ document.addEventListener('firebaseInitialized', function () {
 
         // Handle GIF search
         initializeGifSearch();
+
+        // Load live activities into group chat
+        loadLiveActivities();
+    }
+
+    // Function to load live activities into group chat
+    function loadLiveActivities() {
+        const salesOutcomesRef = database.ref('salesOutcomes');
+
+        // Fetch usersData if not already available
+        if (Object.keys(usersData).length === 0) {
+            const usersRef = database.ref('Users');
+            usersRef.once('value').then(usersSnapshot => {
+                usersData = usersSnapshot.val() || {};
+                fetchAndDisplaySales();
+            }).catch(error => {
+                console.error('Error fetching users data:', error);
+            });
+        } else {
+            fetchAndDisplaySales();
+        }
+
+        function fetchAndDisplaySales() {
+            salesOutcomesRef.once('value').then(snapshot => {
+                const salesData = snapshot.val();
+                const salesList = [];
+
+                for (const userId in salesData) {
+                    const userSalesData = salesData[userId];
+                    const userName = usersData[userId] ? usersData[userId].name : 'No name';
+
+                    for (const saleId in userSalesData) {
+                        const sale = userSalesData[saleId];
+                        const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                        const saleTime = new Date(sale.outcomeTime).getTime();
+
+                        if (saleType) {
+                            salesList.push({
+                                userId: userId,
+                                userName: userName,
+                                content: {
+                                    saleId: saleId,
+                                    saleType: saleType,
+                                    saleTime: saleTime,
+                                    saleData: sale
+                                },
+                                type: 'liveActivity',
+                                timestamp: saleTime,
+                                likes: {},
+                                comments: {}
+                            });
+                        }
+                    }
+                }
+
+                // Sort sales by timestamp
+                salesList.sort((a, b) => a.timestamp - b.timestamp);
+
+                // Display all past sales as messages in the chat
+                salesList.forEach(sale => {
+                    const messageId = `sale-${sale.content.saleId}`;
+                    displayMessage(sale, messageId);
+                });
+            }).catch(error => {
+                console.error('Error loading past live activities:', error);
+            });
+
+            // Listen for new sales (live activities)
+            salesOutcomesRef.on('child_added', snapshot => {
+                const userId = snapshot.key;
+                const userSalesData = snapshot.val();
+                const userName = usersData[userId] ? usersData[userId].name : 'No name';
+
+                for (const saleId in userSalesData) {
+                    const sale = userSalesData[saleId];
+                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                    const saleTime = new Date(sale.outcomeTime).getTime();
+
+                    if (saleType) {
+                        const saleMessage = {
+                            userId: userId,
+                            userName: userName,
+                            content: {
+                                saleId: saleId,
+                                saleType: saleType,
+                                saleTime: saleTime,
+                                saleData: sale
+                            },
+                            type: 'liveActivity',
+                            timestamp: saleTime,
+                            likes: {},
+                            comments: {}
+                        };
+
+                        const messageId = `sale-${saleId}`;
+                        displayMessage(saleMessage, messageId);
+                    }
+                }
+            });
+
+            // Listen for updates to sales
+            salesOutcomesRef.on('child_changed', snapshot => {
+                const userId = snapshot.key;
+                const userSalesData = snapshot.val();
+                const userName = usersData[userId] ? usersData[userId].name : 'No name';
+
+                for (const saleId in userSalesData) {
+                    const sale = userSalesData[saleId];
+                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                    const saleTime = new Date(sale.outcomeTime).getTime();
+
+                    if (saleType) {
+                        const saleMessage = {
+                            userId: userId,
+                            userName: userName,
+                            content: {
+                                saleId: saleId,
+                                saleType: saleType,
+                                saleTime: saleTime,
+                                saleData: sale
+                            },
+                            type: 'liveActivity',
+                            timestamp: saleTime,
+                            likes: {},
+                            comments: {}
+                        };
+
+                        const messageId = `sale-${saleId}`;
+                        displayMessage(saleMessage, messageId);
+                    }
+                }
+            });
+        }
     }
 
     function sendMessage(content, type) {
@@ -333,8 +466,10 @@ document.addEventListener('firebaseInitialized', function () {
             userId: currentUserId,
             userName: currentUserName || 'Anonymous',
             content: content,
-            type: type, // 'text' or 'gif'
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+            type: type, // 'text', 'gif', or 'liveActivity'
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            likes: {},
+            comments: {}
         };
 
         const messagesRef = database.ref('groupChatMessages');
@@ -344,13 +479,24 @@ document.addEventListener('firebaseInitialized', function () {
         });
     }
 
-    function displayMessage(message) {
+    function displayMessage(message, messageId = null) {
         const chatContainer = document.getElementById('chatContainer');
+
+        // For live activities, check if message already exists
+        if (message.type === 'liveActivity' && messageId) {
+            if (document.getElementById(`message-${messageId}`)) {
+                return;
+            }
+        }
 
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('chat-message');
 
-        const time = new Date(message.timestamp).toLocaleTimeString();
+        if (messageId) {
+            messageDiv.id = `message-${messageId}`;
+        }
+
+        const time = new Date(message.timestamp).toLocaleString();
         let senderName = '';
 
         if (selectedChatId === 'groupChat') {
@@ -369,10 +515,41 @@ document.addEventListener('firebaseInitialized', function () {
                 <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
                 <img src="${message.content}" alt="GIF" class="chat-gif">
             `;
+        } else if (message.type === 'liveActivity') {
+            const saleType = message.content.saleType;
+            const saleTime = new Date(message.content.saleTime).toLocaleString();
+            messageDiv.innerHTML = `
+                <p><strong>${message.userName}</strong> made a <strong>${saleType}</strong> sale on ${saleTime}</p>
+            `;
         }
 
         chatContainer.appendChild(messageDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+    }
+
+    function getSaleType(action, notes) {
+        const normalizedAction = action.toLowerCase();
+        const normalizedNotes = notes.toLowerCase();
+
+        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
+            return 'HRA';
+        } else if (
+            /(vbc|transfer|ndr|dental|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
+        ) {
+            return 'Transfer';
+        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
+            return 'Select Patient Management';
+        } else if (
+            normalizedAction.includes('srx: enrolled - rx history received') ||
+            normalizedAction.includes('srx: enrolled - rx history not available') ||
+            /select rx/i.test(normalizedAction) ||
+            /select rx/i.test(normalizedNotes)
+        ) {
+            return 'Select RX';
+        } else {
+            // Exclude other options
+            return null;
+        }
     }
 
     function initializeGifSearch() {
