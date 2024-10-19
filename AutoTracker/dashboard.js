@@ -378,50 +378,58 @@ document.addEventListener('firebaseInitialized', function() {
     }
 
     // Updated function to prepare chart data, keeping all data points but skipping some date labels
-    function prepareChartData(filteredData, timeFrame) {
-        const dateCounts = {};
+// Updated function to prepare chart data, keeping all data points but skipping some date labels
+function prepareChartData(filteredData, timeFrame) {
+    const dateCounts = {};
 
-        filteredData.forEach(sale => {
-            const date = new Date(sale.outcomeTime);
+    // Group data by date or hour depending on the timeframe
+    filteredData.forEach(sale => {
+        const date = new Date(sale.outcomeTime);
 
-            let dateKey;
+        let dateKey;
 
-            if (timeFrame === 'today') {
-                const hours = date.getHours();
-                dateKey = `${hours}:00`;
-            } else {
-                const options = { month: 'short', day: 'numeric' };
-                dateKey = date.toLocaleDateString(undefined, options);
-            }
-
-            dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
-        });
-
-        let sortedKeys = Object.keys(dateCounts).sort((a, b) => {
-            if (timeFrame === 'today') {
-                return parseInt(a) - parseInt(b);
-            } else {
-                const dateA = new Date(a);
-                const dateB = new Date(b);
-                return dateA - dateB;
-            }
-        });
-
-        const MAX_LABELS = 15;
-
-        if (sortedKeys.length > MAX_LABELS) {
-            const step = Math.ceil(sortedKeys.length / MAX_LABELS);
-            sortedKeys = sortedKeys.filter((_, index) => index % step === 0);
-            if (!sortedKeys.includes(sortedKeys[sortedKeys.length - 1])) {
-                sortedKeys.push(sortedKeys[sortedKeys.length - 1]);
-            }
+        if (timeFrame === 'today') {
+            // Format the date to include the hour
+            const hours = date.getHours();
+            dateKey = `${hours}:00`;
+        } else {
+            // Format the date to exclude the year for other time frames
+            const options = { month: 'short', day: 'numeric' };
+            dateKey = date.toLocaleDateString(undefined, options);
         }
 
-        return {
-            labels: sortedKeys,
-            data: sortedKeys.map(key => dateCounts[key])
-        };
-    }
+        // Count the sales for each date or hour
+        dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
+    });
+
+    // Sort the date keys
+    const sortedKeys = Object.keys(dateCounts).sort((a, b) => {
+        if (timeFrame === 'today') {
+            return parseInt(a) - parseInt(b);
+        } else {
+            const dateA = new Date(a);
+            const dateB = new Date(b);
+            return dateA - dateB;
+        }
+    });
+
+    const MAX_LABELS = 15;  // Adjust the number of visible labels
+
+    // Show all data points but limit the number of labels
+    const displayedLabels = sortedKeys.map((key, index) => {
+        // Show only selected labels to avoid overcrowding
+        if (sortedKeys.length > MAX_LABELS && index % Math.ceil(sortedKeys.length / MAX_LABELS) !== 0) {
+            return '';  // Skip some date labels
+        }
+        return key;
+    });
+
+    return {
+        labels: displayedLabels,  // Limited number of labels
+        data: sortedKeys.map(key => dateCounts[key])  // All data points
+    };
+}
+
 
     function renderChart(canvas, chartType, chartData, actionType, timeFrame, teamFilterValue) {
         const dataPointCount = chartData.labels.length;
