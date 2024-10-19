@@ -16,33 +16,6 @@ document.addEventListener('firebaseInitialized', function () {
     let lastMessageTimestamp = null;
     let isLoadingMore = false;
 
-    // Toggle Chat List Functionality
-    const toggleChatListButton = document.getElementById('toggleChatListButton');
-    const chatSidebar = document.querySelector('.chat-sidebar');
-    const chatMain = document.querySelector('.chat-main');
-    const privateChatSection = document.querySelector('.private-chat-section');
-
-    toggleChatListButton.addEventListener('click', () => {
-        if (chatSidebar.classList.contains('hidden')) {
-            // Show the chat list
-            chatSidebar.classList.remove('hidden');
-            privateChatSection.classList.remove('sidebar-hidden');
-            toggleChatListButton.textContent = 'Hide Chats';
-        } else {
-            // Hide the chat list
-            chatSidebar.classList.add('hidden');
-            privateChatSection.classList.add('sidebar-hidden');
-            toggleChatListButton.textContent = 'Show Chats';
-        }
-    });
-
-    // Adjust initial state for mobile view
-    if (window.innerWidth <= 768) {
-        chatSidebar.classList.add('hidden');
-        privateChatSection.classList.add('sidebar-hidden');
-        toggleChatListButton.textContent = 'Show Chats';
-    }
-
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUserId = user.uid;
@@ -368,8 +341,10 @@ document.addEventListener('firebaseInitialized', function () {
                 chatContainer.dataset.initialScroll = 'true';
             } else {
                 // Maintain scroll position when loading older messages
-                const firstNewMessage = chatContainer.firstChild;
-                firstNewMessage.scrollIntoView();
+                const firstNewMessage = chatContainer.children[messages.length];
+                if (firstNewMessage) {
+                    firstNewMessage.scrollIntoView();
+                }
             }
         }).catch(error => {
             console.error('Error loading messages:', error);
@@ -392,7 +367,9 @@ document.addEventListener('firebaseInitialized', function () {
             senderName: currentUserName || 'Anonymous',
             content: content,
             type: type, // 'text' or 'gif'
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            likes: {},
+            comments: {}
         };
 
         const messagesRef = database.ref(`privateMessages/${selectedChatId}`);
@@ -423,19 +400,14 @@ document.addEventListener('firebaseInitialized', function () {
     function displayMessage(message) {
         const chatContainer = document.getElementById('chatContainer');
 
-        // For live activities, check if message already exists
-        if (message.type === 'liveActivity' && message.saleId) {
-            if (document.getElementById(`message-${message.saleId}`)) {
-                return;
-            }
+        // Check if message already exists
+        if (document.getElementById(`message-${message.key}`)) {
+            return;
         }
 
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('chat-message');
-
-        if (message.type === 'liveActivity' && message.saleId) {
-            messageDiv.id = `message-${message.saleId}`;
-        }
+        messageDiv.id = `message-${message.key}`;
 
         const time = new Date(message.timestamp).toLocaleString();
         let senderName = '';
@@ -464,7 +436,124 @@ document.addEventListener('firebaseInitialized', function () {
             `;
         }
 
+        // Likes and Comments Functionality
+        // Create action buttons container
+        const actionsDiv = document.createElement('div');
+        actionsDiv.classList.add('message-actions');
+
+        // Like Button
+        const likeButton = document.createElement('button');
+        const likesCount = message.likes ? Object.keys(message.likes).length : 0;
+        const userLiked = message.likes && message.likes[currentUserId];
+
+        likeButton.textContent = userLiked ? `Unlike (${likesCount})` : `Like (${likesCount})`;
+        likeButton.addEventListener('click', () => {
+            toggleLike(message.key, userLiked);
+        });
+
+        actionsDiv.appendChild(likeButton);
+
+        // Comment Button
+        const commentToggleButton = document.createElement('button');
+        commentToggleButton.textContent = 'Reply';
+        commentToggleButton.addEventListener('click', () => {
+            commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        actionsDiv.appendChild(commentToggleButton);
+
+        messageDiv.appendChild(actionsDiv);
+
+        // Comments Section
+        const commentsSection = document.createElement('div');
+        commentsSection.classList.add('comments-section');
+
+        // Display existing comments
+        const commentsList = document.createElement('ul');
+        commentsList.classList.add('comments-list');
+
+        const comments = message.comments || {};
+        const commentsCount = Object.keys(comments).length;
+
+        if (commentsCount > 0) {
+            for (const commentId in comments) {
+                const comment = comments[commentId];
+                const commentItem = document.createElement('li');
+                const commentTime = new Date(comment.timestamp).toLocaleString();
+                commentItem.innerHTML = `<strong>${comment.userName}</strong> (${commentTime}): ${comment.commentText}`;
+                commentsList.appendChild(commentItem);
+            }
+        }
+
+        commentsSection.appendChild(commentsList);
+
+        // Add comment form
+        const commentForm = document.createElement('form');
+        commentForm.classList.add('comment-form');
+        commentForm.style.display = 'none'; // Hide comment form initially
+
+        commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                addComment(message.key, commentText);
+                commentInput.value = '';
+            }
+        });
+
+        const commentInput = document.createElement('input');
+        commentInput.type = 'text';
+        commentInput.placeholder = 'Add a reply...';
+        commentInput.required = true;
+
+        const commentSubmit = document.createElement('button');
+        commentSubmit.type = 'submit';
+        commentSubmit.textContent = 'Post';
+
+        commentForm.appendChild(commentInput);
+        commentForm.appendChild(commentSubmit);
+
+        commentsSection.appendChild(commentForm);
+
+        messageDiv.appendChild(commentsSection);
+
         chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
+    }
+
+    function toggleLike(messageId, userLiked) {
+        const likeRef = selectedChatId === 'groupChat'
+            ? database.ref(`groupChatMessages/${messageId}/likes/${currentUserId}`)
+            : database.ref(`privateMessages/${selectedChatId}/${messageId}/likes/${currentUserId}`);
+
+        if (userLiked) {
+            // User wants to unlike
+            likeRef.remove().catch(error => {
+                console.error('Error removing like:', error);
+            });
+        } else {
+            // User wants to like
+            likeRef.set(true).catch(error => {
+                console.error('Error adding like:', error);
+            });
+        }
+    }
+
+    function addComment(messageId, commentText) {
+        const commentData = {
+            userId: currentUserId,
+            userName: currentUserName || 'Anonymous',
+            commentText: commentText,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        const commentsRef = selectedChatId === 'groupChat'
+            ? database.ref(`groupChatMessages/${messageId}/comments`)
+            : database.ref(`privateMessages/${selectedChatId}/${messageId}/comments`);
+
+        commentsRef.push(commentData).catch(error => {
+            console.error('Error adding comment:', error);
+        });
     }
 
     function initializeGifSearch() {
@@ -507,7 +596,7 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function searchGifs(query) {
-        const apiKey = 'WXv8lPQ9faO55i3Kd0jPTdbRm0XvuQUH'; // Replace with your Giphy API key
+        const apiKey = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=10&rating=PG`;
 
         fetch(url)
