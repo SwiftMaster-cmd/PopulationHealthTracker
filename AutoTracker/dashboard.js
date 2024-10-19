@@ -104,16 +104,16 @@ document.addEventListener('firebaseInitialized', function() {
 
     function fetchSalesData(user, teamFilterValue, callback) {
         let salesRef;
-
+    
         if (teamFilterValue === 'allData') {
             salesRef = database.ref('salesOutcomes');
         } else {
             salesRef = database.ref('salesOutcomes/' + user.uid);
         }
-
-        salesRef.once('value').then(snapshot => {
+    
+        salesRef.on('value', snapshot => {
             let salesData = [];
-
+    
             if (teamFilterValue === 'allData') {
                 const allUsersData = snapshot.val();
                 if (allUsersData) {
@@ -127,16 +127,17 @@ document.addEventListener('firebaseInitialized', function() {
                 const userData = snapshot.val();
                 salesData = userData ? Object.values(userData) : [];
             }
-
+    
             if (callback) {
                 callback(salesData);
             }
-
-        }).catch(error => {
-            console.error('Error fetching sales data:', error);
+    
+        }, error => {
+            console.error('Error fetching sales data in real-time:', error);
             if (callback) callback([]);
         });
     }
+    
 
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
@@ -181,96 +182,80 @@ document.addEventListener('firebaseInitialized', function() {
 
     function addChart(user, chartConfig = null, callback = null) {
         let timeFrame, actionType, chartType, teamFilterValue;
-
+    
         if (chartConfig) {
-            // Use provided chart configuration (from saved settings)
             timeFrame = chartConfig.timeFrame;
             actionType = chartConfig.actionType;
             chartType = chartConfig.chartType;
-            teamFilterValue = chartConfig.teamFilterValue || 'myData'; // Default to 'myData' if not specified
+            teamFilterValue = chartConfig.teamFilterValue || 'myData'; 
         } else {
-            // Get values from UI
             const timeFrameSelect = document.getElementById('timeFrame');
             const actionTypeSelect = document.getElementById('actionType');
             const chartTypeSelect = document.getElementById('chartType');
             const teamFilterSelect = document.getElementById('teamFilter');
-
-            if (!timeFrameSelect || !actionTypeSelect || !chartTypeSelect || !teamFilterSelect) {
-                console.error('One or more filter select elements are missing.');
-                if (callback) callback();
-                return;
-            }
-
+    
             timeFrame = timeFrameSelect.value;
             actionType = actionTypeSelect.value;
             chartType = chartTypeSelect.value;
             teamFilterValue = teamFilterSelect.value;
-
-            // Save the chart configuration
+    
             saveChartConfig({ timeFrame, actionType, chartType, teamFilterValue });
         }
-
-        // Fetch sales data based on teamFilterValue
+    
         fetchSalesData(user, teamFilterValue, salesData => {
             proceedWithChartCreation(salesData, teamFilterValue);
-            if (callback) callback(); // Invoke the callback if provided
+    
+            if (callback) callback();
         });
-
+    
         function proceedWithChartCreation(data, teamFilterValue) {
-            // Filter data based on time frame and action type
             const filteredData = filterSalesData(data, timeFrame, actionType);
-
-            // Prepare data for the chart
             const chartData = prepareChartData(filteredData, timeFrame);
-
-            // Calculate total count
             const totalCount = filteredData.length;
-
-            // Create chart container
+    
             const chartContainer = document.createElement('div');
             chartContainer.classList.add('chart-wrapper');
-
-            // Add a remove button
+    
             const removeButton = document.createElement('button');
             removeButton.innerHTML = '&times;';
             removeButton.classList.add('remove-chart-button');
             removeButton.addEventListener('click', () => {
                 chartContainer.remove();
-                saveChartsToFirebase(); // Update saved charts in Firebase
+                saveChartsToFirebase();
             });
             chartContainer.appendChild(removeButton);
-
-            // Add total count display
+    
             const totalCountDisplay = document.createElement('div');
             totalCountDisplay.classList.add('total-count-display');
             totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: ${totalCount}`;
             chartContainer.appendChild(totalCountDisplay);
-
-            // Create chart content container
+    
             const chartContent = document.createElement('div');
             chartContent.classList.add('chart-content');
-
-            // Create canvas for Chart.js
+    
             const canvas = document.createElement('canvas');
             chartContent.appendChild(canvas);
-
             chartContainer.appendChild(chartContent);
-
-            // Add chart container to the page
+    
             const chartsContainer = document.querySelector('.charts-container');
-            if (!chartsContainer) {
-                console.error('Charts container element not found.');
-                return;
-            }
             chartsContainer.appendChild(chartContainer);
-
-            // Render the chart
+    
             const chartInstance = renderChart(canvas, chartType, chartData, actionType, timeFrame, teamFilterValue);
-
-            // Save charts to Firebase
+    
             saveChartsToFirebase();
+    
+            // Listen for real-time updates to refresh the chart data
+            fetchSalesData(user, teamFilterValue, updatedSalesData => {
+                const updatedFilteredData = filterSalesData(updatedSalesData, timeFrame, actionType);
+                const updatedChartData = prepareChartData(updatedFilteredData, timeFrame);
+    
+                chartInstance.data.labels = updatedChartData.labels;
+                chartInstance.data.datasets[0].data = updatedChartData.data;
+                chartInstance.update(); // Update the chart in real-time
+            });
         }
     }
+    
 
     function filterSalesData(salesData, timeFrame, actionType) {
         const now = new Date();
