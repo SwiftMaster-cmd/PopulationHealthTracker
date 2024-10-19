@@ -16,59 +16,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const intraCompanySalesCountEl = document.getElementById('intraCompanySalesCount');
     const spmSalesCountEl = document.getElementById('spmSalesCount');
 
+    let agentLevel = 'Level2'; // Default agent level
+    let salesData = []; // To store sales data
+
     auth.onAuthStateChanged(user => {
         if (user) {
-            loadAgentLevel(user).then(agentLevel => {
-                // Fetch sales data for the current month
-                fetchSalesData(user).then(salesData => {
-                    // Filter sales data to current month
-                    const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
-                    // Calculate commissions
-                    const commissionData = calculateCommission(currentMonthSales, agentLevel);
-                    // Display commissions
-                    displayCommission(commissionData);
-                }).catch(error => {
-                    console.error('Error fetching sales data:', error);
-                });
-            }).catch(error => {
-                console.error('Error loading agent level:', error);
-            });
+            listenForAgentLevel(user);
+            listenForSalesData(user);
         } else {
             console.error('User not authenticated.');
         }
     });
 
-    function loadAgentLevel(user) {
-        return new Promise((resolve, reject) => {
-            const userRef = database.ref('Users/' + user.uid);
+    function listenForAgentLevel(user) {
+        const userRef = database.ref('Users/' + user.uid + '/agentLevel');
 
-            userRef.once('value').then(snapshot => {
-                const userData = snapshot.val();
-                if (userData && userData.agentLevel) {
-                    resolve(userData.agentLevel);
-                } else {
-                    resolve('Level2'); // Default to Level2 if not set
-                }
-            }).catch(error => {
-                reject(error);
-            });
+        userRef.on('value', snapshot => {
+            const newAgentLevel = snapshot.val() || 'Level2'; // Default to Level2 if not set
+            if (agentLevel !== newAgentLevel) {
+                agentLevel = newAgentLevel;
+                // Recalculate and display commissions
+                const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
+                const commissionData = calculateCommission(currentMonthSales, agentLevel);
+                displayCommission(commissionData);
+            }
+        }, error => {
+            console.error('Error loading agent level:', error);
         });
     }
 
-    function fetchSalesData(user) {
-        return new Promise((resolve, reject) => {
-            const salesRef = database.ref('salesOutcomes/' + user.uid);
+    function listenForSalesData(user) {
+        const salesRef = database.ref('salesOutcomes/' + user.uid);
 
-            salesRef.once('value', snapshot => {
-                let salesData = [];
-                const salesObj = snapshot.val() || {};
-                for (const saleId in salesObj) {
-                    salesData.push({ saleId: saleId, ...salesObj[saleId] });
-                }
-                resolve(salesData);
-            }, error => {
-                reject(error);
-            });
+        salesRef.on('value', snapshot => {
+            salesData = [];
+            const salesObj = snapshot.val() || {};
+            for (const saleId in salesObj) {
+                salesData.push({ saleId: saleId, ...salesObj[saleId] });
+            }
+            // Filter sales data to current month
+            const currentMonthSales = filterSalesDataToCurrentMonth(salesData);
+            // Calculate commissions
+            const commissionData = calculateCommission(currentMonthSales, agentLevel);
+            // Display commissions
+            displayCommission(commissionData);
+        }, error => {
+            console.error('Error fetching sales data:', error);
         });
     }
 
@@ -285,5 +278,4 @@ document.addEventListener('DOMContentLoaded', function() {
         spmSalesCountEl.textContent = `SPM Sales: ${commissionData.salesCounts.spm}`;
     }
 
-    // No need for fetchSalesData function to be defined elsewhere; it's defined above
 });
