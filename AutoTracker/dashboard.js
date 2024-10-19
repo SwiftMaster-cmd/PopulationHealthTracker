@@ -44,7 +44,6 @@ document.addEventListener('firebaseInitialized', function() {
         }
     });
 
-    // Initialize the dashboard once the user is authenticated
     auth.onAuthStateChanged(user => {
         if (user) {
             initializeDashboard(user);
@@ -55,7 +54,6 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeDashboard(user) {
-        // Ensure event listeners are attached only once
         if (!initializeDashboard.initialized) {
             initializeDashboard.initialized = true;
 
@@ -105,7 +103,6 @@ document.addEventListener('firebaseInitialized', function() {
         loadSavedCharts(user);
     }
 
-    // Function to fetch sales data in real-time
     function fetchSalesData(user, teamFilterValue, callback) {
         let salesRef;
 
@@ -115,12 +112,10 @@ document.addEventListener('firebaseInitialized', function() {
             salesRef = database.ref(`salesOutcomes/${user.uid}`);
         }
 
-        // Remove any existing listeners to prevent duplication
         if (fetchSalesData.listeners && fetchSalesData.listeners[salesRef.toString()]) {
             salesRef.off('value', fetchSalesData.listeners[salesRef.toString()]);
         }
 
-        // Define the listener function
         const listener = snapshot => {
             let salesData = [];
 
@@ -143,18 +138,15 @@ document.addEventListener('firebaseInitialized', function() {
             }
         };
 
-        // Attach the listener
         salesRef.on('value', listener, error => {
             console.error('Error fetching sales data in real-time:', error);
             if (callback) callback([]);
         });
 
-        // Store the listener so it can be removed later
         fetchSalesData.listeners = fetchSalesData.listeners || {};
         fetchSalesData.listeners[salesRef.toString()] = listener;
     }
 
-    // Function to determine the sale type based on action and notes
     function getSaleType(action, notes) {
         const normalizedAction = action.toLowerCase();
         const normalizedNotes = notes.toLowerCase();
@@ -175,19 +167,17 @@ document.addEventListener('firebaseInitialized', function() {
         ) {
             return 'Select RX';
         } else {
-            // Exclude other options
             return null;
         }
     }
 
-    // Function to populate action types in the select element
     function populateActionTypes(actionTypes) {
         const actionTypeSelect = document.getElementById('actionType');
         if (!actionTypeSelect) {
             console.error('Action type select element not found.');
             return;
         }
-        actionTypeSelect.innerHTML = '<option value="">Select Action Type</option>'; // Add default option
+        actionTypeSelect.innerHTML = '<option value="">Select Action Type</option>';
 
         actionTypes.forEach(actionType => {
             const option = document.createElement('option');
@@ -197,7 +187,6 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to add a chart
     function addChart(user, chartConfig = null) {
         let timeFrame, actionType, chartType, teamFilterValue;
 
@@ -227,56 +216,43 @@ document.addEventListener('firebaseInitialized', function() {
                 return;
             }
 
-            // Save the chart configuration to Firebase
             saveChartConfig({ timeFrame, actionType, chartType, teamFilterValue });
         }
 
-        // Generate a unique key for the chart configuration
         const chartKey = `${timeFrame}_${actionType}_${chartType}_${teamFilterValue}`;
 
-        // Check if the chart already exists to prevent duplication
         if (chartRegistry[chartKey]) {
             console.warn('Chart with this configuration already exists.');
             return;
         }
 
-        // Create the chart container
         const chartContainer = document.createElement('div');
         chartContainer.classList.add('chart-wrapper');
         chartContainer.setAttribute('data-chart-key', chartKey);
 
-        // Add a remove button
         const removeButton = document.createElement('button');
         removeButton.innerHTML = '&times;';
         removeButton.classList.add('remove-chart-button');
         removeButton.addEventListener('click', () => {
-            // Remove chart from registry
             delete chartRegistry[chartKey];
-            // Remove chart container from DOM
             chartContainer.remove();
-            // Remove listener for this chart
             removeChartListener(user, chartKey);
-            // Update saved charts in Firebase
             saveChartsToFirebase(user);
         });
         chartContainer.appendChild(removeButton);
 
-        // Add total count display
         const totalCountDisplay = document.createElement('div');
         totalCountDisplay.classList.add('total-count-display');
         totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: Loading...`;
         chartContainer.appendChild(totalCountDisplay);
 
-        // Add chart content container
         const chartContent = document.createElement('div');
         chartContent.classList.add('chart-content');
 
-        // Create canvas for Chart.js
         const canvas = document.createElement('canvas');
         chartContent.appendChild(canvas);
         chartContainer.appendChild(chartContent);
 
-        // Add chart container to the page
         const chartsContainer = document.querySelector('.charts-container');
         if (!chartsContainer) {
             console.error('Charts container element not found.');
@@ -284,17 +260,13 @@ document.addEventListener('firebaseInitialized', function() {
         }
         chartsContainer.appendChild(chartContainer);
 
-        // Render the chart with empty data initially
         const chartInstance = renderChart(canvas, chartType, { labels: [], data: [] }, actionType, timeFrame, teamFilterValue);
 
-        // Register the chart to prevent duplication
         chartRegistry[chartKey] = chartInstance;
 
-        // Listen for real-time updates to refresh the chart data
         const salesRefPath = teamFilterValue === 'allData' ? 'salesOutcomes' : `salesOutcomes/${user.uid}`;
         const salesRef = database.ref(salesRefPath);
 
-        // Define a listener specific to this chart
         const chartListener = snapshot => {
             let salesData = [];
 
@@ -312,15 +284,12 @@ document.addEventListener('firebaseInitialized', function() {
                 salesData = userData ? Object.values(userData) : [];
             }
 
-            // Filter data based on time frame and action type
             const filteredData = filterSalesData(salesData, timeFrame, actionType);
             const chartData = prepareChartData(filteredData, timeFrame);
             const totalCount = filteredData.length;
 
-            // Update total count display
             totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: ${totalCount}`;
 
-            // Update chart data
             chartInstance.data.labels = chartData.labels;
             chartInstance.data.datasets[0].data = chartData.data;
 
@@ -335,24 +304,20 @@ document.addEventListener('firebaseInitialized', function() {
                 chartInstance.data.datasets[0].hoverBorderColor = colors;
             }
 
-            // Trigger an update
             chartInstance.update();
         };
 
-        // Attach the listener
         salesRef.on('value', chartListener, error => {
             console.error('Error fetching sales data in real-time:', error);
             totalCountDisplay.textContent = `${actionType} (${timeFrame}) - Total Count: Error`;
         });
 
-        // Store the listener so it can be detached if the chart is removed
         if (!fetchSalesData.listeners) {
             fetchSalesData.listeners = {};
         }
         fetchSalesData.listeners[chartKey] = chartListener;
     }
 
-    // Function to remove a specific chart's listener
     function removeChartListener(user, chartKey) {
         const salesRefPath = chartKey.includes('allData') ? 'salesOutcomes' : `salesOutcomes/${user.uid}`;
         const salesRef = database.ref(salesRefPath);
@@ -363,18 +328,16 @@ document.addEventListener('firebaseInitialized', function() {
         }
     }
 
-    // Function to filter sales data based on time frame and action type
     function filterSalesData(salesData, timeFrame, actionType) {
         const now = new Date();
         let startDate = new Date();
 
-        // Determine start date based on time frame
         switch (timeFrame) {
             case 'today':
                 startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 break;
             case 'currentWeek':
-                const dayOfWeek = now.getDay(); // 0 (Sun) to 6 (Sat)
+                const dayOfWeek = now.getDay(); 
                 startDate = new Date(now);
                 startDate.setDate(now.getDate() - dayOfWeek);
                 break;
@@ -401,14 +364,12 @@ document.addEventListener('firebaseInitialized', function() {
                 break;
             case 'allTime':
             default:
-                startDate = new Date(0); // All time
+                startDate = new Date(0);
         }
 
-        // Convert dates to timestamps
         const startTime = startDate.getTime();
         const endTime = now.getTime();
 
-        // Filter data
         return salesData.filter(sale => {
             const saleTime = new Date(sale.outcomeTime).getTime();
             const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
@@ -416,7 +377,7 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to prepare chart data, handling overcrowded dates by skipping some
+    // Updated function to prepare chart data, keeping all data points but skipping some date labels
     function prepareChartData(filteredData, timeFrame) {
         const dateCounts = {};
 
@@ -426,11 +387,9 @@ document.addEventListener('firebaseInitialized', function() {
             let dateKey;
 
             if (timeFrame === 'today') {
-                // Format the date to include the hour
                 const hours = date.getHours();
                 dateKey = `${hours}:00`;
             } else {
-                // Format the date to exclude the year
                 const options = { month: 'short', day: 'numeric' };
                 dateKey = date.toLocaleDateString(undefined, options);
             }
@@ -438,7 +397,6 @@ document.addEventListener('firebaseInitialized', function() {
             dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
         });
 
-        // Sort the keys (hours or dates)
         let sortedKeys = Object.keys(dateCounts).sort((a, b) => {
             if (timeFrame === 'today') {
                 return parseInt(a) - parseInt(b);
@@ -449,13 +407,11 @@ document.addEventListener('firebaseInitialized', function() {
             }
         });
 
-        // Handle overcrowded dates by skipping some
-        const MAX_LABELS = 15; // Maximum number of labels to display
+        const MAX_LABELS = 15;
+
         if (sortedKeys.length > MAX_LABELS) {
-            // Calculate step size to skip labels
             const step = Math.ceil(sortedKeys.length / MAX_LABELS);
             sortedKeys = sortedKeys.filter((_, index) => index % step === 0);
-            // Ensure the last label is included
             if (!sortedKeys.includes(sortedKeys[sortedKeys.length - 1])) {
                 sortedKeys.push(sortedKeys[sortedKeys.length - 1]);
             }
@@ -467,21 +423,17 @@ document.addEventListener('firebaseInitialized', function() {
         };
     }
 
-    // Function to render a chart using Chart.js
     function renderChart(canvas, chartType, chartData, actionType, timeFrame, teamFilterValue) {
         const dataPointCount = chartData.labels.length;
 
-        // Set canvas width dynamically
         const canvasWidth = dataPointCount > 8 ? dataPointCount * 60 : '100%';
         canvas.style.width = typeof canvasWidth === 'number' ? `${canvasWidth}px` : canvasWidth;
-        canvas.style.height = '400px'; // Fixed height
+        canvas.style.height = '400px';
 
         const ctx = canvas.getContext('2d');
 
-        // Generate colors based on data values
         const colors = generateValueBasedColors(chartData.data);
 
-        // Set up the dataset
         const datasets = {
             label: `${actionType} (${timeFrame})`,
             data: chartData.data,
@@ -489,10 +441,10 @@ document.addEventListener('firebaseInitialized', function() {
         };
 
         if (chartType === 'line') {
-            datasets.borderColor = '#FFFFFF'; // Line color
-            datasets.pointBackgroundColor = colors; // Colors for data points
-            datasets.fill = true; // Enable fill for line charts
-            datasets.backgroundColor = 'rgba(33, 150, 243, 0.5)'; // Semi-transparent blue
+            datasets.borderColor = '#FFFFFF'; 
+            datasets.pointBackgroundColor = colors; 
+            datasets.fill = true; 
+            datasets.backgroundColor = 'rgba(33, 150, 243, 0.5)';
         } else {
             datasets.backgroundColor = colors;
             datasets.borderColor = colors;
@@ -500,7 +452,6 @@ document.addEventListener('firebaseInitialized', function() {
             datasets.hoverBorderColor = colors;
         }
 
-        // Set up the chart options
         const chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
@@ -531,7 +482,7 @@ document.addEventListener('firebaseInitialized', function() {
                         maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
                         callback: function(value, index, values) {
                             if (timeFrame === 'today') {
-                                return this.getLabelForValue(value); // Show every hour
+                                return this.getLabelForValue(value); 
                             } else {
                                 if (dataPointCount > 15 && index % 2 !== 0) {
                                     return null;
@@ -618,12 +569,11 @@ document.addEventListener('firebaseInitialized', function() {
             custom: {
                 timeFrame: timeFrame,
                 actionType: actionType,
-                chartType: chartType, // Include chartType for rebuilding charts
-                teamFilterValue: teamFilterValue // Include teamFilterValue
+                chartType: chartType,
+                teamFilterValue: teamFilterValue
             }
         };
 
-        // Create the chart
         const chart = new Chart(ctx, {
             type: chartType,
             data: {
@@ -636,31 +586,24 @@ document.addEventListener('firebaseInitialized', function() {
         return chart;
     }
 
-    // Function to generate colors based on data values
     function generateValueBasedColors(data) {
         const maxValue = Math.max(...data);
         const minValue = Math.min(...data);
 
         return data.map(value => {
             const ratio = (value - minValue) / (maxValue - minValue || 1);
-            // Create a gradient from red to green
             const color = chroma.scale(['red', 'orange', 'green'])(ratio).hex();
             return color;
         });
     }
 
-    // Persistence Functions
-
-    // Function to save a single chart configuration to Firebase
     function saveChartConfig(chartConfig) {
         const user = firebase.auth().currentUser;
         if (!user) return;
 
-        // Retrieve existing charts from Firebase
         database.ref(`chartConfigs/${user.uid}`).once('value').then(snapshot => {
             let savedCharts = snapshot.val() || [];
 
-            // Check if the chart already exists to prevent duplication
             const exists = savedCharts.some(existingConfig =>
                 existingConfig.timeFrame === chartConfig.timeFrame &&
                 existingConfig.actionType === chartConfig.actionType &&
@@ -683,7 +626,6 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to save all current charts to Firebase
     function saveChartsToFirebase(user) {
         if (!user) return;
 
@@ -711,7 +653,6 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to load saved charts from Firebase
     function loadSavedCharts(user) {
         const chartsContainer = document.querySelector('.charts-container');
         if (!chartsContainer) {
@@ -722,10 +663,8 @@ document.addEventListener('firebaseInitialized', function() {
         database.ref(`chartConfigs/${user.uid}`).once('value').then(snapshot => {
             const savedCharts = snapshot.val() || [];
 
-            // Clear any existing charts to prevent duplication
-            clearAllCharts(user, false); // Pass false to avoid removing from Firebase again
+            clearAllCharts(user, false);
 
-            // Add each saved chart
             savedCharts.forEach(chartConfig => {
                 addChart(user, chartConfig);
             });
@@ -734,14 +673,11 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to clear all charts
     function clearAllCharts(user, removeFromFirebase = true) {
         const chartsContainer = document.querySelector('.charts-container');
         if (chartsContainer) {
             chartsContainer.innerHTML = '';
-            // Clear the chart registry
             for (let key in chartRegistry) {
-                // Remove listeners associated with each chart
                 removeChartListener(user, key);
                 delete chartRegistry[key];
             }
@@ -756,16 +692,12 @@ document.addEventListener('firebaseInitialized', function() {
         }
     }
 
-    // Preset Functions
-
-    // Function to save a preset
     function savePreset(user, presetName) {
         if (!presetName) {
             alert('Preset name cannot be empty.');
             return;
         }
 
-        // Retrieve current chart configurations
         const charts = document.querySelectorAll('.chart-wrapper');
         const savedCharts = [];
 
@@ -783,21 +715,19 @@ document.addEventListener('firebaseInitialized', function() {
             }
         });
 
-        // Save the preset under the user's presets in Firebase
         const presetData = {
             charts: savedCharts
         };
 
         database.ref(`chartPresets/${user.uid}/${presetName}`).set(presetData).then(() => {
             alert('Preset saved successfully!');
-            presetNameInput.value = ''; // Clear the input field
-            loadPresets(user); // Refresh the presets list
+            presetNameInput.value = '';
+            loadPresets(user);
         }).catch(error => {
             console.error('Error saving preset:', error);
         });
     }
 
-    // Function to load all presets
     function loadPresets(user) {
         database.ref(`chartPresets/${user.uid}`).once('value').then(snapshot => {
             const presets = snapshot.val() || {};
@@ -813,15 +743,13 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to load a specific preset
     function loadPreset(user, presetName) {
         if (!presetName) {
             alert('Preset name is required.');
             return;
         }
 
-        // Clear existing charts before loading new ones
-        clearAllCharts(user, false); // Pass false to avoid removing from Firebase
+        clearAllCharts(user, false);
 
         database.ref(`chartPresets/${user.uid}/${presetName}`).once('value').then(snapshot => {
             const presetData = snapshot.val();
@@ -833,7 +761,6 @@ document.addEventListener('firebaseInitialized', function() {
 
             const { charts: savedCharts } = presetData;
 
-            // Add charts from the preset
             savedCharts.forEach(chartConfig => {
                 addChart(user, chartConfig);
             });
@@ -844,7 +771,6 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Function to delete a preset
     function deletePreset(user, presetName) {
         if (!presetName) {
             alert('Preset name is required.');
@@ -853,29 +779,12 @@ document.addEventListener('firebaseInitialized', function() {
 
         database.ref(`chartPresets/${user.uid}/${presetName}`).remove().then(() => {
             alert('Preset deleted successfully!');
-            loadPresets(user); // Refresh the presets list
+            loadPresets(user);
         }).catch(error => {
             console.error('Error deleting preset:', error);
         });
     }
 
-    // Function to check if a chart with the same configuration already exists
-    function checkExistingChart(timeFrame, actionType, chartType, teamFilterValue) {
-        const charts = document.querySelectorAll('.chart-wrapper');
-        return Array.from(charts).some(chartWrapper => {
-            const canvas = chartWrapper.querySelector('canvas');
-            const chartInstance = Chart.getChart(canvas);
-            if (!chartInstance) return false;
-
-            const options = chartInstance.options.custom;
-            return options.timeFrame === timeFrame && 
-                   options.actionType === actionType && 
-                   options.chartType === chartType && 
-                   options.teamFilterValue === teamFilterValue;
-        });
-    }
-
-    // Function to remove all listeners associated with a chart
     function removeAllListeners(user) {
         if (fetchSalesData.listeners) {
             for (let refPath in fetchSalesData.listeners) {
@@ -887,7 +796,6 @@ document.addEventListener('firebaseInitialized', function() {
         }
     }
 
-    // Handle window unload to clean up listeners
     window.addEventListener('beforeunload', () => {
         removeAllListeners();
     });
