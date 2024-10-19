@@ -314,16 +314,19 @@ button:hover {
 }
 
 
-
 /* Style the header */
 .commission-header {
-    position: absolute;
+    position: fixed; /* Changed from relative to fixed */
+    top: 0; /* Position at the top of the viewport */
+    left: 0; /* Align to the left */
+    width: 100%; /* Span the full width of the viewport */
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    background-color: #000; /* Changed background color to black */
-    color: #fff; /* Set text color to white */
+    background-color: #000; /* Background color remains black */
+    color: #fff; /* Text color remains white */
+    z-index: 1000; /* Ensure the header stays on top */
 }
 
 /* Style the header title */
@@ -372,4 +375,5 @@ button:hover {
 /* Optional: Style for the commission breakdown section */
 #commissionBreakdown {
     padding: 20px;
+    margin-top: 160px; /* Adjust margin-top to prevent content overlap */
 }
