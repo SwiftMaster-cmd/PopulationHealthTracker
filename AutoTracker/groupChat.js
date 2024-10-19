@@ -49,90 +49,89 @@ document.addEventListener('firebaseInitialized', function() {
 
     function initializeChat() {
         const messagesRef = database.ref('groupChatMessages');
-
+    
         // Load existing messages and listen for new ones
+        messagesRef.once('value', snapshot => {
+            const messages = snapshot.val();
+            const messageList = [];
+    
+            // Add all existing messages to the list (text, GIFs, etc.)
+            for (const messageId in messages) {
+                const message = messages[messageId];
+                messageList.push({ messageId, ...message });
+            }
+    
+            // Load all past live activities and add them to the list
+            loadPastLiveActivities(messageList);
+        });
+    
+        // Listen for new messages or live activities
         messagesRef.limitToLast(50).on('child_added', snapshot => {
             const message = snapshot.val();
             const messageId = snapshot.key;
             displayMessage(message, messageId);
         });
-
+    
         // Listen for message updates (likes/comments)
         messagesRef.limitToLast(50).on('child_changed', snapshot => {
             const message = snapshot.val();
             const messageId = snapshot.key;
             const messageDiv = document.getElementById(`message-${messageId}`);
             if (messageDiv) {
-                // Update the messageDiv
                 messageDiv.parentNode.removeChild(messageDiv);
                 displayMessage(message, messageId);
             }
         });
-
-        // Handle message form submission
-        const messageForm = document.getElementById('messageForm');
-        const messageInput = document.getElementById('messageInput');
-
-        messageForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const text = messageInput.value.trim();
-            if (text) {
-                sendMessage(text, 'text');
-                messageInput.value = '';
-            }
-        });
-
-        // Handle GIF search (existing code)
-        // ...
-
+    
         // Load Users data
         const usersRef = database.ref('Users');
         usersRef.on('value', usersSnapshot => {
             usersData = usersSnapshot.val() || {};
         });
-
-        // Listen for live activities (sales data)
+    }
+    
+    function loadPastLiveActivities(messageList) {
         const salesOutcomesRef = database.ref('salesOutcomes');
-        salesOutcomesRef.on('child_added', snapshot => {
-            const userId = snapshot.key;
-            const userSalesData = snapshot.val();
-            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
-
-            for (const saleId in userSalesData) {
-                const sale = userSalesData[saleId];
-                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-                const saleTime = new Date(sale.outcomeTime).getTime();
-
-                if (saleType) {
-                    // Create a message of type 'liveActivity' and push it to groupChatMessages
-                    const messageData = {
-                        userId: userId,
-                        userName: userName,
-                        content: {
-                            saleId: saleId,
-                            saleType: saleType,
-                            saleTime: saleTime,
-                            saleData: sale
-                        },
-                        type: 'liveActivity',
-                        timestamp: saleTime,
-                        likes: {},
-                        comments: {}
-                    };
-
-                    // Check if the live activity message already exists
-                    const query = messagesRef.orderByChild('content/saleId').equalTo(saleId);
-                    query.once('value', snapshot => {
-                        if (!snapshot.exists()) {
-                            messagesRef.push(messageData).catch(error => {
-                                console.error('Error sending live activity message:', error);
-                            });
-                        }
-                    });
+    
+        salesOutcomesRef.once('value', snapshot => {
+            const salesData = snapshot.val();
+            for (const userId in salesData) {
+                const userSalesData = salesData[userId];
+                const userName = (usersData[userId] && usersData[userId].name) || 'No name';
+    
+                for (const saleId in userSalesData) {
+                    const sale = userSalesData[saleId];
+                    const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                    const saleTime = new Date(sale.outcomeTime).getTime();
+    
+                    if (saleType) {
+                        // Add the live activity to the message list with its timestamp
+                        messageList.push({
+                            userId: userId,
+                            userName: userName,
+                            content: {
+                                saleId: saleId,
+                                saleType: saleType,
+                                saleTime: saleTime,
+                                saleData: sale
+                            },
+                            type: 'liveActivity',
+                            timestamp: saleTime,
+                            likes: {},
+                            comments: {}
+                        });
+                    }
                 }
             }
+    
+            // Sort messages and live activities by timestamp
+            messageList.sort((a, b) => a.timestamp - b.timestamp);
+    
+            // Display all messages in order
+            messageList.forEach(message => displayMessage(message, message.messageId || message.content.saleId));
         });
     }
+    
 
     function sendMessage(content, type) {
         const messageData = {
