@@ -2,12 +2,13 @@
 
 /* Root Variables */
 :root {
-    --background-color: #f0f2f5; /* Light background for better readability */
-    --card-background-color: #ffffff; /* White card background */
-    --primary-color: #007bff; /* Blue accent color */
-    --secondary-color: #6c757d; /* Secondary grey color */
-    --text-color: #212529; /* Dark text color */
-    --border-color: #dee2e6; /* Light grey border */
+    --background-color: #1a1a1a; /* Dark grey background */
+    --card-background-color: #2c2c2c; /* Slightly lighter dark grey for cards */
+    --primary-color: #0d6efd; /* Bootstrap Blue */
+    --secondary-color: #6c757d; /* Bootstrap Grey */
+    --accent-color: #20c997; /* Mint accent color */
+    --text-color: #e9ecef; /* Light text color */
+    --border-color: #343a40; /* Dark border */
     --radius: 8px;
     --transition-duration: 0.3s;
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -68,6 +69,7 @@ p {
     font-size: var(--font-size-base);
     margin-right: 10px;
     margin-bottom: 10px;
+    color: var(--text-color);
 }
 
 .leaderboard-filters select {
@@ -77,13 +79,24 @@ p {
     margin-bottom: 10px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    background-color: #fff;
-    transition: border-color var(--transition-duration);
+    background-color: var(--card-background-color);
+    color: var(--text-color);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23e9ecef" class="bi bi-caret-down-fill" viewBox="0 0 16 16"><path d="M7.247 11.14l-4.796-5.481A.5.5 0 0 1 2.653 5h10.694a.5.5 0 0 1 .387.82l-4.796 5.481a.5.5 0 0 1-.794 0z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+.leaderboard-filters select:hover {
+    background-color: #343a40;
 }
 
 .leaderboard-filters select:focus {
-    border-color: var(--primary-color);
+    border-color: var(--accent-color);
     outline: none;
+    background-color: #343a40;
 }
 
 #leaderboardContainer {
@@ -102,6 +115,7 @@ p {
     padding: 15px;
     border-bottom: 1px solid var(--border-color);
     font-size: var(--font-size-large);
+    color: var(--text-color);
 }
 
 .leaderboard-table th {
@@ -110,11 +124,11 @@ p {
 }
 
 .leaderboard-table tr:nth-child(even) {
-    background-color: #f8f9fa;
+    background-color: #2c2c2c;
 }
 
 .leaderboard-table tr:hover {
-    background-color: #e9ecef;
+    background-color: #343a40;
     transition: background-color var(--transition-duration);
 }
 
@@ -142,6 +156,7 @@ p {
 .live-activity p {
     font-size: var(--font-size-base);
     margin-bottom: 10px;
+    color: var(--text-color);
 }
 
 .live-activity strong {
@@ -162,6 +177,7 @@ button {
     border-radius: var(--radius);
     cursor: pointer;
     transition: background-color var(--transition-duration), transform var(--transition-duration);
+    color: #fff;
 }
 
 button:hover {
@@ -170,24 +186,25 @@ button:hover {
 
 .like-button {
     background-color: var(--primary-color);
-    color: #fff;
     margin-right: 10px;
 }
 
 .like-button.liked {
-    background-color: #dc3545; /* Red color for 'Unlike' */
+    background-color: var(--accent-color); /* Mint color for 'Unlike' */
 }
 
 .comment-button {
     background-color: var(--secondary-color);
-    color: #fff;
 }
 
 .show-replies-button {
     background-color: transparent;
-    color: var(--primary-color);
+    color: var(--accent-color);
     font-size: var(--font-size-small);
     margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+    padding: 0;
 }
 
 .show-replies-button:hover {
@@ -214,12 +231,15 @@ button:hover {
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     margin-right: 10px;
-    transition: border-color var(--transition-duration);
+    background-color: var(--card-background-color);
+    color: var(--text-color);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
 }
 
 .comment-form input[type="text"]:focus {
-    border-color: var(--primary-color);
+    border-color: var(--accent-color);
     outline: none;
+    background-color: #343a40;
 }
 
 .comment-form button {
@@ -240,6 +260,7 @@ button:hover {
 .comments-list li p {
     margin: 0;
     font-size: var(--font-size-base);
+    color: var(--text-color);
 }
 
 .comments-list li time {
@@ -257,6 +278,39 @@ button:hover {
         opacity: 1;
         transform: none;
     }
+}
+
+/* Picker Styling */
+.leaderboard-filters select,
+.comment-form input[type="text"] {
+    position: relative;
+}
+
+.leaderboard-filters select::-ms-expand {
+    display: none;
+}
+
+.leaderboard-filters select:hover,
+.comment-form input[type="text"]:hover {
+    background-color: #343a40;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--card-background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-color);
 }
 
 /* Responsive Design */
