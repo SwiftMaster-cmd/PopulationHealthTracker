@@ -453,12 +453,13 @@ document.addEventListener('firebaseInitialized', function() {
             commentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const commentText = commentInput.value.trim();
-                const gifUrl = selectedGifUrl; // From Giphy selection
+                const gifUrl = commentForm.selectedGifUrl; // From Giphy selection
                 if (commentText || gifUrl) {
                     addComment(sale.saleId, commentText, gifUrl);
                     commentInput.value = '';
-                    selectedGifUrl = null;
+                    commentForm.selectedGifUrl = null;
                     gifPreviewContainer.innerHTML = ''; // Clear GIF preview
+                    giphyContainer.style.display = 'none'; // Hide Giphy search
                 }
             });
 
@@ -472,24 +473,53 @@ document.addEventListener('firebaseInitialized', function() {
             giphyButton.textContent = 'Add GIF';
             giphyButton.classList.add('giphy-button');
             giphyButton.addEventListener('click', () => {
-                openGiphyModal();
+                giphyContainer.style.display = giphyContainer.style.display === 'none' ? 'block' : 'none';
             });
 
             // Container to display selected GIF preview
             const gifPreviewContainer = document.createElement('div');
             gifPreviewContainer.classList.add('gif-preview-container');
 
-            // Hidden input to store selected GIF URL
-            let selectedGifUrl = null;
+            // Giphy search and results container
+            const giphyContainer = document.createElement('div');
+            giphyContainer.classList.add('giphy-container');
+            giphyContainer.style.display = 'none'; // Hidden initially
+
+            const giphySearchInput = document.createElement('input');
+            giphySearchInput.type = 'text';
+            giphySearchInput.placeholder = 'Search for GIFs';
+            giphySearchInput.classList.add('giphy-search-input');
+
+            const giphyResults = document.createElement('div');
+            giphyResults.classList.add('giphy-results');
+
+            giphyContainer.appendChild(giphySearchInput);
+            giphyContainer.appendChild(giphyResults);
+
+            // Handle Giphy search input
+            let giphySearchTimeout;
+            giphySearchInput.addEventListener('input', () => {
+                clearTimeout(giphySearchTimeout);
+                const query = giphySearchInput.value.trim();
+                if (query.length > 0) {
+                    giphySearchTimeout = setTimeout(() => {
+                        searchGiphy(query, giphyResults, commentForm, gifPreviewContainer);
+                    }, 500);
+                } else {
+                    giphyResults.innerHTML = '';
+                }
+            });
 
             const commentSubmit = document.createElement('button');
             commentSubmit.type = 'submit';
             commentSubmit.textContent = 'Post';
 
+            // Append elements to comment form
+            commentForm.appendChild(giphyContainer);
+            commentForm.appendChild(gifPreviewContainer);
             commentForm.appendChild(commentInput);
             commentForm.appendChild(giphyButton);
             commentForm.appendChild(commentSubmit);
-            commentForm.appendChild(gifPreviewContainer);
 
             commentsSection.appendChild(commentForm);
 
@@ -531,45 +561,11 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Giphy Modal Functions
-    function openGiphyModal() {
-        const giphyModal = document.getElementById('giphyModal');
-        giphyModal.style.display = 'block';
-
-        const giphySearchInput = document.getElementById('giphySearchInput');
-        const giphyResults = document.getElementById('giphyResults');
-
-        giphySearchInput.value = '';
-        giphyResults.innerHTML = '';
-
-        giphySearchInput.addEventListener('input', () => {
-            const query = giphySearchInput.value.trim();
-            if (query.length > 0) {
-                searchGiphy(query);
-            } else {
-                giphyResults.innerHTML = '';
-            }
-        });
-
-        // Close modal when clicking on close button
-        const giphyModalClose = document.getElementById('giphyModalClose');
-        giphyModalClose.onclick = function() {
-            giphyModal.style.display = 'none';
-        };
-
-        // Close modal when clicking outside the modal content
-        window.onclick = function(event) {
-            if (event.target === giphyModal) {
-                giphyModal.style.display = 'none';
-            }
-        };
-    }
-
-    function searchGiphy(query) {
-        const giphyResults = document.getElementById('giphyResults');
+    // Giphy Functions
+    function searchGiphy(query, giphyResults, commentForm, gifPreviewContainer) {
         giphyResults.innerHTML = 'Loading...';
 
-        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${maeaJ3Qxv4p2tFD222X3ccfwBhK3ju2J}&q=${encodeURIComponent(query)}&limit=25&rating=G`)
+        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=25&rating=G`)
             .then(response => response.json())
             .then(data => {
                 giphyResults.innerHTML = '';
@@ -578,7 +574,7 @@ document.addEventListener('firebaseInitialized', function() {
                     img.src = gif.images.fixed_width_small.url;
                     img.alt = gif.title;
                     img.addEventListener('click', () => {
-                        selectGif(gif.images.fixed_width.url);
+                        selectGif(gif.images.fixed_width.url, commentForm, gifPreviewContainer);
                     });
                     giphyResults.appendChild(img);
                 });
@@ -589,15 +585,11 @@ document.addEventListener('firebaseInitialized', function() {
             });
     }
 
-    function selectGif(gifUrl) {
-        const giphyModal = document.getElementById('giphyModal');
-        giphyModal.style.display = 'none';
-
+    function selectGif(gifUrl, commentForm, gifPreviewContainer) {
         // Set the selected GIF URL
-        selectedGifUrl = gifUrl;
+        commentForm.selectedGifUrl = gifUrl;
 
         // Show GIF preview in the comment form
-        const gifPreviewContainer = document.querySelector('.gif-preview-container');
         gifPreviewContainer.innerHTML = `<img src="${gifUrl}" alt="Selected GIF" class="selected-gif-preview">`;
     }
 
