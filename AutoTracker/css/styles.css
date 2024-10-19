@@ -314,3 +314,61 @@ button:hover {
 }
 
 
+
+
+/* styles.css */
+
+/* Style the header */
+.commission-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+/* Style the header title */
+.commission-header h1 {
+    margin: 0;
+}
+
+/* Style the total commission container */
+.total-commission {
+    position: relative;
+    font-size: 2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Tooltip container */
+.commission-details-tooltip {
+    visibility: hidden;
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    padding: 10px;
+    border-radius: 5px;
+
+    /* Position the tooltip */
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Show the tooltip when hovering over the total commission */
+.total-commission:hover .commission-details-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Optional: Style for the commission breakdown section */
+#commissionBreakdown {
+    padding: 20px;
+}
