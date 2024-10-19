@@ -344,10 +344,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Display total commission with appropriate label and amount
         if (taxesRemoved) {
-            totalCommissionLabelEl.textContent = 'Total Commission After Tax:';
+            totalCommissionLabelEl.textContent = '';
             totalCommissionAmountEl.textContent = `$${commissionData.totalCommissionAfterTax.toFixed(2)}`;
         } else {
-            totalCommissionLabelEl.textContent = 'Total Commission Before Tax:';
+            totalCommissionLabelEl.textContent = '';
             totalCommissionAmountEl.textContent = `$${commissionData.totalCommission.toFixed(2)}`;
         }
 
