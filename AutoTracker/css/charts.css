@@ -33,6 +33,17 @@
     justify-content: space-between;
     gap: 20px;
     margin-bottom: 40px;
+}/* Charts Container */
+.chartsContainer{
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 20px; /* Optional padding */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
 /* Chart Wrapper */
