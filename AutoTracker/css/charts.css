@@ -2,13 +2,13 @@
 
 /* Root Variables */
 :root {
-    --background-color: #121212; /* Dark background */
-    --card-background-color: #1e1e1e; /* Card background */
-    --primary-color: #2196F3; /* Blue accent color */
-    --accent-color: #4CAF50; /* Green accent color */
-    --text-color: #FFFFFF; /* White text */
-    --muted-text-color: #B0B0B0; /* Muted text color */
-    --border-color: #2c2c2c; /* Border color */
+    --background-color: #121212;
+    --card-background-color: #1e1e1e;
+    --primary-color: #2196F3;
+    --accent-color: #4CAF50;
+    --text-color: #FFFFFF;
+    --muted-text-color: #B0B0B0;
+    --border-color: #2c2c2c;
     --radius: 10px;
     --transition-duration: 0.3s;
     --font-family: 'Roboto', sans-serif;
@@ -17,15 +17,20 @@
     --font-size-small: 14px;
 }
 
+/* Apply box-sizing to all elements */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Charts Container */
 .charts-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; /* Distribute space between charts */
-    gap: 20px; /* Space between charts */
-    margin: 0 auto; /* Center the container */
-    width: 95%; /* Allow the container to occupy 95% of the screen width */
-    max-width: 95%; /* Ensure the container does not exceed 95% */
+    justify-content: space-between;
+    gap: 20px;
+    margin: 0 auto;
+    width: 95vw; /* Use viewport width to ensure full screen coverage */
+    max-width: 95vw;
     margin-bottom: 40px;
 }
 
@@ -37,7 +42,7 @@
     border-radius: var(--radius);
     margin-bottom: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 48%; /* Set chart width to 48% to allow two charts side by side */
+    width: calc(48% - 10px); /* Adjust for gap between items */
 }
 
 /* Remove Chart Button */
@@ -46,7 +51,7 @@
     top: 10px;
     right: 10px;
     background: none;
-    color: #FF0000; /* Red color for the "x" */
+    color: #FF0000;
     font-size: 24px;
     border: none;
     cursor: pointer;
@@ -55,7 +60,7 @@
 }
 
 .remove-chart-button:hover {
-    color: #CC0000; /* Darker red on hover */
+    color: #CC0000;
 }
 
 /* Total Count Display */
@@ -70,7 +75,7 @@
 /* Chart Content */
 .chart-content {
     position: relative;
-    overflow-x: auto; /* Enable horizontal scrolling if needed */
+    overflow-x: auto;
 }
 
 .chart-content canvas {
@@ -96,4 +101,14 @@
     background-color: var(--accent-color);
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .charts-container {
+        width: 100%; /* Ensure full width on small screens */
+        max-width: 100%;
+    }
 
+    .chart-wrapper {
+        width: 100%; /* Charts take full width on small screens */
+    }
+}
