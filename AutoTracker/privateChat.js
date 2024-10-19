@@ -12,6 +12,8 @@ document.addEventListener('firebaseInitialized', function () {
     let sendMessageHandler = null;
 
     let usersData = {}; // To store user names
+    let likesData = {};
+    let commentsData = {};
 
     let messagesEndReached = false;
     let lastMessageTimestamp = null;
@@ -381,39 +383,94 @@ document.addEventListener('firebaseInitialized', function () {
         if (selectedChatId === 'groupChat' && !salesListener) {
             // Set up listener for salesOutcomes
             salesListener = database.ref('salesOutcomes');
-            salesListener.on('child_added', handleSalesData);
-            salesListener.on('child_changed', handleSalesData);
+            salesListener.on('value', snapshot => {
+                const salesData = snapshot.val() || {};
+                handleSalesData(salesData);
+            });
+
+            // Listen for likes and comments
+            const likesRef = database.ref('likes');
+            likesRef.on('value', likesSnapshot => {
+                likesData = likesSnapshot.val() || {};
+                // Update messages with new likes data
+                updateLikesAndComments();
+            });
+
+            const commentsRef = database.ref('comments');
+            commentsRef.on('value', commentsSnapshot => {
+                commentsData = commentsSnapshot.val() || {};
+                // Update messages with new comments data
+                updateLikesAndComments();
+            });
         }
     }
 
-    function handleSalesData(snapshot) {
-        const userId = snapshot.key;
-        const userSalesData = snapshot.val();
-        const userName = usersData[userId] ? usersData[userId].name : 'No name';
+    function handleSalesData(salesData) {
+        const salesList = [];
 
-        for (const saleId in userSalesData) {
-            const sale = userSalesData[saleId];
-            const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
-            const saleTime = new Date(sale.outcomeTime).getTime();
+        for (const userId in salesData) {
+            const userSalesData = salesData[userId];
+            const userName = (usersData[userId] && usersData[userId].name) || 'No name';
 
-            if (saleType) {
-                const liveActivityMessage = {
-                    userId: userId,
-                    userName: userName,
-                    saleType: saleType,
-                    saleTime: sale.outcomeTime,
-                    saleId: saleId,
-                    type: 'liveActivity',
-                    timestamp: saleTime,
-                    likes: {},
-                    comments: {},
-                    key: `sale-${saleId}`
-                };
+            for (const saleId in userSalesData) {
+                const sale = userSalesData[saleId];
+                const saleType = getSaleType(sale.assignAction || '', sale.notesValue || '');
+                const saleTime = new Date(sale.outcomeTime).getTime();
 
-                // Display live activity message
-                displayMessage(liveActivityMessage);
+                if (saleType) { // Include only valid sale types
+                    const liveActivityMessage = {
+                        key: `sale-${saleId}`,
+                        userId,
+                        userName,
+                        saleType,
+                        saleTime: sale.outcomeTime,
+                        saleId,
+                        type: 'liveActivity',
+                        timestamp: saleTime,
+                        likes: likesData[saleId] || {},
+                        comments: commentsData[saleId] || {}
+                    };
+
+                    salesList.push(liveActivityMessage);
+                }
             }
         }
+
+        // Sort salesList by timestamp ascending
+        salesList.sort((a, b) => a.timestamp - b.timestamp);
+
+        // Display live activities
+        salesList.forEach(message => {
+            displayMessage(message);
+        });
+    }
+
+    function updateLikesAndComments() {
+        // Update likes and comments for live activities
+        const chatContainer = document.getElementById('chatContainer');
+        const messageDivs = chatContainer.getElementsByClassName('chat-message');
+
+        Array.from(messageDivs).forEach(messageDiv => {
+            const messageId = messageDiv.id.replace('message-', '');
+            const messageKey = messageId.startsWith('sale-') ? messageId.substring(5) : messageId;
+
+            let message = null;
+
+            if (messageId.startsWith('sale-')) {
+                // Live activity
+                message = {
+                    key: messageId,
+                    likes: likesData[messageKey] || {},
+                    comments: commentsData[messageKey] || {}
+                };
+            } else {
+                // Regular message
+                // For simplicity, we're not handling likes and comments for regular messages here
+                return;
+            }
+
+            updateMessage(message);
+        });
     }
 
     function sendMessage(content, type) {
@@ -439,7 +496,7 @@ document.addEventListener('firebaseInitialized', function () {
             userId: currentUserId,
             userName: currentUserName || 'Anonymous',
             content: content,
-            type: type, // 'text', 'gif', or 'liveActivity'
+            type: type, // 'text' or 'gif'
             timestamp: firebase.database.ServerValue.TIMESTAMP,
             likes: {},
             comments: {}
@@ -467,28 +524,31 @@ document.addEventListener('firebaseInitialized', function () {
         const time = new Date(message.timestamp).toLocaleString();
         let senderName = '';
 
-        if (selectedChatId === 'groupChat') {
-            senderName = message.userId === currentUserId ? 'You' : message.userName;
-        } else {
-            senderName = message.senderId === currentUserId ? 'You' : message.senderName;
-        }
-
-        if (message.type === 'text') {
-            messageDiv.innerHTML = `
-                <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
-                <p>${message.content}</p>
-            `;
-        } else if (message.type === 'gif') {
-            messageDiv.innerHTML = `
-                <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
-                <img src="${message.content}" alt="GIF" class="chat-gif">
-            `;
-        } else if (message.type === 'liveActivity') {
+        if (message.type === 'liveActivity') {
+            senderName = message.userName;
             const saleType = message.saleType;
             const saleTime = new Date(message.saleTime).toLocaleString();
             messageDiv.innerHTML = `
-                <p><strong>${message.userName}</strong> made a <strong>${saleType}</strong> sale on ${saleTime}</p>
+                <p><strong>${senderName}</strong> made a <strong>${saleType}</strong> sale on ${saleTime}</p>
             `;
+        } else {
+            if (selectedChatId === 'groupChat') {
+                senderName = message.userId === currentUserId ? 'You' : message.userName;
+            } else {
+                senderName = message.senderId === currentUserId ? 'You' : message.senderName;
+            }
+
+            if (message.type === 'text') {
+                messageDiv.innerHTML = `
+                    <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
+                    <p>${message.content}</p>
+                `;
+            } else if (message.type === 'gif') {
+                messageDiv.innerHTML = `
+                    <p><strong>${senderName}</strong> <span class="chat-time">${time}</span></p>
+                    <img src="${message.content}" alt="GIF" class="chat-gif">
+                `;
+            }
         }
 
         // Likes and Comments Functionality
@@ -503,7 +563,7 @@ document.addEventListener('firebaseInitialized', function () {
 
         likeButton.textContent = userLiked ? `Unlike (${likesCount})` : `Like (${likesCount})`;
         likeButton.addEventListener('click', () => {
-            toggleLike(message.key, userLiked);
+            toggleLike(message);
         });
 
         actionsDiv.appendChild(likeButton);
@@ -551,7 +611,7 @@ document.addEventListener('firebaseInitialized', function () {
             e.preventDefault();
             const commentText = commentInput.value.trim();
             if (commentText) {
-                addComment(message.key, commentText);
+                addComment(message, commentText);
                 commentInput.value = '';
             }
         });
@@ -606,12 +666,24 @@ document.addEventListener('firebaseInitialized', function () {
         }
     }
 
-    function toggleLike(messageId, userLiked) {
-        const messageRef = selectedChatId === 'groupChat'
-            ? database.ref(`groupChatMessages/${messageId}`)
-            : database.ref(`privateMessages/${selectedChatId}/${messageId}`);
+    function toggleLike(message) {
+        let likeRef;
+        let messageRef;
 
-        const likeRef = messageRef.child(`likes/${currentUserId}`);
+        if (message.type === 'liveActivity') {
+            // For live activities, likes are stored under 'likes' node
+            likeRef = database.ref(`likes/${message.saleId}/${currentUserId}`);
+            messageRef = null; // Not used in this case
+        } else {
+            // For chat messages, likes are stored under the message in groupChatMessages or privateMessages
+            messageRef = selectedChatId === 'groupChat'
+                ? database.ref(`groupChatMessages/${message.key}`)
+                : database.ref(`privateMessages/${selectedChatId}/${message.key}`);
+
+            likeRef = messageRef.child(`likes/${currentUserId}`);
+        }
+
+        const userLiked = message.likes && message.likes[currentUserId];
 
         if (userLiked) {
             // User wants to unlike
@@ -626,7 +698,7 @@ document.addEventListener('firebaseInitialized', function () {
         }
     }
 
-    function addComment(messageId, commentText) {
+    function addComment(message, commentText) {
         const commentData = {
             userId: currentUserId,
             userName: currentUserName || 'Anonymous',
@@ -634,9 +706,17 @@ document.addEventListener('firebaseInitialized', function () {
             timestamp: firebase.database.ServerValue.TIMESTAMP
         };
 
-        const commentsRef = selectedChatId === 'groupChat'
-            ? database.ref(`groupChatMessages/${messageId}/comments`)
-            : database.ref(`privateMessages/${selectedChatId}/${messageId}/comments`);
+        let commentsRef;
+
+        if (message.type === 'liveActivity') {
+            // For live activities, comments are stored under 'comments' node
+            commentsRef = database.ref(`comments/${message.saleId}`);
+        } else {
+            // For chat messages, comments are stored under the message in groupChatMessages or privateMessages
+            commentsRef = selectedChatId === 'groupChat'
+                ? database.ref(`groupChatMessages/${message.key}/comments`)
+                : database.ref(`privateMessages/${selectedChatId}/${message.key}/comments`);
+        }
 
         commentsRef.push(commentData).catch(error => {
             console.error('Error adding comment:', error);
