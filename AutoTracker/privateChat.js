@@ -397,13 +397,13 @@ document.addEventListener('firebaseInitialized', function () {
                 }
             }
 
-            // Sort messages by timestamp ascending (oldest first)
-            messages.sort((a, b) => a.timestamp - b.timestamp);
-
             // Filter messages to only include those older than the oldestMessageTimestamp
             if (oldestMessageTimestamp) {
                 messages = messages.filter(msg => msg.timestamp < oldestMessageTimestamp);
             }
+
+            // Sort messages by timestamp ascending (oldest first)
+            messages.sort((a, b) => a.timestamp - b.timestamp);
 
             // Limit to MESSAGES_PER_LOAD
             messagesEndReached = messages.length < MESSAGES_PER_LOAD;
@@ -423,7 +423,7 @@ document.addEventListener('firebaseInitialized', function () {
 
             isLoadingMore = false;
 
-            // Maintain scroll position after prepending messages
+            // Adjust scroll position after prepending messages
             if (!chatContainer.dataset.initialScroll) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
                 chatContainer.dataset.initialScroll = 'true';
@@ -433,11 +433,14 @@ document.addEventListener('firebaseInitialized', function () {
                     setupRealtimeListeners();
                 }
             } else {
-                // Adjust scroll position to account for new messages
-                chatContainer.scrollTop = chatContainer.scrollHeight - chatContainer.dataset.prevScrollHeight;
+                // Calculate the height difference and adjust scrollTop
+                const scrollHeightBefore = chatContainer.scrollHeight;
+                chatContainer.dataset.prevScrollHeight = scrollHeightBefore;
+                setTimeout(() => {
+                    const scrollHeightAfter = chatContainer.scrollHeight;
+                    chatContainer.scrollTop += (scrollHeightAfter - scrollHeightBefore);
+                }, 0);
             }
-
-            chatContainer.dataset.prevScrollHeight = chatContainer.scrollHeight;
 
             // Remove excess messages to limit the number of rendered messages
             trimMessages();
