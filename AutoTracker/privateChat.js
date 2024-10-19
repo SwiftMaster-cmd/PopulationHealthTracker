@@ -28,6 +28,9 @@ document.addEventListener('firebaseInitialized', function () {
 
             // Load group chat by default
             selectGroupChat();
+        } else {
+            // Redirect to login page or show login prompt
+            console.log('User is not authenticated');
         }
     });
 
@@ -281,8 +284,6 @@ document.addEventListener('firebaseInitialized', function () {
     }
 
     function removeListeners() {
-        const chatContainer = document.getElementById('chatContainer');
-
         // Remove previous chat listener
         if (chatListener) {
             chatListener.off();
@@ -551,12 +552,12 @@ document.addEventListener('firebaseInitialized', function () {
 
         const messageDiv = createMessageDiv(message);
 
-        // Insert message at the top for older messages
+        // Insert message after Load More button or at the top
         const loadMoreButton = document.getElementById('loadMoreButton');
         if (loadMoreButton) {
             chatContainer.insertBefore(messageDiv, loadMoreButton.nextSibling);
         } else {
-            chatContainer.insertBefore(messageDiv, chatContainer.firstChild.nextSibling);
+            chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
         }
     }
 
@@ -568,7 +569,7 @@ document.addEventListener('firebaseInitialized', function () {
         const time = new Date(message.timestamp).toLocaleString();
         let senderName = '';
 
-        if (message.type === 'liveActivity') {
+        if (message.feedType === 'liveActivity' || message.type === 'liveActivity') {
             senderName = message.userName;
             const saleType = message.saleType;
             const saleTime = new Date(message.saleTime).toLocaleString();
@@ -793,9 +794,6 @@ document.addEventListener('firebaseInitialized', function () {
     function deleteMessage(message) {
         if (confirm('Are you sure you want to delete this message?')) {
             if (selectedChatId === 'groupChat') {
-                const messageRef = database.ref(`groupChatFeed/${message.key}`);
-                const messagesRef = database.ref(`groupChatMessages/${message.key}`);
-
                 const updates = {};
                 updates[`groupChatFeed/${message.key}`] = null;
                 updates[`groupChatMessages/${message.key}`] = null;
@@ -911,30 +909,5 @@ document.addEventListener('firebaseInitialized', function () {
 
             gifResults.appendChild(img);
         });
-    }
-
-    function getSaleType(action, notes) {
-        const normalizedAction = action.toLowerCase();
-        const normalizedNotes = notes.toLowerCase();
-
-        if (/hra/i.test(normalizedAction) || /hra/i.test(normalizedNotes)) {
-            return 'HRA';
-        } else if (
-            /(vbc|transfer|ndr|dental|fe|final expense|national|national debt|national debt relief|value based care|oak street|osh)/i.test(normalizedNotes)
-        ) {
-            return 'Transfer';
-        } else if (/spm|select patient management/i.test(normalizedAction) || /spm|select patient management/i.test(normalizedNotes)) {
-            return 'Select Patient Management';
-        } else if (
-            normalizedAction.includes('srx: enrolled - rx history received') ||
-            normalizedAction.includes('srx: enrolled - rx history not available') ||
-            /select rx/i.test(normalizedAction) ||
-            /select rx/i.test(normalizedNotes)
-        ) {
-            return 'Select RX';
-        } else {
-            // Exclude other options
-            return null;
-        }
     }
 });
