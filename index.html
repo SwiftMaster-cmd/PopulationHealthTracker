@@ -57,20 +57,26 @@
         }
 
         async function registerUser(email, password) {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await sendEmailVerification(userCredential.user);
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
 
-                // Set default authority level to 1 for new users
-                const userAuthorityRef = ref(database, 'users/' + userCredential.user.uid + '/authority');
-                await set(userAuthorityRef, 1);
+        // Set default authority level to 1 for new users
+        const userAuthorityRef = ref(database, 'users/' + userCredential.user.uid + '/authority');
+        await set(userAuthorityRef, 1);
 
-                showErrorMessage('registerError', 'Registration successful! Please check your email for verification.', false);
-            } catch (error) {
-                console.error('Error during registration:', error);
-                showErrorMessage('registerError', 'Failed to register. Please try again.');
-            }
+        showErrorMessage('registerError', 'Registration successful! Please check your email for verification.', false);
+    } catch (error) {
+        console.error('Error during registration:', error);
+        if (error.code === 'auth/email-already-in-use') {
+            showErrorMessage('registerError', 'Email already in use. Please use a different email.');
+        } else if (error.code === 'auth/weak-password') {
+            showErrorMessage('registerError', 'Password is too weak. Please choose a stronger password.');
+        } else {
+            showErrorMessage('registerError', 'Failed to register. Please try again.');
         }
+    }
+}
 
         function showErrorMessage(elementId, message, isError = true) {
             const errorElement = document.getElementById(elementId);
