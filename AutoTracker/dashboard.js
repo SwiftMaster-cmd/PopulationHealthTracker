@@ -431,168 +431,165 @@ function prepareChartData(filteredData, timeFrame) {
 }
 
 
-    function renderChart(canvas, chartType, chartData, actionType, timeFrame, teamFilterValue) {
-        const dataPointCount = chartData.labels.length;
+function renderChart(canvas, chartType, chartData, actionType, timeFrame, teamFilterValue) {
+    const dataPointCount = chartData.labels.length;
 
-        const canvasWidth = dataPointCount > 8 ? dataPointCount * 60 : '100%';
-        canvas.style.width = typeof canvasWidth === 'number' ? `${canvasWidth}px` : canvasWidth;
-        canvas.style.height = '400px';
+    const canvasWidth = dataPointCount > 8 ? dataPointCount * 60 : '100%';
+    canvas.style.width = typeof canvasWidth === 'number' ? `${canvasWidth}px` : canvasWidth;
+    canvas.style.height = '400px';
 
-        const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
 
-        const colors = generateValueBasedColors(chartData.data);
+    const colors = generateValueBasedColors(chartData.data);
 
-        const datasets = {
-            label: `${actionType} (${timeFrame})`,
-            data: chartData.data,
-            borderWidth: 2,
-        };
+    const datasets = {
+        label: `${actionType} (${timeFrame})`,
+        data: chartData.data,
+        borderWidth: 2,
+    };
 
-        if (chartType === 'line') {
-            datasets.borderColor = '#FFFFFF'; 
-            datasets.pointBackgroundColor = colors; 
-            datasets.fill = true; 
-            datasets.backgroundColor = 'rgba(33, 150, 243, 0.5)';
-        } else {
-            datasets.backgroundColor = colors;
-            datasets.borderColor = colors;
-            datasets.hoverBackgroundColor = colors;
-            datasets.hoverBorderColor = colors;
-        }
+    if (chartType === 'line') {
+        datasets.borderColor = '#FFFFFF'; 
+        datasets.pointBackgroundColor = colors; 
+        datasets.fill = true; 
+        datasets.backgroundColor = 'rgba(33, 150, 243, 0.5)';
+    } else {
+        datasets.backgroundColor = colors;
+        datasets.borderColor = colors;
+        datasets.hoverBackgroundColor = colors;
+        datasets.hoverBorderColor = colors;
+    }
 
-        const chartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    bottom: 20,
-                },
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: {
+                bottom: 20,
             },
-            scales: chartType !== 'pie' ? {
-                x: {
-                    title: {
-                        display: true,
-                        text: timeFrame === 'today' ? 'Hour of Day' : 'Date',
-                        color: '#ffffff',
-                        font: {
-                            family: 'Inter',
-                            size: 16,
-                            weight: '500',
-                        },
-                    },
-                    ticks: {
-                        color: '#ffffff',
-                        font: {
-                            family: 'Inter',
-                            size: 14,
-                        },
-                        autoSkip: dataPointCount > 15,
-                        maxTicksLimit: dataPointCount > 15 ? Math.floor(dataPointCount / 2) : undefined,
-                        callback: function(value, index, values) {
-                            if (timeFrame === 'today') {
-                                return this.getLabelForValue(value); 
-                            } else {
-                                if (dataPointCount > 15 && index % 2 !== 0) {
-                                    return null;
-                                }
-                                return this.getLabelForValue(value);
-                            }
-                        },
-                    },
-                    grid: {
-                        display: false,
-                    },
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Count',
-                        color: '#ffffff',
-                        font: {
-                            family: 'Inter',
-                            size: 16,
-                            weight: '500',
-                        },
-                    },
-                    ticks: {
-                        color: '#ffffff',
-                        font: {
-                            family: 'Inter',
-                            size: 14,
-                        },
-                        beginAtZero: true,
-                        precision: 0,
-                    },
-                    grid: {
-                        color: '#444444',
-                    },
-                },
-            } : {},
-            plugins: {
-                legend: {
-                    display: chartType !== 'pie',
-                    labels: {
-                        color: '#ffffff',
-                        font: {
-                            family: 'Inter',
-                            size: 14,
-                        },
-                    },
-                },
-                tooltip: {
-                    backgroundColor: '#2e2e2e',
-                    titleColor: '#ffffff',
-                    bodyColor: '#ffffff',
-                    borderColor: '#444444',
-                    borderWidth: 1,
-                    displayColors: false,
-                    titleFont: {
+        },
+        scales: chartType !== 'pie' ? {
+            x: {
+                title: {
+                    display: true,
+                    text: timeFrame === 'today' ? 'Hour of Day' : 'Date',
+                    color: '#ffffff',
+                    font: {
                         family: 'Inter',
-                        size: 14,
+                        size: 16,
                         weight: '500',
                     },
-                    bodyFont: {
+                },
+                ticks: {
+                    color: '#ffffff',
+                    font: {
                         family: 'Inter',
-                        size: 12,
+                        size: 14,
                     },
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.dataset.label || '';
-                            if (chartType === 'pie') {
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const value = context.parsed;
-                                const percentage = ((value / total) * 100).toFixed(2) + '%';
-                                return `${label}: ${value} (${percentage})`;
-                            } else {
-                                return `${label}: ${context.parsed.y}`;
-                            }
+                    autoSkip: false,  // Ensures all data points are represented
+                    callback: function(value, index) {
+                        // Only show the non-empty labels
+                        if (chartData.labels[index] === '') {
+                            return null;
                         }
+                        return this.getLabelForValue(value);
+                    },
+                },
+                grid: {
+                    display: false,
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Count',
+                    color: '#ffffff',
+                    font: {
+                        family: 'Inter',
+                        size: 16,
+                        weight: '500',
+                    },
+                },
+                ticks: {
+                    color: '#ffffff',
+                    font: {
+                        family: 'Inter',
+                        size: 14,
+                    },
+                    beginAtZero: true,
+                    precision: 0,
+                },
+                grid: {
+                    color: '#444444',
+                },
+            },
+        } : {},
+        plugins: {
+            legend: {
+                display: chartType !== 'pie',
+                labels: {
+                    color: '#ffffff',
+                    font: {
+                        family: 'Inter',
+                        size: 14,
                     },
                 },
             },
-            animation: {
-                duration: 1500,
-                easing: 'easeInOutQuad',
+            tooltip: {
+                backgroundColor: '#2e2e2e',
+                titleColor: '#ffffff',
+                bodyColor: '#ffffff',
+                borderColor: '#444444',
+                borderWidth: 1,
+                displayColors: false,
+                titleFont: {
+                    family: 'Inter',
+                    size: 14,
+                    weight: '500',
+                },
+                bodyFont: {
+                    family: 'Inter',
+                    size: 12,
+                },
+                callbacks: {
+                    label: function(context) {
+                        const label = context.dataset.label || '';
+                        if (chartType === 'pie') {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const value = context.parsed;
+                            const percentage = ((value / total) * 100).toFixed(2) + '%';
+                            return `${label}: ${value} (${percentage})`;
+                        } else {
+                            return `${label}: ${context.parsed.y}`;
+                        }
+                    }
+                },
             },
-            custom: {
-                timeFrame: timeFrame,
-                actionType: actionType,
-                chartType: chartType,
-                teamFilterValue: teamFilterValue
-            }
-        };
+        },
+        animation: {
+            duration: 1500,
+            easing: 'easeInOutQuad',
+        },
+        custom: {
+            timeFrame: timeFrame,
+            actionType: actionType,
+            chartType: chartType, 
+            teamFilterValue: teamFilterValue 
+        }
+    };
 
-        const chart = new Chart(ctx, {
-            type: chartType,
-            data: {
-                labels: chartData.labels,
-                datasets: [datasets]
-            },
-            options: chartOptions,
-        });
+    const chart = new Chart(ctx, {
+        type: chartType,
+        data: {
+            labels: chartData.labels,
+            datasets: [datasets]
+        },
+        options: chartOptions,
+    });
 
-        return chart;
-    }
+    return chart;
+}
+
 
     function generateValueBasedColors(data) {
         const maxValue = Math.max(...data);
