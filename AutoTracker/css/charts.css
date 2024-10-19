@@ -23,12 +23,12 @@
 }
 
 /* Charts Container */
-.charts-container {
+ .container{
     width: 95%;
     max-width: 95%;
 
 }/* Charts Container */
-.container{
+.charts-container{
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
