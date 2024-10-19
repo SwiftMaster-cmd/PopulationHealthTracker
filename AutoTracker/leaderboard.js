@@ -16,6 +16,9 @@ document.addEventListener('firebaseInitialized', function() {
     // Giphy API Key
     const GIPHY_API_KEY = 'maeaJ3Qxv4p2tFD222X3ccfwBhK3ju2J'; // Replace with your actual Giphy API key
 
+    let currentCommentForm = null;
+    let currentGifPreviewContainer = null;
+
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUserId = user.uid;
@@ -455,12 +458,10 @@ document.addEventListener('firebaseInitialized', function() {
                     commentInput.value = '';
                     commentForm.selectedGifUrl = null;
                     gifPreviewContainer.innerHTML = ''; // Clear GIF preview
-                    giphyResults.innerHTML = ''; // Clear Giphy results
-                    giphySearchInput.value = ''; // Clear search input
                 }
             });
 
-            // Create input container for side-by-side inputs
+            // Create input container for comment input
             const inputContainer = document.createElement('div');
             inputContainer.classList.add('input-container');
 
@@ -470,43 +471,23 @@ document.addEventListener('firebaseInitialized', function() {
             commentInput.placeholder = 'Add a comment...';
             commentInput.classList.add('comment-input');
 
-            // Giphy Search Input
-            const giphySearchInput = document.createElement('input');
-            giphySearchInput.type = 'text';
-            giphySearchInput.placeholder = 'Search for GIFs';
-            giphySearchInput.classList.add('giphy-search-input');
-
-            // Append inputs to input container
+            // Append comment input to input container
             inputContainer.appendChild(commentInput);
-            inputContainer.appendChild(giphySearchInput);
+
+            // Add GIF Button
+            const addGifButton = document.createElement('button');
+            addGifButton.type = 'button';
+            addGifButton.textContent = 'Add GIF';
+            addGifButton.classList.add('add-gif-button');
+
+            addGifButton.addEventListener('click', () => {
+                // Open GIF modal
+                openGifModal(commentForm, gifPreviewContainer);
+            });
 
             // GIF Preview Container
             const gifPreviewContainer = document.createElement('div');
             gifPreviewContainer.classList.add('gif-preview-container');
-
-            // Giphy Results Container
-            const giphyResultsContainer = document.createElement('div');
-            giphyResultsContainer.classList.add('giphy-results-container');
-
-            // Giphy Results
-            const giphyResults = document.createElement('div');
-            giphyResults.classList.add('giphy-results');
-
-            giphyResultsContainer.appendChild(giphyResults);
-
-            // Handle Giphy search input
-            let giphySearchTimeout;
-            giphySearchInput.addEventListener('input', () => {
-                clearTimeout(giphySearchTimeout);
-                const query = giphySearchInput.value.trim();
-                if (query.length > 0) {
-                    giphySearchTimeout = setTimeout(() => {
-                        searchGiphy(query, giphyResults, commentForm, gifPreviewContainer);
-                    }, 500);
-                } else {
-                    giphyResults.innerHTML = '';
-                }
-            });
 
             // Comment Submit Button
             const commentSubmit = document.createElement('button');
@@ -514,8 +495,8 @@ document.addEventListener('firebaseInitialized', function() {
             commentSubmit.textContent = 'Post';
 
             // Append elements to comment form
-            commentForm.appendChild(giphyResultsContainer); // GIF container above the input fields
-            commentForm.appendChild(inputContainer); // Inputs side by side
+            commentForm.appendChild(inputContainer);
+            commentForm.appendChild(addGifButton);
             commentForm.appendChild(gifPreviewContainer);
             commentForm.appendChild(commentSubmit);
 
@@ -597,36 +578,87 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    // Giphy Functions
-    function searchGiphy(query, giphyResults, commentForm, gifPreviewContainer) {
-        giphyResults.innerHTML = 'Loading...';
+    function openGifModal(commentForm, gifPreviewContainer) {
+        currentCommentForm = commentForm;
+        currentGifPreviewContainer = gifPreviewContainer;
+        const gifModal = document.getElementById('gifModal');
+        gifModal.style.display = 'block';
+    }
 
-        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=20&rating=G`)
+    // Modal Elements
+    const gifModal = document.getElementById('gifModal');
+    const gifModalClose = document.querySelector('.gif-modal-close');
+    const gifSearchInput = document.getElementById('gifSearchInput');
+    const gifResults = document.getElementById('gifResults');
+
+    // Close Modal when 'x' is clicked
+    gifModalClose.addEventListener('click', () => {
+        gifModal.style.display = 'none';
+        gifSearchInput.value = '';
+        gifResults.innerHTML = '';
+    });
+
+    // Close Modal when clicking outside of modal content
+    window.addEventListener('click', (event) => {
+        if (event.target == gifModal) {
+            gifModal.style.display = 'none';
+            gifSearchInput.value = '';
+            gifResults.innerHTML = '';
+        }
+    });
+
+    // Handle GIF search input
+    let gifSearchTimeout;
+    gifSearchInput.addEventListener('input', () => {
+        clearTimeout(gifSearchTimeout);
+        const query = gifSearchInput.value.trim();
+        if (query.length > 0) {
+            gifSearchTimeout = setTimeout(() => {
+                searchGiphy(query, gifResults);
+            }, 500);
+        } else {
+            gifResults.innerHTML = '';
+        }
+    });
+
+    // Update searchGiphy function to use gifResults and handle selection
+    function searchGiphy(query, gifResults) {
+        gifResults.innerHTML = 'Loading...';
+
+        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=50&rating=G`)
             .then(response => response.json())
             .then(data => {
-                giphyResults.innerHTML = '';
+                gifResults.innerHTML = '';
                 data.data.forEach(gif => {
                     const img = document.createElement('img');
-                    img.src = gif.images.fixed_width.url;
+                    img.src = gif.images.fixed_width_small.url;
                     img.alt = gif.title;
                     img.addEventListener('click', () => {
-                        selectGif(gif.images.fixed_width.url, commentForm, gifPreviewContainer);
+                        selectGif(gif.images.fixed_width.url);
                     });
-                    giphyResults.appendChild(img);
+                    gifResults.appendChild(img);
                 });
             })
             .catch(error => {
                 console.error('Error fetching Giphy API:', error);
-                giphyResults.innerHTML = 'Error loading GIFs.';
+                gifResults.innerHTML = 'Error loading GIFs.';
             });
     }
 
-    function selectGif(gifUrl, commentForm, gifPreviewContainer) {
-        // Set the selected GIF URL
-        commentForm.selectedGifUrl = gifUrl;
+    // Update selectGif function
+    function selectGif(gifUrl) {
+        if (currentCommentForm && currentGifPreviewContainer) {
+            // Set the selected GIF URL
+            currentCommentForm.selectedGifUrl = gifUrl;
 
-        // Show GIF preview in the comment form
-        gifPreviewContainer.innerHTML = `<img src="${gifUrl}" alt="Selected GIF" class="selected-gif-preview">`;
+            // Show GIF preview in the comment form
+            currentGifPreviewContainer.innerHTML = `<img src="${gifUrl}" alt="Selected GIF" class="selected-gif-preview">`;
+
+            // Close the modal
+            gifModal.style.display = 'none';
+            gifSearchInput.value = '';
+            gifResults.innerHTML = '';
+        }
     }
 
 });

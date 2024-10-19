@@ -380,33 +380,79 @@ button:hover {
 
  
 
+/* styles.css */
 
-.giphy-search-input {
-    flex: 1;
+/* ... Existing styles ... */
+
+/* The Modal (background) */
+.gif-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
 }
 
-/* Giphy Results Container */
-.giphy-results-container {
+/* Modal Content */
+.gif-modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 5% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Adjust as needed */
+    max-width: 800px;
     position: relative;
+    border-radius: 8px;
 }
 
-/* Giphy Results */
-.giphy-results {
-    max-height: 300px; /* Adjust as needed */
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    overflow-y: auto;
-    margin-top: 10px;
-}
-
-.giphy-results img {
-    width: calc(50% - 10px); /* Adjust for larger GIFs */
-    height: auto;
+/* Close Button */
+.gif-modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
 }
 
-.giphy-results img:hover {
+.gif-modal-close:hover,
+.gif-modal-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* GIF Search Input */
+#gifSearchInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* GIF Results */
+.gif-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.gif-results img {
+    width: calc(20% - 10px); /* Adjust for smaller GIFs */
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.gif-results img:hover {
     opacity: 0.8;
 }
 
@@ -420,9 +466,35 @@ button:hover {
     height: auto;
 }
 
-/* Comment GIFs */
-.comment-gif {
-    max-width: 100%;
-    height: auto;
+/* Add GIF Button */
+.add-gif-button {
     margin-top: 10px;
+    padding: 8px 16px;
+}
+
+/* Comment Form */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.comment-form button[type="submit"] {
+    padding: 8px 16px;
+    margin-top: 10px;
+    align-self: flex-start;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-container input[type="text"] {
+    padding: 8px;
+    width: 100%;
+}
+
+.activity-buttons button {
+    margin-right: 10px;
 }
