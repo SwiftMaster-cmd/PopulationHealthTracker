@@ -21,8 +21,11 @@
 .charts-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
+    justify-content: space-between; /* Distribute space between charts */
+    gap: 20px; /* Space between charts */
+    margin: 0 auto; /* Center the container */
+    width: 95%; /* Allow the container to occupy 95% of the screen width */
+    max-width: 95%; /* Ensure the container does not exceed 95% */
     margin-bottom: 40px;
 }
 
@@ -34,8 +37,7 @@
     border-radius: var(--radius);
     margin-bottom: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 600px;
+    width: 48%; /* Set chart width to 48% to allow two charts side by side */
 }
 
 /* Remove Chart Button */
@@ -97,6 +99,6 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .chart-wrapper {
-        max-width: 100%;
+        width: 100%; /* On smaller screens, charts take full width */
     }
 }
