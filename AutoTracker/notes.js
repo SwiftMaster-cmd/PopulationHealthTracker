@@ -84,6 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const folderRef = database.ref(`notes/${currentUserId}/folders`).push();
             folderRef.set({
                 name: folderName
+            }).then(() => {
+                console.log('Folder added successfully.');
+            }).catch(error => {
+                console.error('Error adding folder:', error);
+                alert('Failed to add folder: ' + error.message);
             });
         }
     }
@@ -123,6 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
             selectNote(noteRef.key);
+        }).catch(error => {
+            console.error('Error adding note:', error);
+            alert('Failed to add note: ' + error.message);
         });
     }
 
@@ -131,14 +139,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const noteRef = database.ref(`notes/${currentUserId}/notes/${noteId}`);
         noteRef.once('value').then(snapshot => {
             const note = snapshot.val();
-            document.getElementById('noteTitle').value = note.title;
-            quill.setContents(quill.clipboard.convert(note.content));
-            document.getElementById('mainContent').classList.remove('hidden');
-            // Highlight selected note
-            if (noteItem) {
-                document.querySelectorAll('#notesList li').forEach(li => li.classList.remove('selected'));
-                noteItem.classList.add('selected');
+            if (note) {
+                document.getElementById('noteTitle').value = note.title;
+                quill.setContents(quill.clipboard.convert(note.content));
+                document.getElementById('mainContent').classList.remove('hidden');
+                // Highlight selected note
+                if (noteItem) {
+                    document.querySelectorAll('#notesList li').forEach(li => li.classList.remove('selected'));
+                    noteItem.classList.add('selected');
+                }
+            } else {
+                console.error('Note not found:', noteId);
+                alert('Note not found.');
             }
+        }).catch(error => {
+            console.error('Error loading note:', error);
+            alert('Failed to load note: ' + error.message);
         });
     }
 
@@ -153,7 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
             // Update the note title in the list
-            document.querySelector(`#notesList li.selected`).textContent = title || 'Untitled';
+            const selectedNoteItem = document.querySelector(`#notesList li.selected`);
+            if (selectedNoteItem) {
+                selectedNoteItem.textContent = title || 'Untitled';
+            }
             alert('Note saved successfully.');
         }).catch(error => {
             console.error('Error saving note:', error);
@@ -171,7 +190,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 quill.setContents([]);
                 document.getElementById('mainContent').classList.add('hidden');
                 // Remove note from list
-                document.querySelector(`#notesList li.selected`).remove();
+                const selectedNoteItem = document.querySelector(`#notesList li.selected`);
+                if (selectedNoteItem) {
+                    selectedNoteItem.remove();
+                }
                 alert('Note deleted successfully.');
             }).catch(error => {
                 console.error('Error deleting note:', error);
@@ -192,17 +214,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function searchNotes() {
         const query = document.getElementById('searchNotesInput').value.toLowerCase();
-        const notesRef = database.ref(`notes/${currentUserId}/notes`);
+        const notesRef = database.ref(`notes/${currentUserId}/notes`).orderByChild('folderId').equalTo(currentFolderId);
         notesRef.once('value').then(snapshot => {
             const notes = snapshot.val() || {};
             const filteredNotes = {};
             for (const noteId in notes) {
                 const note = notes[noteId];
-                if (note.folderId === currentFolderId && note.title.toLowerCase().includes(query)) {
+                if (note.title.toLowerCase().includes(query)) {
                     filteredNotes[noteId] = note;
                 }
             }
             renderNotes(filteredNotes);
+        }).catch(error => {
+            console.error('Error searching notes:', error);
+            alert('Failed to search notes: ' + error.message);
         });
     }
 });
