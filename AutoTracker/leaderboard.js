@@ -14,7 +14,7 @@ document.addEventListener('firebaseInitialized', function() {
     let currentUserId = null;
 
     // Giphy API Key
-    const GIPHY_API_KEY = 'YOUR_GIPHY_API_KEY'; // Replace with your actual Giphy API key
+    const GIPHY_API_KEY = 'maeaJ3Qxv4p2tFD222X3ccfwBhK3ju2J'; // Replace with your actual Giphy API key
 
     auth.onAuthStateChanged(user => {
         if (user) {
