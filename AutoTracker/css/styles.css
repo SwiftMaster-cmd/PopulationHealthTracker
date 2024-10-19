@@ -1,997 +1,280 @@
-/* styles.css */
-
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-/* Global Styles */
+/* General Styles */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     font-family: 'Inter', sans-serif;
     background-color: #121212;
     color: #E0E0E0;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-}
-
-/* Container */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px 0;
-}
-
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-    color: #FFFFFF;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-p {
     line-height: 1.6;
-    margin-bottom: 15px;
 }
 
-/* Filter Container */
-.filter-container {
-    background-color: #1E1E1E;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 40px;
-}
-
-.filter-row {
+header {
+    background-color: #1F1F1F;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 20px;
+    justify-content: center;
+    padding: 15px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.filter-container label {
-    font-size: 18px;
-    font-weight: 500;
-    margin-right: 15px;
-    min-width: 150px;
-    color: #E0E0E0;
-}
-
-.filter-container select,
-.filter-container input[type="text"] {
-    background-color: #2A2A2A;
-    color: #E0E0E0;
-    border: 1px solid #444444;
-    border-radius: 6px;
-    padding: 12px 16px;
-    font-size: 16px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    min-width: 250px;
-    flex: 1;
-}
-
-.filter-container select option {
-    background-color: #2A2A2A;
-    color: #E0E0E0;
-}
-
-/* Buttons */
-.filter-container button {
-    background-color: #3A3A3A;
-    color: #E0E0E0;
-    border: 1px solid #444444;
-    border-radius: 6px;
+.toggle-section-button {
+    background-color: #007BFF;
+    color: #FFF;
+    border: none;
     padding: 12px 20px;
-    font-size: 16px;
-    margin-right: 15px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.filter-container button:hover {
-    background-color: #4A4A4A;
-}
-
-#addChartButton {
-    background-color: #1E88E5;
-    border-color: #1E88E5;
-}
-
-#addChartButton:hover {
-    background-color: #1565C0;
-}
-
-#savePresetButton {
-    background-color: #43A047;
-    border-color: #43A047;
-}
-
-#savePresetButton:hover {
-    background-color: #2E7D32;
-}
-
-#loadPresetButton {
-    background-color: #F9A825;
-    border-color: #F9A825;
-}
-
-#loadPresetButton:hover {
-    background-color: #F57F17;
-}
-
-#deletePresetButton {
-    background-color: #E53935;
-    border-color: #E53935;
-}
-
-#deletePresetButton:hover {
-    background-color: #D32F2F;
-}
-
-/* Preset Controls */
-.preset-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top: 20px;
-}
-
-/* Leaderboard Section */
-.leaderboard-section {
-    background-color: #1E1E1E;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 40px;
-}
-
-.leaderboard-section h2 {
-    margin-bottom: 20px;
-}
-
-.leaderboard-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.leaderboard-filters label {
-    font-size: 18px;
-    font-weight: 500;
-    margin-right: 15px;
-    min-width: 150px;
-    color: #E0E0E0;
-}
-
-.leaderboard-filters select {
-    background-color: #2A2A2A;
-    color: #E0E0E0;
-    border: 1px solid #444444;
+    margin: 0 10px;
     border-radius: 6px;
-    padding: 12px 16px;
-    font-size: 16px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    min-width: 250px;
-    flex: 1;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.leaderboard-filters select option {
-    background-color: #2A2A2A;
-    color: #E0E0E0;
+.toggle-section-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
 }
 
-/* Charts Container */
-.charts-container {
+main.content {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
-    margin-bottom: 40px;
 }
 
-.chart-wrapper {
-    position: relative;
+/* Sections */
+section.section {
     background-color: #1E1E1E;
-    border-radius: 8px;
-    padding: 20px;
-    flex: 1 1 calc(50% - 20px);
-    max-width: calc(50% - 20px);
-    height: 450px;
-    overflow: hidden;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1 1 100%;
 }
 
-.chart-content {
-    overflow-x: auto;
-    height: 100%;
+section.section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-.chart-content canvas {
-    display: block;
-}
-
-.total-count-display {
-    font-size: 18px;
-    font-weight: 500;
-    color: #FFFFFF;
-    margin-bottom: 10px;
-}
-
-/* Remove Chart Button */
-.remove-chart-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: transparent;
-    color: #E0E0E0;
+h2 {
     font-size: 24px;
+    margin-bottom: 20px;
+    color: #FFF;
+}
+
+/* Leaderboard Section */
+.leaderboard-section .leaderboard-filters {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.leaderboard-section label {
+    color: #E0E0E0;
+    font-size: 16px;
+}
+
+.leaderboard-section select {
+    background-color: #333;
+    color: #FFF;
+    padding: 10px;
+    border-radius: 6px;
     border: none;
     cursor: pointer;
 }
 
-.remove-chart-button:hover {
-    color: #E53935;
+/* Chat Section */
+.private-chat-section {
+    display: flex;
+    background-color: #1F1F1F;
+    border-radius: 10px;
+}
+
+.chat-sidebar {
+    width: 250px;
+    background-color: #2A2A2A;
+    padding: 20px;
+    border-right: 1px solid #333;
+}
+
+.chat-sidebar button {
+    width: 100%;
+    background-color: #1E88E5;
+    color: #FFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.chat-sidebar button:hover {
+    background-color: #1565C0;
+}
+
+.chat-main {
+    flex: 1;
+    padding: 20px;
+}
+
+.chat-main h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+}
+
+.chat-main #chatContainer {
+    background-color: #2A2A2A;
+    padding: 15px;
+    border-radius: 8px;
+    height: 300px;
+    overflow-y: auto;
+}
+
+.chat-main form {
+    margin-top: 20px;
+    display: flex;
+}
+
+.chat-main input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    margin-right: 10px;
+    background-color: #333;
+    color: #FFF;
+}
+
+.chat-main button[type="submit"] {
+    background-color: #28A745;
+    color: #FFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-main button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Live Activities Section */
+.live-activities-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.live-activities-section #liveActivitiesContainer {
+    background-color: #2A2A2A;
+    padding: 15px;
+    border-radius: 8px;
+    min-height: 200px;
+    overflow-y: auto;
+}
+
+/* Charts Section */
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
 }
 
 /* Sales Data Section */
 .sales-data-section {
     background-color: #1E1E1E;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .sales-filters {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    gap: 20px;
     margin-bottom: 20px;
 }
 
-.sales-filters label {
-    font-size: 18px;
-    font-weight: 500;
-    margin-right: 15px;
-    min-width: 150px;
-    color: #E0E0E0;
-}
-
-.sales-filters select,
-.sales-filters input[type="text"] {
-    background-color: #2A2A2A;
-    color: #E0E0E0;
-    border: 1px solid #444444;
+.sales-filters input,
+.sales-filters select {
+    background-color: #333;
+    color: #FFF;
+    padding: 10px;
     border-radius: 6px;
-    padding: 12px 16px;
-    font-size: 16px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    min-width: 250px;
-    flex: 1;
+    border: none;
 }
 
-/* Sales Data Table */
-.sales-table-container {
-    width: 100%;
-    overflow-x: auto;
-    background-color: #1E1E1E;
-    padding: 20px;
+#toggleTableButton, #showMoreButton {
+    background-color: #007BFF;
+    color: #FFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#toggleTableButton:hover, #showMoreButton:hover {
+    background-color: #0056b3;
+}
+
+/* Notifications Section */
+.notifications-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.notifications-section #notificationsContainer {
+    background-color: #2A2A2A;
+    padding: 15px;
     border-radius: 8px;
 }
 
-.sales-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.sales-table th,
-.sales-table td {
-    text-align: left;
-    padding: 12px 15px;
-    border-bottom: 1px solid #333333;
-    color: #E0E0E0;
-    font-size: 14px;
-}
-
-.sales-table th {
-    background-color: #212121;
-    font-weight: 600;
-}
-
-.sales-table tr:hover {
-    background-color: #2A2A2A;
-}
-
-.sales-table tr:nth-child(even) {
-    background-color: #1E1E1E;
-}
-
-/* Notes Column */
-.sales-table td:nth-child(3),
-.sales-table th:nth-child(3) {
-    max-width: 250px;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-}
-
-/* Show More Button */
-#showMoreButton {
-    display: block;
-    margin: 20px auto;
-    background-color: #3A3A3A;
-    color: #E0E0E0;
-    border: 1px solid #444444;
-    border-radius: 6px;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#showMoreButton:hover {
-    background-color: #4A4A4A;
-}
-
-/* Toggle Buttons */
-#toggleChartControlsButton,
-#toggleTableButton {
-    background-color: #3A3A3A;
-    color: #E0E0E0;
-    border: 1px solid #444444;
-    border-radius: 6px;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-bottom: 20px;
-}
-
-#toggleChartControlsButton:hover,
-#toggleTableButton:hover {
-    background-color: #4A4A4A;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .chart-wrapper {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-
-    .filter-container,
-    .preset-controls,
-    .leaderboard-filters,
-    .sales-filters {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .filter-container label,
-    .filter-container select,
-    .filter-container input[type="text"],
-    .filter-container button,
-    .preset-controls input[type="text"],
-    .preset-controls select,
-    .preset-controls button,
-    .leaderboard-filters label,
-    .leaderboard-filters select,
-    .sales-filters label,
-    .sales-filters select,
-    .sales-filters input[type="text"] {
-        margin-right: 0;
-        width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    .filter-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .filter-container label,
-    .filter-container select,
-    .filter-container input[type="text"],
-    .filter-container button,
-    .preset-controls input[type="text"],
-    .preset-controls select,
-    .preset-controls button,
-    .leaderboard-filters label,
-    .leaderboard-filters select,
-    .sales-filters label,
-    .sales-filters select,
-    .sales-filters input[type="text"] {
-        margin-right: 0;
-        width: 100%;
-    }
-}
-
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #1E1E1E;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #424242;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: #555555;
-}
-
-
-/* Settings Section */
-.settings-section {
-    background-color: #1E1E1E;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 40px;
-}
-
-.settings-section h2 {
-    margin-bottom: 20px;
-}
-
-.settings-section label {
-    font-size: 18px;
-    font-weight: 500;
-    margin-right: 15px;
-    color: #E0E0E0;
-}
-
-.settings-section input[type="text"] {
-    background-color: #2A2A2A;
-    color: #E0E0E0;
-    border: 1px solid #444444;
-    border-radius: 6px;
-    padding: 12px 16px;
-    font-size: 16px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    width: 300px;
-}
-
-#saveNameButton {
-    background-color: #1E88E5;
-    border-color: #1E88E5;
-    color: #FFFFFF;
-    border-radius: 6px;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#saveNameButton:hover {
-    background-color: #1565C0;
-}
-
-/* Existing styles... */
-
-/* Styles for Live Activities Section */
-.live-activities-section {
-    margin-top: 20px;
-    background-color: #000; /* Black background */
-    color: #fff;            /* White text */
-    padding: 20px;
-    border-radius: 5px;
-}
-
-.live-activity {
-    padding: 10px 0;
-    border-bottom: 1px solid #444;
-}
-
-.live-activity:last-child {
-    border-bottom: none;
-}
-
-.live-activity p {
-    margin: 0;
-}
-
-/* Existing styles... */
-
-.live-activities-section {
-    /* ... existing styles ... */
-    font-size: 16px;
-    font-family: Arial, sans-serif;
-}
-/* Styles for Comments Section */
-.comments-section {
-    margin-top: 15px;
-    background-color: #111; /* Slightly lighter than black for contrast */
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.comments-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0 0 10px 0;
-}
-
-.comments-list li {
-    padding: 5px 0;
-    border-bottom: 1px solid #333;
-}
-
-.comments-list li:last-child {
-    border-bottom: none;
-}
-
-.comment-form {
-    display: flex;
-}
-
-.comment-form input[type="text"] {
-    flex: 1;
-    padding: 5px;
-    border: 1px solid #333;
-    border-radius: 3px;
-    background-color: #222;
-    color: #fff;
-}
-
-.comment-form button {
-    margin-left: 5px;
-    padding: 5px 10px;
-    background-color: #28a745; /* Bootstrap success color */
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.comment-form button:hover {
-    background-color: #218838;
-}
-/* Styles for Notifications Section */
-.notifications-section {
-    margin-top: 20px;
-    background-color: #222;
-    color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-}
-
-.notification {
-    padding: 10px;
-    border-bottom: 1px solid #444;
-}
-
-.notification:last-child {
-    border-bottom: none;
-}
-
-.notification p {
-    margin: 0;
-}
-
-.notification-time {
-    font-size: 12px;
-    color: #ccc;
-}
-
-
 #clearNotificationsButton {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #dc3545; /* Danger color */
-    color: #fff;
+    background-color: #DC3545;
+    color: #FFF;
+    padding: 10px 15px;
     border: none;
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 #clearNotificationsButton:hover {
-    background-color: #c82333;
+    background-color: #C82333;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Styles for Private and Group Chat */
-.private-chat-section {
-    display: flex;
-    height: 500px; /* Adjust as needed */
-    background-color: #111;
-    color: #fff;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-/* Chat Sidebar */
-.chat-sidebar {
-    width: 200px;
-    background-color: #222;
-    padding: 10px;
-    box-sizing: border-box;
-    overflow-y: auto;
-}
-
-.chat-sidebar button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007BFF; /* Primary color */
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.chat-sidebar button:hover {
-    background-color: #0056b3;
-}
-
-#chatList {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 10px;
-}
-
-#chatList li {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #333;
-}
-
-#chatList li:hover {
-    background-color: #333;
-}
-
-/* Chat Main Area */
-.chat-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-#chatHeader {
-    margin: 0 0 10px 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #333;
-}
-
-#chatContainer {
-    flex: 1;
-    overflow-y: auto;
-    background-color: #222;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.chat-message {
-    margin-bottom: 10px;
-}
-
-.chat-message p {
-    margin: 0;
-}
-
-.chat-time {
-    font-size: 12px;
-    color: #ccc;
-}
-
-.chat-gif {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-
-/* Message Form */
-#messageForm {
-    display: flex;
-    margin-top: 10px;
-}
-
-#messageInput {
-    flex: 1;
-    padding: 5px;
-    border: 1px solid #333;
-    border-radius: 3px;
-    background-color: #222;
-    color: #fff;
-}
-
-#messageForm button {
-    margin-left: 5px;
-    padding: 5px 10px;
-    background-color: #28a745; /* Success color */
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-#messageForm button:hover {
-    background-color: #218838;
-}
-
-/* GIF Search Container */
-#gifSearchContainer {
-    margin-top: 10px;
-}
-
-#gifSearchInput {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #333;
-    border-radius: 3px;
-    background-color: #222;
-    color: #fff;
-    box-sizing: border-box;
-}
-
-#gifResults {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 10px;
-    max-height: 200px; /* Adjust the max height as needed */
-    overflow-y: auto;
-}
-
-.gif-result {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-/* User List Container Styles */
-#userListContainer {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #222;
-    padding: 20px;
-    border-radius: 5px;
-    z-index: 1000;
-}
-
-#userSearchInput {
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #333;
-    border-radius: 3px;
-    background-color: #111;
-    color: #fff;
-}
-
-#userList {
-    list-style-type: none;
-    padding: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-#userList li {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #333;
-}
-
-#userList li:hover {
-    background-color: #333;
-}
-
-/* Overlay to darken background when user list is displayed */
-#userListContainer::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: -1;
-}
-/* Toggle Chat List Button */
-#toggleChatListButton {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 10px;
-    background-color: #007BFF; /* Primary color */
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    z-index: 1000; /* Ensure it is above other elements */
-}
-
-#toggleChatListButton:hover {
-    background-color: #0056b3;
-}
-
-/* Hide the chat sidebar */
-.chat-sidebar.hidden {
-    display: none;
-}
-
-/* Expand chat-main to full width when sidebar is hidden */
-.chat-main.full-width {
-    width: 100%;
-}
-
-/* Adjusted Private Chat Section */
-.private-chat-section {
-    position: relative;
-    display: flex;
-    height: 500px; /* Adjust as needed */
-    background-color: #111;
-    color: #fff;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.private-chat-section.sidebar-hidden .chat-sidebar {
-    display: none;
-}
-
-.private-chat-section.sidebar-hidden .chat-main {
-    width: 100%;
-}
-/* Header Styles */
-#mainHeader {
-    background-color: #222;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.toggle-section-button {
-    padding: 10px 15px;
-    margin: 5px;
-    background-color: #007BFF; /* Primary color */
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.toggle-section-button:hover {
-    background-color: #0056b3;
-}
-
-/* Hide Sections */
-.hidden-section {
-    display: none;
-}
-
-/* Adjust spacing between sections */
-body > div {
-    margin: 20px 0;
-}
-
-/* Additional styles for your sections if needed */
-/* ... */
-
-#notesApp {
-    display: flex;
-    height: 100vh;
-}
-
-/* Sidebar Styles */
-#sidebar {
-    width: 250px;
-    background-color: #f5f5f5;
-    border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-}
-
-#foldersSection,
-#notesListSection {
-    padding: 10px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-#foldersSection h2,
-#notesListSection h2 {
-    margin-top: 0;
-}
-
-#foldersList,
-#notesList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#foldersList li,
-#notesList li {
-    padding: 8px;
-    cursor: pointer;
-}
-
-#foldersList li:hover,
-#notesList li:hover {
-    background-color: #e0e0e0;
-}
-
-#addFolderButton,
-#addNoteButton {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-/* Main Content Styles */
-#mainContent {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-#noteTitle {
-    width: 100%;
-    padding: 15px;
+/* Settings Section */
+.settings-section h2 {
     font-size: 24px;
-    border: none;
-    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
 }
 
-#editorContainer {
-    flex: 1;
-    overflow-y: auto;
-}
-
-#editor {
-    height: 100%;
-    padding: 15px;
-}
-
-#noteActions {
+.settings-section input[type="text"] {
     padding: 10px;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: flex-end;
+    border-radius: 6px;
+    border: none;
+    margin-right: 10px;
+    background-color: #333;
+    color: #FFF;
 }
 
-#noteActions button {
+.settings-section button {
+    background-color: #007BFF;
+    color: #FFF;
     padding: 10px 15px;
-    margin-left: 10px;
+    border: none;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Hide the editor when no note is selected */
-#mainContent.hidden {
-    display: none;
+.settings-section button:hover {
+    background-color: #0056b3;
 }
