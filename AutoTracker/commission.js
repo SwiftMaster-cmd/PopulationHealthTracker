@@ -226,28 +226,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getSaleType(action, notes) {
-        const combinedText = `${action} ${notes}`.toLowerCase();
+        const actionLower = action.toLowerCase();
+        const notesLower = notes.toLowerCase();
 
-        // IntraCompany: if notes mention 'notes transfers' or 'basic transfers'
-        if (/notes transfers|basic transfers/i.test(combinedText)) {
-            return 'IntraCompany';
+        // IntraCompany: if action or notes mention 'transfer', 'ndr', 'dental', 'fe', 'final expense', but not 'vbc', 'national debt relief', or 'ndr'
+        if (/transfer|dental|fe|final expense/i.test(actionLower) || /transfer|dental|fe|final expense/i.test(notesLower)) {
+            if (!/vbc|national debt relief|ndr|value based care|oak street|osh/i.test(actionLower + ' ' + notesLower)) {
+                return 'IntraCompany';
+            }
         }
-        // Transfer: if notes mention 'vbc' or 'national debt relief' or 'ndr'
-        else if (/vbc|national debt relief|ndr/i.test(combinedText)) {
+        // Transfer: if action or notes mention 'vbc', 'national debt relief', 'ndr', 'value based care', 'oak street', or 'osh'
+        if (/vbc|national debt relief|ndr|value based care|oak street|osh/i.test(actionLower + ' ' + notesLower)) {
             return 'Transfer';
         }
-        // SPM: if notes mention 'spm'
-        else if (/spm/i.test(combinedText)) {
+        // SPM: if action mentions 'spm'
+        if (/spm|select patient management/i.test(actionLower)) {
             return 'SPM';
         }
-        // Select RX: if notes mention 'srx'
-        else if (/srx/i.test(combinedText)) {
+        // Select RX: if action mentions 'srx'
+        if (/srx/i.test(actionLower)) {
             return 'Select RX';
         }
-        else {
-            // Not a recognized sale type
-            return null;
-        }
+        // Not a recognized sale type
+        return null;
     }
 
     function displayCommission(commissionData) {
