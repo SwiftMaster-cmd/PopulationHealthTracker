@@ -50,23 +50,30 @@ document.addEventListener('firebaseInitialized', function() {
     });
 
     function initializeDashboard(user) {
-        // Event listener for adding a chart
-        let isAddingChart = false;
-        addChartButton.addEventListener('click', () => {
-            if (isAddingChart) return; // Prevent multiple clicks
-            isAddingChart = true;
-            addChart(user, null, () => {
-                isAddingChart = false; // Reset flag after chart is added
-            });
+        // Remove existing event listeners (if any) to avoid duplication
+        addChartButton.replaceWith(addChartButton.cloneNode(true)); 
+        clearChartsButton.replaceWith(clearChartsButton.cloneNode(true)); 
+        savePresetButton.replaceWith(savePresetButton.cloneNode(true)); 
+        loadPresetButton.replaceWith(loadPresetButton.cloneNode(true)); 
+        deletePresetButton.replaceWith(deletePresetButton.cloneNode(true)); 
+    
+        // Reassign the elements after cloning
+        const newAddChartButton = document.getElementById('addChartButton');
+        const newClearChartsButton = document.getElementById('clearChartsButton');
+        const newSavePresetButton = document.getElementById('savePresetButton');
+        const newLoadPresetButton = document.getElementById('loadPresetButton');
+        const newDeletePresetButton = document.getElementById('deletePresetButton');
+    
+        // Now attach event listeners to the new (cloned) buttons
+        newAddChartButton.addEventListener('click', () => {
+            addChart(user);
         });
-
-        // Event listener for clearing all charts
-        clearChartsButton.addEventListener('click', () => {
+    
+        newClearChartsButton.addEventListener('click', () => {
             clearAllCharts();
         });
-
-        // Event listener for saving a new preset
-        savePresetButton.addEventListener('click', () => {
+    
+        newSavePresetButton.addEventListener('click', () => {
             const presetName = presetNameInput.value.trim();
             if (presetName) {
                 savePreset(presetName);
@@ -74,9 +81,8 @@ document.addEventListener('firebaseInitialized', function() {
                 alert('Please enter a name for the preset.');
             }
         });
-
-        // Event listener for loading a preset
-        loadPresetButton.addEventListener('click', () => {
+    
+        newLoadPresetButton.addEventListener('click', () => {
             const selectedPreset = presetSelect.value;
             if (selectedPreset) {
                 loadPreset(selectedPreset);
@@ -84,9 +90,8 @@ document.addEventListener('firebaseInitialized', function() {
                 alert('Please select a preset to load.');
             }
         });
-
-        // Event listener for deleting a preset
-        deletePresetButton.addEventListener('click', () => {
+    
+        newDeletePresetButton.addEventListener('click', () => {
             const selectedPreset = presetSelect.value;
             if (selectedPreset) {
                 deletePreset(selectedPreset);
@@ -94,13 +99,12 @@ document.addEventListener('firebaseInitialized', function() {
                 alert('Please select a preset to delete.');
             }
         });
-
-        // Load existing presets
+    
+        // Load existing presets and charts
         loadPresets(user);
-
-        // Load saved charts
         loadSavedCharts(user);
     }
+    
 
     function fetchSalesData(user, teamFilterValue, callback) {
         let salesRef;
@@ -199,12 +203,20 @@ document.addEventListener('firebaseInitialized', function() {
             chartType = chartTypeSelect.value;
             teamFilterValue = teamFilterSelect.value;
     
+            // Save the chart configuration
             saveChartConfig({ timeFrame, actionType, chartType, teamFilterValue });
+        }
+    
+        // Check if this chart configuration already exists
+        const existingChart = checkExistingChart(timeFrame, actionType, chartType, teamFilterValue);
+        if (existingChart) {
+            console.warn('Chart with the same configuration already exists.');
+            if (callback) callback(); 
+            return;
         }
     
         fetchSalesData(user, teamFilterValue, salesData => {
             proceedWithChartCreation(salesData, teamFilterValue);
-    
             if (callback) callback();
         });
     
@@ -256,6 +268,23 @@ document.addEventListener('firebaseInitialized', function() {
         }
     }
     
+    // Function to check if a chart with the same configuration already exists
+    function checkExistingChart(timeFrame, actionType, chartType, teamFilterValue) {
+        const charts = document.querySelectorAll('.chart-wrapper');
+        return Array.from(charts).some(chartWrapper => {
+            const canvas = chartWrapper.querySelector('canvas');
+            const chartInstance = Chart.getChart(canvas);
+            if (!chartInstance) return false;
+    
+            const options = chartInstance.options.custom;
+            return options.timeFrame === timeFrame && 
+                   options.actionType === actionType && 
+                   options.chartType === chartType && 
+                   options.teamFilterValue === teamFilterValue;
+        });
+    }
+    
+
 
     function filterSalesData(salesData, timeFrame, actionType) {
         const now = new Date();
@@ -695,20 +724,32 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function loadPresets(user) {
-        database.ref('chartPresets/' + user.uid).once('value').then(snapshot => {
-            const presets = snapshot.val() || {};
-            presetSelect.innerHTML = '<option value="">Select a Preset</option>';
-            Object.keys(presets).forEach(presetName => {
-                const option = document.createElement('option');
-                option.value = presetName;
-                option.textContent = presetName;
-                presetSelect.appendChild(option);
+    function loadPreset(presetName) {
+        const user = firebase.auth().currentUser;
+        if (!user) return;
+    
+        // Clear existing charts
+        clearAllCharts();
+    
+        database.ref('chartPresets/' + user.uid + '/' + presetName).once('value').then(snapshot => {
+            const presetData = snapshot.val();
+            if (!presetData) {
+                console.error('Preset data not found.');
+                return;
+            }
+    
+            const { charts: savedCharts } = presetData;
+    
+            // Add charts from the preset
+            savedCharts.forEach(chartConfig => {
+                addChart(user, chartConfig);
             });
+    
         }).catch(error => {
-            console.error('Error loading presets:', error);
+            console.error('Error loading preset:', error);
         });
     }
+    
 
     function loadPreset(presetName) {
         const user = firebase.auth().currentUser;
