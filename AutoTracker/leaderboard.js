@@ -14,7 +14,7 @@ document.addEventListener('firebaseInitialized', function() {
     let currentUserId = null;
 
     // Giphy API Key
-    const GIPHY_API_KEY = 'YOUR_GIPHY_API_KEY'; // Replace with your Giphy API key
+    const GIPHY_API_KEY = 'maeaJ3Qxv4p2tFD222X3ccfwBhK3ju2J'; // Replace with your Giphy API key
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -565,7 +565,7 @@ document.addEventListener('firebaseInitialized', function() {
     function searchGiphy(query, giphyResults, commentForm, gifPreviewContainer) {
         giphyResults.innerHTML = 'Loading...';
 
-        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${maeaJ3Qxv4p2tFD222X3ccfwBhK3ju2J}&q=${encodeURIComponent(query)}&limit=25&rating=G`)
+        fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=25&rating=G`)
             .then(response => response.json())
             .then(data => {
                 giphyResults.innerHTML = '';
