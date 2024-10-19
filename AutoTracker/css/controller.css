@@ -164,31 +164,3 @@
     outline: none;
     border-color: var(--primary-color);
 }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .filter-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .filter-row label,
-    .filter-row select,
-    .filter-row input[type="text"],
-    .filter-row button {
-        width: 100%;
-        margin-right: 0;
-    }
-
-    .preset-controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .preset-controls input[type="text"],
-    .preset-controls select,
-    .preset-controls button {
-        width: 100%;
-        margin-right: 0;
-    }
-}
