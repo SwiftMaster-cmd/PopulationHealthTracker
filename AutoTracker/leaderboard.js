@@ -14,7 +14,7 @@ document.addEventListener('firebaseInitialized', function() {
     let currentUserId = null;
 
     // Giphy API Key
-    const GIPHY_API_KEY = 'maeaJ3Qxv4p2tFD222X3ccfwBhK3ju2J'; // Replace with your Giphy API key
+    const GIPHY_API_KEY = 'YOUR_GIPHY_API_KEY'; // Replace with your actual Giphy API key
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -29,10 +29,8 @@ document.addEventListener('firebaseInitialized', function() {
         userRef.once('value').then(snapshot => {
             const userData = snapshot.val();
             if (userData && userData.name) {
-                // Name exists; proceed to initialize the leaderboard
                 initializeLeaderboard();
             } else {
-                // Name does not exist; prompt user to enter it
                 promptForUserName(user, initializeLeaderboard);
             }
         }).catch(error => {
@@ -46,11 +44,9 @@ document.addEventListener('firebaseInitialized', function() {
             userName = 'No name';
         }
 
-        // Save the name in the database
         const userRef = database.ref('Users/' + user.uid);
         userRef.update({ name: userName }).then(() => {
-            console.log('User name saved successfully.');
-            callback(); // Proceed to initialize the leaderboard after saving the name
+            callback();
         }).catch(error => {
             console.error('Error saving user name:', error);
         });
@@ -366,7 +362,7 @@ document.addEventListener('firebaseInitialized', function() {
                 likeButton.innerHTML = `<svg width="20" height="20" fill="currentColor"><use href="#icon-heart"></use></svg> Like`;
             }
             likeButton.addEventListener('click', () => {
-                toggleLike(sale.saleId, userLiked);
+                toggleLike(sale.saleId, userLiked, sale);
             });
 
             // Create comment button
@@ -455,7 +451,7 @@ document.addEventListener('firebaseInitialized', function() {
                 const commentText = commentInput.value.trim();
                 const gifUrl = commentForm.selectedGifUrl; // From Giphy selection
                 if (commentText || gifUrl) {
-                    addComment(sale.saleId, commentText, gifUrl);
+                    addComment(sale.saleId, commentText, gifUrl, sale);
                     commentInput.value = '';
                     commentForm.selectedGifUrl = null;
                     gifPreviewContainer.innerHTML = ''; // Clear GIF preview
@@ -531,7 +527,7 @@ document.addEventListener('firebaseInitialized', function() {
         });
     }
 
-    function toggleLike(saleId, userLiked) {
+    function toggleLike(saleId, userLiked, sale) {
         const likeRef = database.ref(`likes/${saleId}/${currentUserId}`);
         if (userLiked) {
             // User wants to unlike
@@ -540,17 +536,22 @@ document.addEventListener('firebaseInitialized', function() {
             });
         } else {
             // User wants to like
-            likeRef.set(true).catch(error => {
+            likeRef.set(true).then(() => {
+                // Create a notification for the sale owner
+                if (sale.userId !== currentUserId) {
+                    createNotification(sale.userId, 'like', saleId, sale);
+                }
+            }).catch(error => {
                 console.error('Error adding like:', error);
             });
         }
     }
 
-    function addComment(saleId, commentText, gifUrl) {
+    function addComment(saleId, commentText, gifUrl, sale) {
         const commentId = database.ref().child('comments').push().key;
         const commentData = {
             userId: currentUserId,
-            userName: usersData[currentUserId] ? usersData[currentUserId].name : 'Unknown',
+            userName: usersData[currentUserId]?.name || 'Unknown',
             commentText: commentText || '',
             gifUrl: gifUrl || null,
             timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -558,8 +559,41 @@ document.addEventListener('firebaseInitialized', function() {
         const updates = {};
         updates[`comments/${saleId}/${commentId}`] = commentData;
 
-        database.ref().update(updates).catch(error => {
+        database.ref().update(updates).then(() => {
+            // Create a notification for the sale owner
+            if (sale.userId !== currentUserId) {
+                createNotification(sale.userId, 'comment', saleId, sale);
+            }
+        }).catch(error => {
             console.error('Error adding comment:', error);
+        });
+    }
+
+    function createNotification(recipientUserId, type, saleId, sale) {
+        const notificationId = database.ref().child('notifications').push().key;
+        const senderUserName = usersData[currentUserId]?.name || 'Unknown';
+        let message = '';
+
+        if (type === 'like') {
+            message = `${senderUserName} liked your ${sale.saleType} sale.`;
+        } else if (type === 'comment') {
+            message = `${senderUserName} commented on your ${sale.saleType} sale.`;
+        }
+
+        const notificationData = {
+            message: message,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            type: type,
+            relatedSaleId: saleId,
+            senderUserId: currentUserId,
+            read: false
+        };
+
+        const updates = {};
+        updates[`notifications/${recipientUserId}/${notificationId}`] = notificationData;
+
+        database.ref().update(updates).catch(error => {
+            console.error('Error creating notification:', error);
         });
     }
 

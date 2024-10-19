@@ -51,9 +51,8 @@ document.addEventListener('firebaseInitialized', function() {
             notificationsContainer.appendChild(notificationDiv);
         });
     }
-    
 
-    // Optional: Function to mark notifications as read or clear them
+    // Optional: Clear notifications
     document.getElementById('clearNotificationsButton').addEventListener('click', () => {
         const notificationsRef = database.ref(`notifications/${currentUserId}`);
         notificationsRef.remove().catch(error => {
