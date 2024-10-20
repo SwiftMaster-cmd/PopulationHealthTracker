@@ -53,15 +53,20 @@
 <body>
 <!-- Header Section -->
 <header class="commission-header">
-    <h3>Dashboard</h3>
+    <h3>Leaderboard</h3>
     <li><a href="index.html">Dashboard</a></li>
     <li><a href="leaderboard.html">Leaderboard</a></li>
-    <li><a href="chart.html">Insights</a></li>
+    <li><a href="charts.js">Insights</a></li>
     <li><a href="settings.html">Settings</a></li>
     <li><a href="notifications.html">Notifications</a></li>
     <li><a href="sales.html">Sales History</a></li>
     <div class="total-commission" id="totalCommissionContainer">
-        <span id="totalCommissionAmount">$0.00</span>
+        $<span id="totalCommission"></span>
+        <div class="commission-details-tooltip" id="commissionDetailsTooltip">
+            <!-- Details will be populated dynamically -->
+        </div>
+    </div>
+
            
            
             </ul>
@@ -92,64 +97,66 @@
 </div>
 
 
-    <!-- Sales Data Section -->
-    <div class="sales-data-section" id="salesDataSection">
-        <!-- Show/Hide Button -->
-        <button id="toggleTableButton">Show Sales Data</button>
 
-        <!-- Sales Data Filters -->
-        <div class="sales-filters" id="salesFilters" style="display: none;">
-            <label for="salesTimeFrame">Time Frame:</label>
-            <select id="salesTimeFrame">
-                <option value="allTime">All Time</option>
-                <option value="today">Today</option>
-                <option value="currentWeek">Current Week</option>
-                <option value="previousWeek">Previous Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="90days">Last 90 Days</option>
-                <option value="quarter">Quarter</option>
-                <option value="yearToDate">Year to Date</option>
-            </select>
 
-            <label for="searchInput">Search:</label>
-            <input type="text" id="searchInput" placeholder="Search...">
-        </div>
-
-        <!-- Sales Data Table -->
-        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
-            <!-- Sales data table will be displayed here -->
-        </div>
-
-        <!-- Show More Button -->
-        <button id="showMoreButton" style="display: none;">Show More</button>
+    <!-- User List Container for New Chat -->
+    <div id="userListContainer" style="display: none;">
+        <input type="text" id="userSearchInput" placeholder="Search users...">
+        <ul id="userList">
+            <!-- List of users will be rendered here -->
+        </ul>
     </div>
 
-    <!-- Notifications Section -->
-    <div class="notifications-section" id="notificationsSection">
-        <h2>Notifications</h2>
-        <div id="notificationsContainer">
-            <!-- Notifications will be rendered here -->
-        </div>
-        <button id="clearNotificationsButton">Clear Notifications</button>
-    </div>
+<!-- Live Activities Section -->
+<div class="live-activities-section" id="liveActivitiesSection">
+    <h2>Live Activities</h2>
+    <div id="liveActivitiesContainer">
+        <!-- Live activities will be rendered here -->
+        <!-- Example of a live activity item -->
+        <div class="live-activity">
+            <p><strong>User Name</strong> made a <strong>Sale Type</strong> sale on <time datetime="...">Date and Time</time></p>
+            <div class="activity-buttons">
+                <button class="like-button">
+                    <!-- Like Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <i class="fas fa-heart"></i> Like
 
-    <!-- Settings Section -->
-    <div class="settings-section" id="settingsSection">
-        <h2>Settings</h2>
-        <label for="userNameInput">Your Name:</label>
-        <input type="text" id="userNameInput" placeholder="Enter your name">
-        <button id="saveNameButton">Save Name</button>
+                        <!-- SVG content for like icon -->
+                    </svg>
+                    Like
+                </button>
+                <button class="comment-button">
+                    <!-- Comment Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <!-- SVG content for comment icon -->
+                    </svg>
+                    Comment
+                </button>
+            </div>
+            <!-- Likes Info -->
+            <p class="likes-info">5 Likes (Liked by: User1, User2)</p>
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <button class="show-replies-button">Show Replies (2)</button>
+                <ul class="comments-list">
+                    <li>
+                        <p><strong>Commenter Name</strong>: Comment text</p>
+                        <time datetime="...">Date and Time</time>
+                    </li>
+                    <!-- More comments -->
+                </ul>
+                <!-- Comment Form -->
+                <form class="comment-form">
+                    <input type="text" placeholder="Add a comment..." required>
+                    <button type="submit">Post</button>
+                </form>
+            </div>
+        </div>
+        <!-- More live activities -->
     </div>
-    <label>
-        <input type="checkbox" id="taxesRemovedCheckbox">
-        Taxes Removed
-    </label>
-    <br>
-    <label>
-        Tax Percentage:
-        <input type="number" id="taxPercentageInput" min="0" max="100" value="40">
-    </label>
 </div>
+
+
 
 
 </body>
