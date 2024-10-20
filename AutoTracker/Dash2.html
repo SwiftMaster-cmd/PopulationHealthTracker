@@ -99,62 +99,45 @@
 
 
 
-    <!-- User List Container for New Chat -->
-    <div id="userListContainer" style="display: none;">
-        <input type="text" id="userSearchInput" placeholder="Search users...">
-        <ul id="userList">
-            <!-- List of users will be rendered here -->
-        </ul>
-    </div>
+    <!-- Sales Data Section -->
+    <div class="sales-data-section" id="salesDataSection">
+        <!-- Show/Hide Button -->
+        <button id="toggleTableButton">Show Sales Data</button>
 
-<!-- Live Activities Section -->
-<div class="live-activities-section" id="liveActivitiesSection">
-    <h2>Live Activities</h2>
-    <div id="liveActivitiesContainer">
-        <!-- Live activities will be rendered here -->
-        <!-- Example of a live activity item -->
-        <div class="live-activity">
-            <p><strong>User Name</strong> made a <strong>Sale Type</strong> sale on <time datetime="...">Date and Time</time></p>
-            <div class="activity-buttons">
-                <button class="like-button">
-                    <!-- Like Icon -->
-                    <svg width="20" height="20" fill="currentColor">
-                        <i class="fas fa-heart"></i> Like
+        <!-- Sales Data Filters -->
+        <div class="sales-filters" id="salesFilters" style="display: none;">
+            <label for="salesTimeFrame">Time Frame:</label>
+            <select id="salesTimeFrame">
+                <option value="allTime">All Time</option>
+                <option value="today">Today</option>
+                <option value="currentWeek">Current Week</option>
+                <option value="previousWeek">Previous Week</option>
+                <option value="currentMonth">Current Month</option>
+                <option value="90days">Last 90 Days</option>
+                <option value="quarter">Quarter</option>
+                <option value="yearToDate">Year to Date</option>
+            </select>
 
-                        <!-- SVG content for like icon -->
-                    </svg>
-                    Like
-                </button>
-                <button class="comment-button">
-                    <!-- Comment Icon -->
-                    <svg width="20" height="20" fill="currentColor">
-                        <!-- SVG content for comment icon -->
-                    </svg>
-                    Comment
-                </button>
-            </div>
-            <!-- Likes Info -->
-            <p class="likes-info">5 Likes (Liked by: User1, User2)</p>
-            <!-- Comments Section -->
-            <div class="comments-section">
-                <button class="show-replies-button">Show Replies (2)</button>
-                <ul class="comments-list">
-                    <li>
-                        <p><strong>Commenter Name</strong>: Comment text</p>
-                        <time datetime="...">Date and Time</time>
-                    </li>
-                    <!-- More comments -->
-                </ul>
-                <!-- Comment Form -->
-                <form class="comment-form">
-                    <input type="text" placeholder="Add a comment..." required>
-                    <button type="submit">Post</button>
-                </form>
-            </div>
+            <label for="searchInput">Search:</label>
+            <input type="text" id="searchInput" placeholder="Search...">
         </div>
-        <!-- More live activities -->
+
+        <!-- Sales Data Table -->
+        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
+            <!-- Sales data table will be displayed here -->
+        </div>
+
+        <!-- Show More Button -->
+        <button id="showMoreButton" style="display: none;">Show More</button>
     </div>
+
+  
+<!-- Commission Totals -->
+<div id="commissionTotals">
+
+    <h3 id="totalCommission"></h3>
 </div>
+
 
 
 
