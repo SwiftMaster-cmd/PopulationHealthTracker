@@ -71,39 +71,15 @@
 
 
 
-    <!-- Sales Data Section -->
-    <div class="sales-data-section" id="salesDataSection">
-        <!-- Show/Hide Button -->
-        <button id="toggleTableButton">Show Sales Data</button>
-
-        <!-- Sales Data Filters -->
-        <div class="sales-filters" id="salesFilters" style="display: none;">
-            <label for="salesTimeFrame">Time Frame:</label>
-            <select id="salesTimeFrame">
-                <option value="allTime">All Time</option>
-                <option value="today">Today</option>
-                <option value="currentWeek">Current Week</option>
-                <option value="previousWeek">Previous Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="90days">Last 90 Days</option>
-                <option value="quarter">Quarter</option>
-                <option value="yearToDate">Year to Date</option>
-            </select>
-
-            <label for="searchInput">Search:</label>
-            <input type="text" id="searchInput" placeholder="Search...">
+    <!-- Notifications Section -->
+    <div class="notifications-section" id="notificationsSection">
+        <h2>Notifications</h2>
+        <div id="notificationsContainer">
+            <!-- Notifications will be rendered here -->
         </div>
-
-        <!-- Sales Data Table -->
-        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
-            <!-- Sales data table will be displayed here -->
-        </div>
-
-        <!-- Show More Button -->
-        <button id="showMoreButton" style="display: none;">Show More</button>
+        <button id="clearNotificationsButton">Clear Notifications</button>
     </div>
 
- 
 
 
 

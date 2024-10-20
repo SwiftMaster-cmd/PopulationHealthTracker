@@ -1,178 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta Tags and Title -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charts</title>
-    <link rel="stylesheet" href="css/charts.css">
-    <link rel="stylesheet" href="css/outcomes.css">
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/footer.css">
+    <title>Sales Dashboard</title>
 
-    <link rel="stylesheet" href="css/leaderboard.css">
-    <link rel="stylesheet" href="css/monthlyTotals.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- New CSS file for the main styles -->
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/leaderboard.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/controller.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/charts.css"> <!-- Main styles -->
 
+    <link rel="stylesheet" href="css/sales.css"> <!-- Main styles -->
+
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+    <!-- Chart.js and Chroma.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    
+
+    <!-- Chart.js Date Adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <!-- Your JavaScript Files -->
     <script src="firebase-init.js" defer></script>
+    <script src="settings.js" defer></script>
+    <script src="notifications.js" defer></script>
+    <script src="privateChat.js" defer></script>
+
+    <script src="commission.js" defer></script>
+
+    <script src="display-sales.js" defer></script>
     <script src="auth.js" defer></script>
-    <script src="tracker.js" defer></script>
-    <script src="points.js" defer></script>
-
-    <script src="customer-info.js" defer></script>
-    <script src="color-palette.js" defer></script>
-    <script src="sales-outcomes.js" defer></script>
+    <script src="dashboard.js" defer></script>
     <script src="leaderboard.js" defer></script>
-    <script src="liveActivities.js" defer></script>
-    <script src="CSsearch.js" defer></script>
 
-    <script src="monthlyTotals.js" defer></script>
-    <script src="charts.js" defer></script>
-    <script src="profilePopup.js" defer></script>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- Google Analytics -->
+    <!-- (Your existing Google Analytics code) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-RVBYB0RR06');
     </script>
-
-
-  
 </head>
 <body>
-
-
-    
-    <div class="header-container">
-        <h1>Charts</h1>
-        <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-
-         <button onclick="window.location.href='Donate.html'" class="button">Donate</button>
-
-        <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
-
-        <button onclick="window.location.href='history.html'" class="button">Sales History</button>
-        <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
-        <button onclick="window.location.href='totals.html'" class="button">Monthly Totals</button>
-        <button onclick="window.location.href='chart.html'" class="button">Chart</button>
-        <div class="profile-button">P</div>
+<!-- Header Section -->
+<header class="commission-header">
+    <h3>Dashboard</h3>
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="leaderboard.html">Leaderboard</a></li>
+    <li><a href="chart.html">Insights</a></li>
+    <li><a href="settings.html">Settings</a></li>
+    <li><a href="notifications.html">Notifications</a></li>
+    <li><a href="sales.html">Sales History</a></li>
+    <div class="total-commission" id="totalCommissionContainer">
+        <span id="totalCommissionAmount">$0.00</span>
+           
+           
+            </ul>
+        </div>
     </div>
-    
-    <!-- Color Picker and Name Change Container -->
-    <div class="color-picker-container" id="colorPickerContainer">
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-        <input type="text" id="nameInput" placeholder="Enter new name" />
-        <button id="changeName" class="button">Change Name</button>
-        <button id="signOut" class="button">Sign Out</button>
-        <button id="googleSignInButton">Link with Google</button>
-        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-        
-        <!-- Navigation Buttons -->
+</header>
 
+
+
+
+
+    <!-- Dashboard Charts Section -->
+    <div class="container" id="chartsContainer">
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="filter-row">
+                <label for="timeFrame">Time Frame:</label>
+                <select id="timeFrame">
+                    <option value="today">Today</option>
+                    <option value="currentWeek">Current Week</option>
+                    <option value="previousWeek">Previous Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="90days">Last 90 Days</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="yearToDate">Year to Date</option>
+                    <option value="allTime">All Time</option>
+                </select>
+
+                <label for="teamFilter">Team Filter:</label>
+                <select id="teamFilter">
+                    <option value="myData">My Data</option>
+                    <option value="allData">All Data</option>
+                </select>
+            </div>
+
+            <div class="filter-row">
+                <label for="actionType">Action Type:</label>
+                <select id="actionType">
+                    <!-- Options will be populated dynamically -->
+                </select>
+
+                <label for="chartType">Chart Type:</label>
+                <select id="chartType">
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
+            </div>
+
+            <div class="filter-row">
+                <button id="addChartButton">Add Chart</button>
+                <button id="clearChartsButton">Clear All Charts</button>
+            </div>
+
+            <div class="preset-controls">
+                <input type="text" id="presetName" placeholder="Enter Preset Name">
+
+                <button id="savePresetButton">Save Preset</button>
+
+                <select id="presetSelect">
+                    <option value="">Select a Preset</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+
+                <button id="loadPresetButton">Load Preset</button>
+                <button id="deletePresetButton">Delete Preset</button>
+            </div>
+        </div>
+
+        <!-- Show/Hide Chart Controls Button -->
+        <button id="toggleChartControlsButton">Show Chart Controls</button>
+
+        <!-- Container for charts -->
+        <div class="charts-container">
+            <!-- Charts will be dynamically added here -->
+        </div>
     </div>
 
-    <div class="main-container">
 
 
-     
-
-        <div class="picker-chart-container container" id="chartContainerDay">
-            <!-- Day chart content -->
-            <canvas id="salesChartDay"></canvas>
-        </div>
-        
-        <div class="picker-chart-container container" id="chartContainerWeek" style="display: none;">
-            <!-- Week chart content -->
-            <canvas id="salesChartWeek"></canvas>
-        </div>
-        
-        <div class="picker-chart-container container" id="chartContainerMonth" style="display: none;">
-            <!-- Month chart content -->
-            <canvas id="salesChartMonth"></canvas>
-        </div>
-        
-       
-    </div>
-
-
-   
-                
-    <footer class="footer">
-        <div class="footer-container">
-            <button onclick="changeChart('day')" class="footer-button">Day Chart</button>
-            <button onclick="changeChart('week')" class="footer-button">Week Chart</button>
-            <button onclick="changeChart('month')" class="footer-button">Month Chart</button>
-            <button id="prevButton" class="footer-button">Previous</button>
-            <button id="nextButton" class="footer-button">Next</button>
-        </div>
-    </footer>
-    
-    
-     
-    
-    
-
-    
-    <!-- Event Tracking for dynamically added elements -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Function to add event listeners to dynamically added elements
-            function addDynamicEventListeners() {
-                const leadIdContainer = document.getElementById('lead-id-container');
-                const salesOutcomesContainer = document.getElementById('sales-outcomes-container');
-                const customerInfoContainer = document.getElementById('customer-info-container');
-
-                // Example for lead ID container
-                if (leadIdContainer) {
-                    leadIdContainer.addEventListener('click', function(event) {
-                        if (event.target && event.target.matches('.lead-id-item')) {
-                            gtag('event', 'click', {
-                                'event_category': 'Lead ID',
-                                'event_label': event.target.dataset.leadId
-                            });
-                        }
-                    });
-                }
-
-                // Example for sales outcomes container
-                if (salesOutcomesContainer) {
-                    salesOutcomesContainer.addEventListener('click', function(event) {
-                        if (event.target && event.target.matches('.sales-outcome-item')) {
-                            gtag('event', 'click', {
-                                'event_category': 'Sales Outcome',
-                                'event_label': event.target.dataset.outcomeId
-                            });
-                        }
-                    });
-                }
-
-                // Example for customer info container
-                if (customerInfoContainer) {
-                    customerInfoContainer.addEventListener('click', function(event) {
-                        if (event.target && event.target.matches('.customer-info-item')) {
-                            gtag('event', 'click', {
-                                'event_category': 'Customer Info',
-                                'event_label': event.target.dataset.customerId
-                            });
-                        }
-                    });
-                }
-            }
-
-            // Call the function to add event listeners
-            addDynamicEventListeners();
-        });
-    </script>
-
-    
 </body>
 </html>

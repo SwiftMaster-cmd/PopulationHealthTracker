@@ -71,40 +71,59 @@
 
 
 
-    <!-- Sales Data Section -->
-    <div class="sales-data-section" id="salesDataSection">
-        <!-- Show/Hide Button -->
-        <button id="toggleTableButton">Show Sales Data</button>
 
-        <!-- Sales Data Filters -->
-        <div class="sales-filters" id="salesFilters" style="display: none;">
-            <label for="salesTimeFrame">Time Frame:</label>
-            <select id="salesTimeFrame">
-                <option value="allTime">All Time</option>
-                <option value="today">Today</option>
-                <option value="currentWeek">Current Week</option>
-                <option value="previousWeek">Previous Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="90days">Last 90 Days</option>
-                <option value="quarter">Quarter</option>
-                <option value="yearToDate">Year to Date</option>
-            </select>
-
-            <label for="searchInput">Search:</label>
-            <input type="text" id="searchInput" placeholder="Search...">
-        </div>
-
-        <!-- Sales Data Table -->
-        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
-            <!-- Sales data table will be displayed here -->
-        </div>
-
-        <!-- Show More Button -->
-        <button id="showMoreButton" style="display: none;">Show More</button>
+    <!-- Settings Section -->
+    <div class="settings-section" id="settingsSection">
+        <h2>Settings</h2>
+        <label for="userNameInput">Your Name:</label>
+        <input type="text" id="userNameInput" placeholder="Enter your name">
+        <button id="saveNameButton">Save Name</button>
     </div>
+    <label>
+        <input type="checkbox" id="taxesRemovedCheckbox">
+        Taxes Removed
+    </label>
+    <br>
+    <label>
+        Tax Percentage:
+        <input type="number" id="taxPercentageInput" min="0" max="100" value="40">
+    </label>
+</div>
 
- 
+<select id="agentLevelSelect">
+    <option value="Level1">Level 1</option>
+    <option value="Level2">Level 2</option>
+    <option value="Level3">Level 3</option>
+</select>
+<button id="saveLevelButton">Save Level</button>
 
+<!-- commission.html -->
+
+<!-- Commission Totals -->
+<div id="commissionTotals">
+    <h2>Monthly Commission Breakdown</h2>
+    <p id="partnerTransferCommission"></p>
+    <p id="selectRxCommission"></p>
+    <p id="intraCompanyCommission"></p>
+    <p id="spmCommission"></p>
+    <h3 id="totalCommission"></h3>
+</div>
+
+<!-- Sales Counts -->
+<div id="salesCounts">
+    <h2>Monthly Sales Counts</h2>
+    <p id="partnerTransferSalesCount"></p>
+    <p id="selectRxSalesCount"></p>
+    <p id="intraCompanySalesCount"></p>
+    <p id="spmSalesCount"></p>
+</div>
+<!-- leaderboard.html -->
+
+<!-- ... existing HTML ... -->
+
+<!-- leaderboard.html -->
+
+<!-- ... existing HTML content ... -->
 
 
 
