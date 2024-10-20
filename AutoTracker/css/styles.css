@@ -499,3 +499,69 @@ button:hover {
     margin-right: 10px;
 }
 
+/* Navigation Styling */
+.nav-links {
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+    background-color: #1a1a2e; /* Dark background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-links li {
+    margin: 0 15px;
+    position: relative;
+}
+
+/* Stylish Link Appearance */
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff; /* White text */
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 10px 20px;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    background-color: transparent;
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: #FF4C29; /* Accent color */
+    z-index: -1;
+    transition: width 0.4s ease;
+    border-radius: 5px;
+}
+
+.nav-links a:hover::before {
+    width: 100%;
+}
+
+.nav-links a:hover {
+    color: #ffffff; /* Ensure white text on hover */
+}
+
+/* Subtle Shadow and Hover Effect */
+.nav-links a:hover {
+    background-color: #ff4c29; /* Background color change on hover */
+    color: #ffffff; /* Text color change on hover */
+    box-shadow: 0 4px 15px rgba(255, 76, 41, 0.5); /* Add shadow on hover */
+    border-radius: 5px;
+}
+
+/* Active Link (Optional - Highlight Current Page) */
+.nav-links a.active {
+    background-color: #ff4c29; /* Highlight active link */
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 76, 41, 0.5);
+}
