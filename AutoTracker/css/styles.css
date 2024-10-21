@@ -412,3 +412,12 @@ button:hover {
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--accent-color);
 }
+
+/* Spacer */
+.spacer {
+    height: 100px;
+    width: 100%;
+    display: block;
+    background-color: var(--background-color); /* Consistent background color */
+    margin-bottom: 20px; /* Add spacing below for better separation */
+}
