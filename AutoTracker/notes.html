@@ -103,19 +103,29 @@
 
 <div class="spacer"></div>
 
-    <!-- Notes Section -->
-    <div class="notes-container">
-        <h1>Your Notes</h1>
-
-        <!-- Form to add new note -->
-        <form id="noteForm">
-            <textarea id="noteInput" placeholder="Write a note..." required></textarea>
-            <button type="submit">Add Note</button>
-        </form>
-
-        <!-- Display list of notes -->
+ <!-- Notes Layout: Split View -->
+ <div class="notes-container">
+    <!-- Notes List -->
+    <div class="notes-list">
+        <h2>Your Notes</h2>
         <ul id="notesList"></ul>
     </div>
+
+    <!-- Notes Editor & History -->
+    <div class="notes-editor">
+        <h2 id="editorTitle">Edit Note</h2>
+        <form id="noteForm">
+            <textarea id="noteInput" placeholder="Write a note..." required></textarea>
+            <button type="submit">Save Note</button>
+        </form>
+
+        <!-- Notes History -->
+        <div id="noteHistory" class="hidden">
+            <h3>Note History</h3>
+            <ul id="historyList"></ul>
+        </div>
+    </div>
+</div>
 
   
 <!-- Commission Totals -->
