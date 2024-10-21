@@ -422,7 +422,6 @@ button:hover {
     background-color: var(--background-color); /* Consistent background color */
     margin-bottom: 20px; /* Add spacing below for better separation */
 }
-
 /* General List Styling */
 ul {
     list-style-type: none;
@@ -441,7 +440,7 @@ li a {
     color: white;
     padding: 16px;
     text-decoration: none;
-    background-color: var(--background-color); /* Adjust with your color scheme */
+    background-color: var(--background-color); /* Adjust this to match your color scheme */
 }
 
 li a:hover {
@@ -449,31 +448,45 @@ li a:hover {
 }
 
 /* Dropdown Menu Styling */
+.dropdown-container {
+    position: relative;
+}
+
 .dropdown-menu {
     display: none;
     position: absolute;
+    top: 100%; /* Align the dropdown below the button */
+    left: 0;
     background-color: var(--card-background-color);
-    min-width: 160px;
-    box-shadow: var(--box-shadow);
-    z-index: 1;
+    padding: 10px;
     border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    z-index: 1000;
+    min-width: 180px;
 }
 
-.dropdown-menu li {
-    float: none;
+.dropdown-menu a {
+    display: block;
+    padding: 8px 12px;
+    color: var(--text-color);
+    text-decoration: none;
+    background-color: var(--card-background-color);
+    border-radius: var(--radius);
+    transition: background-color 0.3s ease;
 }
 
-.dropdown-menu li a {
-    padding: 12px 16px;
-    text-align: left;
-}
-
-.dropdown-menu li a:hover {
+.dropdown-menu a:hover {
     background-color: var(--primary-color);
     color: #fff;
 }
 
-/* Show the dropdown menu on hover */
-li:hover .dropdown-menu {
+/* Show the dropdown on hover */
+.dropdown-container:hover .dropdown-menu {
     display: block;
+}
+
+/* Ensure the main button can still be clicked while dropdown shows */
+.dropdown-toggle {
+    position: relative;
+    z-index: 1; /* Ensures the button stays clickable */
 }
