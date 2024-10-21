@@ -70,7 +70,7 @@
 
         <!-- Leaderboard Dropdown -->
         <li class="dropdown">
-            <a href="team.html" class="dropdown-toggle">Team</a>
+            <a href="leaderboard.html" class="dropdown-toggle">Leaderboard</a>
             <ul class="dropdown-menu">
                 <li><a href="liveActivities.html">Live Activities</a></li>
                 <li><a href="leaderboard.html">Leaderboard</a></li>
@@ -104,59 +104,76 @@
 <div class="spacer"></div>
 
 
-<!-- Leaderboard Section -->
-<div class="leaderboard-section" id="leaderboardSection">
-    <h2>Leaderboard</h2>
-    <div class="leaderboard-filters">
-        <label for="saleTypeFilter">Sale Type:</label>
-        <select id="saleTypeFilter">
-            <!-- Options will be populated dynamically -->
-        </select>
-
-        <label for="timeFrameFilter">Time Frame:</label>
-        <select id="timeFrameFilter">
-            <!-- Options will be populated dynamically -->
-        </select>
-    </div>
-    <div id="leaderboardContainer">
-        <!-- Leaderboard table will be rendered here -->
-    </div>
-</div>
 
 
 
+    <!-- Dashboard Charts Section -->
+    <div class="container" id="chartsContainer">
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="filter-row">
+                <label for="timeFrame">Time Frame:</label>
+                <select id="timeFrame">
+                    <option value="today">Today</option>
+                    <option value="currentWeek">Current Week</option>
+                    <option value="previousWeek">Previous Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="90days">Last 90 Days</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="yearToDate">Year to Date</option>
+                    <option value="allTime">All Time</option>
+                </select>
 
-    <!-- Sales Data Section -->
-    <div class="sales-data-section" id="salesDataSection">
-        <!-- Show/Hide Button -->
-        <button id="toggleTableButton">Show Sales Data</button>
+                <label for="teamFilter">Team Filter:</label>
+                <select id="teamFilter">
+                    <option value="myData">My Data</option>
+                    <option value="allData">All Data</option>
+                </select>
+            </div>
 
-        <!-- Sales Data Filters -->
-        <div class="sales-filters" id="salesFilters" style="display: none;">
-            <label for="salesTimeFrame">Time Frame:</label>
-            <select id="salesTimeFrame">
-                <option value="allTime">All Time</option>
-                <option value="today">Today</option>
-                <option value="currentWeek">Current Week</option>
-                <option value="previousWeek">Previous Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="90days">Last 90 Days</option>
-                <option value="quarter">Quarter</option>
-                <option value="yearToDate">Year to Date</option>
-            </select>
+            <div class="filter-row">
+                <label for="actionType">Action Type:</label>
+                <select id="actionType">
+                    <!-- Options will be populated dynamically -->
+                </select>
 
-            <label for="searchInput">Search:</label>
-            <input type="text" id="searchInput" placeholder="Search...">
+                <label for="chartType">Chart Type:</label>
+                <select id="chartType">
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
+            </div>
+
+            <div class="filter-row">
+                <button id="addChartButton">Add Chart</button>
+                <button id="clearChartsButton">Clear All Charts</button>
+            </div>
+
+            <div class="preset-controls">
+                <input type="text" id="presetName" placeholder="Enter Preset Name">
+
+                <button id="savePresetButton">Save Preset</button>
+
+                <select id="presetSelect">
+                    <option value="">Select a Preset</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+
+                <button id="loadPresetButton">Load Preset</button>
+                <button id="deletePresetButton">Delete Preset</button>
+            </div>
         </div>
 
-        <!-- Sales Data Table -->
-        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
-            <!-- Sales data table will be displayed here -->
-        </div>
+        <!-- Show/Hide Chart Controls Button -->
+        <button id="toggleChartControlsButton">Show Chart Controls</button>
 
-        <!-- Show More Button -->
-        <button id="showMoreButton" style="display: none;">Show More</button>
+        <!-- Container for charts -->
+        <div class="charts-container">
+            <!-- Charts will be dynamically added here -->
+        </div>
     </div>
+
 
   
 <!-- Commission Totals -->

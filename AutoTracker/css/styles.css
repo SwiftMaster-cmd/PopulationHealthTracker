@@ -422,3 +422,55 @@ button:hover {
     background-color: var(--background-color); /* Consistent background color */
     margin-bottom: 20px; /* Add spacing below for better separation */
 }
+
+/* Dropdown Menu Styling */
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li {
+    float: left;
+    position: relative;
+}
+
+li a {
+    display: block;
+    color: white;
+    padding: 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: var(--primary-color); /* Adjust with your color scheme */
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: var(--card-background-color);
+    min-width: 160px;
+    box-shadow: var(--box-shadow);
+    z-index: 1;
+    border-radius: var(--radius);
+}
+
+.dropdown-menu li {
+    float: none;
+}
+
+.dropdown-menu li a {
+    padding: 12px 16px;
+    text-align: left;
+}
+
+.dropdown-menu li a:hover {
+    background-color: var(--primary-color);
+}
+
+/* Show the dropdown on hover */
+li:hover .dropdown-menu {
+    display: block;
+}

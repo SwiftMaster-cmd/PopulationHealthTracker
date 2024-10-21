@@ -70,7 +70,7 @@
 
         <!-- Leaderboard Dropdown -->
         <li class="dropdown">
-            <a href="team.html" class="dropdown-toggle">Team</a>
+            <a href="leaderboard.html" class="dropdown-toggle">Leaderboard</a>
             <ul class="dropdown-menu">
                 <li><a href="liveActivities.html">Live Activities</a></li>
                 <li><a href="leaderboard.html">Leaderboard</a></li>
@@ -104,67 +104,54 @@
 <div class="spacer"></div>
 
 
-<!-- Leaderboard Section -->
-<div class="leaderboard-section" id="leaderboardSection">
-    <h2>Leaderboard</h2>
-    <div class="leaderboard-filters">
-        <label for="saleTypeFilter">Sale Type:</label>
-        <select id="saleTypeFilter">
-            <!-- Options will be populated dynamically -->
-        </select>
+<!-- Live Activities Section -->
+<div class="live-activities-section" id="liveActivitiesSection">
+    <h2>Live Activities</h2>
+    <div id="liveActivitiesContainer">
+        <!-- Live activities will be rendered here -->
+        <!-- Example of a live activity item -->
+        <div class="live-activity">
+            <p><strong>User Name</strong> made a <strong>Sale Type</strong> sale on <time datetime="...">Date and Time</time></p>
+            <div class="activity-buttons">
+                <button class="like-button">
+                    <!-- Like Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <i class="fas fa-heart"></i> Like
 
-        <label for="timeFrameFilter">Time Frame:</label>
-        <select id="timeFrameFilter">
-            <!-- Options will be populated dynamically -->
-        </select>
-    </div>
-    <div id="leaderboardContainer">
-        <!-- Leaderboard table will be rendered here -->
+                        <!-- SVG content for like icon -->
+                    </svg>
+                    Like
+                </button>
+                <button class="comment-button">
+                    <!-- Comment Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <!-- SVG content for comment icon -->
+                    </svg>
+                    Comment
+                </button>
+            </div>
+            <!-- Likes Info -->
+            <p class="likes-info">5 Likes (Liked by: User1, User2)</p>
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <button class="show-replies-button">Show Replies (2)</button>
+                <ul class="comments-list">
+                    <li>
+                        <p><strong>Commenter Name</strong>: Comment text</p>
+                        <time datetime="...">Date and Time</time>
+                    </li>
+                    <!-- More comments -->
+                </ul>
+                <!-- Comment Form -->
+                <form class="comment-form">
+                    <input type="text" placeholder="Add a comment..." required>
+                    <button type="submit">Post</button>
+                </form>
+            </div>
+        </div>
+        <!-- More live activities -->
     </div>
 </div>
-
-
-
-
-    <!-- Sales Data Section -->
-    <div class="sales-data-section" id="salesDataSection">
-        <!-- Show/Hide Button -->
-        <button id="toggleTableButton">Show Sales Data</button>
-
-        <!-- Sales Data Filters -->
-        <div class="sales-filters" id="salesFilters" style="display: none;">
-            <label for="salesTimeFrame">Time Frame:</label>
-            <select id="salesTimeFrame">
-                <option value="allTime">All Time</option>
-                <option value="today">Today</option>
-                <option value="currentWeek">Current Week</option>
-                <option value="previousWeek">Previous Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="90days">Last 90 Days</option>
-                <option value="quarter">Quarter</option>
-                <option value="yearToDate">Year to Date</option>
-            </select>
-
-            <label for="searchInput">Search:</label>
-            <input type="text" id="searchInput" placeholder="Search...">
-        </div>
-
-        <!-- Sales Data Table -->
-        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
-            <!-- Sales data table will be displayed here -->
-        </div>
-
-        <!-- Show More Button -->
-        <button id="showMoreButton" style="display: none;">Show More</button>
-    </div>
-
-  
-<!-- Commission Totals -->
-<div id="commissionTotals">
-
-    <h3 id="totalCommission"></h3>
-</div>
-
 
 
 

@@ -53,21 +53,55 @@
 <body>
 <!-- Header Section -->
 <header class="commission-header">
-    <h3>Leaderboard</h3>
-    <li><a href="dash2.html">Dashboard</a></li>
-    <li><a href="leaderboard.html">Leaderboard</a></li>
-    <li><a href="chart.html">Insights</a></li>
-    <li><a href="settings.html">Settings</a></li>
-    <li><a href="notifications.html">Notifications</a></li>
-    <li><a href="sales.html">Sales History</a></li>
+    <h3>Dashboard</h3>
+    <ul>
+        <!-- Dashboard Dropdown -->
+        <li class="dropdown">
+            <a href="dash2.html" class="dropdown-toggle">Dashboard</a>
+            <ul class="dropdown-menu">
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="calendar.html">Calendar</a></li>
+                <li><a href="dailySummary.html">Daily Summary</a></li>
+                <li><a href="notifications.html">Notifications</a></li>
+            </ul>
+        </li>
+
+        <li><a href="cheatSheet.html">Cheat Sheet</a></li>
+
+        <!-- Leaderboard Dropdown -->
+        <li class="dropdown">
+            <a href="leaderboard.html" class="dropdown-toggle">Leaderboard</a>
+            <ul class="dropdown-menu">
+                <li><a href="liveActivities.html">Live Activities</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+            </ul>
+        </li>
+
+        <!-- Insights Dropdown -->
+        <li class="dropdown">
+            <a href="chart.html" class="dropdown-toggle">Insights</a>
+            <ul class="dropdown-menu">
+                <li><a href="chart.html">Charts</a></li>
+                <li><a href="summary.html">Summary</a></li>
+            </ul>
+        </li>
+
+     
+        <li><a href="sales.html">Sales History</a></li>
+        <li><a href="settings.html">Settings</a></li>
+    </ul>
+
     <div class="total-commission" id="totalCommissionContainer">
         <span id="totalCommissionAmount">$0.00</span>
-           
+        <!-- Commission Totals -->
+        <div id="commissionTotals">
+            <h3 id="totalCommission"></h3>
+        </div>
     </div>
 </header>
+
+
 <div class="spacer"></div>
-
-
 
 
 <!-- Leaderboard Section -->
@@ -92,21 +126,45 @@
 
 
 
-    <!-- User List Container for New Chat -->
-    <div id="userListContainer" style="display: none;">
-        <input type="text" id="userSearchInput" placeholder="Search users...">
-        <ul id="userList">
-            <!-- List of users will be rendered here -->
-        </ul>
+    <!-- Sales Data Section -->
+    <div class="sales-data-section" id="salesDataSection">
+        <!-- Show/Hide Button -->
+        <button id="toggleTableButton">Show Sales Data</button>
+
+        <!-- Sales Data Filters -->
+        <div class="sales-filters" id="salesFilters" style="display: none;">
+            <label for="salesTimeFrame">Time Frame:</label>
+            <select id="salesTimeFrame">
+                <option value="allTime">All Time</option>
+                <option value="today">Today</option>
+                <option value="currentWeek">Current Week</option>
+                <option value="previousWeek">Previous Week</option>
+                <option value="currentMonth">Current Month</option>
+                <option value="90days">Last 90 Days</option>
+                <option value="quarter">Quarter</option>
+                <option value="yearToDate">Year to Date</option>
+            </select>
+
+            <label for="searchInput">Search:</label>
+            <input type="text" id="searchInput" placeholder="Search...">
+        </div>
+
+        <!-- Sales Data Table -->
+        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
+            <!-- Sales data table will be displayed here -->
+        </div>
+
+        <!-- Show More Button -->
+        <button id="showMoreButton" style="display: none;">Show More</button>
     </div>
 
-
-
+  
 <!-- Commission Totals -->
 <div id="commissionTotals">
 
     <h3 id="totalCommission"></h3>
 </div>
+
 
 
 
