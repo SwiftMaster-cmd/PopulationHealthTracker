@@ -427,8 +427,7 @@ button:hover {
 
 
 
-
-/* General List Styling */
+/* General Styling for Navigation */
 ul {
     list-style-type: none;
     margin: 0;
@@ -446,53 +445,51 @@ li a {
     color: white;
     padding: 16px;
     text-decoration: none;
-    background-color: var(--background-color); /* Adjust to your color scheme */
+    background-color: var(--background-color); /* Adjust for your theme */
 }
 
 li a:hover {
-    background-color: var(--primary-color); /* Adjust to your color scheme */
+    background-color: var(--primary-color); /* Adjust for your theme */
 }
 
-/* Tooltip Menu Styling */
-.tooltip-container {
+/* Dropdown Menu Styling */
+.dropdown-container {
     position: relative;
 }
 
-.tooltip-menu {
+.dropdown-menu {
     display: none;
     position: absolute;
-    top: 100%; /* Align below the main button */
+    top: 100%; /* Align the dropdown below the main button */
     left: 0;
     background-color: var(--card-background-color);
     padding: 10px;
-    border-radius: var(--radius);
-    box-shadow: var(--box-shadow);
-    z-index: 1000;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     min-width: 180px;
+    z-index: 1;
 }
 
-.tooltip-menu a {
+/* Show the dropdown when hovering over the container */
+.dropdown-container:hover .dropdown-menu {
     display: block;
-    padding: 8px 12px;
-    color: var(--text-color);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px 16px;
+    color: white;
     text-decoration: none;
     background-color: var(--card-background-color);
-    border-radius: var(--radius);
     transition: background-color 0.3s ease;
 }
 
-.tooltip-menu a:hover {
+.dropdown-menu a:hover {
     background-color: var(--primary-color);
-    color: #fff;
 }
 
-/* Show the tooltip on hover */
-.tooltip-container:hover .tooltip-menu {
-    display: block;
-}
-
-/* Keep main button clickable */
-.tooltip-toggle {
+/* Ensure the main button is still clickable and above the dropdown */
+.dropdown-toggle {
     position: relative;
-    z-index: 1; /* Keep the main button clickable and above the tooltip */
+    z-index: 2; /* Keeps the main link clickable */
 }
