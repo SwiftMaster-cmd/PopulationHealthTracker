@@ -54,37 +54,53 @@
 
     <div class="spacer"></div>
 
-    
-    <div class="header-container">
-        <h1>Donate</h1>
-        <button id="cheatSheetButton" class="button">Cheat Sheet</button>
-        <button onclick="window.location.href='Dash2.html'" class="button">Dashboard</button>
-        <button onclick="window.location.href='Donate.html'" class="button">Donate</button>
+<!-- Header Section -->
+<header class="commission-header">
+    <h3>Dashboard</h3>
+    <ul>
+        <!-- Dashboard Dropdown -->
+        <li class="dropdown-container">
+            <a href="dash2.html" class="dropdown-toggle">Dashboard</a>
+            <ul class="dropdown-menu">
+                <li><a href="notes.html">Notes</a></li>
+                <li><a href="calender.html">Calendar</a></li>
+                <li><a href="dailySummary.html">Daily Summary</a></li>
+                <li><a href="notifications.html">Notifications</a></li>
+            </ul>
+        </li>
 
-        <button onclick="window.location.href='history.html'" class="button">Sales History</button>
-        <button onclick="window.location.href='leaderboard.html'" class="button">Leaderboard</button>
-        <button onclick="window.location.href='totals.html'" class="button">Monthly Totals</button>
-        <button onclick="window.location.href='chart.html'" class="button">Chart</button>
-        <div class="profile-button">P</div>
+        <li><a href="cheatSheet.html">Cheat Sheet</a></li>
+
+        <!-- Team Dropdown -->
+        <li class="dropdown-container">
+            <a href="team.html" class="dropdown-toggle">Team</a>
+            <ul class="dropdown-menu">
+                <li><a href="liveActivities.html">Live Activities</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+            </ul>
+        </li>
+
+        <!-- Insights Dropdown -->
+        <li class="dropdown-container">
+            <a href="chart.html" class="dropdown-toggle">Insights</a>
+            <ul class="dropdown-menu">
+                <li><a href="chart.html">Charts</a></li>
+                <li><a href="summary.html">Summary</a></li>
+            </ul>
+        </li>
+
+        <li><a href="sales.html">Sales History</a></li>
+        <li><a href="settings.html">Settings</a></li>
+    </ul>
+
+    <div class="total-commission" id="totalCommissionContainer">
+        <span id="totalCommissionAmount">$0.00</span>
+        <!-- Commission Totals -->
+        <div id="commissionTotals">
+            <h3 id="totalCommission"></h3>
+        </div>
     </div>
-
-
-    <!-- Color Picker and Name Change Container -->
-    <div class="color-picker-container" id="colorPickerContainer">
-
-       
-
-        <input type="color" id="colorPicker" />
-        <button id="applyColor" class="button">Apply Color Palette</button>
-        <input type="text" id="nameInput" placeholder="Enter new name" />
-        <button id="changeName" class="button">Change Name</button>
-        <button id="signOut" class="button">Sign Out</button>
-        <button id="googleSignInButton">Link with Google</button>
-        <button id="copyBookmarkletButton">Click me to copy AutoTracker Bookmark Script</button>
-        
-        <!-- Navigation Buttons -->
-
-    </div>
+</header>
 
     <div class="main-container">
 
