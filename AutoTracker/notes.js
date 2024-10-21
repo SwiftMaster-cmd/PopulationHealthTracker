@@ -4,27 +4,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let currentUser = null;
     let currentNoteId = null;
+    let currentFolder = 'default';
 
+    const folderInput = document.getElementById('newFolderInput');
+    const foldersList = document.getElementById('foldersList');
+    const newNoteButton = document.getElementById('newNoteButton');
     const noteInput = document.getElementById('noteInput');
     const notesList = document.getElementById('notesList');
     const noteForm = document.getElementById('noteForm');
+    const createFolderButton = document.getElementById('createFolderButton');
+    const deleteNoteButton = document.getElementById('deleteNoteButton');
 
     // Authenticate the user
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
-            loadNotes(); // Load notes for authenticated user
+            loadFolders();
+            loadNotes(); // Load notes for the authenticated user
         } else {
             console.error('No user is signed in!');
         }
     });
 
-    // Load the notes for the current user
+    // Load folders
+    function loadFolders() {
+        if (!currentUser) return;
+
+        const userFoldersRef = db.ref('folders/' + currentUser.uid);
+        userFoldersRef.on('value', snapshot => {
+            foldersList.innerHTML = ''; // Clear the list
+            const folders = snapshot.val();
+            if (folders) {
+                Object.keys(folders).forEach(folderName => {
+                    displayFolderInList(folderName);
+                });
+            }
+        });
+    }
+
+    // Load notes for the current folder
     function loadNotes() {
         if (!currentUser) return;
 
-        const userNotesRef = db.ref('notes/' + currentUser.uid);
-
+        const userNotesRef = db.ref('notes/' + currentUser.uid + '/' + currentFolder);
         userNotesRef.on('value', snapshot => {
             notesList.innerHTML = ''; // Clear the list
             const notes = snapshot.val();
@@ -35,6 +57,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
+    }
+
+    // Display folder in the list
+    function displayFolderInList(folderName) {
+        const li = document.createElement('li');
+        li.textContent = folderName;
+        li.addEventListener('click', () => switchFolder(folderName));
+        foldersList.appendChild(li);
+    }
+
+    // Switch folders
+    function switchFolder(folderName) {
+        currentFolder = folderName;
+        loadNotes(); // Load notes from the selected folder
     }
 
     // Display the note in the left panel
@@ -48,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load note for editing
     function loadNoteForEditing(noteId) {
         currentNoteId = noteId;
-        const noteRef = db.ref('notes/' + currentUser.uid + '/' + noteId);
+        const noteRef = db.ref('notes/' + currentUser.uid + '/' + currentFolder + '/' + noteId);
 
         noteRef.once('value').then(snapshot => {
             const note = snapshot.val();
@@ -59,6 +95,26 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // Create a new folder
+    createFolderButton.addEventListener('click', () => {
+        const folderName = folderInput.value.trim();
+        if (folderName) {
+            const folderRef = db.ref('folders/' + currentUser.uid + '/' + folderName);
+            folderRef.set(true).then(() => {
+                folderInput.value = ''; // Clear the input
+                console.log('Folder created successfully');
+            }).catch(error => {
+                console.error('Error creating folder:', error);
+            });
+        }
+    });
+
+    // Create a new note
+    newNoteButton.addEventListener('click', () => {
+        currentNoteId = null; // Clear current note for a new one
+        noteInput.value = ''; // Clear the input field for a new note
+    });
 
     // Form submission handler to save the note
     noteForm.addEventListener('submit', e => {
@@ -74,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Create a new note
     function createNewNoteWithVersion(text) {
-        const noteRef = db.ref('notes/' + currentUser.uid).push(); // Create a new note
+        const noteRef = db.ref('notes/' + currentUser.uid + '/' + currentFolder).push(); // Create a new note
         const noteId = noteRef.key;
 
         const newNote = {
@@ -95,13 +151,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Save existing note with versioning
     function saveNoteWithVersion(noteId, newText) {
-        const noteRef = db.ref('notes/' + currentUser.uid + '/' + noteId);
+        const noteRef = db.ref('notes/' + currentUser.uid + '/' + currentFolder + '/' + noteId);
 
         noteRef.once('value').then(snapshot => {
             const note = snapshot.val();
             if (!note) return;
 
-            const newVersionId = db.ref('notes/' + currentUser.uid + '/' + noteId + '/versions').push().key;
+            const newVersionId = db.ref('notes/' + currentUser.uid + '/' + currentFolder + '/' + noteId + '/versions').push().key;
             const updates = {
                 text: newText,
                 [`versions/${newVersionId}`]: {
@@ -119,4 +175,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     }
+
+    // Delete the current note
+    deleteNoteButton.addEventListener('click', () => {
+        if (!currentNoteId) return;
+
+        const noteRef = db.ref('notes/' + currentUser.uid + '/' + currentFolder + '/' + currentNoteId);
+        noteRef.remove()
+            .then(() => {
+                console.log('Note deleted successfully');
+                currentNoteId = null;
+                noteInput.value = ''; // Clear the note editor
+            })
+            .catch(error => {
+                console.error('Error deleting note:', error);
+            });
+    });
 });

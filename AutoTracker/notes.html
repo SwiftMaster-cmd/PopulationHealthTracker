@@ -104,27 +104,33 @@
 
 <div class="spacer"></div>
 
- <!-- Notes Layout: Split View -->
- <div class="notes-container">
-    <!-- Notes List -->
-    <div class="notes-list">
-        <h2>Your Notes</h2>
+<!-- Notes App HTML -->
+<div class="notes-app">
+    <!-- Folders Section -->
+    <div class="folders-section">
+        <h3>Folders</h3>
+        <ul id="foldersList"></ul>
+
+        <input type="text" id="newFolderInput" placeholder="New Folder Name">
+        <button id="createFolderButton">Create Folder</button>
+    </div>
+
+    <!-- Notes List Section -->
+    <div class="notes-list-section">
+        <h3>Notes</h3>
+        <button id="newNoteButton">New Note</button>
         <ul id="notesList"></ul>
     </div>
 
-    <!-- Notes Editor & History -->
-    <div class="notes-editor">
-        <h2 id="editorTitle">Edit Note</h2>
+    <!-- Note Editor Section -->
+    <div class="note-editor-section">
         <form id="noteForm">
-            <textarea id="noteInput" placeholder="Write a note..." required></textarea>
-            <button type="submit">Save Note</button>
-        </form>
+            <label for="noteInput">Note Content:</label>
+            <textarea id="noteInput" placeholder="Enter your note"></textarea>
 
-        <!-- Notes History -->
-        <div id="noteHistory" class="hidden">
-            <h3>Note History</h3>
-            <ul id="historyList"></ul>
-        </div>
+            <button type="submit">Save Note</button>
+            <button type="button" id="deleteNoteButton">Delete Note</button>
+        </form>
     </div>
 </div>
 
