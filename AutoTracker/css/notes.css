@@ -1,0 +1,121 @@
+/* Root Variables */
+:root {
+    --background-color: #1a1a1a; /* Dark grey background */
+    --card-background-color: #2c2c2c; /* Slightly lighter dark grey for cards */
+    --primary-color: #0d6efd; /* Bootstrap Blue */
+    --accent-color: #20c997; /* Mint accent color */
+    --text-color: #e9ecef; /* Light text color */
+    --border-color: #343a40; /* Dark border */
+    --radius: 8px;
+    --transition-duration: 0.3s;
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --font-size-base: 16px;
+    --font-size-large: 20px;
+}
+
+/* Body Styling */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Notes Container */
+.notes-container {
+    background-color: var(--card-background-color);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Heading */
+.notes-container h1 {
+    font-size: var(--font-size-large);
+    margin-bottom: 20px;
+}
+
+/* Note Input */
+#noteForm {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+#noteInput {
+    background-color: #343a40;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 15px;
+    font-size: var(--font-size-base);
+    resize: none;
+    height: 100px;
+    margin-bottom: 15px;
+    transition: border-color var(--transition-duration);
+}
+
+#noteInput:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+/* Submit Button */
+#noteForm button {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition-duration);
+}
+
+#noteForm button:hover {
+    background-color: var(--accent-color);
+}
+
+/* Notes List */
+#notesList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#notesList li {
+    background-color: #3c3c3c;
+    color: var(--text-color);
+    padding: 15px;
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color var(--transition-duration);
+}
+
+#notesList li:hover {
+    background-color: #4c4c4c;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #dc3545;
+    border: none;
+    padding: 5px 10px;
+    border-radius: var(--radius);
+    color: white;
+    cursor: pointer;
+    transition: background-color var(--transition-duration);
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
