@@ -232,7 +232,7 @@ document.addEventListener('firebaseInitialized', function() {
 
         // Sort totals by count descending and limit to top 10
         totals.sort((a, b) => b.count - a.count);
-        const top10Data = totals.slice(0, 20);
+        const top10Data = totals.slice(0, 15);
 
         // Render leaderboard
         const table = document.createElement('table');
