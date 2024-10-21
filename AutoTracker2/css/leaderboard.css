@@ -1,0 +1,306 @@
+/* LeaderBoard-LiveActivities.css */
+
+/* Root Variables */
+:root {
+    --background-color: #121212; /* Dark background */
+    --card-background-color: #1e1e1e; /* Card background */
+    --primary-color: #2196F3; /* Blue accent color */
+    --accent-color: #4CAF50; /* Green accent color */
+    --text-color: #FFFFFF; /* White text */
+    --muted-text-color: #B0B0B0; /* Muted text color */
+    --border-color: #2c2c2c; /* Border color */
+    --radius: 10px;
+    --transition-duration: 0.3s;
+    --font-family: 'Roboto', sans-serif;
+    --font-size-base: 48px;
+    --font-size-large: 52px;
+    --font-size-small: 42px;
+}
+
+/* Global Styles */
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+    background-color: var(--card-background-color);
+    padding: 30px;
+    border-radius: var(--radius);
+    margin-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.leaderboard-filters label {
+    font-size: var(--font-size-base);
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.leaderboard-filters select {
+    font-size: var(--font-size-base);
+    padding: 10px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: border-color var(--transition-duration);
+    appearance: none;
+}
+
+.leaderboard-filters select:hover,
+.leaderboard-filters select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+#leaderboardContainer {
+    overflow-x: auto;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: var(--font-size-large);
+}
+
+.leaderboard-table th {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+.leaderboard-table tr:hover {
+    background-color: #2a2a2a;
+    transition: background-color var(--transition-duration);
+}
+
+/* Live Activities Section */
+.live-activities-section {
+    background-color: var(--card-background-color);
+    padding: 30px;
+    border-radius: var(--radius);
+    margin-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.live-activity {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    animation: fadeInUp 0.5s ease;
+}
+
+.live-activity:last-child {
+    border-bottom: none;
+}
+
+.live-activity p {
+    font-size: var(--font-size-large); /* Increased font size for sale text */
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.live-activity strong {
+    color: var(--accent-color);
+}
+
+.live-activity time {
+    font-size: var(--font-size-small);
+    color: var(--muted-text-color);
+    margin-bottom: 10px;
+}
+
+.activity-buttons {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.activity-buttons button {
+    font-size: var(--font-size-base);
+    padding: 10px 15px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+    color: #fff;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.activity-buttons button:hover {
+    transform: translateY(-2px);
+}
+
+.like-button {
+    background-color: var(--primary-color);
+}
+
+.like-button.liked {
+    background-color: var(--accent-color);
+}
+
+.comment-button {
+    background-color: var(--border-color);
+}
+
+.activity-buttons svg {
+    margin-right: 8px;
+}
+
+.likes-info {
+    font-size: var(--font-size-small);
+    color: var(--muted-text-color);
+    margin-bottom: 10px;
+}
+
+.show-replies-button {
+    background-color: transparent;
+    color: var(--primary-color);
+    font-size: var(--font-size-small);
+    margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.show-replies-button:hover {
+    text-decoration: underline;
+}
+
+.comments-section {
+    margin-top: 20px;
+    padding-left: 20px;
+    border-left: 2px solid var(--border-color);
+}
+
+.comment-form {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.comment-form input[type="text"] {
+    flex: 1;
+    font-size: var(--font-size-base);
+    padding: 10px;
+    border: none;
+    border-radius: var(--radius);
+    margin-right: 10px;
+    background-color: #2a2a2a;
+    color: var(--text-color);
+    transition: background-color var(--transition-duration);
+}
+
+.comment-form input[type="text"]:focus {
+    outline: none;
+    background-color: #3a3a3a;
+}
+
+.comment-form button {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 15px;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+
+.comment-form button:hover {
+    transform: translateY(-2px);
+}
+
+.comments-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.comments-list li {
+    margin-bottom: 15px;
+    background-color: #1a1a1a;
+    padding: 10px;
+    border-radius: var(--radius);
+}
+
+.comments-list li p {
+    margin: 0;
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+}
+
+.comments-list li time {
+    font-size: var(--font-size-small);
+    color: var(--muted-text-color);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20%, 0);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .leaderboard-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .leaderboard-filters label,
+    .leaderboard-filters select {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .activity-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .activity-buttons button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

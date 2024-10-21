@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard</title>
+
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/leaderboard.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/controller.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/charts.css"> <!-- Main styles -->
+
+    <link rel="stylesheet" href="css/sales.css"> <!-- Main styles -->
+
+    <!-- Firebase Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+    <!-- Chart.js and Chroma.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    
+
+    <!-- Chart.js Date Adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <!-- Your JavaScript Files -->
+    <script src="firebase-init.js" defer></script>
+    <script src="settings.js" defer></script>
+    <script src="notifications.js" defer></script>
+    <script src="privateChat.js" defer></script>
+
+    <script src="commission.js" defer></script>
+
+    <script src="display-sales.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="dashboard.js" defer></script>
+    <script src="leaderboard.js" defer></script>
+
+    <!-- Google Analytics -->
+    <!-- (Your existing Google Analytics code) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RVBYB0RR06"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RVBYB0RR06');
+    </script>
+</head>
+<body>
+<!-- Header Section -->
+<header class="commission-header">
+    <h3>Leaderboard</h3>
+    <li><a href="dash2.html">Dashboard</a></li>
+    <li><a href="leaderboard.html">Leaderboard</a></li>
+    <li><a href="chart.html">Insights</a></li>
+    <li><a href="settings.html">Settings</a></li>
+    <li><a href="notifications.html">Notifications</a></li>
+    <li><a href="sales.html">Sales History</a></li>
+    <div class="total-commission" id="totalCommissionContainer">
+        <span id="totalCommissionAmount">$0.00</span>
+           
+    </div>
+</header>
+<div class="spacer"></div>
+
+
+
+
+<!-- Leaderboard Section -->
+<div class="leaderboard-section" id="leaderboardSection">
+    <h2>Leaderboard</h2>
+    <div class="leaderboard-filters">
+        <label for="saleTypeFilter">Sale Type:</label>
+        <select id="saleTypeFilter">
+            <!-- Options will be populated dynamically -->
+        </select>
+
+        <label for="timeFrameFilter">Time Frame:</label>
+        <select id="timeFrameFilter">
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+    <div id="leaderboardContainer">
+        <!-- Leaderboard table will be rendered here -->
+    </div>
+</div>
+
+
+
+
+    <!-- User List Container for New Chat -->
+    <div id="userListContainer" style="display: none;">
+        <input type="text" id="userSearchInput" placeholder="Search users...">
+        <ul id="userList">
+            <!-- List of users will be rendered here -->
+        </ul>
+    </div>
+
+<!-- Live Activities Section -->
+<div class="live-activities-section" id="liveActivitiesSection">
+    <h2>Live Activities</h2>
+    <div id="liveActivitiesContainer">
+        <!-- Live activities will be rendered here -->
+        <!-- Example of a live activity item -->
+        <div class="live-activity">
+            <p><strong>User Name</strong> made a <strong>Sale Type</strong> sale on <time datetime="...">Date and Time</time></p>
+            <div class="activity-buttons">
+                <button class="like-button">
+                    <!-- Like Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <i class="fas fa-heart"></i> Like
+
+                        <!-- SVG content for like icon -->
+                    </svg>
+                    Like
+                </button>
+                <button class="comment-button">
+                    <!-- Comment Icon -->
+                    <svg width="20" height="20" fill="currentColor">
+                        <!-- SVG content for comment icon -->
+                    </svg>
+                    Comment
+                </button>
+            </div>
+            <!-- Likes Info -->
+            <p class="likes-info">5 Likes (Liked by: User1, User2)</p>
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <button class="show-replies-button">Show Replies (2)</button>
+                <ul class="comments-list">
+                    <li>
+                        <p><strong>Commenter Name</strong>: Comment text</p>
+                        <time datetime="...">Date and Time</time>
+                    </li>
+                    <!-- More comments -->
+                </ul>
+                <!-- Comment Form -->
+                <form class="comment-form">
+                    <input type="text" placeholder="Add a comment..." required>
+                    <button type="submit">Post</button>
+                </form>
+            </div>
+        </div>
+        <!-- More live activities -->
+    </div>
+</div>
+
+
+<!-- Commission Totals -->
+<div id="commissionTotals">
+
+    <h3 id="totalCommission"></h3>
+</div>
+
+
+
+</body>
+</html>

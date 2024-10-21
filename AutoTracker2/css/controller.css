@@ -1,0 +1,161 @@
+/* chart-controller.css */
+
+/* Root Variables */
+:root {
+    --background-color: #121212; /* Dark background */
+    --card-background-color: #1e1e1e; /* Card background */
+    --primary-color: #2196F3; /* Blue accent color */
+    --accent-color: #4CAF50; /* Green accent color */
+    --text-color: #FFFFFF; /* White text */
+    --muted-text-color: #B0B0B0; /* Muted text color */
+    --border-color: #2c2c2c; /* Border color */
+    --radius: 10px;
+    --transition-duration: 0.3s;
+    --font-family: 'Roboto', sans-serif;
+    --font-size-base: 16px;
+    --font-size-large: 20px;
+    --font-size-small: 14px;
+}
+
+
+
+/* Charts Container */
+#chartsContainer {
+    background-color: var(--card-background-color);
+    padding: 30px;
+    border-radius: var(--radius);
+    margin-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Filter Container */
+.filter-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+/* Filter Row */
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filter-row label {
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    margin-right: 10px;
+    margin-bottom: 10px;
+    min-width: 120px;
+}
+
+.filter-row select,
+.filter-row input[type="text"] {
+    font-size: var(--font-size-base);
+    padding: 10px 15px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-row select:hover,
+.filter-row input[type="text"]:hover {
+    background-color: #2a2a2a;
+    border-color: var(--primary-color);
+}
+
+.filter-row select:focus,
+.filter-row input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.filter-row button {
+    font-size: var(--font-size-base);
+    padding: 10px 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: var(--radius);
+    background-color: var(--primary-color);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+
+.filter-row button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* Preset Controls */
+.preset-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.preset-controls input[type="text"] {
+    font-size: var(--font-size-base);
+    padding: 10px 15px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    flex: 1;
+    min-width: 200px;
+}
+
+.preset-controls button {
+    font-size: var(--font-size-base);
+    padding: 10px 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: var(--radius);
+    background-color: var(--primary-color);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+
+.preset-controls button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.preset-controls select {
+    font-size: var(--font-size-base);
+    padding: 10px 15px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    flex: 1;
+    min-width: 200px;
+}
+
+.preset-controls select:hover {
+    background-color: #2a2a2a;
+    border-color: var(--primary-color);
+}
+
+.preset-controls select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}

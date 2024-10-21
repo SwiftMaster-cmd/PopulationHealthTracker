@@ -1,0 +1,197 @@
+/* sales.css */
+
+/* Root Variables */
+:root {
+    --background-color: #121212; /* Dark background */
+    --card-background-color: #1e1e1e; /* Card background */
+    --primary-color: #2196F3; /* Blue accent color */
+    --accent-color: #4CAF50; /* Green accent color */
+    --text-color: #FFFFFF; /* White text */
+    --muted-text-color: #B0B0B0; /* Muted text color */
+    --border-color: #2c2c2c; /* Border color */
+    --radius: 10px;
+    --transition-duration: 0.3s;
+    --font-family: 'Roboto', sans-serif;
+    --font-size-base: 18px; /* Increased font size */
+    --font-size-large: 20px;
+    --font-size-small: 16px;
+}
+
+/* Sales Table Container */
+.sales-table-container {
+    width: 95%; /* Set container width to 95% */
+    max-width: 95%; /* Ensure maximum width does not exceed 95% */
+    margin: 0 auto; /* Center the container */
+    overflow-x: auto; /* Allow horizontal scrolling within the container if needed */
+    background-color: var(--card-background-color);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+}
+
+
+/* Sales Table */
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sales-table th,
+.sales-table td {
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+}
+
+.sales-table th {
+    background-color: #2a2a2a;
+    font-weight: 600;
+}
+
+.sales-table tr:hover {
+    background-color: #2a2a2a;
+    transition: background-color var(--transition-duration);
+}
+
+.sales-table tr:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+/* Delete Button */
+.delete-button {
+    background-color: #dc3545; /* Red color */
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 15px;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+/* Tooltips */
+.notes-tooltip,
+.email-tooltip,
+.zipcode-tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.notes-tooltip::after,
+.email-tooltip::after,
+.zipcode-tooltip::after {
+    content: attr(data-notes);
+    position: absolute;
+    background-color: var(--card-background-color);
+    color: var(--text-color);
+    padding: 10px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    white-space: pre-wrap;
+    font-size: var(--font-size-small);
+    display: none;
+    min-width: 200px;
+    z-index: 100;
+}
+
+.email-tooltip::after {
+    content: attr(data-email);
+}
+
+.zipcode-tooltip::after {
+    content: attr(data-zipcode);
+}
+
+.notes-tooltip:hover::after,
+.email-tooltip:hover::after,
+.zipcode-tooltip:hover::after {
+    display: block;
+}
+
+/* Sales Filters */
+#salesFilters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#salesFilters label {
+    font-size: var(--font-size-base);
+    margin-right: 10px;
+    color: var(--text-color);
+}
+
+#salesFilters input[type="text"],
+#salesFilters select {
+    background-color: var(--card-background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 10px;
+    font-size: var(--font-size-base);
+    margin-right: 20px;
+    margin-bottom: 10px;
+    flex: 1;
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+    appearance: none;
+}
+
+#salesFilters input[type="text"]:hover,
+#salesFilters select:hover {
+    background-color: #2a2a2a;
+}
+
+#salesFilters input[type="text"]:focus,
+#salesFilters select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Show More Button */
+#showMoreButton {
+    display: block;
+    margin: 20px auto;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 20px;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+
+#showMoreButton:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* Toggle Table Button */
+#toggleTableButton {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 20px;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+    margin-bottom: 20px;
+}
+
+#toggleTableButton:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
