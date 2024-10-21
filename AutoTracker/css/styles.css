@@ -502,3 +502,145 @@ button:hover {
     background-color: var(--accent-color); /* Hover effect */
     color: white;
 }
+
+
+/* Event Form Styling */
+#eventForm {
+    background-color: var(--card-background-color);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    box-shadow: var(--box-shadow);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+#eventForm label {
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    margin-bottom: 10px;
+    display: block;
+}
+
+#eventForm input[type="text"],
+#eventForm input[type="date"],
+#eventForm input[type="time"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    background-color: var(--card-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#eventForm input[type="text"]:focus,
+#eventForm input[type="date"]:focus,
+#eventForm input[type="time"]:focus {
+    border-color: var(--accent-color);
+    background-color: #343a40;
+    outline: none;
+}
+
+#eventForm button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: var(--font-size-base);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#eventForm button:hover {
+    background-color: var(--accent-color);
+}
+
+/* Event List Styling */
+h3 {
+    font-size: var(--font-size-large);
+    color: var(--text-color);
+    text-align: center;
+}
+
+#eventsList {
+    background-color: var(--card-background-color);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    max-width: 600px;
+    margin: 20px auto;
+    list-style-type: none;
+    padding: 0;
+}
+
+#eventsList li {
+    background-color: #3c3c3c;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: var(--radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+#eventsList li:hover {
+    background-color: #4c4c4c;
+}
+
+.event-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.event-details .event-title {
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    margin: 0 0 5px 0;
+}
+
+.event-details .event-date-time {
+    font-size: var(--font-size-small);
+    color: var(--secondary-color);
+}
+
+.event-actions button {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 8px 12px;
+    color: white;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: var(--font-size-small);
+}
+
+.event-actions button:hover {
+    background-color: var(--accent-color);
+}
+
+.event-actions .delete-btn {
+    background-color: #dc3545;
+}
+
+.event-actions .delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Media Queries for Mobile */
+@media (max-width: 768px) {
+    #eventsList li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .event-actions {
+        margin-top: 10px;
+    }
+}
