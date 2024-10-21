@@ -452,6 +452,51 @@ li a:hover {
     background-color: var(--primary-color); /* Adjust for your theme */
 }
 
+
+
+
+
+
+
+
+
+
+/* General Styling for the Header and Navigation */
+.commission-header {
+    background-color: var(--background-color); /* Your theme color */
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+li {
+    position: relative;
+}
+
+li a {
+    display: block;
+    color: white;
+    padding: 16px 20px;
+    text-decoration: none;
+    background-color: var(--background-color); /* Adjust to your theme */
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+li a:hover {
+    background-color: var(--primary-color); /* Adjust to your theme */
+}
+
 /* Dropdown Menu Styling */
 .dropdown-container {
     position: relative;
@@ -460,36 +505,65 @@ li a:hover {
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 100%; /* Align the dropdown below the main button */
+    top: 100%; /* Position below the main button */
     left: 0;
-    background-color: var(--card-background-color);
+    background-color: var(--card-background-color); /* Adjust this to fit your theme */
     padding: 10px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for a modern look */
+    z-index: 1000;
     min-width: 180px;
-    z-index: 1;
-}
-
-/* Show the dropdown when hovering over the container */
-.dropdown-container:hover .dropdown-menu {
-    display: block;
 }
 
 .dropdown-menu a {
     display: block;
-    padding: 8px 16px;
+    padding: 10px 15px;
     color: white;
+    background-color: var(--card-background-color); /* Match dropdown background */
     text-decoration: none;
-    background-color: var(--card-background-color);
+    border-radius: 6px;
     transition: background-color 0.3s ease;
 }
 
 .dropdown-menu a:hover {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Adjust to your theme */
+    color: #fff;
 }
 
-/* Ensure the main button is still clickable and above the dropdown */
+/* Display the dropdown on hover */
+.dropdown-container:hover .dropdown-menu {
+    display: block;
+}
+
+/* Keep the main link clickable and functional while showing the dropdown */
 .dropdown-toggle {
     position: relative;
-    z-index: 2; /* Keeps the main link clickable */
+    z-index: 2; /* Ensure the main button is clickable even with the dropdown */
+}
+
+/* Dropdown hover transition */
+.dropdown-container .dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px); /* Slight animation for dropdown */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-container:hover .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0); /* Dropdown becomes fully visible */
+}
+
+/* Button-Specific Styling */
+.total-commission {
+    background-color: var(--primary-color); /* Your button color */
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.total-commission:hover {
+    background-color: var(--accent-color); /* Hover effect on buttons */
+    color: white;
 }
