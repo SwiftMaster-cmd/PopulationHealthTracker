@@ -46,3 +46,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const weekRange = document.getElementById('week-range');
+    const sundaySlot = document.getElementById('sunday');
+    const mondaySlot = document.getElementById('monday');
+    const tuesdaySlot = document.getElementById('tuesday');
+    const wednesdaySlot = document.getElementById('wednesday');
+    const thursdaySlot = document.getElementById('thursday');
+    const fridaySlot = document.getElementById('friday');
+    const saturdaySlot = document.getElementById('saturday');
+
+    let currentDate = new Date();
+    
+    // Function to get the start of the current week (Sunday)
+    function getStartOfWeek(date) {
+        const startOfWeek = new Date(date);
+        startOfWeek.setDate(date.getDate() - date.getDay());
+        return startOfWeek;
+    }
+
+    // Function to render the current week range
+    function renderWeek() {
+        const startOfWeek = getStartOfWeek(currentDate);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        
+        // Format the week range display
+        weekRange.textContent = `${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()}`;
+
+        // Clear any existing events in the slots
+        [sundaySlot, mondaySlot, tuesdaySlot, wednesdaySlot, thursdaySlot, fridaySlot, saturdaySlot].forEach(slot => {
+            slot.innerHTML = ''; // Clear existing events
+        });
+
+        // Example: Adding events for demonstration
+        const event1 = document.createElement('div');
+        event1.className = 'event-slot';
+        event1.textContent = 'Meeting at 10am';
+        mondaySlot.appendChild(event1);
+
+        const event2 = document.createElement('div');
+        event2.className = 'event-slot';
+        event2.textContent = 'Lunch at 1pm';
+        wednesdaySlot.appendChild(event2);
+    }
+
+    // Initialize the week display
+    renderWeek();
+
+    // Navigate to previous week
+    document.getElementById('prev-week').addEventListener('click', function () {
+        currentDate.setDate(currentDate.getDate() - 7);
+        renderWeek();
+    });
+
+    // Navigate to next week
+    document.getElementById('next-week').addEventListener('click', function () {
+        currentDate.setDate(currentDate.getDate() + 7);
+        renderWeek();
+    });
+});
