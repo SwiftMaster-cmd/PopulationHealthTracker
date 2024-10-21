@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/leaderboard.css"> <!-- Main styles -->
     <link rel="stylesheet" href="css/controller.css"> <!-- Main styles -->
     <link rel="stylesheet" href="css/charts.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="css/calender.css"> <!-- Main styles -->
 
     <link rel="stylesheet" href="css/sales.css"> <!-- Main styles -->
 
@@ -105,25 +106,6 @@
 <div class="spacer"></div>
 
 
-<!-- Leaderboard Section -->
-<div class="leaderboard-section" id="leaderboardSection">
-    <h2>Leaderboard</h2>
-    <div class="leaderboard-filters">
-        <label for="saleTypeFilter">Sale Type:</label>
-        <select id="saleTypeFilter">
-            <!-- Options will be populated dynamically -->
-        </select>
-
-        <label for="timeFrameFilter">Time Frame:</label>
-        <select id="timeFrameFilter">
-            <!-- Options will be populated dynamically -->
-        </select>
-    </div>
-    <div id="leaderboardContainer">
-        <!-- Leaderboard table will be rendered here -->
-    </div>
-</div>
-
 
 
 <h2>Event Calendar</h2>
@@ -154,7 +136,32 @@
     <h3 id="totalCommission"></h3>
 </div>
 
+<div class="calendar-container">
+    <div class="calendar-header">
+        <button id="prev-week">Previous</button>
+        <h2 id="current-week">Week of <span id="week-range"></span></h2>
+        <button id="next-week">Next</button>
+    </div>
+    <div class="calendar-grid">
+        <!-- Days of the week headers -->
+        <div class="day-header">Sunday</div>
+        <div class="day-header">Monday</div>
+        <div class="day-header">Tuesday</div>
+        <div class="day-header">Wednesday</div>
+        <div class="day-header">Thursday</div>
+        <div class="day-header">Friday</div>
+        <div class="day-header">Saturday</div>
 
+        <!-- Slots for daily events -->
+        <div class="day-slot" id="sunday"></div>
+        <div class="day-slot" id="monday"></div>
+        <div class="day-slot" id="tuesday"></div>
+        <div class="day-slot" id="wednesday"></div>
+        <div class="day-slot" id="thursday"></div>
+        <div class="day-slot" id="friday"></div>
+        <div class="day-slot" id="saturday"></div>
+    </div>
+</div>
 
 
 </body>
