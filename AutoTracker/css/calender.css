@@ -1,25 +1,105 @@
-/* General Calendar Layout */
+/* Root Variables */
+:root {
+    --background-color: #1a1a1a; /* Dark grey background */
+    --card-background-color: #2c2c2c; /* Slightly lighter dark grey for cards */
+    --primary-color: #0d6efd; /* Bootstrap Blue */
+    --secondary-color: #6c757d; /* Bootstrap Grey */
+    --accent-color: #20c997; /* Mint accent color */
+    --text-color: #e9ecef; /* Light text color */
+    --border-color: #343a40; /* Dark border */
+    --radius: 8px;
+    --transition-duration: 0.3s;
+    --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    --font-size-base: 16px;
+    --font-size-large: 20px;
+    --font-size-small: 14px;
+}
+
+/* General Layout */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1a1a1a;
-    color: #e9ecef;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     height: 100vh;
-    margin: 0;
 }
 
-.calendar-container {
-    width: 90%;
+.container {
+    width: 95%;
     max-width: 1200px;
-    background-color: #2c2c2c;
-    border-radius: 10px;
+    margin: 20px auto;
     padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: space-between;
 }
 
-/* Header (Week Title and Navigation) */
+/* Calendar Form Styling */
+#eventForm {
+    background-color: var(--card-background-color);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    max-width: 300px;
+}
+
+#eventForm label {
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    margin-bottom: 10px;
+    display: block;
+}
+
+#eventForm input[type="text"],
+#eventForm input[type="date"],
+#eventForm input[type="time"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    background-color: var(--card-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: border-color var(--transition-duration), background-color var(--transition-duration);
+}
+
+#eventForm input[type="text"]:focus,
+#eventForm input[type="date"]:focus,
+#eventForm input[type="time"]:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+#eventForm button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: var(--font-size-base);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition-duration);
+}
+
+#eventForm button:hover {
+    background-color: var(--accent-color);
+}
+
+/* Calendar Container */
+.calendar-container {
+    background-color: var(--card-background-color);
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    padding: 20px;
+    width: 75%;
+}
+
+/* Calendar Header */
 .calendar-header {
     display: flex;
     justify-content: space-between;
@@ -28,7 +108,8 @@ body {
 }
 
 .calendar-header h2 {
-    font-size: 24px;
+    font-size: var(--font-size-large);
+    color: var(--text-color);
 }
 
 .calendar-header button {
@@ -36,16 +117,16 @@ body {
     color: white;
     border: none;
     padding: 10px 15px;
-    border-radius: 8px;
+    border-radius: var(--radius);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-duration);
 }
 
 .calendar-header button:hover {
     background-color: var(--accent-color);
 }
 
-/* Grid for the Days */
+/* Calendar Grid */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -55,17 +136,18 @@ body {
 /* Day Headers */
 .day-header {
     text-align: center;
-    font-size: 18px;
+    font-size: var(--font-size-base);
     padding: 10px;
     background-color: #343a40;
-    border-radius: 8px;
+    border-radius: var(--radius);
+    color: var(--text-color);
 }
 
 /* Day Slots */
 .day-slot {
     min-height: 150px;
     background-color: #3c3c3c;
-    border-radius: 8px;
+    border-radius: var(--radius);
     padding: 10px;
     box-shadow: var(--box-shadow);
     display: flex;
@@ -79,17 +161,30 @@ body {
     background-color: #4c4c4c;
 }
 
-/* Example of Event Slot */
+/* Event Slot Styling */
 .event-slot {
     background-color: var(--primary-color);
     color: white;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: var(--radius);
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: var(--font-size-small);
     text-align: center;
     width: 100%;
     box-sizing: border-box;
 }
 
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .calendar-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
+    #eventForm {
+        max-width: 100%;
+    }
+
+    .calendar-container {
+        width: 100%;
+    }
+}
