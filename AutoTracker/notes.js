@@ -1,10 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Make sure Firebase is initialized elsewhere
-    if (!firebase.apps.length) {
-        console.error('Firebase has not been initialized!');
-        return;
-    }
-
     const auth = firebase.auth();
     const db = firebase.database();
 
@@ -13,15 +7,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const noteInput = document.getElementById('noteInput');
     const notesList = document.getElementById('notesList');
-    const historyList = document.getElementById('historyList');
     const noteForm = document.getElementById('noteForm');
-    const noteHistory = document.getElementById('noteHistory');
 
     // Authenticate the user
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
-            loadNotes();
+            loadNotes(); // Load notes for authenticated user
         } else {
             console.error('No user is signed in!');
         }
@@ -34,20 +26,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const userNotesRef = db.ref('notes/' + currentUser.uid);
 
         userNotesRef.on('value', snapshot => {
-            notesList.innerHTML = ''; // Clear current list
+            notesList.innerHTML = ''; // Clear the list
             const notes = snapshot.val();
             if (notes) {
                 Object.keys(notes).forEach(noteId => {
                     const note = notes[noteId];
                     displayNoteInList(noteId, note.text);
                 });
-            } else {
-                console.log('No notes found for this user.');
             }
         });
     }
 
-    // Display a note in the list on the left pane
+    // Display the note in the left panel
     function displayNoteInList(noteId, text) {
         const li = document.createElement('li');
         li.textContent = text.slice(0, 30) + '...'; // Preview first 30 chars
@@ -55,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         notesList.appendChild(li);
     }
 
-    // Load a note for editing (right pane)
+    // Load note for editing
     function loadNoteForEditing(noteId) {
         currentNoteId = noteId;
         const noteRef = db.ref('notes/' + currentUser.uid + '/' + noteId);
@@ -63,47 +53,14 @@ document.addEventListener('DOMContentLoaded', function () {
         noteRef.once('value').then(snapshot => {
             const note = snapshot.val();
             if (note) {
-                noteInput.value = note.text;
-                loadNoteHistory(noteId);
+                noteInput.value = note.text; // Load note into the input field
             } else {
                 console.error('Note not found!');
             }
-        }).catch(error => {
-            console.error('Error loading note:', error);
         });
     }
 
-    // Load the note history
-    function loadNoteHistory(noteId) {
-        const historyRef = db.ref('notes/' + currentUser.uid + '/' + noteId + '/versions');
-
-        historyRef.once('value').then(snapshot => {
-            historyList.innerHTML = ''; // Clear current history list
-            const versions = snapshot.val();
-            if (versions) {
-                Object.keys(versions).forEach(versionId => {
-                    const version = versions[versionId];
-                    const li = document.createElement('li');
-                    li.textContent = `Version from ${new Date(version.timestamp).toLocaleString()}`;
-                    li.addEventListener('click', () => restoreNoteVersion(noteId, version.text));
-                    historyList.appendChild(li);
-                });
-                noteHistory.classList.remove('hidden');
-            } else {
-                console.log('No history available for this note.');
-                noteHistory.classList.add('hidden');
-            }
-        }).catch(error => {
-            console.error('Error loading note history:', error);
-        });
-    }
-
-    // Restore a note version
-    function restoreNoteVersion(noteId, text) {
-        noteInput.value = text; // Restore the version into the input area
-    }
-
-    // Save note on form submission
+    // Form submission handler to save the note
     noteForm.addEventListener('submit', e => {
         e.preventDefault();
         const newText = noteInput.value;
@@ -115,11 +72,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Create a new note with versioning
+    // Create a new note
     function createNewNoteWithVersion(text) {
-        if (!currentUser) return;
-
-        const noteRef = db.ref('notes/' + currentUser.uid).push(); // Generate a new note ID
+        const noteRef = db.ref('notes/' + currentUser.uid).push(); // Create a new note
         const noteId = noteRef.key;
 
         const newNote = {
@@ -130,15 +85,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         noteRef.set(newNote)
             .then(() => {
-                currentNoteId = noteId;
-                console.log('New note created successfully!');
+                currentNoteId = noteId; // Set the current note ID
+                console.log('New note created successfully');
             })
             .catch(error => {
-                console.error('Error creating new note:', error);
+                console.error('Error creating note:', error);
             });
     }
 
-    // Save an existing note with versioning
+    // Save existing note with versioning
     function saveNoteWithVersion(noteId, newText) {
         const noteRef = db.ref('notes/' + currentUser.uid + '/' + noteId);
 
@@ -157,10 +112,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             noteRef.update(updates)
                 .then(() => {
-                    console.log('Note updated with a new version.');
+                    console.log('Note updated with a new version');
                 })
                 .catch(error => {
-                    console.error('Error saving note with versioning:', error);
+                    console.error('Error updating note:', error);
                 });
         });
     }
