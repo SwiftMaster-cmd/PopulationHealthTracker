@@ -32,6 +32,7 @@
     <script src="settings.js" defer></script>
     <script src="notifications.js" defer></script>
     <script src="privateChat.js" defer></script>
+    <script src="calender.js"></script> <!-- Calendar JS file -->
 
     <script src="commission.js" defer></script>
 
@@ -125,38 +126,26 @@
 
 
 
+<h2>Event Calendar</h2>
 
-    <!-- Sales Data Section -->
-    <div class="sales-data-section" id="salesDataSection">
-        <!-- Show/Hide Button -->
-        <button id="toggleTableButton">Show Sales Data</button>
+<!-- Calendar Form -->
+<form id="eventForm">
+    <label for="eventName">Event Name:</label>
+    <input type="text" id="eventName" required>
 
-        <!-- Sales Data Filters -->
-        <div class="sales-filters" id="salesFilters" style="display: none;">
-            <label for="salesTimeFrame">Time Frame:</label>
-            <select id="salesTimeFrame">
-                <option value="allTime">All Time</option>
-                <option value="today">Today</option>
-                <option value="currentWeek">Current Week</option>
-                <option value="previousWeek">Previous Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="90days">Last 90 Days</option>
-                <option value="quarter">Quarter</option>
-                <option value="yearToDate">Year to Date</option>
-            </select>
+    <label for="eventDate">Event Date:</label>
+    <input type="date" id="eventDate" required>
 
-            <label for="searchInput">Search:</label>
-            <input type="text" id="searchInput" placeholder="Search...">
-        </div>
+    <label for="eventTime">Event Time:</label>
+    <input type="time" id="eventTime" required>
 
-        <!-- Sales Data Table -->
-        <div class="sales-table-container" id="salesTableContainer" style="display: none;">
-            <!-- Sales data table will be displayed here -->
-        </div>
+    <button type="submit">Add Event</button>
+</form>
 
-        <!-- Show More Button -->
-        <button id="showMoreButton" style="display: none;">Show More</button>
-    </div>
+<h3>Your Events</h3>
+<ul id="eventsList"></ul>
+
+<!-- Firebase and JavaScript -->
 
   
 <!-- Commission Totals -->
