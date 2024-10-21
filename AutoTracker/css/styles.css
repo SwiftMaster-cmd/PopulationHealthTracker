@@ -1,5 +1,3 @@
-/* LeaderBoard-LiveActivities.css */
-
 /* Root Variables */
 :root {
     --background-color: #1a1a1a; /* Dark grey background */
@@ -12,9 +10,10 @@
     --radius: 8px;
     --transition-duration: 0.3s;
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    --font-size-base: 46px;
-    --font-size-large: 52px;
-    --font-size-small: 42px;
+    --font-size-base: 18px;
+    --font-size-large: 22px;
+    --font-size-small: 14px;
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Global Styles */
@@ -49,13 +48,52 @@ p {
     color: var(--text-color);
 }
 
+/* Header Section */
+.commission-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    z-index: 1000;
+    box-shadow: var(--box-shadow);
+}
+
+.commission-header h3 {
+    font-size: 1.8em;
+    color: var(--primary-color);
+}
+
+/* Navigation Links */
+.commission-header li {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.commission-header li a {
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    transition: background-color var(--transition-duration);
+}
+
+.commission-header li a:hover {
+    background-color: var(--primary-color);
+}
+
 /* Leaderboard Section */
 .leaderboard-section {
     background-color: var(--card-background-color);
     padding: 40px;
     border-radius: var(--radius);
     margin-bottom: 40px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--box-shadow);
 }
 
 .leaderboard-filters {
@@ -138,7 +176,7 @@ p {
     padding: 40px;
     border-radius: var(--radius);
     margin-bottom: 40px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--box-shadow);
 }
 
 .live-activity {
@@ -268,6 +306,83 @@ button:hover {
     color: var(--secondary-color);
 }
 
+/* GIF Modal */
+.gif-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.gif-modal-content {
+    background-color: var(--card-background-color);
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    position: relative;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+}
+
+.gif-modal-close {
+    color: var(--secondary-color);
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.gif-modal-close:hover {
+    color: var(--text-color);
+}
+
+#gifSearchInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: var(--font-size-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--card-background-color);
+    color: var(--text-color);
+}
+
+.gif-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.gif-results img {
+    width: calc(20% - 10px);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.gif-results img:hover {
+    opacity: 0.8;
+}
+
+.gif-preview-container {
+    margin-top: 10px;
+}
+
+.selected-gif-preview {
+    max-width: 150px;
+    height: auto;
+}
+
 /* Animations */
 @keyframes fadeInUp {
     from {
@@ -278,21 +393,6 @@ button:hover {
         opacity: 1;
         transform: none;
     }
-}
-
-/* Picker Styling */
-.leaderboard-filters select,
-.comment-form input[type="text"] {
-    position: relative;
-}
-
-.leaderboard-filters select::-ms-expand {
-    display: none;
-}
-
-.leaderboard-filters select:hover,
-.comment-form input[type="text"]:hover {
-    background-color: #343a40;
 }
 
 /* Scrollbar Styles */
@@ -311,262 +411,4 @@ button:hover {
 
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--accent-color);
-}
-
-
-/* Style the header */
-.commission-header {
-    position: fixed; /* Changed from relative to fixed */
-    top: 0; /* Position at the top of the viewport */
-    left: 0; /* Align to the left */
-    width: 100%; /* Span the full width of the viewport */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: #000; /* Background color remains black */
-    color: #fff; /* Text color remains white */
-    z-index: 1000; /* Ensure the header stays on top */
-}
-
-/* Style the header title */
-.commission-header h1 {
-    margin: 0;
-    font-size: 3.5em; /* Increased font size for bigger text */
-    color: #fff; /* Ensure the header title text is white */
-}
-
-/* Style the total commission container */
-.total-commission {
-    position: relative;
-    font-size: 2.5em; /* Increased font size for bigger text */
-    font-weight: bold;
-    cursor: pointer;
-    color: #fff; /* Set text color to white */
-}
-
-/* Tooltip container */
-.commission-details-tooltip {
-    visibility: hidden;
-    width: 300px;
-    background-color: #333;
-    color: #fff;
-    text-align: left;
-    padding: 10px;
-    border-radius: 5px;
-
-    /* Position the tooltip */
-    position: absolute;
-    top: 100%;
-    right: 0;
-    z-index: 1;
-
-    /* Fade in tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-/* Show the tooltip when hovering over the total commission */
-.total-commission:hover .commission-details-tooltip {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Optional: Style for the commission breakdown section */
-#commissionBreakdown {
-    padding: 20px;
-    margin-top: 160px; /* Adjust margin-top to prevent content overlap */
-}
-
- 
-
-/* styles.css */
-
-/* ... Existing styles ... */
-
-/* The Modal (background) */
-.gif-modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.gif-modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* 5% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Adjust as needed */
-    max-width: 800px;
-    position: relative;
-    border-radius: 8px;
-}
-
-/* Close Button */
-.gif-modal-close {
-    color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 16px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.gif-modal-close:hover,
-.gif-modal-close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* GIF Search Input */
-#gifSearchInput {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-/* GIF Results */
-.gif-results {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.gif-results img {
-    width: calc(20% - 10px); /* Adjust for smaller GIFs */
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.gif-results img:hover {
-    opacity: 0.8;
-}
-
-/* GIF Preview in Comment Form */
-.gif-preview-container {
-    margin-top: 10px;
-}
-
-.selected-gif-preview {
-    max-width: 150px;
-    height: auto;
-}
-
-/* Add GIF Button */
-.add-gif-button {
-    margin-top: 10px;
-    padding: 8px 16px;
-}
-
-/* Comment Form */
-.comment-form {
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-}
-
-.comment-form button[type="submit"] {
-    padding: 8px 16px;
-    margin-top: 10px;
-    align-self: flex-start;
-}
-
-.input-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.input-container input[type="text"] {
-    padding: 8px;
-    width: 100%;
-}
-
-.activity-buttons button {
-    margin-right: 10px;
-}
-
-/* Navigation Styling */
-.nav-links {
-    display: flex;
-    justify-content: space-around;
-    list-style: none;
-    background-color: #1a1a2e; /* Dark background */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.nav-links li {
-    margin: 0 15px;
-    position: relative;
-}
-
-/* Stylish Link Appearance */
-.nav-links a {
-    text-decoration: none;
-    color: #ffffff; /* White text */
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    padding: 10px 20px;
-    transition: color 0.3s ease, background-color 0.3s ease;
-    background-color: transparent;
-    border-radius: 5px;
-    position: relative;
-    z-index: 1;
-}
-
-.nav-links a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background-color: #FF4C29; /* Accent color */
-    z-index: -1;
-    transition: width 0.4s ease;
-    border-radius: 5px;
-}
-
-.nav-links a:hover::before {
-    width: 100%;
-}
-
-.nav-links a:hover {
-    color: #ffffff; /* Ensure white text on hover */
-}
-
-/* Subtle Shadow and Hover Effect */
-.nav-links a:hover {
-    background-color: #ff4c29; /* Background color change on hover */
-    color: #ffffff; /* Text color change on hover */
-    box-shadow: 0 4px 15px rgba(255, 76, 41, 0.5); /* Add shadow on hover */
-    border-radius: 5px;
-}
-
-/* Active Link (Optional - Highlight Current Page) */
-.nav-links a.active {
-    background-color: #ff4c29; /* Highlight active link */
-    color: #ffffff;
-    box-shadow: 0 4px 15px rgba(255, 76, 41, 0.5);
-}
-.spacer {
-    height: 100px;
-    width: 100%;
-    display: block;
 }
