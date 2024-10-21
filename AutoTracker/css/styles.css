@@ -10,9 +10,9 @@
     --radius: 8px;
     --transition-duration: 0.3s;
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    --font-size-base: 18px;
-    --font-size-large: 22px;
-    --font-size-small: 14px;
+    --font-size-base: 24px;
+    --font-size-large: 32px;
+    --font-size-small: 28px;
     --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
