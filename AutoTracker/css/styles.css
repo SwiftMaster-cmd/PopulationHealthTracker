@@ -422,6 +422,12 @@ button:hover {
     background-color: var(--background-color); /* Consistent background color */
     margin-bottom: 20px; /* Add spacing below for better separation */
 }
+
+
+
+
+
+
 /* General List Styling */
 ul {
     list-style-type: none;
@@ -440,22 +446,22 @@ li a {
     color: white;
     padding: 16px;
     text-decoration: none;
-    background-color: var(--background-color); /* Adjust this to match your color scheme */
+    background-color: var(--background-color); /* Adjust to your color scheme */
 }
 
 li a:hover {
-    background-color: var(--primary-color); /* Adjust with your color scheme */
+    background-color: var(--primary-color); /* Adjust to your color scheme */
 }
 
-/* Dropdown Menu Styling */
-.dropdown-container {
+/* Tooltip Menu Styling */
+.tooltip-container {
     position: relative;
 }
 
-.dropdown-menu {
+.tooltip-menu {
     display: none;
     position: absolute;
-    top: 100%; /* Align the dropdown below the button */
+    top: 100%; /* Align below the main button */
     left: 0;
     background-color: var(--card-background-color);
     padding: 10px;
@@ -465,7 +471,7 @@ li a:hover {
     min-width: 180px;
 }
 
-.dropdown-menu a {
+.tooltip-menu a {
     display: block;
     padding: 8px 12px;
     color: var(--text-color);
@@ -475,18 +481,18 @@ li a:hover {
     transition: background-color 0.3s ease;
 }
 
-.dropdown-menu a:hover {
+.tooltip-menu a:hover {
     background-color: var(--primary-color);
     color: #fff;
 }
 
-/* Show the dropdown on hover */
-.dropdown-container:hover .dropdown-menu {
+/* Show the tooltip on hover */
+.tooltip-container:hover .tooltip-menu {
     display: block;
 }
 
-/* Ensure the main button can still be clicked while dropdown shows */
-.dropdown-toggle {
+/* Keep main button clickable */
+.tooltip-toggle {
     position: relative;
-    z-index: 1; /* Ensures the button stays clickable */
+    z-index: 1; /* Keep the main button clickable and above the tooltip */
 }
