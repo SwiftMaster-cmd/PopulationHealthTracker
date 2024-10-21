@@ -423,7 +423,7 @@ button:hover {
     margin-bottom: 20px; /* Add spacing below for better separation */
 }
 
-/* Dropdown Menu Styling */
+/* General List Styling */
 ul {
     list-style-type: none;
     margin: 0;
@@ -441,12 +441,14 @@ li a {
     color: white;
     padding: 16px;
     text-decoration: none;
+    background-color: var(--background-color); /* Adjust with your color scheme */
 }
 
 li a:hover {
     background-color: var(--primary-color); /* Adjust with your color scheme */
 }
 
+/* Dropdown Menu Styling */
 .dropdown-menu {
     display: none;
     position: absolute;
@@ -468,9 +470,10 @@ li a:hover {
 
 .dropdown-menu li a:hover {
     background-color: var(--primary-color);
+    color: #fff;
 }
 
-/* Show the dropdown on hover */
+/* Show the dropdown menu on hover */
 li:hover .dropdown-menu {
     display: block;
 }
